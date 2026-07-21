@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-olive: #6B7B3A;
+  --color-olive-d: #4A5628;
+  --color-olive-g: rgba(107, 123, 58, 0.4);
+  --color-black: #0A0A0A;
+  --color-off: #F5F5F0;
+  --color-grey: #888;
+  
+}
+
+:root {
+  color-scheme: dark;
+  --font-outfit: var(--font-outfit), system-ui, sans-serif;
+  --font-noto: var(--font-noto), system-ui, sans-serif;
+  --font-sans: var(--font-noto), var(--font-outfit), system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Spotlight Effect Base */
+.bento-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 255, 255, 0.06) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bento-spotlight:hover::before {
+  opacity: 1;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 3s infinite ease-in-out;
+}
+
+@font-face {
+  font-family: "Decoy Font";
+  src: url("/fonts/DecoyFont.ttf") format("truetype");
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ponytail: English wordmark/logo uses Decoy; Arabic stays on Noto */
+.font-decoy {
+  font-family: "Decoy Font", var(--font-outfit), system-ui, sans-serif;
+}
+
+
+.text-outline {
+  -webkit-text-stroke: 1px var(--color-olive);
+  color: transparent;
+}
