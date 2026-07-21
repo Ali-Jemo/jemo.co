@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jemo — مجموعة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&family=Noto+Kufi+Arabic:wght@300;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Header ─── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">jemo</a>
+      <nav class="main-nav">
+        <a href="#">الرئيسية</a>
+        <a href="#divisions">الأقسام</a>
+        <a href="#about">من نحن</a>
+        <a href="#contact">تواصل</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ─── Hero ─── -->
+  <main class="hero">
+    <canvas id="particles"></canvas>
+    <span class="eyebrow reveal">مرحباً بكم في</span>
+    <h1 class="hero-wordmark">jemo</h1>
+    <p class="hero-tagline">نجمع. ننظّم. نبني.</p>
+  </main>
+
+  <!-- ─── Glow Divider ─── -->
+  <div class="glow-line"></div>
+
+  <!-- ─── About Section ─── -->
+  <section class="about-section reveal" id="about">
+    <h2 class="section-title">مجموعة واحدة، فِرق متعددة</h2>
+    <p class="about-desc">jemo مجموعة قابضة تجمع فِرق مستقلة تحت سقف واحد — كل فريق متخصص بمجاله، وكل الحقوق والملكية الفكرية تعود للمجموعة. نبني مجتمعاً رقمياً يعمل بروح الفريق ويشارك الأرباح.</p>
+  </section>
+
+  <!-- ─── Divisions ─── -->
+  <section class="features-section" id="divisions">
+    <h2 class="section-title reveal">أقسامنا</h2>
+    <div class="features-grid">
+      <!-- Row 1 -->
+      <div class="bento-cell bento-empty bento-hide-mobile relative">
+        <div class="bento-diamond"></div>
+      </div>
+      <article class="bento-cell feature-card reveal bento-span-2">
+        <div class="feature-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><path d="M15 13h.01"></path><path d="M18 11h.01"></path></svg></div>
+        <div class="feature-text">
+          <h3 class="feature-title">المحتوى والألعاب</h3>
+          <p class="feature-desc">إنتاج محتوى يوتيوب في مجال الألعاب والترفيه الرقمي.</p>
+        </div>
+      </article>
+      <div class="bento-cell bento-empty bento-hide-mobile relative">
+        <div class="bento-dot top-right"></div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="bento-cell bento-empty bento-hide-mobile"></div>
+      <article class="bento-cell feature-card reveal">
+        <div class="feature-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"></path><path d="M3 22h18"></path><path d="M14 22a7 7 0 1 0 0-14h-1"></path><path d="M9 14h2"></path><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"></path><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"></path></svg></div>
+        <div class="feature-text">
+          <h3 class="feature-title">الأبحاث العلمية</h3>
+          <p class="feature-desc">فريق مختص بالبحث العلمي والتطوير المعرفي.</p>
+        </div>
+      </article>
+      <article class="bento-cell feature-card reveal">
+        <div class="feature-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path></svg></div>
+        <div class="feature-text">
+          <h3 class="feature-title">التقنية والبرمجة</h3>
+          <p class="feature-desc">بناء أدوات ومنصات رقمية تخدم أقسام المجموعة.</p>
+        </div>
+      </article>
+      <article class="bento-cell feature-card reveal bento-row-2">
+        <div class="feature-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="5.5" r="2.5"></circle><circle cx="17.5" cy="10.5" r="2.5"></circle><circle cx="8.5" cy="7.5" r="2.5"></circle><circle cx="6.5" cy="12.5" r="2.5"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path></svg></div>
+        <div class="feature-text">
+          <h3 class="feature-title">التصميم والهوية</h3>
+          <p class="feature-desc">بناء الهوية البصرية والتصاميم لكل مشاريع المجموعة.</p>
+        </div>
+      </article>
+
+      <!-- Row 3 -->
+      <div class="bento-cell bento-empty bento-hide-mobile relative"></div>
+      <div class="bento-cell bento-solid bento-hide-mobile"></div>
+      <div class="bento-cell bento-empty bento-hide-mobile relative">
+         <div class="bento-diamond bento-diamond-bottom"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Glow Divider ─── -->
+  <div class="glow-line"></div>
+
+  <!-- ─── CTA Section ─── -->
+  <section class="cta-section reveal" id="contact">
+    <h2 class="cta-title">عندك شغف ومهارة؟</h2>
+    <p class="cta-desc">انضم لفريق jemo — لا نطلب مال، نطلب أشخاص يؤمنون بالعمل الجماعي.</p>
+    <a href="#" class="cta-btn">
+      تواصل معنا
+      <svg class="cta-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+    </a>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="site-footer reveal">
+    <div class="footer-inner">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <span class="footer-logo">jemo</span>
+          <p class="footer-tagline">مجموعة قابضة — نجمع، ننظّم، نبني</p>
+        </div>
+        <div class="footer-cols">
+          <div class="footer-col">
+            <h4>الأقسام</h4>
+            <a href="#">المحتوى والألعاب</a>
+            <a href="#">الأبحاث العلمية</a>
+            <a href="#">التقنية والبرمجة</a>
+            <a href="#">التصميم والهوية</a>
+          </div>
+          <div class="footer-col">
+            <h4>الشركة</h4>
+            <a href="#">من نحن</a>
+            <a href="#">الرؤية</a>
+            <a href="#">الانضمام</a>
+            <a href="#">تواصل</a>
+          </div>
+          <div class="footer-col">
+            <h4>قانوني</h4>
+            <a href="#">شروط الاستخدام</a>
+            <a href="#">سياسة الخصوصية</a>
+            <a href="#">حقوق الملكية</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="status-dot"></span>
+        <span class="footer-copy">&copy; 2026 jemo group. جميع الحقوق محفوظة.</span>
+        <div class="footer-socials">
+          <a href="#" aria-label="انستغرام">Instagram</a>
+          <a href="#" aria-label="تويتر">Twitter</a>
+          <a href="#" aria-label="تيكتوك">TikTok</a>
+          <a href="#" aria-label="ديسكورد">Discord</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="animations.js"></script>
+</body>
+</html>
