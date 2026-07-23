@@ -46,17 +46,18 @@ export default function Scene5Covenant() {
             <span>MEMBERSHIP: FREE & OPEN</span>
           </div>
 
-          <div className="space-y-2 text-xs md:text-sm text-white/70">
-            <p>• الالتزام بالشغف، الشفافية، ونشر المعرفة المفتوحة المصدر.</p>
-            <p>• الحرية الكاملة في اختيار القسم والمشاريع البحثية أو البرمجية.</p>
-            <p>• الانضمام المباشر لبيئة عمل مستقلة تابعة لشبكة LXD Co.</p>
-          </div>
-
           {/* Action CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
-            <Button href="/apply" variant="primary" glow icon={<Send size={16} />}>
-              أختم الميثاق
-            </Button>
+            <a href="/apply" className="animated-button">
+              <svg xmlns="http://www.w3.org/2000/svg" className="arr-2" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" />
+              </svg>
+              <span className="text">أختم الميثاق</span>
+              <span className="circle" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="arr-1" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z" />
+              </svg>
+            </a>
             <Button href="/applications" variant="outline" icon={<ExternalLink size={16} />}>
               سجل القبولات العام
             </Button>
