@@ -117,7 +117,7 @@ export default function Scene2Wisdom() {
         {/* 2D Round City Diagram */}
         <div className="relative w-full max-w-md aspect-square flex items-center justify-center my-4">
           {/* Rotating Ring Text */}
-          <svg className="absolute inset-0 w-full h-full animate-[spin_60s_linear_infinite] pointer-events-none opacity-30">
+          <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full animate-[spin_60s_linear_infinite] pointer-events-none opacity-30">
             <path
               id="circlePath"
               d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"
@@ -137,7 +137,7 @@ export default function Scene2Wisdom() {
           </div>
 
           {/* 4 Quadrants */}
-          <div className="grid grid-cols-2 gap-4 w-full h-full p-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full h-full p-2 sm:p-6">
             {DEPARTMENTS.map((dept) => {
               const isHovered = hoveredId === dept.id;
               const isDimmed = hoveredId !== null && !isHovered;
@@ -164,9 +164,9 @@ export default function Scene2Wisdom() {
                       {dept.icon}
                     </div>
                   </div>
-                  <div className="my-2">
-                    <h3 className="cardTitle font-kufi">{dept.title}</h3>
-                    <p className="cardSubtitle mt-1 line-clamp-2">{dept.desc}</p>
+                  <div className="my-1 md:my-2">
+                    <h3 className="cardTitle font-kufi leading-snug">{dept.title}</h3>
+                    <p className="cardSubtitle mt-1 hidden sm:line-clamp-2">{dept.desc}</p>
                   </div>
                   <div className="linkMore mt-2">
                     <span>تفاصيل أكثر</span>

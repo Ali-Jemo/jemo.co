@@ -541,7 +541,7 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1.75rem;
+  padding: clamp(1rem, 3.5vw, 1.75rem);
   border-radius: 1.5rem;
   background: rgba(15, 15, 15, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -600,10 +600,9 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.08);
+  width: clamp(36px, 10vw, 44px);
+  height: clamp(36px, 10vw, 44px);
+  border-radius: clamp(8px, 2vw, 10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #ffffff;
   transition: all 0.5s ease;
@@ -617,13 +616,12 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 
 .sweeperCard .cardTitle {
   color: #ffffff;
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 4vw, 1.25rem);
   font-weight: 700;
   transition: color 0.5s ease;
 }
 .sweeperCard .cardSubtitle {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.875rem;
+  font-size: clamp(0.75rem, 3vw, 0.875rem);
   line-height: 1.6;
   transition: color 0.5s ease;
 }
@@ -633,9 +631,8 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   align-items: center;
   gap: 0.5rem;
   color: #ffffff;
-  font-size: 0.875rem;
   font-weight: 600;
-  transition: color 0.5s ease;
+  font-size: clamp(0.75rem, 3vw, 0.875rem);
 }
 .sweeperCard:hover .cardTitle,
 .sweeperCard:hover .linkMore {
