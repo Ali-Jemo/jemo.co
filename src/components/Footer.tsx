@@ -1,14 +1,28 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
-     <footer style={{ background: "linear-gradient(180deg, #050505 0%, #000000 100%)", color: "var(--ink)" }}>
-      <div className="max-w-[1200px] mx-auto px-6">
+    <footer className="relative overflow-hidden bg-black text-white">
+      {/* Background Image */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <Image
+          src="/footer-bg.png"
+          alt="Footer Background"
+          fill
+          className="object-cover opacity-80 filter brightness-110 contrast-110"
+        />
+        {/* Vignette Overlays for readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent opacity-80" />
+      </div>
+
+      <div className="relative z-10 max-w-[1200px] mx-auto px-6">
         <div className="py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-right">
           <div className="sm:col-span-1">
             <Link href="/" className="inline-block mb-3">
-              <div className="text-2xl font-bold font-kufi">
-                <span className="text-gradient">jemo</span>{" "}
+              <div dir="ltr" className="text-2xl font-bold font-kufi flex justify-end gap-1.5">
+                <span className="text-gradient">jemo</span>
                 <span className="font-mono text-white/80">labs</span>
               </div>
             </Link>
@@ -48,7 +62,7 @@ export default function Footer() {
         </div>
 
          <div className="py-6 border-t flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-          <p>© 2026 jemo labs · جميع الحقوق محفوظة.</p>
+          <p>© 2026 <span dir="ltr" className="inline-block">jemo labs</span> · جميع الحقوق محفوظة.</p>
           <div className="flex gap-4 text-[11px]">
             <Link href="/" className="hover:text-[var(--accent)] transition-colors">الشروط والأحكام</Link>
             <span aria-hidden="true">•</span>
