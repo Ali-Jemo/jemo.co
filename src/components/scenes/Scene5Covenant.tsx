@@ -16,11 +16,11 @@ export default function Scene5Covenant() {
           alt="Covenant Background"
           fill
           priority
-          className="object-cover opacity-90 filter brightness-110 contrast-105"
+          className="object-cover opacity-100 filter brightness-125 contrast-110"
         />
         {/* Vignette Overlay to blend with #050505 background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505] opacity-90" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-transparent to-[#050505] opacity-70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505] opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-transparent to-[#050505] opacity-30" />
       </div>
 
       <div className="relative z-10 max-w-3xl w-full text-center flex flex-col items-center gap-8">
