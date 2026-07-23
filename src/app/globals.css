@@ -215,6 +215,7 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .btn--glow {
   position: relative;
   isolation: isolate;
+  overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.25);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -553,10 +554,9 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 }
 
 .sweeperCard::after {
-  content: "";
-  position: absolute;
-  bottom: -20px;
-  left: -20px;
+  top: var(--sweep-y, 50%);
+  left: var(--sweep-x, 50%);
+  transform: translate(var(--sweep-trans-x, -50%), var(--sweep-trans-y, -50%));
   width: 120px;
   height: 120px;
   background: var(--sweeper-accent, rgba(255, 255, 255, 0.2));
@@ -570,13 +570,12 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .sweeperCard:hover::after {
   opacity: 0;
 }
-
 .sweeperCard::before {
   content: "";
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: var(--sweep-y, 50%);
+  left: var(--sweep-x, 50%);
+  transform: translate(var(--sweep-trans-x, -50%), var(--sweep-trans-y, -50%));
   width: 0;
   height: 0;
   background: var(--sweeper-bg, #ffffff);

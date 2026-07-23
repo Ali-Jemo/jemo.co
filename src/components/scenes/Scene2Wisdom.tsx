@@ -138,9 +138,14 @@ export default function Scene2Wisdom() {
 
           {/* 4 Quadrants */}
           <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full h-full p-2 sm:p-6">
-            {DEPARTMENTS.map((dept) => {
+            {DEPARTMENTS.map((dept, idx) => {
               const isHovered = hoveredId === dept.id;
               const isDimmed = hoveredId !== null && !isHovered;
+
+              const sweepY = idx < 2 ? "0" : "100%";
+              const sweepX = idx % 2 === 0 ? "100%" : "0";
+              const sweepTransY = idx < 2 ? "-50%" : "50%";
+              const sweepTransX = idx % 2 === 0 ? "50%" : "-50%";
 
               return (
                 <button
@@ -154,6 +159,10 @@ export default function Scene2Wisdom() {
                   style={{
                     "--sweeper-accent": dept.color,
                     "--sweeper-bg": dept.color,
+                    "--sweep-y": sweepY,
+                    "--sweep-x": sweepX,
+                    "--sweep-trans-y": sweepTransY,
+                    "--sweep-trans-x": sweepTransX,
                     borderColor: isHovered ? dept.color : "rgba(255,255,255,0.08)",
                     boxShadow: isHovered ? `0 0 28px ${dept.color}35` : undefined,
                   } as React.CSSProperties}
