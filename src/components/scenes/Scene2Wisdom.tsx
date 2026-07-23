@@ -160,7 +160,6 @@ export default function Scene2Wisdom() {
                     "--sweep-y": sweepY,
                     "--sweep-x": sweepX,
                     borderColor: isHovered ? dept.color : "rgba(255,255,255,0.08)",
-                    boxShadow: isHovered ? `0 0 28px ${dept.color}35` : undefined,
                   } as React.CSSProperties}
                 >
                   <div className="flex flex-col flex-grow justify-center w-full mt-1 sm:mt-2">
