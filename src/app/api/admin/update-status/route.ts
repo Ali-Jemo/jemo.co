@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { supabaseAdmin } from '@/lib/supabase';
 import { Resend } from 'resend';
 import { DEPT_CHANNELS, DEPT_BOT_KEY } from '@/lib/departments';
@@ -25,9 +26,9 @@ async function sendAcceptanceEmail(app: {
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head><meta charset="utf-8"></head>
-<body style="font-family:Arial,sans-serif;background:#0a0a0a;color:#e5e5e5;margin:0;padding:32px;">
-  <div style="max-width:560px;margin:0 auto;border:1px solid #222;border-radius:12px;overflow:hidden;">
-    <div style="background:#1a1a1a;padding:24px;text-align:center;border-bottom:1px solid #222;">
+<body style="font-family:Arial,sans-serif;background:#1A171400F;color:#e5e5e5;margin:0;padding:32px;">
+  <div style="max-width:560px;margin:0 auto;border:1px solid #2F2924;border-radius:12px;overflow:hidden;">
+    <div style="background:#151210;padding:24px;text-align:center;border-bottom:1px solid #2F2924;">
        <h2 style="margin:0;color:#ffffff;font-size:22px;letter-spacing:2px;">Jemo</h2>
       <p style="margin:4px 0 0;color:#666;font-size:12px;">Research &amp; Innovation Branch</p>
     </div>
@@ -37,7 +38,7 @@ async function sendAcceptanceEmail(app: {
          يسعدنا إعلامك بقبولك رسمياً في <strong style="color:#ffffff;">${app.section}</strong>
         ضمن منظومة <strong>Jemo</strong>.
       </p>
-      <div style="background:#111;border:1px solid #222;border-radius:8px;padding:16px;margin:20px 0;">
+      <div style="background:#1A1714;border:1px solid #2F2924;border-radius:8px;padding:16px;margin:20px 0;">
         <p style="margin:0 0 8px;color:#666;font-size:12px;">تفاصيل عضويتك</p>
          <p style="margin:4px 0;"><span style="color:#666;">الرقم المرجعي:</span> <strong style="color:#ffffff;">${app.contractId}</strong></p>
         <p style="margin:4px 0;"><span style="color:#666;">القسم:</span> <strong>${app.section}</strong></p>
@@ -45,7 +46,7 @@ async function sendAcceptanceEmail(app: {
       </div>
       <p style="color:#aaa;line-height:1.8;">للبدء الفوري، اضغط على زر البوت أدناه للانضمام لقناة قسمك:</p>
       <div style="text-align:center;margin:24px 0;">
-         <a href="${botLink}" style="display:inline-block;background:#ffffff;color:#0a0a0a;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">
+         <a href="${botLink}" style="display:inline-block;background:#ffffff;color:#1A171400F;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">
           🤖 فتح البوت والانضمام
         </a>
       </div>
@@ -55,7 +56,7 @@ async function sendAcceptanceEmail(app: {
          🌐 القناة الرئيسية: <a href="https://t.me/jemo_channel" style="color:#ffffff;">t.me/jemo_channel</a>
       </p>
     </div>
-    <div style="background:#111;padding:16px;text-align:center;border-top:1px solid #222;">
+    <div style="background:#1A1714;padding:16px;text-align:center;border-top:1px solid #2F2924;">
       <p style="margin:0;color:#444;font-size:11px;">Jemo © 2026 — Research &amp; Recruitment Division</p>
     </div>
   </div>
@@ -73,9 +74,9 @@ async function sendRejectionEmail(app: { name: string; email: string; section: s
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head><meta charset="utf-8"></head>
-<body style="font-family:Arial,sans-serif;background:#0a0a0a;color:#e5e5e5;margin:0;padding:32px;">
-  <div style="max-width:560px;margin:0 auto;border:1px solid #222;border-radius:12px;overflow:hidden;">
-    <div style="background:#1a1a1a;padding:24px;text-align:center;border-bottom:1px solid #222;">
+<body style="font-family:Arial,sans-serif;background:#1A171400F;color:#e5e5e5;margin:0;padding:32px;">
+  <div style="max-width:560px;margin:0 auto;border:1px solid #2F2924;border-radius:12px;overflow:hidden;">
+    <div style="background:#151210;padding:24px;text-align:center;border-bottom:1px solid #2F2924;">
       <h2 style="margin:0;color:#a3a858;font-size:22px;letter-spacing:2px;">Jemo</h2>
     </div>
     <div style="padding:32px;">
@@ -93,6 +94,10 @@ async function sendRejectionEmail(app: { name: string; email: string; section: s
   });
 }
 
+function escapeMarkdown(text: string) {
+  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+}
+
 async function notifyTelegramBot(app: {
   name: string; section: string; contractId: string; chatId?: string;
 }) {
@@ -103,7 +108,7 @@ async function notifyTelegramBot(app: {
   const botKey = DEPT_BOT_KEY[app.section] ?? 'research';
   const deptChannel = DEPT_CHANNELS[app.section] ?? 'https://t.me/jemo_channel';
 
-  const text = `🎉 *مبروك ${app.name}!*\n\nتم قبولك رسمياً في *${app.section}*\n\nرقمك المرجعي: \`${app.contractId}\`\n\n📢 قناة قسمك: ${deptChannel}\n\n/mydept لعرض تفاصيل قسمك`;
+  const text = `🎉 *مبروك ${escapeMarkdown(app.name)}!*\n\nتم قبولك رسمياً في *${escapeMarkdown(app.section)}*\n\nرقمك المرجعي: \`${app.contractId}\`\n\n📢 قناة قسمك: ${deptChannel}\n\n/mydept لعرض تفاصيل قسمك`;
 
   await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST',
@@ -125,7 +130,12 @@ async function notifyTelegramBot(app: {
 export async function POST(req: NextRequest) {
   // Simple admin auth — header must match ADMIN_SECRET env var
   const secret = req.headers.get('x-admin-secret');
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
+  if (
+    !secret ||
+    !process.env.ADMIN_SECRET ||
+    secret.length !== process.env.ADMIN_SECRET.length ||
+    !crypto.timingSafeEqual(Buffer.from(secret), Buffer.from(process.env.ADMIN_SECRET))
+  ) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 

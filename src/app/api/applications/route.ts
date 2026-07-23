@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/lib/supabase";
+import { supabaseClient } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
@@ -20,9 +20,9 @@ async function sendSubmissionConfirmationEmail(app: {
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head><meta charset="utf-8"></head>
-<body style="font-family:Arial,sans-serif;background:#0a0a0a;color:#e5e5e5;margin:0;padding:32px;">
-  <div style="max-width:560px;margin:0 auto;border:1px solid #222;border-radius:12px;overflow:hidden;">
-    <div style="background:#1a1a1a;padding:24px;text-align:center;border-bottom:1px solid #222;">
+<body style="font-family:Arial,sans-serif;background:#1A171400F;color:#e5e5e5;margin:0;padding:32px;">
+  <div style="max-width:560px;margin:0 auto;border:1px solid #2F2924;border-radius:12px;overflow:hidden;">
+    <div style="background:#151210;padding:24px;text-align:center;border-bottom:1px solid #2F2924;">
        <h2 style="margin:0;color:#ffffff;font-size:22px;letter-spacing:2px;">Jemo</h2>
       <p style="margin:4px 0 0;color:#666;font-size:12px;">Research &amp; Innovation Branch</p>
     </div>
@@ -31,7 +31,7 @@ async function sendSubmissionConfirmationEmail(app: {
       <p style="color:#aaa;line-height:1.8;">
          تم استلام طلب انضمامك رسمياً إلى قسم <strong style="color:#ffffff;">${app.section}</strong>.
       </p>
-      <div style="background:#111;border:1px solid #222;border-radius:8px;padding:16px;margin:20px 0;">
+      <div style="background:#1A1714;border:1px solid #2F2924;border-radius:8px;padding:16px;margin:20px 0;">
         <p style="margin:0 0 8px;color:#666;font-size:12px;">ملخص بياناتك المسجلة</p>
         <p style="margin:4px 0;"><span style="color:#666;">الاسم:</span> <strong>${app.name}</strong></p>
         <p style="margin:4px 0;"><span style="color:#666;">القسم:</span> <strong>${app.section}</strong></p>
@@ -48,6 +48,9 @@ async function sendSubmissionConfirmationEmail(app: {
   }).catch((err) => console.error("Email send error:", err));
 }
 
+function escapeMarkdown(text: string) {
+  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+}
 async function sendNewSubmissionTelegramAlert(app: {
   name: string;
   email: string;
@@ -57,7 +60,7 @@ async function sendNewSubmissionTelegramAlert(app: {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) return;
 
-  const text = `📥 *طلب انضمام جديد!*\n\n👤 *الاسم:* ${app.name}\n📧 *البريد:* \`${app.email}\`\n📂 *القسم:* ${app.section}\n⏳ *الساعات:* ${app.hours}\n\n🔍 يمكنك مراجعة الطلب من لوحة التحكم.`;
+  const text = `📥 *طلب انضمام جديد!*\n\n👤 *الاسم:* ${escapeMarkdown(app.name)}\n📧 *البريد:* \`${app.email}\`\n📂 *القسم:* ${escapeMarkdown(app.section)}\n⏳ *الساعات:* ${escapeMarkdown(app.hours)}\n\n🔍 يمكنك مراجعة الطلب من لوحة التحكم.`;
 
   const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
   if (adminChatId) {
@@ -82,11 +85,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "جميع الحقول المطلوبة يجب ملؤها" }, { status: 400 });
     }
 
+    if (
+      typeof name !== 'string' || name.length > 100 ||
+      typeof motivation !== 'string' || motivation.length > 5000 ||
+      typeof experience !== 'string' || experience.length > 2000 ||
+      typeof section !== 'string' || section.length > 100 ||
+      typeof hours !== 'string' || hours.length > 100 ||
+      (telegram && (typeof telegram !== 'string' || telegram.length > 100))
+    ) {
+      return NextResponse.json({ error: "المدخلات غير صالحة أو تتجاوز الحد المسموح" }, { status: 400 });
+    }
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "بريد إلكتروني غير صالح" }, { status: 400 });
     }
 
-    const db = supabaseAdmin();
+    const db = supabaseClient();
 
     // Insert
     const insertPayload: Record<string, unknown> = {

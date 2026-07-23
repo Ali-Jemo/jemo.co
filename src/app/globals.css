@@ -16,6 +16,7 @@
 }
 
 @keyframes shimmer {
+  0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
 
@@ -109,6 +110,22 @@ html {
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
+}
+/* Lenis smooth scroll core rules */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }
 
 body {
@@ -262,36 +279,36 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
+  pointer-events: none;
 }
 
 .orb-1 {
   width: 400px;
   height: 400px;
-  background: var(--brand);
+  background: radial-gradient(circle, var(--brand) 0%, transparent 70%);
+  opacity: 0.08;
   top: -100px;
   right: -100px;
-  animation: float1 12s ease-in-out infinite;
 }
 
 .orb-2 {
   width: 300px;
   height: 300px;
-  background: var(--brand-700);
+  background: radial-gradient(circle, var(--brand-700) 0%, transparent 70%);
+  opacity: 0.06;
   bottom: -50px;
   left: -80px;
-  animation: float2 15s ease-in-out infinite;
 }
 
 .orb-3 {
   width: 200px;
   height: 200px;
-  background: var(--accent);
+  background: radial-gradient(circle, var(--brand) 0%, transparent 70%);
+  opacity: 0.06;
   top: 40%;
   left: 30%;
-  animation: float3 18s ease-in-out infinite;
 }
+
 
 /* =========================================================
    SEND BUTTON — adapted from uiverse.io (adamgiebl)
@@ -371,12 +388,6 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   --gold-light: #e8c86e;
 }
 
-/* Gallery dark surface overrides — only inside the gallery container */
-.gallery-scope {
-  --surface: #14141c;
-  --surface-2: #1c1c28;
-  --line: #26263a;
-}
 
 /* About page hover effects */
 .about-card {
@@ -700,4 +711,9 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   0% { stroke-dashoffset: 100; opacity: 0; }
   5% { opacity: 1; }
   100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+/* Header Join Button Override */
+.header-join-btn {
+  color: #ffffff !important;
 }

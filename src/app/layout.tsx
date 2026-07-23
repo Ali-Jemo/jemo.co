@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Readex_Pro, Noto_Kufi_Arabic, IBM_Plex_Mono } from "next/font/google";
+import { Noto_Kufi_Arabic, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import LenisProvider from "@/lib/lenis-provider";
+import ScrollProgress from "@/components/ScrollProgress";
 
-const readex = Readex_Pro({
-  subsets: ["latin"],
-  variable: "--font-readex",
-  display: "swap",
-});
+
 
 const noto = Noto_Kufi_Arabic({
   subsets: ["arabic"],
@@ -88,16 +86,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={`${readex.variable} ${noto.variable} ${mono.variable}`}>
+    <html lang="ar" dir="rtl" className={`${noto.variable} ${mono.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased min-h-screen flex flex-col" style={{ background: "var(--bg)", color: "var(--ink)" }} suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)]" suppressHydrationWarning>
+        {/* Background Assets */}
+        <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        </div>
+        
+        <ScrollProgress />
         <AnalyticsTracker />
-        {children}
+        <LenisProvider>
+          {children}
+        </LenisProvider>
       </body>
     </html>
   );

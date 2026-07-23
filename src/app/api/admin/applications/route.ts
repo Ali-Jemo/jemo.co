@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET(req: NextRequest) {
   const secret = req.headers.get('x-admin-secret');
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
+  if (
+    !secret ||
+    !process.env.ADMIN_SECRET ||
+    secret.length !== process.env.ADMIN_SECRET.length ||
+    !crypto.timingSafeEqual(Buffer.from(secret), Buffer.from(process.env.ADMIN_SECRET))
+  ) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 

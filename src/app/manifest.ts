@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "منظومة بحثية وتقنية تجمع الباحثين والمبدعين في بيئة عمل واحدة.",
     start_url: "/",
     display: "standalone",
-    background_color: "#050807",
-    theme_color: "#059669",
+    background_color: "#11100F",
+    theme_color: "#B68A45",
     dir: "rtl",
     lang: "ar",
     icons: [

@@ -2,28 +2,27 @@
 
 import { useState } from "react";
 import {
-  Send,
-  Loader2,
   CheckCircle2,
   AlertTriangle,
-  Bot,
   Microscope,
   Code2,
   Palette,
   Gamepad2,
+  Sparkles,
+  ArrowUpLeft
 } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Link from "next/link";
-import Button from "@/components/ui/Button";
+import SendButton from "@/components/SendButton";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
+import { motion } from "framer-motion";
 
 const SECTIONS = [
-   { id: "الأبحاث العلمية", label: "الأبحاث العلمية", desc: "بحث علمي، تحليل بيانات، تطوير معرفي", icon: <Microscope className="w-5 h-5" style={{ color: "var(--accent)" }} />, iconBg: "var(--accent-soft)" },
-   { id: "التقنية والبرمجة", label: "التقنية والبرمجة", desc: "بناء أدوات ومنصات رقمية", icon: <Code2 className="w-5 h-5" style={{ color: "var(--accent)" }} />, iconBg: "var(--accent-soft)" },
-   { id: "التصميم والهوية", label: "التصميم والهوية", desc: "هوية بصرية، تصاميم، UI/UX", icon: <Palette className="w-5 h-5" style={{ color: "var(--accent)" }} />, iconBg: "var(--accent-soft)" },
-   { id: "المحتوى والألعاب", label: "المحتوى والألعاب", desc: "محتوى يوتيوب، ألعاب، ترفيه رقمي", icon: <Gamepad2 className="w-5 h-5" style={{ color: "var(--accent)" }} />, iconBg: "var(--accent-soft)" },
+  { id: "الأبحاث العلمية", label: "الأبحاث العلمية", desc: "بحث علمي، تحليل بيانات، تطوير معرفي", icon: <Microscope className="w-5 h-5 text-[var(--brand)]" /> },
+  { id: "التقنية والبرمجة", label: "التقنية والبرمجة", desc: "بناء أدوات ومنصات رقمية ومفتوحة المصدر", icon: <Code2 className="w-5 h-5 text-[var(--brand)]" /> },
+  { id: "التصميم والهوية", label: "التصميم والهوية", desc: "هوية بصرية، تصاميم، واجهات UI/UX", icon: <Palette className="w-5 h-5 text-[var(--brand)]" /> },
+  { id: "المحتوى والألعاب", label: "المحتوى والألعاب", desc: "محتوى يوتيوب، ألعاب، وثائقيات رقمية", icon: <Gamepad2 className="w-5 h-5 text-[var(--brand)]" /> },
 ];
 
 const HOURS_OPTIONS = ["أقل من 5 ساعات", "5 - 10 ساعات", "10 - 20 ساعة", "أكثر من 20 ساعة"];
@@ -58,15 +57,16 @@ export default function ApplyPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [refCode, setRefCode] = useState("");
 
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
-    if (!formData.name.trim()) newErrors.name = "الاسم مطلوب";
-    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "بريد إلكتروني غير صالح";
-    if (!formData.section) newErrors.section = "اختر القسم المطلوب";
-    if (!formData.experience.trim() || formData.experience.trim().length < 10) newErrors.experience = "اكتب تفاصيل الخبرة (10 أحرف على الأقل)";
-    if (!formData.hours) newErrors.hours = "اختر الساعات المتاحة";
-    if (!formData.motivation.trim() || formData.motivation.trim().length < 10) newErrors.motivation = "اكتب دافعك للانضمام (10 أحرف على الأقل)";
+    if (!formData.name.trim()) newErrors.name = "الاسم الكامل مطلوب";
+    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "يرجى كتابة بريد إلكتروني صحيح";
+    if (!formData.section) newErrors.section = "اختر القسم المناسب لمهاراتك";
+    if (!formData.experience.trim() || formData.experience.trim().length < 10) newErrors.experience = "يرجى كتابة تفاصيل خبرتك (10 أحرف على الأقل)";
+    if (!formData.hours) newErrors.hours = "اختر عدد الساعات المتاحة أسبوعياً";
+    if (!formData.motivation.trim() || formData.motivation.trim().length < 10) newErrors.motivation = "يرجى كتابة دافعك للانضمام (10 أحرف على الأقل)";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -92,10 +92,13 @@ export default function ApplyPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      if (res.ok) setSubmitted(true);
-      else {
+      if (res.ok) {
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        setRefCode(`JEMO-2026-${randomNum}`);
+        setSubmitted(true);
+      } else {
         const data = await res.json().catch(() => null);
-        setSubmitError(data?.error || "حدث خطأ أثناء الإرسال.");
+        setSubmitError(data?.error || "حدث خطأ أثناء الإرسال. يرجى المحاولة لاحقاً.");
       }
     } catch {
       setSubmitError("تعذر الاتصال بالخادم.");
@@ -106,86 +109,77 @@ export default function ApplyPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: "var(--bg)", color: "var(--ink)" }}>
+      <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--ink)] font-kufi">
         <Header />
         <main className="flex-grow flex items-center justify-center px-6 pt-32 pb-24">
-          <div className="text-center max-w-lg">
-            <div
-              className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8"
-              style={{ background: "var(--accent-soft)", border: "1px solid var(--line)" }}
-            >
-              <CheckCircle2 className="w-12 h-12" style={{ color: "var(--accent)" }} />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center max-w-lg p-8 sm:p-10 rounded-3xl bg-[var(--surface)] border border-[var(--line)] shadow-2xl relative overflow-hidden"
+          >
+            <div className="w-20 h-20 rounded-full bg-[var(--brand)]/10 border border-[var(--brand)]/20 flex items-center justify-center mx-auto mb-6 text-[var(--brand)] shadow-lg">
+              <CheckCircle2 size={40} />
             </div>
-            <h1 className="mb-4" style={{ fontSize: "clamp(24px, 4vw, 36px)", fontWeight: 800, color: "var(--accent)" }}>
-              تم إرسال طلبك بنجاح!
+            <h1 className="text-3xl font-bold mb-3 text-[var(--ink)]">
+              تم تسجيل طلبك بنجاح!
             </h1>
-            <p className="leading-relaxed mb-6" style={{ color: "var(--ink-2)" }}>
-              شكراً لانضمامك لـ <span style={{ fontWeight: 600, color: "var(--ink)" }}>Jemo</span>. سنراجع طلبك ونرد عليك قريبًا.
+            <p className="text-[var(--ink-2)] text-base leading-relaxed mb-6">
+              شكراً لانضمامك لـ <span className="font-bold text-[var(--brand)]">Jemo Labs</span>. تم توثيق الطلب وإرساله للمراجعة التقنية.
             </p>
 
-            <div
-              className="rounded-2xl p-6 mb-8 text-right space-y-3"
-              style={{ background: "var(--accent-soft)", border: "1px solid var(--line)" }}
-            >
-              <div className="flex items-center gap-2" style={{ color: "var(--accent)", fontWeight: 700 }}>
-                <Bot className="w-5 h-5" />
-                <span>خطوة هامة: استلام الإشعارات عبر تليجرام</span>
+            {/* Reference Tracker Badge */}
+            {refCode && (
+              <div className="mb-8 p-4 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
+                <span className="text-xs font-mono text-[var(--ink-2)] block mb-1">رقم المتابعة المرجعي</span>
+                <span className="text-xl font-mono font-bold text-[var(--brand)] tracking-widest">{refCode}</span>
               </div>
-              <p className="text-xs leading-relaxed" style={{ color: "var(--ink-2)" }}>
-                لاستلام قرار القبول وتفاصيل قسمك فوراً عبر تليجرام، اضغط الزر أدناه ثم اضغط <strong>ابدأ (START)</strong> في البوت:
-              </p>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-3">
               <a
-                href={`https://t.me/jemo_coBot?start=link_${encodeURIComponent(formData.email)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 w-full py-3 font-bold text-sm rounded-xl"
-                style={{ background: "var(--accent)", color: "var(--bg)" }}
+                href="/applications"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm bg-[var(--brand)] text-[var(--brand-ink)] shadow-md hover:opacity-90 transition-all"
               >
-                <span>ربط التليجرام واشترك بالبوت الآن</span>
+                <span>متابعة حالة القبولات</span>
+                <ArrowUpLeft size={18} />
+              </a>
+              <a
+                href="/"
+                className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-medium text-sm bg-[var(--bg)] text-[var(--ink-2)] border border-[var(--line)] hover:text-[var(--ink)] transition-all"
+              >
+                الرئيسية
               </a>
             </div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/applications" className="px-7 py-3.5 font-bold rounded-full" style={{ background: "var(--surface-2)", border: "1px solid var(--line)", color: "var(--ink)" }}>
-                تابع حالة طلبك
-              </Link>
-              <Link href="/" className="px-7 py-3.5 font-semibold rounded-full" style={{ background: "var(--surface-2)", border: "1px solid var(--line)", color: "var(--ink-2)" }}>
-                العودة للرئيسية
-              </Link>
-            </div>
-          </div>
+          </motion.div>
         </main>
         <Footer />
       </div>
     );
   }
 
-  const inputBase = "w-full rounded-xl px-4 py-3.5 text-sm";
-  const inputStyle: React.CSSProperties = {
-    background: "var(--surface)",
-    border: "1px solid var(--line)",
-    color: "var(--ink)",
-  };
+  const inputBase = "w-full rounded-xl px-4 py-3.5 text-sm bg-[var(--surface)] border border-[var(--line)] text-[var(--ink)] placeholder-[var(--ink-2)]/50 focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20 focus:outline-none transition-all";
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "var(--bg)", color: "var(--ink)" }}>
+    <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--ink)] font-kufi">
       <Header />
       <main className="flex-grow pt-32 pb-24 px-6 max-w-[720px] mx-auto w-full">
         <SectionHeader
           eyebrow="انضم إلينا"
           title="قدّم طلب الانضمام"
-          description="املأ النموذج أدناه وسنراجع طلبك. جميع الحقول المميزة بـ * مطلوبة."
+          description="املأ النموذج أدناه وسنراجع طلبك في أقرب وقت. جميع الحقول المميزة بـ * مطلوبة."
           center
         />
 
         <form onSubmit={handleSubmit} noValidate className="space-y-8 mt-12">
+          {/* 1. Personal Details */}
           <Card>
-            <h2 className="mb-6" style={{ fontSize: "18px", fontWeight: 700, color: "var(--ink)" }}>
+            <h2 className="text-lg font-bold mb-6 text-[var(--ink)] flex items-center gap-2">
+              <Sparkles size={18} className="text-[var(--brand)]" />
               البيانات الشخصية
             </h2>
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--ink-2)" }}>
+                <label className="block text-sm font-medium mb-2 text-[var(--ink-2)]">
                   الاسم الكامل *
                 </label>
                 <input
@@ -194,12 +188,12 @@ export default function ApplyPage() {
                   onChange={(e) => handleChange("name", e.target.value)}
                   placeholder="أحمد محمد حسين"
                   className={inputBase}
-                  style={inputStyle}
                 />
-                {errors.name && <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>{errors.name}</p>}
+                {errors.name && <p className="text-xs mt-1.5 font-medium text-red-500">{errors.name}</p>}
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--ink-2)" }}>
+                <label className="block text-sm font-medium mb-2 text-[var(--ink-2)]">
                   البريد الإلكتروني *
                 </label>
                 <input
@@ -208,12 +202,13 @@ export default function ApplyPage() {
                   onChange={(e) => handleChange("email", e.target.value)}
                   placeholder="ahmed@email.com"
                   className={inputBase}
-                  style={inputStyle}
+                  dir="ltr"
                 />
-                {errors.email && <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>{errors.email}</p>}
+                {errors.email && <p className="text-xs mt-1.5 font-medium text-red-500">{errors.email}</p>}
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--ink-2)" }}>
+                <label className="block text-sm font-medium mb-2 text-[var(--ink-2)]">
                   معرف التليجرام (Telegram Handle)
                 </label>
                 <input
@@ -222,125 +217,131 @@ export default function ApplyPage() {
                   onChange={(e) => handleChange("telegram", e.target.value)}
                   placeholder="@username"
                   className={inputBase}
-                  style={{ ...inputStyle, direction: "ltr", textAlign: "right" }}
+                  dir="ltr"
                 />
               </div>
             </div>
           </Card>
 
+          {/* 2. Department Selection */}
           <Card>
-            <h2 className="mb-6" style={{ fontSize: "18px", fontWeight: 700, color: "var(--ink)" }}>
+            <h2 className="text-lg font-bold mb-6 text-[var(--ink)] flex items-center gap-2">
+              <Sparkles size={18} className="text-[var(--brand)]" />
               القسم المطلوب
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {SECTIONS.map((section) => (
-                <button
-                  key={section.id}
-                  type="button"
-                  onClick={() => handleChange("section", section.id)}
-                  className="p-4 rounded-xl text-right transition-colors"
-                  style={
-                    formData.section === section.id
-                      ? { border: "1px solid var(--accent)", background: "var(--accent-soft)", color: "var(--accent)" }
-                      : { border: "1px solid var(--line)", background: "var(--surface)", color: "var(--ink-2)" }
-                  }
-                >
-                  <div className="p-2 rounded-lg w-fit mb-2" style={{ border: "1px solid var(--line)", background: "var(--surface-2)" }}>
-                    {section.icon}
-                  </div>
-                  <span className="block text-sm font-semibold">{section.label}</span>
-                </button>
-              ))}
+              {SECTIONS.map((section) => {
+                const isSelected = formData.section === section.id;
+                return (
+                  <button
+                    key={section.id}
+                    type="button"
+                    onClick={() => handleChange("section", section.id)}
+                    className={`p-4 rounded-xl text-end transition-all duration-200 border cursor-pointer ${
+                      isSelected
+                        ? "bg-[var(--brand)] text-white border-[var(--brand)] shadow-md shadow-[var(--brand)]/20 scale-[1.01]"
+                        : "bg-[var(--surface)] border-[var(--line)] text-[var(--ink-2)] hover:border-[var(--brand)]/40 hover:text-[var(--ink)]"
+                    }`}
+                  >
+                    <div className="p-2.5 rounded-lg w-fit mb-2 bg-[var(--surface-2)] border border-[var(--line)]">
+                      {section.icon}
+                    </div>
+                    <span className="block text-sm font-bold">{section.label}</span>
+                    <span className="block text-[11px] text-[var(--ink-2)] mt-1">{section.desc}</span>
+                  </button>
+                );
+              })}
             </div>
-            {errors.section && <p className="text-xs mt-3" style={{ color: "var(--accent)" }}>{errors.section}</p>}
+            {errors.section && <p className="text-xs mt-3 font-medium text-red-500">{errors.section}</p>}
           </Card>
 
+          {/* 3. Experience & Commitment */}
           <Card>
-            <h2 className="mb-6" style={{ fontSize: "18px", fontWeight: 700, color: "var(--ink)" }}>
+            <h2 className="text-lg font-bold mb-6 text-[var(--ink)] flex items-center gap-2">
+              <Sparkles size={18} className="text-[var(--brand)]" />
               الخبرة والتفاصيل
             </h2>
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--ink-2)" }}>
-                  خبرتك *
+                <label className="block text-sm font-medium mb-2 text-[var(--ink-2)]">
+                  تفاصيل خبرتك والتقنيات التي تتقنها *
                 </label>
                 <textarea
                   value={formData.experience}
                   onChange={(e) => handleChange("experience", e.target.value)}
                   rows={4}
-                  className={inputBase}
-                  style={{ ...inputStyle, resize: "vertical" }}
+                  placeholder="حدثنا عن أبرز مشاريعك واللغات والتقنيات التي تستخدمها..."
+                  className={`${inputBase} resize-y`}
                 />
-                {errors.experience && <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>{errors.experience}</p>}
+                {errors.experience && <p className="text-xs mt-1.5 font-medium text-red-500">{errors.experience}</p>}
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--ink-2)" }}>
-                  محفظة الأعمال / Portfolio
+                <label className="block text-sm font-medium mb-2 text-[var(--ink-2)]">
+                  محفظة الأعمال / Portfolio (اختياري)
                 </label>
                 <input
                   type="url"
                   value={formData.portfolio}
                   onChange={(e) => handleChange("portfolio", e.target.value)}
-                  placeholder="https://"
+                  placeholder="https://github.com/yourhandle"
                   className={inputBase}
-                  style={{ ...inputStyle, direction: "ltr", textAlign: "right" }}
+                  dir="ltr"
                 />
-                {!formData.portfolio && (
-                  <p className="text-xs mt-1" style={{ color: "var(--ink-2)" }}>اختياري: رابط معرض أعمال أو منصة أعمالك.</p>
-                )}
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--ink-2)" }}>
-                  الساعات الأسبوعية المتاحة *
+                <label className="block text-sm font-medium mb-2 text-[var(--ink-2)]">
+                  الساعات الأسبوعية المتاحة للعمل *
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {HOURS_OPTIONS.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => handleChange("hours", option)}
-                      className="px-3 py-2.5 rounded-xl text-xs font-medium border transition-colors"
-                      style={
-                        formData.hours === option
-                          ? { borderColor: "var(--accent)", background: "var(--accent-soft)", color: "var(--accent)" }
-                          : { borderColor: "var(--line)", background: "var(--surface)", color: "var(--ink-2)" }
-                      }
-                    >
-                      {option}
-                    </button>
-                  ))}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {HOURS_OPTIONS.map((option) => {
+                    const isSelected = formData.hours === option;
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => handleChange("hours", option)}
+                        className={`px-3 py-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-[var(--brand)] text-white border-[var(--brand)] shadow-md shadow-[var(--brand)]/20"
+                            : "bg-[var(--surface)] border-[var(--line)] text-[var(--ink-2)] hover:border-[var(--brand)]/40 hover:text-[var(--ink)]"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    );
+                  })}
                 </div>
-                {errors.hours && <p className="text-xs mt-3" style={{ color: "var(--accent)" }}>{errors.hours}</p>}
+                {errors.hours && <p className="text-xs mt-3 font-medium text-red-500">{errors.hours}</p>}
               </div>
+
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: "var(--ink-2)" }}>
-                  الدافع *
+                <label className="block text-sm font-medium mb-2 text-[var(--ink-2)]">
+                  لماذا ترغب في الانضمام لـ Jemo Labs؟ *
                 </label>
                 <textarea
                   value={formData.motivation}
                   onChange={(e) => handleChange("motivation", e.target.value)}
                   rows={4}
-                  className={inputBase}
-                  style={{ ...inputStyle, resize: "vertical" }}
+                  placeholder="اكتب الدافع والرؤية التي تسعى لتحقيقها معنا..."
+                  className={`${inputBase} resize-y`}
                 />
-                {errors.motivation && <p className="text-xs mt-1" style={{ color: "var(--accent)" }}>{errors.motivation}</p>}
+                {errors.motivation && <p className="text-xs mt-1.5 font-medium text-red-500">{errors.motivation}</p>}
               </div>
             </div>
           </Card>
 
           {submitError && (
-            <div
-              className="flex items-start gap-2 rounded-xl px-4 py-3 text-sm"
-              style={{ background: "var(--accent-soft)", border: "1px solid var(--line)", color: "var(--ink-2)" }}
-            >
-              <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "var(--accent)" }} />
+            <div className="flex items-start gap-2.5 rounded-xl p-4 text-sm bg-red-500/10 border border-red-500/20 text-red-500 font-medium">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <span>{submitError}</span>
             </div>
           )}
 
-          <Button type="submit" block disabled={submitting} icon={submitting ? <Loader2 className="animate-spin" /> : <Send />}>
-            {submitting ? "جارٍ الإرسال..." : "إرسال الطلب"}
-          </Button>
+          <SendButton type="submit" disabled={submitting} loading={submitting}>
+            {submitting ? "جارٍ الإرسال..." : "إرسال طلب الانضمام"}
+          </SendButton>
         </form>
       </main>
       <Footer />
