@@ -43,7 +43,7 @@ export default function Scene4Diwan() {
       {/* Background Image */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <Image
-          src="/faq-bg.png"
+          src="/diwan-bg-astrolabe.png"
           alt="Diwan Background"
           fill
           priority
