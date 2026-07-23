@@ -7,14 +7,14 @@ export default function Footer() {
       {/* Background Image */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <Image
-          src="/footer-bg.png"
+          src="/footer-bg-astronomy.png"
           alt="Footer Background"
           fill
-          className="object-cover opacity-80 filter brightness-110 contrast-110"
+          className="object-cover opacity-100 filter brightness-150 contrast-125"
         />
-        {/* Vignette Overlays for readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent opacity-80" />
+        {/* Vignette Overlays for readability - highly reduced for maximum visibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent opacity-30" />
       </div>
 
       <div className="relative z-10 max-w-[1200px] mx-auto px-6">
