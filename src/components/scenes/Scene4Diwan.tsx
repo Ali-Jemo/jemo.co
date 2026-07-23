@@ -47,11 +47,11 @@ export default function Scene4Diwan() {
           alt="Diwan Background"
           fill
           priority
-          className="object-cover opacity-85 filter brightness-110 contrast-105"
+          className="object-cover opacity-100 filter brightness-125 contrast-110"
         />
         {/* Vignette Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-[#0A0A0A] opacity-70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-transparent to-[#0A0A0A] opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-[#0A0A0A] opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-transparent to-[#0A0A0A] opacity-30" />
       </div>
 
       <div className="relative z-10 max-w-3xl w-full flex flex-col items-center gap-8 text-center">
