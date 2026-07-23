@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { Microscope, Code2, Palette, Gamepad2, X, ArrowUpLeft } from "lucide-react";
+import { Microscope, Code2, BookOpen, DraftingCompass, Gamepad2, X, ArrowUpLeft } from "lucide-react";
 import Button from "@/components/ui/Button";
 
 interface Dept {
@@ -19,7 +19,7 @@ const DEPARTMENTS: Dept[] = [
     id: "01",
     title: "أبحاث علمية",
     desc: "تحليل بيانات، أوراق بحثية منشورة، ودراسات ميدانية.",
-    icon: <Microscope size={24} />,
+    icon: <Microscope size={28} strokeWidth={1.5} />,
      color: "#FFFFFF",
     details: "نركز على إنتاج المعرفة العلمية المفتوحة المصدر ودراسة ظواهر العالم الرقمي وتحليل البيانات الضخمة بمناهج دقيقة.",
   },
@@ -27,7 +27,7 @@ const DEPARTMENTS: Dept[] = [
     id: "02",
     title: "ابتكار برمجي",
     desc: "بناء منصات ويب، بوتات، وأدوات أتمتة مفتوحة المصدر.",
-    icon: <Code2 size={24} />,
+    icon: <BookOpen size={28} strokeWidth={1.5} />,
      color: "#E4E4E7",
     details: "نبني برمجيات وأدوات بنية تحتية رقمية تخدم المجتمع التقني، مع التركيز على الأداء، الأمان، والحلول المفتوحة المصدر.",
   },
@@ -35,7 +35,7 @@ const DEPARTMENTS: Dept[] = [
     id: "03",
     title: "التصميم والهوية",
     desc: "تصميم واجهات وهوية بصرية متكاملة للمشاريع التقنية.",
-    icon: <Palette size={24} />,
+    icon: <DraftingCompass size={28} strokeWidth={1.5} />,
      color: "#D4D4D8",
     details: "نصمم تجارب رقمية وهويات بصرية تدمج بين الأصالة والتعبير العصر الحديث، لخدمة المشاريع البحثية والتقنية.",
   },
@@ -43,7 +43,7 @@ const DEPARTMENTS: Dept[] = [
     id: "04",
     title: "المحتوى والألعاب",
     desc: "إنتاج محتوى تحليلي تحريري وأعمال رقمية تعليمية.",
-    icon: <Gamepad2 size={24} />,
+    icon: <Gamepad2 size={28} strokeWidth={1.5} />,
      color: "#A1A1AA",
     details: "نصنع محتوى معرفياً رزيناً وألعاباً تفاعلية تعليمية تنقل المفاهيم المعقدة بسلاسة ومتعة.",
   },
@@ -88,7 +88,7 @@ export default function Scene2Wisdom() {
       {/* Background House of Wisdom Image with Theme Gradient */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <Image
-          src="/wisdom-bg.png"
+          src="/wisdom-bg-new.png"
           alt="بيت الحكمة — House of Wisdom"
           fill
           priority
@@ -103,8 +103,8 @@ export default function Scene2Wisdom() {
       <div className="relative z-10 max-w-5xl w-full flex flex-col items-center gap-10 text-center">
         {/* Section Header */}
         <div>
-          <span className="text-xs font-mono text-[var(--gold)] tracking-widest uppercase">
-            بيت الحكمة · Round City of Baghdad
+          <span className="text-xs font-mono text-white/50 tracking-widest uppercase">
+            ROUND CITY OF BAGHDAD · جولة في بيت الحكمة
           </span>
           <h2 className="text-3xl md:text-5xl font-bold font-kufi text-white mt-2">
             الأقسام التخصصية الأربعة
@@ -116,26 +116,12 @@ export default function Scene2Wisdom() {
 
         {/* 2D Round City Diagram */}
         <div className="relative w-full max-w-[340px] sm:max-w-xl lg:max-w-[640px] aspect-square flex items-center justify-center my-8">
-          {/* Rotating Ring Text */}
-          <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full animate-[spin_60s_linear_infinite] pointer-events-none opacity-30">
-            <path
-              id="circlePath"
-              d="M 200, 200 m -150, 0 a 150,150 0 1,1 300,0 a 150,150 0 1,1 -300,0"
-              fill="none"
-            />
-            <text fill="var(--gold)" fontSize="11" fontFamily="var(--font-mono)">
-              <textPath href="#circlePath" startOffset="0%">
-                • العلم • البرمجة • التصميم • المحتوى • أبحاث • ابتكار • هوية • ألعاب
-              </textPath>
-            </text>
-          </svg>
 
           {/* Center Hub */}
-          <div className="absolute w-24 h-24 rounded-full border border-[var(--gold-dim)] bg-black/80 backdrop-blur flex flex-col items-center justify-center z-20 shadow-[0_0_30px_rgba(255,255,255,0.15)]">
-            <span className="text-xs font-mono text-[var(--gold)]">jemo</span>
-            <span className="text-[10px] text-white/60">hub</span>
+          <div className="absolute w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-white/5 bg-[#0a0a0a] flex flex-col items-center justify-center z-20 shadow-2xl">
+            <span className="text-[10px] sm:text-xs font-mono text-white">jemo</span>
+            <span className="text-[8px] sm:text-[10px] text-white/50">hub</span>
           </div>
-
           {/* 4 Quadrants */}
           <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full h-full p-2 sm:p-6">
             {DEPARTMENTS.map((dept, idx) => {
@@ -162,13 +148,16 @@ export default function Scene2Wisdom() {
                     borderColor: isHovered ? dept.color : "rgba(255,255,255,0.08)",
                   } as React.CSSProperties}
                 >
-                  <div className="flex flex-col flex-grow justify-center w-full mt-1 sm:mt-2">
+                  <div className="flex flex-col items-center text-center justify-center w-full h-full">
+                    <div className="iconBox mb-4">
+                      {dept.icon}
+                    </div>
                     <h3 className="cardTitle font-kufi leading-snug">{dept.title}</h3>
-                    <p className="cardSubtitle mt-1 hidden sm:line-clamp-2">{dept.desc}</p>
-                  </div>
-                  <div className="linkMore mt-3 w-full">
-                    <span>تفاصيل أكثر</span>
-                    <ArrowUpLeft className="h-3.5 w-3.5" />
+                    <p className="cardSubtitle mt-2 hidden sm:line-clamp-2 max-w-[90%]">{dept.desc}</p>
+                    <div className="linkMore mt-4">
+                      <span>تفاصيل أكثر</span>
+                      <ArrowUpLeft className="h-3.5 w-3.5" />
+                    </div>
                   </div>
                 </button>
               );

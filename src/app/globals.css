@@ -229,28 +229,6 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   position: relative;
   z-index: 1;
 }
-.btn--glow::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.15) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-.btn--glow:hover {
-  --btn-bg: #ffffff;
-  transform: translateY(-3px);
-  box-shadow: 0 0 40px rgba(255, 255, 255, 0.2),
-              0 0 80px rgba(255, 255, 255, 0.05),
-              0 12px 30px rgba(0, 0, 0, 0.6);
-}
-.btn--glow:hover::after {
-  opacity: 1;
-}
 .btn--glow:active {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.15),
@@ -575,18 +553,12 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   display: flex;
   justify-content: center;
   align-items: center;
-  width: clamp(36px, 10vw, 44px);
-  height: clamp(36px, 10vw, 44px);
-  border-radius: clamp(8px, 2vw, 10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  color: var(--gold, #E5C07B);
   transition: all 0.5s ease;
 }
 
 .sweeperCard:hover .iconBox {
-  background: #000000;
-  color: #ffffff;
-  border-color: #000000;
+  color: #000000;
 }
 
 .sweeperCard .cardTitle {
