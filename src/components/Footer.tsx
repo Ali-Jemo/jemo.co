@@ -1,14 +1,61 @@
+import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="py-12 border-t border-white/10 mt-12 text-center text-grey text-sm">
-      <div className="flex gap-6 justify-center mb-6">
-        <a href="#" className="hover:text-olive transition-colors">انستغرام</a>
-        <a href="#" className="hover:text-olive transition-colors">تويتر</a>
-        <a href="#" className="hover:text-olive transition-colors">تيكتوك</a>
-        <a href="#" className="hover:text-olive transition-colors">ديسكورد</a>
+     <footer style={{ background: "linear-gradient(180deg, #050505 0%, #000000 100%)", color: "var(--ink)" }}>
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-right">
+          <div className="sm:col-span-1">
+            <Link href="/" className="inline-block mb-3">
+              <div className="text-2xl font-bold font-kufi">
+                <span className="text-gradient">jemo</span>{" "}
+                <span className="font-mono text-white/80">labs</span>
+              </div>
+            </Link>
+            <p className="text-xs leading-relaxed font-light text-white/70">
+              مؤسسة بحثية وتقنية غير ربحية تابعة لـ LXD Co. نجمع العقول المبدعة ونبني الأبحاث والمنصات المفتوحة.
+            </p>
+          </div>
+
+          <div>
+            <div className="text-xs font-bold mb-3 tracking-wide text-white font-heading">الأقسام التخصصية</div>
+            <ul className="space-y-2 text-xs text-white/65">
+              <li><Link href="/apply" className="hover:text-[var(--accent)] transition-colors">الأبحاث العلمية</Link></li>
+              <li><Link href="/apply" className="hover:text-[var(--accent)] transition-colors">التقنية والبرمجة</Link></li>
+              <li><Link href="/apply" className="hover:text-[var(--accent)] transition-colors">التصميم والهوية</Link></li>
+              <li><Link href="/apply" className="hover:text-[var(--accent)] transition-colors">المحتوى والألعاب</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <div className="text-xs font-bold mb-3 tracking-wide text-white font-heading">المنظومة</div>
+            <ul className="space-y-2 text-xs text-white/65">
+              <li><Link href="/gallery" className="hover:text-[var(--accent)] transition-colors">معرض الأعمال</Link></li>
+              <li><Link href="/applications" className="hover:text-[var(--accent)] transition-colors">سجل القبولات الشفاف</Link></li>
+              <li><Link href="/apply" className="hover:text-[var(--accent)] transition-colors">تقديم طلب جديد</Link></li>
+              <li><a href="/#faq" className="hover:text-[var(--accent)] transition-colors">الأسئلة الشائعة</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <div className="text-xs font-bold mb-3 tracking-wide text-white font-heading">التواصل والقنوات</div>
+            <ul className="space-y-2 text-xs text-white/65">
+              <li><Link href="https://t.me/jemo_channel" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--accent)] transition-colors">قناة التليجرام الرسمية</Link></li>
+              <li><Link href="#" className="hover:text-[var(--accent)] transition-colors">قناة يوتيوب</Link></li>
+              <li><Link href="https://lxds.org" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--accent)] transition-colors">LXD Co. الرئيسي</Link></li>
+            </ul>
+          </div>
+        </div>
+
+         <div className="py-6 border-t flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/60" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          <p>© 2026 jemo labs · جميع الحقوق محفوظة.</p>
+          <div className="flex gap-4 text-[11px]">
+            <Link href="/" className="hover:text-[var(--accent)] transition-colors">الشروط والأحكام</Link>
+            <span aria-hidden="true">•</span>
+            <Link href="/" className="hover:text-[var(--accent)] transition-colors">الخصوصية والشفافية</Link>
+          </div>
+        </div>
       </div>
-      <p>&copy; 2026 jemo group. جميع الحقوق محفوظة.</p>
     </footer>
   );
 }

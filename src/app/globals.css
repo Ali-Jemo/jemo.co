@@ -211,65 +211,76 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 
-/* Galaxy Nebula Button */
+/* CTA Glow Button */
 .btn.btn--glow {
-  --btn-bg: #0c0c14;
-  --btn-fg: #ffffff;
+  --btn-bg: #f0f0f0;
+  --btn-fg: #0a0a0a;
   --btn-bd: transparent;
   position: relative;
-  isolation: isolate;
+  overflow: hidden;
   border: none;
-  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 0.5em 1.5em -0.5em rgba(133, 83, 244, 0.4);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.1),
+              0 4px 16px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn--glow > * {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 .btn--glow::before {
   content: "";
   position: absolute;
-  inset: -4px;
-  z-index: 0;
-  background: conic-gradient(
-    from 0deg,
-    #0c0c14 0deg,
-    #8553f4 60deg,
-    #3b82f6 120deg,
-    #0c0c14 180deg,
-    #f43f5e 240deg,
-    #8553f4 300deg,
-    #0c0c14 360deg
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.95) 45%,
+    rgba(255, 255, 255, 0.95) 55%,
+    transparent 100%
   );
-  border-radius: 12px;
-  animation: btn-moving 4s linear infinite;
-  filter: blur(8px);
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+  transform: translateX(-100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn--glow::after {
   content: "";
   position: absolute;
-  inset: 2px;
-  z-index: 1;
-  background: #0c0c14;
-  border-radius: 6px;
-  pointer-events: none;
-}
-.btn--glow:hover::before {
-  opacity: 1;
-  animation-duration: 2s;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  border-radius: 0 0 2px 2px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 .btn--glow:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(133, 83, 244, 0.5),
-              0 10px 30px rgba(0, 0, 0, 0.8);
+  --btn-bg: #ffffff;
+  transform: translateY(-3px);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.2),
+              0 0 80px rgba(255, 255, 255, 0.05),
+              0 12px 30px rgba(0, 0, 0, 0.6);
 }
-
-@keyframes btn-moving {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.btn--glow:hover::before {
+  transform: translateX(100%);
+}
+.btn--glow:hover::after {
+  opacity: 1;
+}
+.btn--glow:active {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15),
+              0 4px 12px rgba(0, 0, 0, 0.5);
 }
  
  .btn--primary {
