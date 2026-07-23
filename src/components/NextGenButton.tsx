@@ -1,14 +1,16 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useMotionTemplate } from "framer-motion";
 import { ArrowUpLeft, Sparkles } from "lucide-react";
 
 const CHARS = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي١٢٣٤٥٦٧٨٩٠";
 
 export default function NextGenButton() {
   const ref = useRef<HTMLAnchorElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
   const [isHovered, setIsHovered] = useState(false);
   const [displayText, setDisplayText] = useState("قدّم الآن");
   const [particles, setParticles] = useState<{ id: number; x: number; y: number }[]>([]);
@@ -19,10 +21,13 @@ export default function NextGenButton() {
     const rect = ref.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setMousePos({ x, y });
+    
+    // Update Framer Motion values (Zero React re-renders)
+    mouseX.set(x);
+    mouseY.set(y);
 
     // Spawn a particle occasionally on move
-    if (Math.random() > 0.7) {
+    if (Math.random() > 0.85) {
       const id = particleIdCounter.current++;
       setParticles((prev) => [...prev, { id, x, y }]);
       setTimeout(() => {
@@ -38,7 +43,7 @@ export default function NextGenButton() {
       setDisplayText(
         target
           .split("")
-          .map((letter, index) => {
+          .map((_, index) => {
             if (index < iteration) return target[index];
             return CHARS[Math.floor(Math.random() * CHARS.length)];
           })
@@ -67,18 +72,18 @@ export default function NextGenButton() {
       whileTap={{ scale: 0.98 }}
       className="relative overflow-hidden inline-flex items-center justify-center gap-4 px-12 py-5 rounded-2xl bg-[#020617] border border-[var(--line)] group shadow-2xl"
     >
-      {/* The Flashlight Reveal */}
+      {/* Hardware Accelerated Flashlight Reveal */}
       <motion.div
-        className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-300"
-        animate={{
+        className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-300 transform-gpu"
+        style={{
           opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(120px circle at ${mousePos.x}px ${mousePos.y}px, rgba(14, 165, 233, 0.4), transparent 100%)`,
+          background: useMotionTemplate`radial-gradient(120px circle at ${mouseX}px ${mouseY}px, rgba(14, 165, 233, 0.4), transparent 100%)`,
         }}
       />
 
       {/* Hidden Technical Grid (Only visible under flashlight) */}
       <div 
-        className="absolute inset-0 z-0 opacity-30 mix-blend-overlay pointer-events-none transition-opacity duration-500"
+        className="absolute inset-0 z-0 opacity-30 mix-blend-overlay pointer-events-none transition-opacity duration-500 transform-gpu"
         style={{ 
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', 
           backgroundSize: '12px 12px',

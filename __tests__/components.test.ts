@@ -1,6 +1,11 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+}));
 import { renderToStaticMarkup } from "react-dom/server";
 import React from "react";
+import Header from "../src/components/Header";
 import Button from "../src/components/ui/Button";
 import Card from "../src/components/ui/Card";
 import Badge from "../src/components/ui/Badge";
@@ -48,6 +53,11 @@ describe("Institutional UI Components", () => {
     );
     expect(html).toContain("acc-item");
     expect(html).toContain("سؤال 1");
+  });
+  it("renders Header component with backdrop blur styling", () => {
+    const html = renderToStaticMarkup(React.createElement(Header));
+    expect(html).toContain("jemo");
+    expect(html).toContain("backdrop");
   });
 
 });

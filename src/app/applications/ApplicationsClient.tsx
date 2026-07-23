@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   Search, X, Clock, User, Layers, Info, ShieldCheck, ExternalLink,
   Send, Users, FileCheck, Hourglass, XCircle, CheckCircle2,
@@ -102,21 +102,24 @@ export default function ApplicationsClient() {
   }, [fetchApps]);
 
   
-  const filteredApps = apps.filter((app) => {
-    const matchesSearch =
-      (app.name?.toLowerCase() || "").includes(search.toLowerCase()) ||
-      (app.section?.toLowerCase() || "").includes(search.toLowerCase()) ||
-      (app.experience?.toLowerCase() || "").includes(search.toLowerCase());
-    const matchesStatus = selectedStatus === "all" || app.status === selectedStatus;
-    return matchesSearch && matchesStatus;
-  });
+  const filteredApps = useMemo(() => {
+    const searchLower = search.toLowerCase();
+    return apps.filter((app) => {
+      const matchesSearch =
+        (app.name?.toLowerCase() || "").includes(searchLower) ||
+        (app.section?.toLowerCase() || "").includes(searchLower) ||
+        (app.experience?.toLowerCase() || "").includes(searchLower);
+      const matchesStatus = selectedStatus === "all" || app.status === selectedStatus;
+      return matchesSearch && matchesStatus;
+    });
+  }, [apps, search, selectedStatus]);
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: apps.length,
     pending: apps.filter((a) => a.status === "pending").length,
     accepted: apps.filter((a) => a.status === "accepted").length,
     rejected: apps.filter((a) => a.status === "rejected").length,
-  };
+  }), [apps]);
 
   return (
     <div className="w-full relative bg-[var(--bg)] min-h-screen pb-32 font-kufi selection:bg-[var(--surface-2)] selection:text-[var(--ink)]">

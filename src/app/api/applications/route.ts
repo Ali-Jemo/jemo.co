@@ -1,4 +1,4 @@
-import { supabaseClient } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase";
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "بريد إلكتروني غير صالح" }, { status: 400 });
     }
 
-    const db = supabaseClient();
+    const db = supabaseAdmin();
 
     // Insert
     const insertPayload: Record<string, unknown> = {

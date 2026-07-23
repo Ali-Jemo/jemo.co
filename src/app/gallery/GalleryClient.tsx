@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   BookOpen, BarChart2, FlaskConical, Video, Tv,
   Palette, Terminal, Smartphone, FolderOpen,
@@ -209,25 +209,27 @@ export default function GalleryClient() {
     });
   }, { scope: containerRef });
 
-  const getItemCount = (catId: string) => {
+  const getItemCount = useCallback((catId: string) => {
     if (catId === "all") return ITEMS.length;
     return ITEMS.filter((item) => item.category === catId).length;
-  };
+  }, []);
 
-  const filteredItems = ITEMS.filter((item) => {
-    const matchesCat = selectedCat === "all" || item.category === selectedCat;
+  const filteredItems = useMemo(() => {
     const searchLower = search.trim().toLowerCase();
-    const matchesSearch =
-      !searchLower ||
-      item.title.toLowerCase().includes(searchLower) ||
-      item.meta.toLowerCase().includes(searchLower) ||
-      item.description.toLowerCase().includes(searchLower) ||
-      (item.tags && item.tags.some((tag) => tag.toLowerCase().includes(searchLower)));
-    return matchesCat && matchesSearch;
-  }).sort((a, b) => {
-    if (sortBy === "title") return a.title.localeCompare(b.title, "ar");
-    return 0;
-  });
+    return ITEMS.filter((item) => {
+      const matchesCat = selectedCat === "all" || item.category === selectedCat;
+      const matchesSearch =
+        !searchLower ||
+        item.title.toLowerCase().includes(searchLower) ||
+        item.meta.toLowerCase().includes(searchLower) ||
+        item.description.toLowerCase().includes(searchLower) ||
+        (item.tags && item.tags.some((tag) => tag.toLowerCase().includes(searchLower)));
+      return matchesCat && matchesSearch;
+    }).sort((a, b) => {
+      if (sortBy === "title") return a.title.localeCompare(b.title, "ar");
+      return 0;
+    });
+  }, [selectedCat, search, sortBy]);
 
   const handleTagClick = (e: React.MouseEvent, tag: string) => {
     e.stopPropagation();
@@ -491,7 +493,7 @@ export default function GalleryClient() {
             <AnimatePresence mode="popLayout">
               {filteredItems.map((item) => (
                 <motion.div
-                  layout
+                  layout="position"
                   initial={{ opacity: 0, scale: 0.93, y: 15 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.93, y: -15 }}

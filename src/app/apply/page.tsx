@@ -138,7 +138,7 @@ export default function ApplyPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <a
                 href="/applications"
-                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm bg-[var(--brand)] text-[var(--brand-ink)] shadow-md hover:opacity-90 transition-all"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm bg-[var(--brand)] !text-white shadow-md hover:opacity-90 transition-all"
               >
                 <span>متابعة حالة القبولات</span>
                 <ArrowUpLeft size={18} />

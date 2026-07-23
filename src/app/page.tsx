@@ -77,7 +77,7 @@ export default function Home() {
               className="w-full h-full object-cover object-center brightness-95 opacity-90 transition-opacity duration-500"
             />
             {/* Soft tint overlay to ensure contrast and seamless integration */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg)]/80 via-[var(--bg)]/35 to-[var(--bg)]/80 backdrop-blur-[1px]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg)]/85 via-[var(--bg)]/40 to-[var(--bg)]/85" />
           </div>
 
           <div className="container relative z-10">

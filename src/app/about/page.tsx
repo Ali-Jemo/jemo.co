@@ -50,7 +50,7 @@ export default function AboutPage() {
         <AnimatedSection className="section bg-[var(--bg)]" delay={0.1}>
           <div className="container max-w-5xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
-              <div className="sticky top-24">
+              <div className="relative md:sticky md:top-24">
                 <div className="badge mb-4">01 / The Core</div>
                 <h2 className="text-4xl md:text-5xl font-bold mb-6">فلسفة التفوق الجذري</h2>
                 <p className="text-lg text-[var(--ink-2)]">
