@@ -115,7 +115,7 @@ export default function Scene2Wisdom() {
         </div>
 
         {/* 2D Round City Diagram */}
-        <div className="relative w-full max-w-md aspect-square flex items-center justify-center my-4">
+        <div className="relative w-full max-w-[340px] sm:max-w-xl lg:max-w-[640px] aspect-square flex items-center justify-center my-8">
           {/* Rotating Ring Text */}
           <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full animate-[spin_60s_linear_infinite] pointer-events-none opacity-30">
             <path
@@ -163,17 +163,11 @@ export default function Scene2Wisdom() {
                     boxShadow: isHovered ? `0 0 28px ${dept.color}35` : undefined,
                   } as React.CSSProperties}
                 >
-                  <div className="flex items-center justify-between w-full mb-2">
-                    <span className="text-xs font-mono text-white/50">{dept.id}</span>
-                    <div className="iconBox">
-                      {dept.icon}
-                    </div>
-                  </div>
-                  <div className="my-1 md:my-2">
+                  <div className="flex flex-col flex-grow justify-center w-full mt-1 sm:mt-2">
                     <h3 className="cardTitle font-kufi leading-snug">{dept.title}</h3>
                     <p className="cardSubtitle mt-1 hidden sm:line-clamp-2">{dept.desc}</p>
                   </div>
-                  <div className="linkMore mt-2">
+                  <div className="linkMore mt-3 w-full">
                     <span>تفاصيل أكثر</span>
                     <ArrowUpLeft className="h-3.5 w-3.5" />
                   </div>
