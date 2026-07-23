@@ -457,10 +457,41 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .accordion { display: grid; gap: var(--s-3); max-width: 820px; margin-inline: auto; }
 
 .acc-item {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  overflow: hidden;
+  background: rgba(10, 10, 10, 0.45);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(229, 192, 123, 0.25);
+  border-radius: 16px;
+  position: relative;
+  transition: all 0.4s ease;
+}
+
+/* Corner metallic dots for a vintage instrument look */
+.acc-item::before,
+.acc-item::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(229, 192, 123, 0.6);
+  box-shadow: 0 0 4px rgba(229, 192, 123, 0.8);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.acc-item::before {
+  top: 6px;
+  right: 6px;
+}
+
+.acc-item::after {
+  bottom: 6px;
+  left: 6px;
+}
+
+.acc-item:hover {
+  background: rgba(10, 10, 10, 0.6);
+  border-color: rgba(229, 192, 123, 0.4);
 }
 
 .acc-trigger {
@@ -480,14 +511,33 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   text-align: start;
 }
 
+.acc-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(229, 192, 123, 0.3);
+  background: rgba(229, 192, 123, 0.05);
+  transition: all var(--dur) var(--ease);
+}
+
 .acc-icon {
   flex: none;
-  width: 22px; height: 22px;
-  color: var(--brand);
+  width: 18px; height: 18px;
+  color: #E5C07B;
   transition: transform var(--dur) var(--ease);
 }
 
-.acc-item[data-open="true"] .acc-icon { transform: rotate(45deg); }
+.acc-item[data-open="true"] .acc-icon { transform: rotate(45deg); color: #E5C07B; }
+.acc-item[data-open="true"] .acc-icon-wrapper { background: rgba(229, 192, 123, 0.15); border-color: rgba(229, 192, 123, 0.6); transform: rotate(90deg); }
+.acc-item[data-open="true"] {
+  background: radial-gradient(ellipse at center, rgba(229, 192, 123, 0.12) 0%, rgba(10, 10, 10, 0.65) 80%),
+              url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  background-blend-mode: overlay, normal;
+  border-color: rgba(229, 192, 123, 0.5);
+}
 
 .acc-panel {
   display: grid;
@@ -496,7 +546,7 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 }
 .acc-item[data-open="true"] .acc-panel { grid-template-rows: 1fr; }
 .acc-panel > div { overflow: hidden; }
-.acc-panel p { margin: 0; padding: 0 22px 20px; color: var(--ink-2); }
+.acc-panel p { margin: 0; padding: 0 22px 20px; color: rgba(255, 255, 255, 0.8); line-height: 1.8; }
 
 /* =========================================================
    COMPONENTS — TRUST BAR

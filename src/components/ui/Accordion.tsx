@@ -54,15 +54,17 @@ export default function Accordion({ items, searchTerm }: AccordionProps) {
               aria-expanded={open === i}
             >
               <span>{questionText}</span>
-              <svg
-                className="acc-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2.5}
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
+              <div className="acc-icon-wrapper">
+                <svg
+                  className="acc-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </div>
             </button>
             <div className="acc-panel" role="region">
               <div>
