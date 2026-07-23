@@ -211,14 +211,16 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 
-/* Animated Glow Button — Border Sweep Beam */
-.btn--glow {
+/* Galaxy Nebula Button */
+.btn.btn--glow {
+  --btn-bg: #0c0c14;
+  --btn-fg: #ffffff;
+  --btn-bd: transparent;
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0.5em 1.5em -0.5em rgba(133, 83, 244, 0.4);
 }
 .btn--glow > * {
   position: relative;
@@ -227,35 +229,41 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .btn--glow::before {
   content: "";
   position: absolute;
-  inset: -80%;
+  inset: -4px;
   z-index: 0;
   background: conic-gradient(
     from 0deg,
-    transparent 0deg,
-    transparent 290deg,
-    #ffffff 330deg,
-    transparent 360deg
+    #0c0c14 0deg,
+    #8553f4 60deg,
+    #3b82f6 120deg,
+    #0c0c14 180deg,
+    #f43f5e 240deg,
+    #8553f4 300deg,
+    #0c0c14 360deg
   );
-  animation: btn-moving 3s linear infinite;
-  opacity: 0;
+  border-radius: 12px;
+  animation: btn-moving 4s linear infinite;
+  filter: blur(8px);
+  opacity: 0.7;
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
 .btn--glow::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: 2px;
   z-index: 1;
-  background: var(--btn-bg, #0a0a0a);
+  background: #0c0c14;
   border-radius: 6px;
   pointer-events: none;
 }
 .btn--glow:hover::before {
   opacity: 1;
+  animation-duration: 2s;
 }
 .btn--glow:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2),
+  box-shadow: 0 0 20px rgba(133, 83, 244, 0.5),
               0 10px 30px rgba(0, 0, 0, 0.8);
 }
 
@@ -556,7 +564,7 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .sweeperCard::after {
   top: var(--sweep-y, 50%);
   left: var(--sweep-x, 50%);
-  transform: translate(var(--sweep-trans-x, -50%), var(--sweep-trans-y, -50%));
+  transform: translate(-50%, -50%);
   width: 120px;
   height: 120px;
   background: var(--sweeper-accent, rgba(255, 255, 255, 0.2));
@@ -575,7 +583,7 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   position: absolute;
   top: var(--sweep-y, 50%);
   left: var(--sweep-x, 50%);
-  transform: translate(var(--sweep-trans-x, -50%), var(--sweep-trans-y, -50%));
+  transform: translate(-50%, -50%);
   width: 0;
   height: 0;
   background: var(--sweeper-bg, #ffffff);

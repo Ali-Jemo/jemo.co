@@ -144,8 +144,6 @@ export default function Scene2Wisdom() {
 
               const sweepY = idx < 2 ? "0" : "100%";
               const sweepX = idx % 2 === 0 ? "100%" : "0";
-              const sweepTransY = idx < 2 ? "-50%" : "50%";
-              const sweepTransX = idx % 2 === 0 ? "50%" : "-50%";
 
               return (
                 <button
@@ -161,8 +159,6 @@ export default function Scene2Wisdom() {
                     "--sweeper-bg": dept.color,
                     "--sweep-y": sweepY,
                     "--sweep-x": sweepX,
-                    "--sweep-trans-y": sweepTransY,
-                    "--sweep-trans-x": sweepTransX,
                     borderColor: isHovered ? dept.color : "rgba(255,255,255,0.08)",
                     boxShadow: isHovered ? `0 0 28px ${dept.color}35` : undefined,
                   } as React.CSSProperties}
