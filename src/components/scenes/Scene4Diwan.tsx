@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Search } from "lucide-react";
+import Image from "next/image";
 import Accordion from "@/components/ui/Accordion";
 interface FAQ {
   q: string;
@@ -39,6 +40,20 @@ export default function Scene4Diwan() {
       className="w-full min-h-screen relative flex flex-col items-center justify-center py-20 px-6 overflow-hidden"
        style={{ background: "#0A0A0A" }}
     >
+      {/* Background Image */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        <Image
+          src="/faq-bg.png"
+          alt="Diwan Background"
+          fill
+          priority
+          className="object-cover opacity-60 filter brightness-90 contrast-105"
+        />
+        {/* Vignette Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-[#0A0A0A] opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-transparent to-[#0A0A0A] opacity-70" />
+      </div>
+
       <div className="relative z-10 max-w-3xl w-full flex flex-col items-center gap-8 text-center">
         {/* Section Header */}
         <div>
