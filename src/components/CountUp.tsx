@@ -3,14 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useInView, motion, useSpring, useMotionValue } from "framer-motion";
 
-interface CountUpProps {
-  value: number;
+export interface CountUpProps {
+  value?: number;
+  to?: number;
   suffix?: string;
   duration?: number;
   className?: string;
 }
 
-export default function CountUp({ value, suffix = "", duration = 2, className = "" }: CountUpProps) {
+export default function CountUp({ value, to, suffix = "", duration = 2, className = "" }: CountUpProps) {
+  const targetValue = to ?? value ?? 0;
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const motionVal = useMotionValue(0);
@@ -18,8 +20,8 @@ export default function CountUp({ value, suffix = "", duration = 2, className = 
   const [display, setDisplay] = useState("0" + suffix);
 
   useEffect(() => {
-    if (inView) motionVal.set(value);
-  }, [inView, value, motionVal]);
+    if (inView) motionVal.set(targetValue);
+  }, [inView, targetValue, motionVal]);
 
   useEffect(() => {
     const unsubscribe = spring.on("change", (v) => {

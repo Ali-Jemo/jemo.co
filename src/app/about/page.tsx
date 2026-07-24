@@ -2,164 +2,151 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
-import CountUp from "@/components/CountUp";
-import { ShieldCheck, Target, Users, Rocket, ArrowUpLeft } from "lucide-react";
-import GlowingBorder from "@/components/GlowingBorder";
-import MagneticCard from "@/components/MagneticCard";
-import AboutScrollProgress from "@/components/AboutScrollProgress";
-import StaggerReveal from "@/components/StaggerReveal";
-import NextGenButton from "@/components/NextGenButton";
-import AnimatedTimeline from "@/components/AnimatedTimeline";
-import DepartmentTabs from "@/components/DepartmentTabs";
-import InteractiveValues from "@/components/InteractiveValues";
-import AboutHeroTerminal from "@/components/AboutHeroTerminal";
+import SectionHeader from "@/components/ui/SectionHeader";
+import Card from "@/components/ui/Card";
+import { ABOUT_INFO } from "@/lib/data/research-data";
+import { ShieldCheck, Target, Users, Rocket, ArrowUpLeft, Compass, Lightbulb, Sparkles, BookOpen } from "lucide-react";
+import Link from "next/link";
+
 export const metadata: Metadata = {
-  title: "من نحن | Jemo Labs",
-  description: "ذراع LXD البحثي — فلسفة التفوق الجذري.",
+  title: "من نحن | JEMO LABS — بيت الحكمة الرقمي",
+  description: "لماذا أنشئت JEMO LABS؟ فلسفة البحث، الرسالة، الرؤية، والقيم المؤسسية.",
 };
 
 export default function AboutPage() {
   return (
     <>
       <Header />
-      <AboutScrollProgress />
       <main className="flex-1">
-        {/* HERO */}
+        {/* ABOUT HERO */}
         <AnimatedSection className="section bg-[var(--surface)] border-b border-[var(--line)] relative overflow-hidden">
-          {/* Floating decorative elements */}
-          <div className="absolute top-20 right-[10%] w-24 h-24 bg-[var(--brand)]/[0.04] rounded-full blur-xl pointer-events-none" />
-          <div className="absolute bottom-10 left-[5%] w-16 h-16 bg-[var(--brand)]/[0.03] rounded-full blur-lg pointer-events-none" />
-          <div className="container max-w-4xl text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--line)] bg-[var(--bg)] text-xs font-mono text-[var(--ink-2)] mb-8">
-              <span className="w-2 h-2 rounded-full bg-[var(--ok)] animate-pulse" />
-              <span>actively building since 2026</span>
+          <div className="container text-center max-w-4xl mx-auto py-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand)]/10 border border-[var(--brand)]/20 text-[var(--brand)] text-xs font-mono mb-4">
+              <Compass className="w-3.5 h-3.5" />
+              <span>عن المؤسسة ورسالتها الأكاديمية</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 uppercase">
-              Born in <br />
-              <span className="about-hero-gradient text-[var(--brand)] italic">Mesopotamia.</span><br />
-              Built for the world.
+            <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--ink-1)] mb-6 leading-tight">
+              بيت الحكمة الرقمي <br />
+              <span className="text-gradient">صرح البحث والسيادة المعرفية</span>
             </h1>
-            <p className="text-xl md:text-2xl text-[var(--ink-2)] leading-relaxed max-w-2xl mx-auto">
-              نحن لا نتبع الأثر. نحن نصنع الطريق. جهاز jemo البحثي هو القوة الضاربة والواجهة الابتكارية.
-            </p>
-            <AboutHeroTerminal />
+            <blockquote className="text-lg md:text-xl font-bold text-[var(--brand)] border-y border-[var(--line)] py-6 my-6 bg-[var(--bg)]/50 rounded-xl leading-relaxed">
+              "{ABOUT_INFO.coreQuote}"
+            </blockquote>
           </div>
         </AnimatedSection>
 
-        {/* PHILOSOPHY */}
-        <AnimatedSection className="section bg-[var(--bg)]" delay={0.1}>
-          <div className="container max-w-5xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start">
-              <div className="relative md:sticky md:top-24">
-                <div className="badge mb-4">01 / The Core</div>
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">فلسفة التفوق الجذري</h2>
-                <p className="text-lg text-[var(--ink-2)]">
-                  من أرض الحضارات الأولى، نستلهم روح البناء. لا نكتفي بتقليد الموجود، بل نهدم القديم لنبني معايير لا يمكن اللحاق بها.
-                </p>
+        {/* WHY CREATED & NAME MEANING */}
+        <AnimatedSection className="section bg-[var(--bg)] border-b border-[var(--line)]">
+          <div className="container grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="p-8">
+              <div className="w-10 h-10 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] flex items-center justify-center font-bold mb-4 font-mono">
+                01
               </div>
-              <div className="flex flex-col gap-8">
-                {[
-                  { icon: ShieldCheck, title: "سيادة تقنية", desc: "نرفض التبعية التقنية. نبني أنظمتنا، ندير خوادمنا، ونمتلك شفرتنا." },
-                  { icon: Target, title: "عمق لا قشور", desc: "لا نبحث عن تريندات مؤقتة. أبحاثنا تبدأ من الصفر وتنتهي بحلول جذرية." },
-                  { icon: Users, title: "نخبة متحالفة", desc: "جيمو ليست ساحة تدريب مفتوحة، بل تحالف للمتفوقين الذين يرفضون المتوسط." },
-                ].map((item, i) => (
-                  <MagneticCard key={i}>
-                    <GlowingBorder>
-                      <div className="p-6">
-                        <div className="w-12 h-12 rounded-lg bg-[var(--surface-2)] flex items-center justify-center text-[var(--brand)] mb-6">
-                          <item.icon size={24} />
-                        </div>
-                        <h3 className="text-2xl font-bold mb-3">{item.title}</h3>
-                        <p className="text-[var(--ink-2)] leading-relaxed m-0">{item.desc}</p>
-                      </div>
-                    </GlowingBorder>
-                  </MagneticCard>
-                ))}
+              <h2 className="text-2xl font-bold text-[var(--ink-1)] mb-4">لماذا أنشئت JEMO LABS؟</h2>
+              <p className="text-[var(--ink-2)] leading-relaxed text-sm md:text-base">
+                {ABOUT_INFO.whyCreated}
+              </p>
+            </Card>
+
+            <Card className="p-8">
+              <div className="w-10 h-10 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] flex items-center justify-center font-bold mb-4 font-mono">
+                02
               </div>
-            </div>
+              <h2 className="text-2xl font-bold text-[var(--ink-1)] mb-4">ماذا يعني الاسم؟</h2>
+              <p className="text-[var(--ink-2)] leading-relaxed text-sm md:text-base">
+                {ABOUT_INFO.nameMeaning}
+              </p>
+            </Card>
           </div>
         </AnimatedSection>
 
-        {/* METRICS */}
-        <AnimatedSection className="section bg-[var(--surface)] border-t border-[var(--line)] overflow-hidden" delay={0.2}>
-          <div className="container max-w-4xl text-center">
-            <div className="badge mb-4">Numbers</div>
-            <h2 className="text-3xl font-bold mb-12">أرقام وحقائق</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[
-                { value: 4, suffix: "", label: "أقسام تخصصية", icon: "◆" },
-                { value: 12, suffix: "+", label: "مشروع مفتوح المصدر", icon: "◇" },
-                { value: 100, suffix: "%", label: "استقلالية تقنية", icon: "○" },
-                { value: 2026, suffix: "", label: "عام التأسيس", icon: "△" },
-              ].map((stat, i) => (
-                <div key={i} className="about-stat-card p-6 rounded-2xl bg-[var(--bg)] border border-[var(--line)] cursor-default">
-                  <div className="text-[var(--brand)]/20 text-lg mb-3">{stat.icon}</div>
-                  <div className="stat-value text-4xl md:text-5xl font-mono font-bold text-[var(--brand)] mb-2">
-                    <CountUp value={stat.value} suffix={stat.suffix} />
-                  </div>
-                  <div className="text-sm font-medium uppercase tracking-wider text-[var(--ink-2)]">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </AnimatedSection>
-        {/* DEPARTMENTS */}
-        <AnimatedSection className="section bg-[var(--bg)] about-grid-bg overflow-hidden" delay={0.1}>
-          <div className="container max-w-5xl">
-            <div className="flex flex-col items-center text-center mb-16">
-              <div className="badge mb-4">02 / Departments</div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">أقسامنا الأربعة</h2>
-              <p className="text-lg text-[var(--ink-2)] max-w-2xl mx-auto">
-                كل قسم يعمل باستقلالية تامة لكن جميعها تتبع فلسفة واحدة: التفوق الجذري.
+        {/* MISSION & VISION */}
+        <AnimatedSection className="section bg-[var(--surface)] border-b border-[var(--line)]">
+          <div className="container grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="p-8 rounded-2xl bg-[var(--bg)] border border-[var(--line)] space-y-4">
+              <div className="flex items-center gap-3 text-[var(--brand)] font-bold text-xl">
+                <Target className="w-6 h-6" />
+                <h3>الرسالة (Mission)</h3>
+              </div>
+              <p className="text-[var(--ink-2)] leading-relaxed">
+                {ABOUT_INFO.mission}
               </p>
             </div>
-            <DepartmentTabs />
+
+            <div className="p-8 rounded-2xl bg-[var(--bg)] border border-[var(--line)] space-y-4">
+              <div className="flex items-center gap-3 text-[var(--brand)] font-bold text-xl">
+                <Sparkles className="w-6 h-6" />
+                <h3>الرؤية (Vision)</h3>
+              </div>
+              <p className="text-[var(--ink-2)] leading-relaxed">
+                {ABOUT_INFO.vision}
+              </p>
+            </div>
           </div>
         </AnimatedSection>
 
-        {/* VISION */}
-        <AnimatedSection className="section bg-[var(--surface)] border-t border-[var(--line)] about-gradient-border overflow-hidden" delay={0.1}>
-          <div className="container max-w-5xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-              <div className="flex flex-col gap-6">
-                <div className="badge mb-2 w-fit">03 / Vision</div>
-                <h2 className="text-4xl md:text-5xl font-bold">رؤيتنا لـ 2030</h2>
-                <p className="text-lg text-[var(--ink-2)] leading-relaxed">
-                  نرى مستقبلاً تكون فيه المنطقة العربية مصدراً للابتكار التقني لا مستهلكاً له. نعمل الآن لبناء الأساس الذي ستقف عليه الأجيال القادمة.
-                </p>
+        {/* RESEARCH PHILOSOPHY */}
+        <AnimatedSection className="section bg-[var(--bg)] border-b border-[var(--line)]">
+          <div className="container max-w-4xl mx-auto">
+            <Card className="p-8 md:p-12 border-2 border-[var(--brand)]/30 relative">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-xs font-mono mb-4">
+                <BookOpen className="w-4 h-4" />
+                <span>فلسفة البحث العلمي في JEMO LABS</span>
               </div>
-              <div className="w-full flex items-center justify-center">
-                <AnimatedTimeline />
+              <h2 className="text-3xl font-bold text-[var(--ink-1)] mb-6">البحث من المبادئ الأولى (First Principles)</h2>
+              <p className="text-[var(--ink-2)] leading-relaxed text-base md:text-lg mb-6">
+                {ABOUT_INFO.researchPhilosophy}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono text-[var(--ink-2)]">
+                <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--line)]">
+                  ✓ لا شروط على النشر المعرفي
+                </div>
+                <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--line)]">
+                  ✓ شفافية كاملة في الكود والبيانات
+                </div>
               </div>
-            </div>
+            </Card>
           </div>
         </AnimatedSection>
 
         {/* VALUES */}
-        <AnimatedSection className="section bg-[var(--bg)] about-grid-bg overflow-hidden" delay={0.1}>
-          <div className="container max-w-5xl">
-            <div className="flex flex-col items-center text-center mb-16">
-              <div className="badge mb-4">04 / Values</div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">القيم التي نعيشها</h2>
+        <AnimatedSection className="section bg-[var(--surface)] border-b border-[var(--line)]">
+          <div className="container">
+            <SectionHeader
+              eyebrow="قيم المؤسسة"
+              title="القيم التي تحكم أبحاثنا ومختبراتنا"
+              description="مبادئ ثابته تضمن النزاهة العلمية والاستقلالية المعرفية."
+              center
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+              {ABOUT_INFO.values.map((v, i) => (
+                <Card key={v.title} hover className="p-6">
+                  <div className="w-8 h-8 rounded-lg bg-[var(--brand)]/10 text-[var(--brand)] font-mono font-bold flex items-center justify-center mb-4">
+                    0{i + 1}
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-[var(--ink-1)]">{v.title}</h3>
+                  <p className="text-xs text-[var(--ink-2)] leading-relaxed">{v.desc}</p>
+                </Card>
+              ))}
             </div>
-            <InteractiveValues />
           </div>
         </AnimatedSection>
 
         {/* CTA */}
-        <AnimatedSection className="section bg-[var(--surface)] border-t border-[var(--line)] relative overflow-hidden" delay={0.2}>
-          <div className="absolute top-10 left-[10%] w-20 h-20 bg-[var(--brand)]/[0.04] rounded-full blur-lg pointer-events-none" />
-          <div className="absolute bottom-10 right-[10%] w-16 h-16 bg-[var(--brand)]/[0.03] rounded-full blur-lg pointer-events-none" />
-          <div className="absolute inset-0 about-dots pointer-events-none" />
-          <div className="container max-w-3xl mx-auto flex flex-col items-center justify-center text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--brand)]/20 bg-[var(--brand)]/5 text-xs font-mono text-[var(--brand)] mb-8 about-pulse-ring">
-              <span>open for applications</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">انضم إلى التحالف</h2>
-            <p className="text-lg text-[var(--ink-2)] mb-10 max-w-xl mx-auto leading-relaxed">
-              لا نقدم وظائف. نبني تحالفاً. إذا كنت ترى أن المستوى المعتاد لا يكفي، فقد تكون أنت من نبحث عنه.
+        <AnimatedSection className="section bg-[var(--bg)] text-center">
+          <div className="container max-w-2xl mx-auto space-y-6">
+            <h2 className="text-3xl font-bold text-[var(--ink-1)]">هل ترغب بالانضمام أو المساهمة في الأبحاث؟</h2>
+            <p className="text-[var(--ink-2)] text-sm">
+              نرحب بالباحثين، المطورين، والمصممين الراغبين بالمساهمة في بناء بيت الحكمة الرقمي.
             </p>
-            <NextGenButton />
+            <div className="flex justify-center gap-4 pt-2">
+              <Link href="/join">
+                <button className="px-6 py-3 rounded-full bg-[var(--brand)] text-white font-bold text-sm shadow-md hover:opacity-90 transition-all flex items-center gap-2">
+                  <span>قدم طلب انضمام</span>
+                  <ArrowUpLeft className="w-4 h-4" />
+                </button>
+              </Link>
+            </div>
           </div>
         </AnimatedSection>
       </main>

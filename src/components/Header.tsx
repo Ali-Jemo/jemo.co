@@ -7,10 +7,14 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_ITEMS = [
-  { href: "/", label: "الرئيسية" },
+  { href: "/", label: "المعرفة" },
+  { href: "/research", label: "الأبحاث" },
+  { href: "/projects", label: "المشاريع" },
+  { href: "/labs", label: "المختبرات" },
+  { href: "/researchers", label: "الباحثون" },
+  { href: "/initiatives", label: "المبادرات" },
+  { href: "/transparency", label: "الشفافية" },
   { href: "/about", label: "من نحن" },
-  { href: "/gallery", label: "الأعمال" },
-  { href: "/applications", label: "القبولات" },
 ];
 
 export default function Header() {
@@ -22,7 +26,7 @@ export default function Header() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="sticky top-0 z-50 w-full border-b border-[var(--line)] bg-[var(--bg)]/95 shadow-xs"
+      className="sticky top-0 z-50 w-full border-b border-[var(--line)] bg-[var(--bg)]/95 backdrop-blur-md shadow-xs"
     >
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
@@ -31,7 +35,6 @@ export default function Header() {
           <span className="text-[var(--brand)] group-hover:underline">jemo</span>
           <span className="text-[var(--ink)]">labs</span>
         </Link>
-
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-2">
           {NAV_ITEMS.map((item) => {
@@ -40,8 +43,8 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative px-4 py-2 text-sm font-semibold rounded-full transition-colors duration-200 ${
-                  isActive ? "text-[var(--brand)]" : "text-[var(--ink-2)] hover:text-[var(--ink)]"
+                className={`relative px-3 py-1.5 text-xs font-semibold rounded-full transition-colors duration-200 ${
+                  isActive ? "text-[var(--brand)] font-bold" : "text-[var(--ink-2)] hover:text-[var(--ink)]"
                 }`}
               >
                 {isActive && (
@@ -56,10 +59,10 @@ export default function Header() {
             );
           })}
           <Link
-            href="/apply"
-            className="header-join-btn inline-flex items-center gap-1.5 px-5 py-2 text-xs font-mono font-bold rounded-full bg-[var(--brand)] shadow-md hover:opacity-90 transition-all ms-3"
+            href="/join"
+            className="header-join-btn inline-flex items-center gap-1.5 px-4 py-2 text-xs font-mono font-bold rounded-full bg-[var(--brand)] shadow-md hover:opacity-90 transition-all ms-2"
           >
-            <span>Join</span>
+            <span>انضم إلينا</span>
             <ArrowUpLeft size={14} />
           </Link>
         </nav>

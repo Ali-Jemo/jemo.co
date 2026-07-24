@@ -2,159 +2,321 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Microscope, Code2, Palette, Gamepad2, FileText, ClipboardCheck, MessageSquareCode, Signature } from "lucide-react";
+import LivingMuseumTimeline from "@/components/LivingMuseumTimeline";
+import SectionHeader from "@/components/ui/SectionHeader";
+import Card from "@/components/ui/Card";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import CountUp from "@/components/CountUp";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import SpotlightCard from "@/components/SpotlightCard";
-import MagneticButton from "@/components/MagneticButton";
-import TechMarquee from "@/components/TechMarquee";
-import GradientText from "@/components/GradientText";
-import GlowButton from "@/components/GlowButton";
-
-const fadeIn = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: "easeOut" as const }
-};
-
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
-};
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
-};
+import {
+  INSTITUTION_STATS,
+  RESEARCH_PAPERS,
+  RESEARCH_PROJECTS,
+  INITIATIVES,
+  ABOUT_INFO,
+} from "@/lib/data/research-data";
+import {
+  BookOpen,
+  FolderGit2,
+  Users,
+  ArrowUpLeft,
+  Sparkles,
+  ChevronLeft,
+  ShieldCheck,
+  Atom,
+} from "lucide-react";
 
 export default function Home() {
   return (
     <>
       <Header />
       <main className="flex-1">
-        {/* HERO */}
-        <motion.section
-          {...fadeIn}
-          className="section border-b border-[var(--line)] bg-[var(--bg)] text-center relative overflow-hidden min-h-[85vh] flex items-center justify-center"
-        >
-          {/* Hero Background Photo */}
-          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-            <img
-              src="/hero-bg.png"
-              alt="Hero Background"
-              className="w-full h-full object-cover object-center opacity-85 dark:opacity-40 transition-opacity duration-500"
-            />
-            {/* Soft Top Fade for Header Nav readability */}
-            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[var(--bg)]/80 to-transparent" />
-            {/* Soft Bottom Fade for Section transition */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[var(--bg)] to-transparent" />
-          </div>
-          <div className="container max-w-4xl flex flex-col items-center relative z-10">
-            <div className="badge mb-6">LXD Research Branch</div>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-6">
-              نحن لا نبني برمجيات، <br className="hidden sm:inline" />
-              نبني <GradientText>المستقبل</GradientText>
-            </h1>
-            <p className="text-lg md:text-xl max-w-2xl mb-10 text-[var(--ink-2)]">
-              مؤسسة بحثية وتقنية غير ربحية تجمع العقول المبدعة لبناء أبحاث، أدوات، ومنصات مفتوحة المصدر.
-            </p>
-            <div className="flex gap-4">
-              <MagneticButton href="/about" className="btn px-8 py-3 text-base">
-                ادخل بيت الحكمة
-              </MagneticButton>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* TECH MARQUEE */}
-        <TechMarquee />
-
-        {/* DEPARTMENTS */}
-        <motion.section id="departments" {...fadeIn} className="section relative overflow-hidden py-24">
-          {/* Section Background Photo */}
-          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-            <img
-              src="/departments-bg.png"
-              alt="Departments Background"
-              className="w-full h-full object-cover object-center brightness-95 opacity-90 transition-opacity duration-500"
-            />
-            {/* Soft tint overlay to ensure contrast and seamless integration */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg)]/85 via-[var(--bg)]/40 to-[var(--bg)]/85" />
-          </div>
-
+        {/* INSTITUTIONAL KNOWLEDGE HERO */}
+        <section className="relative overflow-hidden py-20 md:py-28 bg-[var(--bg)] border-b border-[var(--line)]">
+          <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
           <div className="container relative z-10">
-            <motion.div variants={stagger} initial="hidden" animate="show" className="mb-12 text-center">
-              <motion.h2 variants={item} className="text-3xl md:text-4xl font-bold">الأقسام التخصصية الأربعة</motion.h2>
-              <motion.p variants={item} className="max-w-2xl mx-auto mt-4 font-medium">
-                منظومة متكاملة تنطلق من أركان معرفية تدمج بين البحث، البرمجة، التصميم، والإعلام الرقمي.
+            <div className="max-w-4xl mx-auto text-center space-y-6">
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--brand)]/10 border border-[var(--brand)]/20 text-[var(--brand)] text-xs font-mono"
+              >
+                <Atom className="w-4 h-4 animate-spin-slow" />
+                <span>بيت الحكمة الرقمي — JEMO LABS</span>
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-4xl md:text-6xl font-extrabold tracking-tight text-[var(--ink-1)] leading-tight"
+              >
+                المعرفة المفتوحة <br />
+                <span className="text-gradient">والأبحاث الرقمية السيادية</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-lg md:text-xl text-[var(--ink-2)] leading-relaxed max-w-3xl mx-auto"
+              >
+                {ABOUT_INFO.coreQuote}
               </motion.p>
-            </motion.div>
 
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              animate="show"
-              viewport={{ once: true, margin: "-100px" }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto"
-            >
-              {[
-                { icon: Microscope, title: "أبحاث علمية", desc: "تحليل بيانات، أوراق بحثية منشورة، ودراسات ميدانية." },
-                { icon: Code2, title: "ابتكار برمجي", desc: "بناء منصات ويب، بوتات، وأدوات أتمتة مفتوحة المصدر." },
-                { icon: Palette, title: "التصميم والهوية", desc: "تصميم واجهات وهوية بصرية متكاملة للمشاريع التقنية." },
-                { icon: Gamepad2, title: "المحتوى والألعاب", desc: "إنتاج محتوى تحليلي تحريري وأعمال رقمية تعليمية." },
-              ].map((dept, i) => (
-                <motion.div key={i} variants={item}>
-                  <SpotlightCard className="card flex items-start gap-4 bg-[var(--surface)] border border-[var(--line)] shadow-xs hover:border-[var(--brand)]/40 transition-all">
-                    <div className="p-3 bg-[var(--surface-2)] rounded-lg text-[var(--brand)]">
-                      <dept.icon size={24} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold mb-2">{dept.title}</h3>
-                      <p className="text-sm m-0 text-[var(--ink-2)]">{dept.desc}</p>
-                    </div>
-                  </SpotlightCard>
-                </motion.div>
-              ))}
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-wrap justify-center gap-4 pt-4"
+              >
+                <Link href="/research">
+                  <Button variant="primary" size="lg" className="gap-2">
+                    <BookOpen className="w-4 h-4" />
+                    <span>الأوراق البحثية</span>
+                  </Button>
+                </Link>
+                <Link href="/projects">
+                  <Button variant="outline" size="lg" className="gap-2">
+                    <FolderGit2 className="w-4 h-4" />
+                    <span>المشاريع المفتوحة</span>
+                  </Button>
+                </Link>
+                <Link href="/transparency">
+                  <Button variant="ghost" size="lg" className="gap-2">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>تقرير الشفافية</span>
+                  </Button>
+                </Link>
+              </motion.div>
+            </div>
           </div>
-        </motion.section>
+        </section>
 
-        {/* PROCESS */}
-        <motion.section id="process" {...fadeIn} className="section border-t border-[var(--line)] bg-[var(--surface)]">
-          <div className="container max-w-5xl">
-            <div className="mb-16 text-center">
-              <h2 className="text-3xl md:text-4xl">آلية التقديم والعمل</h2>
-              <p className="mt-4">مسار شفاف من أربع محطات ينقلك من فكرة التقديم إلى مشاركة الفريق.</p>
+        {/* INSTITUTION STATS */}
+        <section className="py-16 bg-[var(--surface)] border-b border-[var(--line)]">
+          <div className="container">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+              <div className="p-6 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
+                <div className="text-3xl md:text-4xl font-mono font-extrabold text-[var(--brand)] mb-1">
+                  <CountUp to={INSTITUTION_STATS.papers} />
+                </div>
+                <div className="text-xs text-[var(--ink-2)] font-bold">Research Papers</div>
+                <div className="text-xs text-[var(--ink-2)] font-sans mt-0.5">أوراق علمية محكمة</div>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
+                <div className="text-3xl md:text-4xl font-mono font-extrabold text-[var(--brand)] mb-1">
+                  <CountUp to={INSTITUTION_STATS.projects} />
+                </div>
+                <div className="text-xs text-[var(--ink-2)] font-bold">Open Projects</div>
+                <div className="text-xs text-[var(--ink-2)] font-sans mt-0.5">مشروعاً مفتوح المصدر</div>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
+                <div className="text-3xl md:text-4xl font-mono font-extrabold text-[var(--brand)] mb-1">
+                  <CountUp to={INSTITUTION_STATS.researchers} />
+                </div>
+                <div className="text-xs text-[var(--ink-2)] font-bold">Researchers</div>
+                <div className="text-xs text-[var(--ink-2)] font-sans mt-0.5">باحثاً وعالماً</div>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
+                <div className="text-3xl md:text-4xl font-mono font-extrabold text-[var(--brand)] mb-1">
+                  <CountUp to={INSTITUTION_STATS.fields} />
+                </div>
+                <div className="text-xs text-[var(--ink-2)] font-bold">Research Fields</div>
+                <div className="text-xs text-[var(--ink-2)] font-sans mt-0.5">مجالات بحثية متخصصة</div>
+              </div>
+
+              <div className="col-span-2 md:col-span-1 p-6 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
+                <div className="text-3xl md:text-4xl font-mono font-extrabold text-[var(--brand)] mb-1">
+                  {INSTITUTION_STATS.founded}
+                </div>
+                <div className="text-xs text-[var(--ink-2)] font-bold">Founded</div>
+                <div className="text-xs text-[var(--ink-2)] font-sans mt-0.5">سنة التأسيس</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* LATEST RESEARCH */}
+        <section className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
+          <div className="container">
+            <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
+              <SectionHeader
+                eyebrow="الأبحاث العلمية"
+                title="آخر الأوراق البحثية المنشورة"
+                description="مخرجات أكاديمية محكمة متاحة مجاناً بكافة بياناتها وشيفراتها للباحثين."
+              />
+              <Link
+                href="/research"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--brand)] hover:underline"
+              >
+                <span>استعرض كافة الأوراق ({RESEARCH_PAPERS.length})</span>
+                <ChevronLeft className="w-4 h-4" />
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {[
-                { icon: FileText, title: "1. طلب انضمام", desc: "تعبئة الاستمارة وتحديد القسم والمهارات." },
-                { icon: ClipboardCheck, title: "2. مراجعة وتقييم", desc: "دراسة طلبك من قيادة القسم المختص." },
-                { icon: MessageSquareCode, title: "3. مقابلة تقنية", desc: "جلسة نقاش لتبادل الأفكار وتحديد المسار." },
-                { icon: Signature, title: "4. التوقيع والمباشرة", desc: "إصدار الميثاق والبدء في المشاريع." },
-              ].map((step, i) => (
-                <SpotlightCard key={i} className="card text-center p-6">
-                  <div className="w-12 h-12 rounded-xl bg-[var(--surface-2)] text-[var(--brand)] flex items-center justify-center mx-auto mb-4">
-                    <step.icon size={24} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {RESEARCH_PAPERS.map((paper) => (
+                <Card key={paper.id} hover className="p-7 flex flex-col justify-between">
+                  <div>
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                      <Badge variant="info">{paper.field}</Badge>
+                      <span className="text-xs font-mono text-[var(--ink-2)]">{paper.publishDate}</span>
+                    </div>
+
+                    <h3 className="text-xl font-bold mb-3 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
+                      <Link href={`/research/${paper.slug}`}>{paper.title}</Link>
+                    </h3>
+
+                    <p className="text-xs font-mono text-[var(--brand)] mb-3 dir-ltr text-right">{paper.titleEn}</p>
+
+                    <p className="text-sm text-[var(--ink-2)] line-clamp-3 leading-relaxed mb-6">
+                      {paper.abstract}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-bold mb-2">{step.title}</h3>
-                  <p className="text-xs text-[var(--ink-2)]">{step.desc}</p>
-                </SpotlightCard>
+
+                  <div className="pt-4 border-t border-[var(--line)] flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-[var(--ink-2)]">
+                      <Users className="w-3.5 h-3.5 text-[var(--brand)]" />
+                      <span>{paper.authors.map((a) => a.name).join(" ، ")}</span>
+                    </div>
+                    <Link
+                      href={`/research/${paper.slug}`}
+                      className="inline-flex items-center gap-1 font-bold text-[var(--brand)] hover:underline"
+                    >
+                      <span>قراءة الورقة والبيانات</span>
+                      <ArrowUpLeft className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </Card>
               ))}
             </div>
           </div>
-        </motion.section>
+        </section>
 
-        {/* CTA */}
-        <motion.section id="cta" {...fadeIn} className="section bg-[var(--bg)] text-center relative overflow-hidden">
-          <div className="absolute inset-0 grid-bg opacity-50" />
-          <div className="container max-w-2xl relative z-10">
-            <h2 className="text-4xl mb-6">هل أنت جاهز للميثاق؟</h2>
-            <p className="text-lg text-[var(--ink-2)] mb-10">
-              انضم إلى نخبة من المبدعين والمهندسين والباحثين في رحلة بناء المستقبل الرقمي.
-            </p>
-            <GlowButton href="/apply">قدّم طلبك الآن</GlowButton>
+        {/* LATEST PROJECTS */}
+        <section className="py-20 bg-[var(--surface)] border-b border-[var(--line)]">
+          <div className="container">
+            <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
+              <SectionHeader
+                eyebrow="المشاريع التقنية"
+                title="أحدث مشاريع المختبرات"
+                description="منظومات برمجية ونوى تشغيلية مفتوحة المصدر طُورت في العراق."
+              />
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--brand)] hover:underline"
+              >
+                <span>كافة المشاريع ({RESEARCH_PROJECTS.length})</span>
+                <ChevronLeft className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {RESEARCH_PROJECTS.slice(0, 3).map((proj) => (
+                <Card key={proj.id} hover className="p-6 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-[var(--bg)] border border-[var(--line)] text-[var(--brand)]">
+                        {proj.status}
+                      </span>
+                      {proj.githubUrl && (
+                        <a
+                          href={proj.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors"
+                          title="GitHub Repository"
+                        >
+                          <FolderGit2 className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
+
+                    <h3 className="text-lg font-bold mb-2 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
+                      <Link href={`/projects/${proj.slug}`}>{proj.title}</Link>
+                    </h3>
+
+                    <p className="text-xs text-[var(--ink-2)] leading-relaxed mb-4">
+                      {proj.description}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {proj.techStack.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-2 py-0.5 rounded bg-[var(--bg)] border border-[var(--line)] text-[10px] font-mono text-[var(--ink-2)]"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    <Link
+                      href={`/projects/${proj.slug}`}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-[var(--brand)] hover:underline"
+                    >
+                      <span>تفاصيل المشروع</span>
+                      <ArrowUpLeft className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </div>
-        </motion.section>
+        </section>
+
+        {/* INITIATIVES SHOWCASE */}
+        <section className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
+          <div className="container">
+            <SectionHeader
+              eyebrow="المبادرات الحالية"
+              title="مبادرات JEMO LABS للتمكين المعرفي"
+              description="مبادرات استراتيجية طويلة المدى لبناء البنية التحتية العلمية وتأهيل الكوادر."
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+              {INITIATIVES.map((init) => (
+                <Card key={init.id} hover className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-mono text-[var(--brand)] font-bold">
+                      تقدم المبادرة: {init.progress}%
+                    </span>
+                    <Sparkles className="w-4 h-4 text-[var(--accent)]" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-[var(--ink-1)]">
+                    <Link href={`/initiatives/${init.slug}`}>{init.title}</Link>
+                  </h3>
+                  <p className="text-xs text-[var(--ink-2)] leading-relaxed mb-4">
+                    {init.description}
+                  </p>
+                  <div className="w-full bg-[var(--bg)] h-2 rounded-full overflow-hidden border border-[var(--line)] mb-4">
+                    <div
+                      className="bg-[var(--brand)] h-full rounded-full transition-all duration-500"
+                      style={{ width: `${init.progress}%` }}
+                    />
+                  </div>
+                  <div className="text-xs text-[var(--ink-2)] font-mono">
+                    مسؤول المبادرة: <span className="text-[var(--ink-1)] font-bold">{init.lead}</span>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* LIVING MUSEUM TIMELINE */}
+        <section className="py-24 bg-[var(--surface)] border-b border-[var(--line)]">
+          <div className="container">
+            <LivingMuseumTimeline showFull={false} />
+          </div>
+        </section>
       </main>
       <Footer />
     </>

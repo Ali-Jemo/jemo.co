@@ -58,7 +58,9 @@
   --bg:          #ffffff;
   --surface:     #f8fafc;
   --surface-2:   #f1f5f9;
+  --surface-hover: var(--surface-2);
   --ink:         #020617;
+  --ink-1:       var(--ink);
   --ink-2:       #475569;
   --line:        #e2e8f0;
   --brand:       #0ea5e9; /* Electric Cyan/Blue */
