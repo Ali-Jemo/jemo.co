@@ -13,6 +13,8 @@ const FEATURED_NEWS = [
     category: "نماذج سيادية",
     date: "٢٤ يوليو ٢٠٢٦",
     href: "/research",
+    theme: "emerald",
+    image: "/hero-bg.png"
   },
   {
     id: "news-2",
@@ -21,6 +23,8 @@ const FEATURED_NEWS = [
     category: "نواة تشغيلية",
     date: "١٨ يوليو ٢٠٢٦",
     href: "/labs",
+    theme: "blue",
+    image: "/hero-bg-rtl.png"
   },
   {
     id: "news-3",
@@ -29,6 +33,8 @@ const FEATURED_NEWS = [
     category: "بنية تحتية",
     date: "٠٥ يوليو ٢٠٢٦",
     href: "/infrastructure",
+    theme: "amber",
+    image: "/departments-bg.png"
   },
 ];
 
@@ -184,18 +190,16 @@ export default function HeroSection() {
             {/* Bottom Row: Slideshow Alt & News (approx 35% height) */}
             <motion.div 
               style={{ opacity: bottomSectionOpacity }}
-              className="h-[35vh] min-h-[300px] flex flex-col md:flex-row relative z-0"
+              className="h-[35vh] min-h-[300px] flex flex-row relative z-0"
             >
               
-              {/* Slideshow Alt Component (Left) */}
-              <div className="w-full md:w-1/2 h-full border-b md:border-b-0 md:border-l border-[var(--line)] p-6 md:p-8 bg-[var(--surface)] flex items-center justify-center">
-                <div className="w-full h-full rounded-2xl border border-[var(--line)] bg-[var(--bg)] flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group">
-                  {/* <BaghdadBabylonSlideshow /> */}
-                  <div className="absolute inset-0 bg-[var(--surface)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <Globe className="w-8 h-8 text-[var(--ink-2)] mb-4 group-hover:text-[var(--brand)] transition-colors duration-500" strokeWidth={1.5} />
-                  <h3 className="text-sm font-bold text-[var(--ink)] mb-1 relative z-10">استكشاف النماذج التوليدية</h3>
-                  <p className="text-xs text-[var(--ink-2)] font-mono relative z-10">جاري تحميل واجهة العرض...</p>
-                </div>
+              {/* Slideshow Image Container (Left) */}
+              <div className="w-1/2 h-full bg-slate-100 overflow-hidden relative">
+                 <img 
+                    src={FEATURED_NEWS[activeNews].image} 
+                    alt={FEATURED_NEWS[activeNews].title}
+                    className="w-full h-full object-cover"
+                 />
               </div>
 
               {/* News Section (Right) */}
