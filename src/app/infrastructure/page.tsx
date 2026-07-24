@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
-import SectionHeader from "@/components/ui/SectionHeader";
+import ComputeRequestModal from "@/components/ComputeRequestModal";
 import { INFRASTRUCTURE } from "@/lib/data/research-data";
-import { Cpu, Server, HardDrive, ShieldCheck, MapPin, Activity } from "lucide-react";
+import { Cpu, Server, MapPin, Activity } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "البنية التحتية والخوادم (Infrastructure) | JEMO LABS",
@@ -17,7 +17,7 @@ export default function InfrastructurePage() {
       <Header />
       <main className="flex-1 py-16 bg-[var(--bg)]">
         <div className="container max-w-4xl">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <div className="text-center max-w-2xl mx-auto mb-12 space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-xs font-mono">
               <Server className="w-3.5 h-3.5" />
               <span>القدرات الحوسبية السيادية</span>
@@ -26,6 +26,10 @@ export default function InfrastructurePage() {
             <p className="text-[var(--ink-2)] text-base leading-relaxed">
               تعتمد أبحاثنا على بنية تحتية حوسبية متقدمة تضمن تفرغ الباحثين وتوفير قوة المعالجة فائقة السرعة.
             </p>
+          </div>
+
+          <div className="text-center mb-12">
+            <ComputeRequestModal />
           </div>
 
           <div className="space-y-6 mb-16">

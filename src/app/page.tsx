@@ -3,6 +3,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LivingMuseumTimeline from "@/components/LivingMuseumTimeline";
+import AnimatedSection from "@/components/AnimatedSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
@@ -96,7 +97,7 @@ export default function Home() {
         </section>
 
         {/* INSTITUTION STATS */}
-        <section className="py-16 bg-[var(--surface)] border-b border-[var(--line)]">
+        <AnimatedSection className="py-16 bg-[var(--surface)] border-b border-[var(--line)]">
           <div className="container">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
               <div className="p-6 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
@@ -140,10 +141,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* LATEST RESEARCH */}
-        <section className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
+        <AnimatedSection className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
           <div className="container">
             <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
               <SectionHeader
@@ -197,10 +198,10 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* LATEST PROJECTS */}
-        <section className="py-20 bg-[var(--surface)] border-b border-[var(--line)]">
+        <AnimatedSection className="py-20 bg-[var(--surface)] border-b border-[var(--line)]">
           <div className="container">
             <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
               <SectionHeader
@@ -270,10 +271,10 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* INITIATIVES SHOWCASE */}
-        <section className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
+        <AnimatedSection className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
           <div className="container">
             <SectionHeader
               eyebrow="المبادرات الحالية"
@@ -309,14 +310,14 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* LIVING MUSEUM TIMELINE */}
-        <section className="py-24 bg-[var(--surface)] border-b border-[var(--line)]">
+        <AnimatedSection className="py-24 bg-[var(--surface)] border-b border-[var(--line)]">
           <div className="container">
             <LivingMuseumTimeline showFull={false} />
           </div>
-        </section>
+        </AnimatedSection>
       </main>
       <Footer />
     </>

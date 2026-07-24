@@ -736,3 +736,20 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .header-join-btn {
   color: #ffffff !important;
 }
+/* =========================================================
+   GPU HARDWARE ACCELERATION & ULTRA-SMOOTH PERFORMANCE
+   ========================================================= */
+.card, .btn, .badge, header, section, .acc-item {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  .backdrop-blur-md, .backdrop-blur-lg {
+    backdrop-filter: blur(4px) !important;
+  }
+}

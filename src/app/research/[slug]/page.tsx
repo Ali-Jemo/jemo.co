@@ -5,6 +5,7 @@ import Badge from "@/components/ui/Badge";
 import CitationBox from "@/components/ui/CitationBox";
 import Card from "@/components/ui/Card";
 import PaperReaderModal from "@/components/PaperReaderModal";
+import ExportCitationModal from "@/components/ExportCitationModal";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RESEARCH_PAPERS } from "@/lib/data/research-data";
@@ -45,17 +46,20 @@ export default async function PaperDetailPage({ params }: PaperPageProps) {
 
           {/* Paper Header */}
           <div className="space-y-4 mb-10">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="info">{paper.field}</Badge>
-              <span className="text-xs font-mono text-[var(--ink-2)] flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" />
-                {paper.publishDate}
-              </span>
-              {paper.doi && (
-                <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)] text-[var(--ink-2)] dir-ltr">
-                  DOI: {paper.doi}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Badge variant="info">{paper.field}</Badge>
+                <span className="text-xs font-mono text-[var(--ink-2)] flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" />
+                  {paper.publishDate}
                 </span>
-              )}
+                {paper.doi && (
+                  <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)] text-[var(--ink-2)] dir-ltr">
+                    DOI: {paper.doi}
+                  </span>
+                )}
+              </div>
+              <ExportCitationModal paper={paper} />
             </div>
 
             <h1 className="text-3xl md:text-5xl font-extrabold text-[var(--ink-1)] leading-tight">

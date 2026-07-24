@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
-  Search, X, Clock, User, Layers, Info, ShieldCheck, ExternalLink,
-  Send, Users, FileCheck, Hourglass, XCircle, CheckCircle2,
-  Terminal, ArrowUpRight, Activity
+  Search, X, User, Layers, ShieldCheck, ExternalLink,
+  Hourglass, XCircle, CheckCircle2,
+  ArrowUpRight, Activity
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";

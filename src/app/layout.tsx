@@ -58,16 +58,11 @@ const jsonLd = {
     {
       "@type": "ResearchOrganization",
       "@id": "https://jemo.co/#organization",
-      "name": "jemo labs",
-      "alternateName": "جيمو لابس",
+      "name": "JEMO LABS",
+      "alternateName": ["بيت الحكمة الرقمي", "جيمو لابس"],
       "url": "https://jemo.co",
       "logo": "https://jemo.co/jemo-logo.svg",
-      "parentOrganization": {
-        "@type": "Organization",
-        "name": "LXD Co",
-        "url": "https://lxds.org"
-      },
-      "description": "مؤسسة بحثية وتقنية غير ربحية تابعة لـ LXD Co. نجمع العقول المبدعة ونبني الأبحاث والمنصات المفتوحة."
+      "description": "مؤسسة بحثية سيادية غير ربحية تعنى ببناء المعرفة المفتوحة، النواة التشغيلية الميكروية، وتطوير أبحاث الذكاء الاصطناعي العربي في العراق."
     },
     {
       "@type": "WebSite",

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Card from "@/components/ui/Card";
 import { GithubIcon } from "@/components/Icons";
 import { Mail, MessageSquare, Send } from "lucide-react";
 
