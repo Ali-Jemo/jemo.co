@@ -13,16 +13,18 @@ const FEATURED_NEWS = [
     category: "نماذج سيادية",
     date: "٢٤ يوليو ٢٠٢٦",
     href: "/research",
-    theme: "emerald"
+    theme: "emerald",
+    image: "/hero-bg.png"
   },
   {
     id: "news-2",
     title: "نواة Ziqa v1.0 — استدلال فائق السرعة",
     description: "بنية تحتية برمجية جديدة تسرّع عمليات الاستدلال بنسسبة ٤٠٪ مع تقليل استهلاك الطاقة.",
     category: "نواة تشغيلية",
-    date: "١٨ يوليو ٢٠٢٦",
+    date: "١٨ يوليو ٢٠ابريل ٢٠٢٦",
     href: "/labs",
-    theme: "blue"
+    theme: "blue",
+    image: "/hero-bg-rtl.png"
   },
   {
     id: "news-3",
@@ -31,7 +33,8 @@ const FEATURED_NEWS = [
     category: "بنية تحتية",
     date: "٠٥ يوليو ٢٠٢٦",
     href: "/infrastructure",
-    theme: "amber"
+    theme: "amber",
+    image: "/departments-bg.png"
   },
 ];
 
@@ -200,21 +203,15 @@ export default function HeroSection() {
               style={{ opacity: bottomSectionOpacity }}
               className="h-[35vh] min-h-[300px] flex flex-col md:flex-row relative z-0"
             >
-              
-              {/* Slideshow Alt Component (Left) */}
-              <div className="w-full md:w-1/2 h-full border-b md:border-b-0 md:border-l border-slate-200/60 p-6 md:p-8 bg-slate-50/50 flex items-center justify-center">
-                <div className="w-full h-full rounded-2xl border border-slate-200/80 bg-white shadow-sm flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group">
-                  {/* <BaghdadBabylonSlideshow /> */}
-                  <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <Globe className="w-8 h-8 text-slate-300 mb-4 group-hover:text-emerald-500 transition-colors duration-500" strokeWidth={1.5} />
-                  <h3 className="text-sm font-bold text-slate-700 mb-1 relative z-10">استكشاف النماذج التوليدية</h3>
-                  <p className="text-xs text-slate-500 font-mono relative z-10">جاري تحميل واجهة العرض...</p>
-                </div>
+              {/* Slideshow Image Container (Left) */}
+              <div className="w-full md:w-1/2 h-full bg-slate-100 overflow-hidden relative">
+                 <img 
+                    src={FEATURED_NEWS[activeNews].image} 
+                    alt={FEATURED_NEWS[activeNews].title}
+                    className="w-full h-full object-cover"
+                 />
               </div>
-
-              {/* News Section (Right) */}
-              {/* News Section — Full Redesign */}
-              <div className="w-full md:w-1/2 h-full p-5 md:p-6 flex flex-col bg-gradient-to-br from-white to-slate-50/50 border-l border-slate-200/60">
+              <div className="w-full md:w-1/2 h-full p-5 md:p-6 flex flex-col bg-gradient-to-br from-white to-slate-50/50">
                 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
@@ -292,10 +289,9 @@ export default function HeroSection() {
                   <div className="mt-3 shrink-0">
                     <div className="flex items-center gap-2">
                       <div className="flex-grow h-1 bg-slate-100 rounded-full overflow-hidden">
-                        <motion.div
-                          className="h-full bg-gradient-to-r from-slate-600 to-slate-400 rounded-full"
+                        <div
+                          className="h-full bg-gradient-to-r from-slate-600 to-slate-400 rounded-full transition-all duration-100 ease-linear"
                           style={{ width: `${progress}%` }}
-                          transition={{ duration: 0.1, ease: "linear" }}
                         />
                       </div>
                       <span className="text-[9px] font-mono text-slate-400 tabular-nums">
