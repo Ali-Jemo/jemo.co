@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Project } from "@/lib/data/research-data";
+import { motion, AnimatePresence } from "framer-motion";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { FolderGit2, Search, Filter, Users, ArrowUpLeft } from "lucide-react";
@@ -77,9 +78,19 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
       </Card>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredProjects.map((proj) => (
-          <Card key={proj.id} hover className="p-7 flex flex-col justify-between">
+      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <AnimatePresence mode="popLayout">
+          {filteredProjects.map((proj) => (
+            <motion.div
+              key={proj.id}
+              layout
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="h-full"
+            >
+              <Card hover className="p-7 flex flex-col justify-between h-full">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--brand)]">
@@ -135,9 +146,11 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
                 </Link>
               </div>
             </div>
-          </Card>
-        ))}
-      </div>
+              </Card>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 }

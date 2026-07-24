@@ -736,3 +736,105 @@ export const FAQ_ITEMS: FAQItem[] = [
     answer: "كافة الابتكارات والشيفرات والأوراق المنتجة هي ملكية عامة للمجتمع العلمي، مرخصة برخص مفتوحة تضمن حق الجميع في الاستخدام والتطوير."
   }
 ];
+export interface Benchmark {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  metricName: string;
+  jemoScore: string;
+  baselineScore: string;
+  sotaScore: string;
+  paperSlug: string;
+  datasetUrl: string;
+}
+
+export interface InfrastructureItem {
+  id: string;
+  name: string;
+  category: string;
+  specs: string;
+  purpose: string;
+  location: string;
+  status: "Online" | "Expanding" | "Planned";
+}
+
+export const BENCHMARKS: Benchmark[] = [
+  {
+    id: "baghdad-arabic-reasoning",
+    name: "Baghdad LLM Arabic Reasoning Leaderboard",
+    category: "Natural Language Processing",
+    description: "Evaluates multi-turn reasoning and scientific domain understanding across Arabic dialects and formal MSA.",
+    metricName: "Accuracy (%)",
+    jemoScore: "87.4%",
+    baselineScore: "74.1%",
+    sotaScore: "85.2%",
+    paperSlug: "open-iraq-arabic-nlp",
+    datasetUrl: "https://github.com/jemo-labs/open-datasets"
+  },
+  {
+    id: "ziqa-latency-bench",
+    name: "Ziqa Microkernel IPC Latency Benchmark",
+    category: "Operating Systems",
+    description: "Measures Inter-Process Communication (IPC) context switch overhead in microseconds under stress.",
+    metricName: "Latency (μs)",
+    jemoScore: "0.42 μs",
+    baselineScore: "0.85 μs",
+    sotaScore: "0.48 μs",
+    paperSlug: "ziqa-kernel-architecture",
+    datasetUrl: "https://github.com/Ali-Jemo/ziqa-kernal"
+  },
+  {
+    id: "manuscript-ocr-cer",
+    name: "Arabic Historical Manuscript OCR Character Error Rate",
+    category: "Computer Vision",
+    description: "Measures accuracy on heavily degraded 10th-14th century Baghdad manuscript scans.",
+    metricName: "Character Error Rate (CER)",
+    jemoScore: "2.1%",
+    baselineScore: "8.4%",
+    sotaScore: "3.2%",
+    paperSlug: "arabic-manuscripts-vision-restoration",
+    datasetUrl: "https://github.com/jemo-labs/manuscript-ocr"
+  }
+];
+
+export const INFRASTRUCTURE: InfrastructureItem[] = [
+  {
+    id: "hpc-cluster-1",
+    name: "Baghdad-1 HPC Compute Cluster",
+    category: "AI Supercomputing",
+    specs: "32x NVIDIA H100 SXM5 80GB, InfiniBand Quantum-2 400Gbps, 2TB RAM",
+    purpose: "Training sovereign Arabic LLMs & large-scale neural architectures",
+    location: "JEMO LABS Computing Center",
+    status: "Online"
+  },
+  {
+    id: "riscv-lab-rack",
+    name: "RISC-V Silicon & Microkernel Hardware Testbed",
+    category: "Hardware & Operating Systems",
+    specs: "64-node SiFive RISC-V development cluster, FPGA hardware emulators",
+    purpose: "Formal verification and microkernel testing for Ziqa OS",
+    location: "Embedded Systems Lab",
+    status: "Online"
+  },
+  {
+    id: "digitization-scanner",
+    name: "Multispectral Manuscript Digitization Scanner",
+    category: "Heritage Optics",
+    specs: "150MP Phase One Multispectral Imaging Camera, UV/IR light arrays",
+    purpose: "Digitizing and restoring ancient Iraqi manuscripts",
+    location: "Computer Vision Cleanroom",
+    status: "Expanding"
+  }
+];
+
+export const PEER_REVIEW_POLICY = {
+  title: "Open Peer Review & Ethical Research Policy",
+  summary: "JEMO LABS operates on rigorous open scientific principles. All papers undergo double-blind internal review followed by immediate public preprint deposit with open reviewer notes.",
+  guidelines: [
+    "Complete Transparency: Source code, hyper-parameters, and datasets MUST accompany every publication.",
+    "Open Reviewer Notes: Peer review reports and revision history are archived alongside the paper DOI.",
+    "Ethical Computing: AI models undergo safety evaluation for bias, safety, and non-proliferation.",
+    "Reproducibility Guarantee: Independent researchers must be able to reproduce benchmarks within 3 commands."
+  ]
+};

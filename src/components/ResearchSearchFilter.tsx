@@ -6,6 +6,7 @@ import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import CitationBox from "@/components/ui/CitationBox";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, Filter, Calendar, Users, ArrowUpLeft, BookOpen, Download } from "lucide-react";
 
 interface ResearchSearchFilterProps {
@@ -119,9 +120,19 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
           <p className="text-xs text-[var(--ink-2)]">جرب البحث بكلمات مختلفة أو تغيير مجال التصفية.</p>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {filteredPapers.map((paper) => (
-            <Card key={paper.id} hover className="p-8 flex flex-col justify-between">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <AnimatePresence mode="popLayout">
+            {filteredPapers.map((paper) => (
+              <motion.div
+                key={paper.id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="h-full"
+              >
+                <Card hover className="p-8 flex flex-col justify-between h-full">
               <div>
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <Badge variant="info">{paper.field}</Badge>
@@ -152,9 +163,11 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
                   <ArrowUpLeft className="w-4 h-4" />
                 </Link>
               </div>
-            </Card>
-          ))}
-        </div>
+                </Card>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       )}
     </div>
   );

@@ -1,9 +1,14 @@
-
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import { GithubIcon } from "@/components/Icons";
-import { Mail, MessageSquare } from "lucide-react";
+import { Mail, MessageSquare, Send } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "تواصل معنا | JEMO LABS",
+  description: "قنوات التواصل المباشرة والبريد الإلكتروني لمؤسسة JEMO LABS للأبحاث.",
+};
 
 export default function ContactPage() {
   return (
@@ -23,7 +28,6 @@ export default function ContactPage() {
           </div>
 
           <div className="max-w-2xl mx-auto mb-16">
-            {/* Direct Channels */}
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-[var(--ink-1)] mb-6 text-center">قنوات التواصل الرسمية</h2>
 
@@ -85,7 +89,7 @@ export default function ContactPage() {
                 </div>
               </a>
             </div>
-
+          </div>
         </div>
       </main>
       <Footer />

@@ -59,11 +59,13 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-bold text-sm text-[var(--ink-1)] mb-4 font-mono uppercase tracking-wider">الأبحاث والمختبرات</h4>
+            <h4 className="font-bold text-sm text-[var(--ink-1)] mb-4 font-mono uppercase tracking-wider">الأبحاث والنتائج</h4>
             <ul className="flex flex-col gap-2.5 text-xs text-[var(--ink-2)]">
               <li><Link href="/research"><AnimatedUnderline>الأوراق البحثية</AnimatedUnderline></Link></li>
+              <li><Link href="/benchmarks"><AnimatedUnderline className="text-[var(--brand)] font-bold">لوحة النتائج (Benchmarks)</AnimatedUnderline></Link></li>
               <li><Link href="/projects"><AnimatedUnderline>المشاريع المفتوحة</AnimatedUnderline></Link></li>
               <li><Link href="/labs"><AnimatedUnderline>المختبرات المتخصصة</AnimatedUnderline></Link></li>
+              <li><Link href="/infrastructure"><AnimatedUnderline>البنية التحتية والخوادم</AnimatedUnderline></Link></li>
               <li><Link href="/publications"><AnimatedUnderline>مستودع المنشورات</AnimatedUnderline></Link></li>
               <li><Link href="/open-source"><AnimatedUnderline>المصادر المفتوحة</AnimatedUnderline></Link></li>
             </ul>
@@ -82,9 +84,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-bold text-sm text-[var(--ink-1)] mb-4 font-mono uppercase tracking-wider">الشفافية والدعم</h4>
+            <h4 className="font-bold text-sm text-[var(--ink-1)] mb-4 font-mono uppercase tracking-wider">الشفافية والحوكمة</h4>
             <ul className="flex flex-col gap-2.5 text-xs text-[var(--ink-2)]">
               <li><Link href="/transparency"><AnimatedUnderline className="flex items-center gap-1"><ShieldCheck size={12} /> الشفافية والتقارير</AnimatedUnderline></Link></li>
+              <li><Link href="/peer-review"><AnimatedUnderline>سياسات النشر والتحكيم</AnimatedUnderline></Link></li>
               <li><Link href="/support"><AnimatedUnderline className="flex items-center gap-1"><HeartHandshake size={12} /> دعم البحث العلمي</AnimatedUnderline></Link></li>
               <li><Link href="/partners"><AnimatedUnderline>الشركاء والجامعات</AnimatedUnderline></Link></li>
               <li><Link href="/media"><AnimatedUnderline>مكتبة الوسائط</AnimatedUnderline></Link></li>
