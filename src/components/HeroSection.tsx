@@ -68,6 +68,7 @@ export default function HeroSection() {
   const [activeNews, setActiveNews] = useState(0);
   const [isHoveringNews, setIsHoveringNews] = useState(false);
   const [progress, setProgress] = useState(0);
+  const progressRef = useRef(0);
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
@@ -76,8 +77,7 @@ export default function HeroSection() {
 
     const animate = () => {
       if (isHoveringNews) {
-        // Keep start time relative to current progress when paused
-        startTime = Date.now() - (progress / 100) * AUTOPLAY_INTERVAL;
+        startTime = Date.now() - (progressRef.current / 100) * AUTOPLAY_INTERVAL;
         animationFrameId = requestAnimationFrame(animate);
         return;
       }
@@ -85,11 +85,13 @@ export default function HeroSection() {
       const elapsedTime = Date.now() - startTime;
       const currentProgress = Math.min((elapsedTime / AUTOPLAY_INTERVAL) * 100, 100);
       
+      progressRef.current = currentProgress;
       setProgress(currentProgress);
 
       if (currentProgress >= 100) {
         setActiveNews((prev) => (prev + 1) % FEATURED_NEWS.length);
         startTime = Date.now();
+        progressRef.current = 0;
         setProgress(0);
       }
 
@@ -98,7 +100,7 @@ export default function HeroSection() {
 
     animationFrameId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [activeNews, isHoveringNews, progress]);
+  }, [activeNews, isHoveringNews]);
 
   const handleManualNav = useCallback((direction: 'next' | 'prev') => {
     setActiveNews((prev) => {
