@@ -111,7 +111,7 @@ html {
   line-height: 1.6;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
+  /* ponytail: removed scroll-behavior:smooth — conflicts with Lenis, causes competing scroll */
 }
 /* Lenis smooth scroll core rules */
 html.lenis, html.lenis body {
@@ -221,26 +221,60 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
 .btn:hover { background: var(--surface); border-color: var(--ink-2); }
 
 .btn--primary {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
 }
 .btn--primary:hover {
-  background: var(--ink-2);
-  border-color: var(--ink-2);
+  background: var(--brand-700);
+  border-color: var(--brand-700);
 }
+
+.btn--outline {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--ink);
+}
+.btn--outline:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--accent-soft);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink-2);
+}
+.btn--ghost:hover {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.btn--sm { font-size: 12px; padding: 6px 14px; }
+.btn--lg { font-size: 15px; padding: 12px 28px; border-radius: var(--r); }
 
 .card {
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: var(--r);
+  border-radius: var(--r-lg);
   padding: var(--s-5);
   box-shadow: var(--sh-1);
-  transition: all 0.2s;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 .card:hover {
-  box-shadow: var(--sh-2);
-  border-color: var(--ink-2);
+  box-shadow: var(--sh-3);
+  border-color: var(--brand);
+  transform: translateY(-2px);
+}
+
+/* gradient clip text — used by hero title, section headers */
+.text-gradient {
+  background: linear-gradient(135deg, var(--brand), var(--brand-700));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .badge {
@@ -737,13 +771,10 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   color: #ffffff !important;
 }
 /* =========================================================
-   GPU HARDWARE ACCELERATION & ULTRA-SMOOTH PERFORMANCE
+   GPU HARDWARE ACCELERATION — targeted only where needed
    ========================================================= */
-.card, .btn, .badge, header, section, .acc-item {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  will-change: transform, opacity;
-}
+/* ponytail: removed blanket will-change on .card/.btn/.badge/header/section —
+   that forced dozens of GPU layers and was the #1 cause of scroll jank */
 
 @media (max-width: 768px) {
   * {
@@ -751,5 +782,15 @@ p { margin: 0 0 var(--s-4); color: var(--ink-2); }
   }
   .backdrop-blur-md, .backdrop-blur-lg {
     backdrop-filter: blur(4px) !important;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

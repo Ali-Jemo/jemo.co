@@ -88,6 +88,32 @@ export default async function LabDetailPage({ params }: LabPageProps) {
             </div>
           </Card>
 
+          {/* Lab Researchers */}
+          {labResearchers.length > 0 && (
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-[var(--ink-1)] mb-6 flex items-center gap-2">
+                <Users className="w-5 h-5 text-[var(--brand)]" />
+                <span>فريق الباحثين</span>
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {labResearchers.map((r) => (
+                  <Card key={r.id} hover className="p-5 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--brand)] flex items-center justify-center font-bold font-mono shrink-0">
+                      {r.name.slice(0, 2)}
+                    </div>
+                    <div className="min-w-0">
+                      <Link href={`/researchers/${r.slug}`} className="font-bold text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors block truncate">
+                        {r.name}
+                      </Link>
+                      <p className="text-xs text-[var(--ink-2)] truncate">{r.role}</p>
+                      <p className="text-[10px] font-mono text-[var(--ink-2)] mt-1">{r.papersCount} أوراق • {r.projectsCount} مشاريع</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Active Lab Projects */}
           {labProjects.length > 0 && (
             <div className="mb-12">

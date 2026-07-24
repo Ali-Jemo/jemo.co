@@ -380,6 +380,96 @@ export const RESEARCHERS: Researcher[] = [
     email: "youssef@jemo.co",
     papersCount: 2,
     projectsCount: 1
+  },
+  {
+    id: "noor-al-kindif",
+    slug: "noor-al-kindif",
+    name: "م. نور الكندي",
+    role: "باحثة في تقييم النماذج اللغوية — مختبر الذكاء الاصطناعي",
+    bio: "متخصصة في هندسة مقاييس التقييم للنماذج اللغوية العربية وتحليل التحيز في المخرجات، وتقود بناء معايير القياس العربية المفتوحة.",
+    avatar: "/jemo-logo.svg",
+    labSlug: "ai-lab",
+    orcid: "0000-0002-5566-7788",
+    github: "https://github.com/jemo-labs",
+    scholar: "https://scholar.google.com",
+    email: "noor@jemo.co",
+    papersCount: 4,
+    projectsCount: 2
+  },
+  {
+    id: "omar-al-basri",
+    slug: "omar-al-basri",
+    name: "م. عمر البصري",
+    role: "مهندس أمن الأنظمة — مختبر أنظمة التشغيل",
+    bio: "باحث في عزل الأخطاء والتشغيل الآمن للنوى الدقيقة، ويعمل على طبقات الحماية الرسمية لنواة Ziqa.",
+    avatar: "/jemo-logo.svg",
+    labSlug: "os-lab",
+    orcid: "0000-0001-2233-4455",
+    github: "https://github.com/jemo-labs",
+    scholar: "https://scholar.google.com",
+    email: "omar@jemo.co",
+    papersCount: 3,
+    projectsCount: 2
+  },
+  {
+    id: "lina-al-tikriti",
+    slug: "lina-al-tikriti",
+    name: "د. لينا التكريتي",
+    role: "باحثة في التصوير الطبي — مختبر الرؤية الحاسوبية",
+    bio: "تطوّر نماذج الرؤية الحاسوبية للكشف المبكر عن الأورام من الصور الإشعاعية، مع التركيز على تكييف النماذج للبيانات الإقليمية.",
+    avatar: "/jemo-logo.svg",
+    labSlug: "cv-lab",
+    orcid: "0000-0003-1122-3344",
+    github: "https://github.com/jemo-labs",
+    scholar: "https://scholar.google.com",
+    email: "lina@jemo.co",
+    papersCount: 4,
+    projectsCount: 1
+  },
+  {
+    id: "mustafa-al-mosuli",
+    slug: "mustafa-al-mosuli",
+    name: "م. مصطفى الموصللي",
+    role: "باحث في الملاحة الذاتية — مختبر الروبوتات",
+    bio: "متخصص في خوارزميات SLAM والملاحة في البيئات غير المهيكلة، ويطوّر أنظمة إدراك للروبوتات الميدانية.",
+    avatar: "/jemo-logo.svg",
+    labSlug: "robotics-lab",
+    orcid: "0000-0002-9988-7766",
+    github: "https://github.com/jemo-labs",
+    scholar: "https://scholar.google.com",
+    email: "mustafa@jemo.co",
+    papersCount: 2,
+    projectsCount: 2
+  },
+  {
+    id: "zainab-al-qadisiyya",
+    slug: "zainab-al-qadisiyya",
+    name: "د. زينب القادسية",
+    role: "باحثة في المعالجة اللغوية الطبية — الذكاء الاصطناعي الصحي",
+    bio: "تدمج بين معالجة اللغة الطبية وتحليل السجلات الصحية لبناء أنظمة مساعدة قرارات سريرية دقيقة.",
+    avatar: "/jemo-logo.svg",
+    labSlug: "healthcare-ai",
+    orcid: "0000-0001-6655-4433",
+    github: "https://github.com/jemo-labs",
+    scholar: "https://scholar.google.com",
+    email: "zainab@jemo.co",
+    papersCount: 3,
+    projectsCount: 1
+  },
+  {
+    id: "hussain-al-kufi",
+    slug: "hussain-al-kufi",
+    name: "م. حسين الكوفي",
+    role: "باحث في التحليل الجينومي — المعلوماتية الحيوية",
+    bio: "يطوّر أدوات تحليل تسلسل الجينوم وحساب التشابه البروتيني لمساعدة الأبحاث الطبية الإقليمية.",
+    avatar: "/jemo-logo.svg",
+    labSlug: "bioinformatics",
+    orcid: "0000-0002-4455-6677",
+    github: "https://github.com/jemo-labs",
+    scholar: "https://scholar.google.com",
+    email: "hussain@jemo.co",
+    papersCount: 2,
+    projectsCount: 1
   }
 ];
 
@@ -468,6 +558,198 @@ export const RESEARCH_PAPERS: Paper[] = [
 }`,
       apa: "Al-Hussaini, S. (2026). Restoration of Rare Iraqi Manuscripts using Convolutional Vision Networks. Journal of Heritage Informatics."
     }
+  },
+  {
+    id: "efficient-arabic-inference",
+    slug: "efficient-arabic-llm-inference",
+    title: "استدلال كفؤ للنماذج اللغوية العربية عبر التكميم والإسقاط الانتقائي",
+    titleEn: "Efficient Inference for Arabic LLMs via Quantization and Selective Pruning",
+    abstract: "نقدم تقنية تكميم وإسقاط انتقائي تقلل حجم نماذج اللغة العربية بنسبة 60% مع الحفاظ على 97% من دقة الاستدلال، مما يجعل النشر على الأجهزة محدودة الموارد ممكناً.",
+    authors: [
+      { name: "م. نور الكندي", slug: "noor-al-kindif", role: "المؤلف الرئيسي" },
+      { name: "د. علي الجمو", slug: "ali-jemo", role: "المؤلف المشارك" }
+    ],
+    publishDate: "2026-06-22",
+    doi: "10.1016/j.jemo.2026.06.002",
+    pdfUrl: "/papers/efficient-arabic-inference.pdf",
+    codeUrl: "https://github.com/jemo-labs/baghdad-llm",
+    field: "الذكاء الاصطناعي",
+    labSlug: "ai-lab",
+    keywords: ["Quantization", "Pruning", "Edge Inference", "Arabic NLP"],
+    citation: {
+      bibtex: `@article{kindif2026efficient,
+  title={Efficient Inference for Arabic LLMs via Quantization and Selective Pruning},
+  author={Al-Kindif, Noor and Jemo, Ali},
+  journal={JEMO LABS AI Reports},
+  year={2026},
+  doi={10.1016/j.jemo.2026.06.002}
+}`,
+      apa: "Al-Kindif, N., & Jemo, A. (2026). Efficient Inference for Arabic LLMs via Quantization and Selective Pruning. JEMO LABS AI Reports, 1(2)."
+    },
+    featured: true
+  },
+  {
+    id: "ziqa-scheduler-verification",
+    slug: "ziqa-scheduler-formal-verification",
+    title: "التحقق الرسمي لمجدول نواة Ziqa باستخدام النماذج الرياضية",
+    titleEn: "Formal Verification of the Ziqa Kernel Scheduler",
+    abstract: "نثبت رسمياً خصائص الإنصاف وتأخر الاستجابة في مجدول Ziqa باستخدام التحقق بالنموذج، مع ضمان غياب حالات الجمود تحت أحمال متفاوتة.",
+    authors: [
+      { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "المؤلف الرئيسي" },
+      { name: "م. عمر البصري", slug: "omar-al-basri", role: "المؤلف المشارك" }
+    ],
+    publishDate: "2026-07-05",
+    doi: "10.1016/j.jemo.2026.07.001",
+    pdfUrl: "/papers/ziqa-scheduler-verification.pdf",
+    codeUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
+    field: "أنظمة التشغيل",
+    labSlug: "os-lab",
+    keywords: ["Formal Verification", "Scheduling", "Model Checking", "Rust"],
+    citation: {
+      bibtex: `@article{furati2026scheduler,
+  title={Formal Verification of the Ziqa Kernel Scheduler},
+  author={Al-Furati, Ahmed and Al-Basri, Omar},
+  journal={JEMO LABS Systems Research},
+  year={2026}
+}`,
+      apa: "Al-Furati, A., & Al-Basri, O. (2026). Formal Verification of the Ziqa Kernel Scheduler. JEMO LABS Systems Research."
+    }
+  },
+  {
+    id: "early-tumor-detection-mri",
+    slug: "early-tumor-detection-mri",
+    title: "كشف الأورام المبكر من صور الرنين المغناطيسي بتكييف إقليمي للنماذج",
+    titleEn: "Early Tumor Detection from MRI with Region-Adaptive Model Tuning",
+    abstract: "نقترح منهجية لتكييف نماذج التجزئة على البيانات الإشعاعية الإقليمية، محققةً تحسناً بنسبة 18% في الكشف المبكر عن الأورام مقارنة بالنماذج العامة.",
+    authors: [
+      { name: "د. لينا التكريتي", slug: "lina-al-tikriti", role: "المؤلف الرئيسي" },
+      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "المؤلف المشارك" }
+    ],
+    publishDate: "2026-04-28",
+    doi: "10.1016/j.jemo.2026.04.003",
+    pdfUrl: "/papers/early-tumor-detection.pdf",
+    datasetUrl: "https://github.com/jemo-labs/open-datasets",
+    field: "الرؤية الحاسوبية",
+    labSlug: "cv-lab",
+    keywords: ["Medical Imaging", "Segmentation", "Transfer Learning", "Healthcare AI"],
+    citation: {
+      bibtex: `@article{tikriti2026tumor,
+  title={Early Tumor Detection from MRI with Region-Adaptive Model Tuning},
+  author={Al-Tikriti, Lina and Al-Hussaini, Sara},
+  journal={Journal of Medical Imaging and AI},
+  year={2026}
+}`,
+      apa: "Al-Tikriti, L., & Al-Hussaini, S. (2026). Early Tumor Detection from MRI with Region-Adaptive Model Tuning. Journal of Medical Imaging and AI."
+    }
+  },
+  {
+    id: "slam-dusty-environments",
+    slug: "slam-dusty-environments",
+    title: "الملاحة الذاتية والملاحة المكانية في البيئات المغبرة منخفضة الرؤية",
+    titleEn: "Robust SLAM in Low-Visibility Dusty Environments",
+    abstract: "نقدم نهجاً لدمج بيانات الليدار والرؤية لتعويض تشتت الضوء في البيئات المغبرة، مما يحسّن دقة التموضع الذاتي للروبوتات بنسبة 40%.",
+    authors: [
+      { name: "م. مصطفى الموصللي", slug: "mustafa-al-mosuli", role: "المؤلف الرئيسي" },
+      { name: "م. حيدر البغدادي", slug: "haider-al-baghdadi", role: "المؤلف المشارك" }
+    ],
+    publishDate: "2026-05-30",
+    doi: "10.1016/j.jemo.2026.05.007",
+    pdfUrl: "/papers/slam-dusty-environments.pdf",
+    codeUrl: "https://github.com/jemo-labs",
+    field: "الروبوتات",
+    labSlug: "robotics-lab",
+    keywords: ["SLAM", "Sensor Fusion", "LiDAR", "Autonomous Navigation"],
+    citation: {
+      bibtex: `@article{mosuli2026slam,
+  title={Robust SLAM in Low-Visibility Dusty Environments},
+  author={Al-Mosuli, Mustafa and Al-Baghdadi, Haider},
+  journal={JEMO LABS Robotics Reports},
+  year={2026}
+}`,
+      apa: "Al-Mosuli, M., & Al-Baghdadi, H. (2026). Robust SLAM in Low-Visibility Dusty Environments. JEMO LABS Robotics Reports."
+    }
+  },
+  {
+    id: "arabic-clinical-nlp",
+    slug: "arabic-clinical-nlp-records",
+    title: "معالجة لغوية طبية للسجلات الصحية العربية واستخراج التشخيصات",
+    titleEn: "Clinical NLP for Arabic Health Records and Diagnosis Extraction",
+    abstract: "نموذج لاستخراج الكيانات الطبية والتشخيصات من السجلات الصحية العربية غير المنظمة، بدقة 91% في تجارب على بيانات مستشفيات إقليمية.",
+    authors: [
+      { name: "د. زينب القادسية", slug: "zainab-al-qadisiyya", role: "المؤلف الرئيسي" },
+      { name: "د. مريم البابلية", slug: "maryam-al-babili", role: "المؤلف المشارك" }
+    ],
+    publishDate: "2026-06-12",
+    doi: "10.1016/j.jemo.2026.06.005",
+    pdfUrl: "/papers/arabic-clinical-nlp.pdf",
+    datasetUrl: "https://github.com/jemo-labs/open-datasets",
+    field: "الذكاء الاصطناعي الصحي",
+    labSlug: "healthcare-ai",
+    keywords: ["Clinical NLP", "Named Entity Recognition", "Electronic Health Records", "Arabic"],
+    citation: {
+      bibtex: `@article{qadisiyya2026clinical,
+  title={Clinical NLP for Arabic Health Records and Diagnosis Extraction},
+  author={Al-Qadisiyya, Zainab and Al-Babili, Maryam},
+  journal={Journal of Healthcare Informatics},
+  year={2026}
+}`,
+      apa: "Al-Qadisiyya, Z., & Al-Babili, M. (2026). Clinical NLP for Arabic Health Records and Diagnosis Extraction. Journal of Healthcare Informatics."
+    }
+  },
+  {
+    id: "genomic-variant-pipeline",
+    slug: "genomic-variant-calling-pipeline",
+    title: "خط معالجة مفتوح المصدر لاستدعاء الطفرات الجينومية على بيانات إقليمية",
+    titleEn: "Open-Source Genomic Variant Calling Pipeline for Regional Data",
+    abstract: "نبني خط معالجة متوازياً لاستدعاء الطفرات الجينية يدعم البيانات الإقليمية ويقلل زمن التحليل بنسبة 55% عبر الجدولة على وحدات المعالجة الرسومية.",
+    authors: [
+      { name: "م. حسين الكوفي", slug: "hussain-al-kufi", role: "المؤلف الرئيسي" },
+      { name: "د. يوسف النجفي", slug: "youssef-al-najafi", role: "المؤلف المشارك" }
+    ],
+    publishDate: "2026-03-08",
+    doi: "10.1016/j.jemo.2026.03.002",
+    pdfUrl: "/papers/genomic-variant-pipeline.pdf",
+    codeUrl: "https://github.com/jemo-labs",
+    field: "المعلوماتية الحيوية",
+    labSlug: "bioinformatics",
+    keywords: ["Genomics", "Variant Calling", "GPU Acceleration", "Bioinformatics"],
+    citation: {
+      bibtex: `@article{kufi2026genomic,
+  title={Open-Source Genomic Variant Calling Pipeline for Regional Data},
+  author={Al-Kufi, Hussain and Al-Najafi, Youssef},
+  journal={JEMO LABS Bioinformatics Reports},
+  year={2026}
+}`,
+      apa: "Al-Kufi, H., & Al-Najafi, Y. (2026). Open-Source Genomic Variant Calling Pipeline for Regional Data. JEMO LABS Bioinformatics Reports."
+    }
+  },
+  {
+    id: "open-iraq-benchmark",
+    slug: "open-iraq-evaluation-benchmark",
+    title: "معيار تقييم مفتوح للنماذج اللغوية في السياق العربي والعراقي",
+    titleEn: "An Open Evaluation Benchmark for LLMs in Arabic and Iraqi Contexts",
+    abstract: "نقدم مجموعة معايير تقييم مفتوحة تقيس الاستدلال المنطقي والفهم الثقافي للنماذج اللغوية، وتكشف فجوات الأداء في اللهجات والمصطلحات الإقليمية.",
+    authors: [
+      { name: "م. نور الكندي", slug: "noor-al-kindif", role: "المؤلف الرئيسي" },
+      { name: "د. علي الجمو", slug: "ali-jemo", role: "المؤلف المشارك" }
+    ],
+    publishDate: "2026-07-18",
+    doi: "10.1016/j.jemo.2026.07.004",
+    pdfUrl: "/papers/open-iraq-benchmark.pdf",
+    datasetUrl: "https://github.com/jemo-labs/open-datasets",
+    codeUrl: "https://github.com/jemo-labs/baghdad-llm",
+    field: "الذكاء الاصطناعي",
+    labSlug: "ai-lab",
+    keywords: ["Benchmarks", "Evaluation", "Arabic NLP", "Open Science"],
+    citation: {
+      bibtex: `@article{kindif2026benchmark,
+  title={An Open Evaluation Benchmark for LLMs in Arabic and Iraqi Contexts},
+  author={Al-Kindif, Noor and Jemo, Ali},
+  journal={JEMO LABS AI Reports},
+  year={2026}
+}`,
+      apa: "Al-Kindif, N., & Jemo, A. (2026). An Open Evaluation Benchmark for LLMs in Arabic and Iraqi Contexts. JEMO LABS AI Reports."
+    }
   }
 ];
 
@@ -540,6 +822,74 @@ export const RESEARCH_PROJECTS: Project[] = [
     labSlug: "ai-lab",
     githubUrl: "https://github.com/jemo-labs/open-datasets",
     image: "/road-bg.png"
+  },
+  {
+    id: "baghdad-llm-infra",
+    slug: "baghdad-llm-training-infra",
+    title: "بنية تدريب نموذج بغداد",
+    titleEn: "Baghdad LLM Training Infrastructure",
+    description: "منصة تدريب موزعة لتدريب نموذج اللغة العربية على عناقات الحوسبة السيادية مع جدولة فعالة لوحدات المعالجة الرسومية.",
+    fullDescription: "بنية تحتية مفتوحة المصدر لإدارة تدريب النماذج الكبيرة على عناقات GPU محلية، تتضمن جدولة المهام، نقاط الحفظ، وتتبع التجارب العلمية.",
+    status: "Active",
+    team: [
+      { name: "د. علي الجمو", slug: "ali-jemo", role: "قائد البنية" },
+      { name: "م. نور الكندي", slug: "noor-al-kindif", role: "مهندسة التقييم" }
+    ],
+    techStack: ["Python", "PyTorch", "CUDA", "Kubernetes", "Weights & Biases"],
+    labSlug: "ai-lab",
+    githubUrl: "https://github.com/jemo-labs/baghdad-ai",
+    image: "/wisdom-bg-new.png"
+  },
+  {
+    id: "heritage-ocr-platform",
+    slug: "heritage-ocr-platform",
+    title: "منصة بيت الحكمة لترقيم المخطوطات",
+    titleEn: "House of Wisdom Manuscript Digitization Platform",
+    description: "منصة ويب تفاعلية لرفع وفك رموز المخطوطات التاريخية وتحويلها لنصوص قابلة للبحث والتحليل.",
+    fullDescription: "أداة كاملة تتيح للباحثين والمؤسسات التراثية رفع صور المخطوطات ومعالجتها آلياً باستخدام نماذج الرؤية الحاسوبية ثم تصدير النصوص المنظمة.",
+    status: "Prototype",
+    team: [
+      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "قائدة المشروع" },
+      { name: "د. لينا التكريتي", slug: "lina-al-tikriti", role: "مهندسة النماذج" }
+    ],
+    techStack: ["Next.js", "Python", "OpenCV", "PostgreSQL"],
+    labSlug: "cv-lab",
+    githubUrl: "https://github.com/jemo-labs/heritage-ocr",
+    image: "/diwan-bg-astrolabe.png"
+  },
+  {
+    id: "autonomous-rover",
+    slug: "mesopotamia-rover",
+    title: "منصة الروفر المتنقل بلاد ما بين النهرين",
+    titleEn: "Mesopotamia Autonomous Rover Platform",
+    description: "منصة روبوت ميدانية مفتوحة للاختبار في البيئات الصحراوية مع ملاحة ذاتية ودمج مستشعرات.",
+    fullDescription: "قاعدة روبوتية قابلة للتكرار تجمع بين الملاحة الذاتية وإدراك البيئة، مصممة للبحث الميداني في الظروف القاسية.",
+    status: "Research",
+    team: [
+      { name: "م. مصطفى الموصللي", slug: "mustafa-al-mosuli", role: "قائد المنصة" },
+      { name: "م. حيدر البغدادي", slug: "haider-al-baghdadi", role: "مهندس الأنظمة" }
+    ],
+    techStack: ["ROS2", "C++", "Python", "LiDAR", "Raspberry Pi"],
+    labSlug: "robotics-lab",
+    githubUrl: "https://github.com/jemo-labs",
+    image: "/road-bg.png"
+  },
+  {
+    id: "clinical-decision-support",
+    slug: "clinical-decision-support",
+    title: "نظام مساعدة القرارات السريرية",
+    titleEn: "Clinical Decision Support System",
+    description: "نظام يحلل السجلات الصحية ويقترح تشخيصات محتملة بناء على معالجة لغوية طبية عربية.",
+    fullDescription: "أداة مساعدة للأطباء تستخرج المؤشرات السريرية من السجلات وتقدم تنبيهات وتوصيات مبنية على الأدلة، مع احترام تام لخصوصية البيانات.",
+    status: "Prototype",
+    team: [
+      { name: "د. زينب القادسية", slug: "zainab-al-qadisiyya", role: "قائدة المشروع" },
+      { name: "د. مريم البابلية", slug: "maryam-al-babili", role: "مستشارة سريرية" }
+    ],
+    techStack: ["Python", "FastAPI", "Transformers", "FHIR"],
+    labSlug: "healthcare-ai",
+    githubUrl: "https://github.com/jemo-labs",
+    image: "/covenant-bg.png"
   }
 ];
 
@@ -623,6 +973,51 @@ export const NEWS_ITEMS: NewsItem[] = [
     date: "2026-04-10",
     summary: "استعرض باحثو المؤسسة 3 أوراق علمية حول نماذج اللغة العربية والسيادة الرقمية.",
     content: "شهدت مشاركة المؤسسة اهتماماً واسعاً من الأوساط الأكاديمية والجامعات العراقية والإقليمية."
+  },
+  {
+    id: "news-4",
+    slug: "efficient-inference-paper-published",
+    title: "نشر ورقة بحثية جديدة عن الاستدلال الكفؤ للنماذج اللغوية العربية",
+    category: "أخبار المشاريع",
+    date: "2026-06-23",
+    summary: "حققت تقنية التكميم والإسقاط تقليل حجم النماذج بنسبة 60% مع الحفاظ على دقة الاستدلال.",
+    content: "تفتح هذه الورقة الباب لنشر نماذج عربية قوية على أجهزة محدودة الموارد، وهو إنجاز في سبيل السيادة الرقمية."
+  },
+  {
+    id: "news-5",
+    slug: "formal-verification-milestone",
+    title: "إثبات رسمي لخلو مجدول Ziqa من حالات الجمود",
+    category: "أخبار المشاريع",
+    date: "2026-07-06",
+    summary: "أكمل مختبر أنظمة التشغيل التحقق الرسمي الكامل لخصائص الإنصاف وتأخر الاستجابة في المجدول.",
+    content: "يشكل هذا الإثبات خطوة نحو الاعتماد في الأنظمة الحرجة عالية الموثوقية."
+  },
+  {
+    id: "news-6",
+    slug: "university-partnership-signed",
+    title: "توقيع اتفاقية تعاون بحثي مع الجامعة التكنولوجية",
+    category: "التعاونات",
+    date: "2026-05-20",
+    summary: "تعاون مشترك في مجالات الرؤية الحاسوبية والذكاء الاصطناعي الصحي وتبادل الباحثين.",
+    content: "تنص الاتفاقية على إتاحة الموارد الحاسوبية للطلبة وإشراكهم في المشاريع مفتوحة المصدر."
+  },
+  {
+    id: "news-7",
+    slug: "open-dataset-release",
+    title: "إصدار مجموعة بيانات العراق المفتوحة للمعالجة اللغوية",
+    category: "أخبار المؤسسة",
+    date: "2026-07-19",
+    summary: "أكبر مجموعة بيانات نصية علمية عربية متاحة مجاناً للباحثين بموجب رخصة مفتوحة.",
+    content: "تدعم مجموعة البيانات تدريب وتقييم النماذج اللغوية على السياقات الإقليمية واللهجات."
+  },
+  {
+    id: "news-8",
+    slug: "hackathon-winners-announced",
+    title: "إعلان الفائزين بهاكاثون الذكاء الاصطناعي العربي",
+    category: "الجوائز",
+    date: "2026-10-03",
+    summary: "توجت ثلاثة مشاريع مبتكرة اعتمدت على نموذج بغداد في حلول الرعاية الصحية والتعليم.",
+    content: "يحصل الفائزون على منح بحثية وفرصة تطوير مشاريعهم ضمن مختبرات المؤسسة."
   }
 ];
 
@@ -706,6 +1101,33 @@ export const EVENTS: EventItem[] = [
     type: "هاكاثون",
     description: "تحدي 48 ساعة لتطوير تطبيقات وحلول تعتمد على نماذج بغداد اللغوية.",
     speakers: ["د. سارة الحسيني", "د. مريم البابلية"]
+  },
+  {
+    id: "event-3",
+    title: "ورشة عمل: بناء النوى الآمنة بلغة Rust",
+    date: "2026-09-12",
+    location: "بغداد / عبر الإنترنت",
+    type: "ورشة عمل",
+    description: "ورشة عملية مكثفة لتصميم مكونات نواة آمنة الذاكرة باستخدام Rust ونظام Ziqa.",
+    speakers: ["م. أحمد الفراتي", "م. عمر البصري"]
+  },
+  {
+    id: "event-4",
+    title: "ندوة: الذكاء الاصطناعي في التصوير الطبي",
+    date: "2026-11-05",
+    location: "قاعة المؤتمرات — الجامعة التكنولوجية",
+    type: "ندوة علمية",
+    description: "استعراض أحدث تطبيقات الرؤية الحاسوبية في التشخيص الطبي المبكر.",
+    speakers: ["د. لينا التكريتي", "د. مريم البابلية"]
+  },
+  {
+    id: "event-5",
+    title: "هاكاثون المعلوماتية الحيوية والجينوم",
+    date: "2026-12-15",
+    location: "مجمع JEMO LABS الرقمي",
+    type: "هاكاثون",
+    description: "تحدي 36 ساعة لتطوير أدوات تحليل الجينوم على البيانات الإقليمية المفتوحة.",
+    speakers: ["د. يوسف النجفي", "م. حسين الكوفي"]
   }
 ];
 

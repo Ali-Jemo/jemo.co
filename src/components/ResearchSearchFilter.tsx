@@ -7,7 +7,7 @@ import Badge from "@/components/ui/Badge";
 import CitationBox from "@/components/ui/CitationBox";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, Calendar, Users, ArrowUpLeft, BookOpen, Download } from "lucide-react";
+import { Search, Filter, Calendar, Users, ArrowUpLeft, BookOpen, Download, LayoutGrid, List } from "lucide-react";
 
 interface ResearchSearchFilterProps {
   papers: Paper[];
@@ -17,6 +17,7 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
   const [query, setQuery] = useState("");
   const [selectedField, setSelectedField] = useState<string>("all");
   const [selectedYear, setSelectedYear] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
   const fields = useMemo(() => {
     return Array.from(new Set(papers.map((p) => p.field)));
@@ -97,18 +98,34 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
           <div>
             نتائج البحث: <span className="font-bold text-[var(--brand)] font-mono">{filteredPapers.length}</span> ورقة بحثية
           </div>
-          {(query || selectedField !== "all" || selectedYear !== "all") && (
-            <button
-              onClick={() => {
-                setQuery("");
-                setSelectedField("all");
-                setSelectedYear("all");
-              }}
-              className="text-xs text-[var(--brand)] hover:underline font-bold"
-            >
-              إعادة ضبط الفلاتر ✕
-            </button>
-          )}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 bg-[var(--surface)] border border-[var(--line)] rounded-lg p-1">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === "list" ? "bg-[var(--brand)]/10 text-[var(--brand)]" : "text-[var(--ink-2)] hover:text-[var(--ink-1)]"}`}
+              >
+                <List className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === "grid" ? "bg-[var(--brand)]/10 text-[var(--brand)]" : "text-[var(--ink-2)] hover:text-[var(--ink-1)]"}`}
+              >
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+            </div>
+            {(query || selectedField !== "all" || selectedYear !== "all") && (
+              <button
+                onClick={() => {
+                  setQuery("");
+                  setSelectedField("all");
+                  setSelectedYear("all");
+                }}
+                className="text-red-500 hover:text-red-600 transition-colors"
+              >
+                إعادة ضبط الفلاتر ✕
+              </button>
+            )}
+          </div>
         </div>
       </Card>
 
@@ -120,50 +137,69 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
           <p className="text-xs text-[var(--ink-2)]">جرب البحث بكلمات مختلفة أو تغيير مجال التصفية.</p>
         </Card>
       ) : (
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <motion.div layout className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 gap-8" : "flex flex-col border-t border-[var(--line)]"}>
           <AnimatePresence mode="popLayout">
             {filteredPapers.map((paper) => (
               <motion.div
                 key={paper.id}
                 layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="h-full"
+                className={viewMode === "grid" ? "h-full" : "border-b border-[var(--line)] hover:bg-[var(--surface)] transition-colors"}
               >
-                <Card hover className="p-8 flex flex-col justify-between h-full">
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-4">
-                  <Badge variant="info">{paper.field}</Badge>
-                  <span className="text-xs font-mono text-[var(--ink-2)]">{paper.publishDate}</span>
-                </div>
-
-                <h2 className="text-2xl font-bold mb-3 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
-                  <Link href={`/research/${paper.slug}`}>{paper.title}</Link>
-                </h2>
-
-                <p className="text-xs font-mono text-[var(--brand)] mb-4 dir-ltr text-right">{paper.titleEn}</p>
-
-                <p className="text-sm text-[var(--ink-2)] leading-relaxed line-clamp-4 mb-6">
-                  {paper.abstract}
-                </p>
-              </div>
-
-              <div className="pt-4 border-t border-[var(--line)] flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div className="flex items-center gap-2 text-[var(--ink-2)]">
-                  <Users className="w-4 h-4 text-[var(--brand)]" />
-                  <span>{paper.authors.map((a) => a.name).join(" ، ")}</span>
-                </div>
-                <Link
-                  href={`/research/${paper.slug}`}
-                  className="inline-flex items-center gap-1.5 font-bold text-[var(--brand)] hover:underline"
-                >
-                  <span>قراءة الورقة والبيانات</span>
-                  <ArrowUpLeft className="w-4 h-4" />
-                </Link>
-              </div>
-                </Card>
+                {viewMode === "grid" ? (
+                  <Card hover className="p-8 flex flex-col justify-between h-full">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-4">
+                        <Badge variant="info">{paper.field}</Badge>
+                        <span className="text-xs font-mono text-[var(--ink-2)]">{paper.publishDate}</span>
+                      </div>
+                      <h2 className="text-2xl font-bold mb-3 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
+                        <Link href={`/research/${paper.slug}`}>{paper.title}</Link>
+                      </h2>
+                      <p className="text-xs font-mono text-[var(--brand)] mb-4 dir-ltr text-right">{paper.titleEn}</p>
+                      <p className="text-sm text-[var(--ink-2)] leading-relaxed line-clamp-4 mb-6">
+                        {paper.abstract}
+                      </p>
+                    </div>
+                    <div className="pt-4 border-t border-[var(--line)] flex flex-wrap items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2 text-[var(--ink-2)]">
+                        <Users className="w-4 h-4 text-[var(--brand)]" />
+                        <span>{paper.authors.map((a) => a.name).join(" ، ")}</span>
+                      </div>
+                      <Link href={`/research/${paper.slug}`} className="inline-flex items-center gap-1.5 font-bold text-[var(--brand)] hover:underline">
+                        <span>قراءة الورقة والبيانات</span>
+                        <ArrowUpLeft className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </Card>
+                ) : (
+                  <div className="py-8 flex flex-col md:flex-row gap-6 md:gap-12 group">
+                    <div className="md:w-1/4 flex flex-col gap-2 shrink-0">
+                      <span className="text-sm font-mono text-[var(--ink-2)]">{paper.publishDate}</span>
+                      <Badge variant="info" className="w-fit">{paper.field}</Badge>
+                    </div>
+                    <div className="flex-1">
+                      <h2 className="text-2xl md:text-3xl font-bold mb-2 text-[var(--ink-1)] group-hover:text-[var(--brand)] transition-colors">
+                        <Link href={`/research/${paper.slug}`} className="before:absolute before:inset-0 relative">
+                          {paper.title}
+                        </Link>
+                      </h2>
+                      <p className="text-xs font-mono text-[var(--brand)] mb-4 dir-ltr text-right">{paper.titleEn}</p>
+                      <p className="text-base text-[var(--ink-2)] leading-relaxed line-clamp-2 mb-4">
+                        {paper.abstract}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-[var(--ink-2)]">
+                        <div className="flex items-center gap-1.5">
+                          <Users className="w-3.5 h-3.5" />
+                          <span>{paper.authors.map((a) => a.name).join(" ، ")}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             ))}
           </AnimatePresence>
