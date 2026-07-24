@@ -214,7 +214,7 @@ export default function HeroSection() {
 
               {/* News Section (Right) */}
               {/* News Section — Full Redesign */}
-              <div className="w-full md:w-1/2 h-full p-5 md:p-6 flex flex-col bg-gradient-to-br from-white to-slate-50/50">
+              <div className="w-full md:w-1/2 h-full p-5 md:p-6 flex flex-col bg-gradient-to-br from-white to-slate-50/50 border-l border-slate-200/60">
                 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-5">
@@ -228,15 +228,15 @@ export default function HeroSection() {
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 dir-ltr">
                     <span className="text-[10px] font-mono text-slate-400 mr-2">
                       {activeNews + 1}/{FEATURED_NEWS.length}
                     </span>
                     <SimpleButton onClick={() => handleManualNav('prev')} ariaLabel="السابق" className="w-7 h-7 rounded-md border border-slate-200 text-slate-500 hover:text-slate-900">
-                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </SimpleButton>
                     <SimpleButton onClick={() => handleManualNav('next')} ariaLabel="التالي" className="w-7 h-7 rounded-md border border-slate-200 text-slate-500 hover:text-slate-900">
-                      <ChevronRight className="w-3.5 h-3.5" />
+                      <ChevronLeft className="w-3.5 h-3.5" />
                     </SimpleButton>
                   </div>
                 </div>
