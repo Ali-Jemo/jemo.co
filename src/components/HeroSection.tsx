@@ -2,28 +2,34 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence, useSpring } from "framer-motion";
-import { ArrowLeft, ChevronLeft, ChevronRight, Cpu, Microscope, Globe } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Cpu, Microscope, Globe, Sparkles, Clock, ArrowUpLeft } from "lucide-react";
 // import BaghdadBabylonSlideshow from "./BaghdadBabylonSlideshow";
 
 const FEATURED_NEWS = [
   {
     id: "news-1",
-    title: "إطلاق نموذج Baghdadi-1 للغة والرياضيات مع قدرات تحليلية متقدمة",
+    title: "إطلاق نموذج Baghdadi-1 للغة والرياضيات",
+    description: "نموذج سيادي بـ 7 مليارات معلم، مُدرب خصيصاً على البيانات الدقيقة لحل المعضلات الرياضية في السياق العربي.",
     category: "نماذج سيادية",
+    date: "٢٤ يوليو ٢٠٢٦",
     href: "/research",
     theme: "emerald"
   },
   {
     id: "news-2",
-    title: "نواة Ziqa v1.0 — استدلال فائق السرعة يعيد تعريف معايير الأداء",
+    title: "نواة Ziqa v1.0 — استدلال فائق السرعة",
+    description: "بنية تحتية برمجية جديدة تسرّع عمليات الاستدلال بنسسبة ٤٠٪ مع تقليل استهلاك الطاقة.",
     category: "نواة تشغيلية",
+    date: "١٨ يوليو ٢٠٢٦",
     href: "/labs",
     theme: "blue"
   },
   {
     id: "news-3",
-    title: "افتتاح عنقود بغداد-١ للحوسبة الفائقة لخدمة الباحثين والمؤسسات",
+    title: "افتتاح عنقود بغداد-١ للحوسبة الفائقة",
+    description: "مركب بيانيات متطور لتوفير قوة حواسيب هائلة للفئات الأكاديمية والبحثية.",
     category: "بنية تحتية",
+    date: "٠٥ يوليو ٢٠٢٦",
     href: "/infrastructure",
     theme: "amber"
   },
@@ -116,17 +122,12 @@ export default function HeroSection() {
   const cardHeight = useTransform(smoothScroll, [0.3, 0.7], ["100dvh", "100dvh"]);
   const cardBorderRadius = useTransform(smoothScroll, [0.3, 0.6], ["24px", "0px"]);
   const cardMargin = useTransform(smoothScroll, [0.3, 0.6], ["24px", "0px"]);
-  
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    setIsExpanded(v > 0.5);
-  });
-
   const getThemeColors = (theme: string) => {
     switch(theme) {
-      case 'emerald': return 'text-emerald-700 bg-emerald-50 border-emerald-100';
-      case 'blue': return 'text-blue-700 bg-blue-50 border-blue-100';
-      case 'amber': return 'text-amber-700 bg-amber-50 border-amber-100';
-      default: return 'text-slate-700 bg-slate-50 border-slate-100';
+      case 'emerald': return { badge: 'text-emerald-700 bg-emerald-50 border-emerald-200/60', hover: 'group-hover:text-emerald-700' };
+      case 'blue': return { badge: 'text-blue-700 bg-blue-50 border-blue-200/60', hover: 'group-hover:text-blue-700' };
+      case 'amber': return { badge: 'text-amber-700 bg-amber-50 border-amber-200/60', hover: 'group-hover:text-amber-700' };
+      default: return { badge: 'text-slate-700 bg-slate-50 border-slate-200/60', hover: 'group-hover:text-slate-700' };
     }
   };
 
@@ -212,26 +213,37 @@ export default function HeroSection() {
               </div>
 
               {/* News Section (Right) */}
-              <div className="w-full md:w-1/2 h-full p-6 md:p-8 flex flex-col justify-between bg-white">
+              {/* News Section — Full Redesign */}
+              <div className="w-full md:w-1/2 h-full p-5 md:p-6 flex flex-col bg-gradient-to-br from-white to-slate-50/50">
                 
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900">الموجز البحثي</h3>
-                    <span className="text-[10px] font-mono uppercase text-slate-400 tracking-widest mt-0.5 block">آخر الإصدارات</span>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
+                      <Sparkles className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900 tracking-tight">الموجز البحثي</h3>
+                      <span className="text-[9px] font-mono uppercase text-slate-400 tracking-widest">آخر الإصدارات</span>
+                    </div>
                   </div>
                   
-                  <div className="flex gap-1.5 dir-ltr">
-                    <SimpleButton onClick={() => handleManualNav('prev')} ariaLabel="السابق" className="w-8 h-8 rounded-full border border-slate-200 text-slate-500">
-                      <ChevronLeft className="w-4 h-4" />
+                  <div className="flex items-center gap-1">
+                    <span className="text-[10px] font-mono text-slate-400 mr-2">
+                      {activeNews + 1}/{FEATURED_NEWS.length}
+                    </span>
+                    <SimpleButton onClick={() => handleManualNav('prev')} ariaLabel="السابق" className="w-7 h-7 rounded-md border border-slate-200 text-slate-500 hover:text-slate-900">
+                      <ChevronLeft className="w-3.5 h-3.5" />
                     </SimpleButton>
-                    <SimpleButton onClick={() => handleManualNav('next')} ariaLabel="التالي" className="w-8 h-8 rounded-full border border-slate-200 text-slate-500">
-                      <ChevronRight className="w-4 h-4" />
+                    <SimpleButton onClick={() => handleManualNav('next')} ariaLabel="التالي" className="w-7 h-7 rounded-md border border-slate-200 text-slate-500 hover:text-slate-900">
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </SimpleButton>
                   </div>
                 </div>
 
+                {/* News Card */}
                 <div 
-                  className="relative flex-grow flex flex-col justify-end"
+                  className="relative flex-grow flex flex-col"
                   onMouseEnter={() => setIsHoveringNews(true)}
                   onMouseLeave={() => setIsHoveringNews(false)}
                 >
@@ -239,22 +251,58 @@ export default function HeroSection() {
                     <motion.a
                       key={activeNews}
                       href={FEATURED_NEWS[activeNews].href}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.4 }}
-                      className="block group"
+                      initial={{ opacity: 0, x: -20, filter: 'blur(4px)' }}
+                      animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                      exit={{ opacity: 0, x: 20, filter: 'blur(4px)' }}
+                      transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                      className="block group h-full flex flex-col p-4 rounded-xl border border-slate-100 bg-white shadow-[0_2px_8px_-2px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.1)] hover:border-slate-200 transition-all duration-300"
                     >
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded text-[10px] font-mono font-bold mb-2 border ${getThemeColors(FEATURED_NEWS[activeNews].theme)}`}>
-                        {FEATURED_NEWS[activeNews].category}
-                      </span>
-                      <p className="text-sm lg:text-base font-bold text-slate-800 leading-snug group-hover:text-emerald-700 transition-colors line-clamp-3">
+                      {/* Top: Badge + Date */}
+                      <div className="flex items-center justify-between mb-3">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${getThemeColors(FEATURED_NEWS[activeNews].theme).badge}`}>
+                          {FEATURED_NEWS[activeNews].category}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {FEATURED_NEWS[activeNews].date}
+                        </span>
+                      </div>
+                      
+                      {/* Title */}
+                      <h4 className={`text-base lg:text-lg font-bold text-slate-800 leading-snug mb-2 transition-colors duration-300 ${getThemeColors(FEATURED_NEWS[activeNews].theme).hover}`}>
                         {FEATURED_NEWS[activeNews].title}
+                      </h4>
+                      
+                      {/* Description */}
+                      <p className="text-xs text-slate-500 font-medium leading-relaxed line-clamp-2 mb-3 flex-grow">
+                         {FEATURED_NEWS[activeNews].description}
                       </p>
+                      
+                      {/* Footer */}
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                        <span className="text-xs font-bold text-slate-400 group-hover:text-slate-700 transition-colors flex items-center gap-1.5">
+                          اقرأ التفاصيل
+                          <ArrowUpLeft className="w-3.5 h-3.5 transform group-hover:-translate-y-0.5 group-hover:-translate-x-0.5 transition-transform" />
+                        </span>
+                      </div>
                     </motion.a>
                   </AnimatePresence>
                   
-                  <LinearProgress progress={progress} />
+                  {/* Progress Bar */}
+                  <div className="mt-3 shrink-0">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-grow h-1 bg-slate-100 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-slate-600 to-slate-400 rounded-full"
+                          style={{ width: `${progress}%` }}
+                          transition={{ duration: 0.1, ease: "linear" }}
+                        />
+                      </div>
+                      <span className="text-[9px] font-mono text-slate-400 tabular-nums">
+                        {Math.round(progress)}%
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
               </div>
