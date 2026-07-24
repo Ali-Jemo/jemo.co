@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, id: data.id }, { status: 201 });
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: "حدث خطأ غير متوقع" }, { status: 500 });
   }
 }

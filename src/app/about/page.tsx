@@ -5,7 +5,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
 import { ABOUT_INFO } from "@/lib/data/research-data";
-import { ShieldCheck, Target, Users, Rocket, ArrowUpLeft, Compass, Lightbulb, Sparkles, BookOpen } from "lucide-react";
+import { Target, ArrowUpLeft, Compass, Sparkles, BookOpen } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function AboutPage() {
               <span className="text-gradient">صرح البحث والسيادة المعرفية</span>
             </h1>
             <blockquote className="text-lg md:text-xl font-bold text-[var(--brand)] border-y border-[var(--line)] py-6 my-6 bg-[var(--bg)]/50 rounded-xl leading-relaxed">
-              "{ABOUT_INFO.coreQuote}"
+              &quot;{ABOUT_INFO.coreQuote}&quot;
             </blockquote>
           </div>
         </AnimatedSection>

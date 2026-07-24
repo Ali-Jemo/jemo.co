@@ -1,21 +1,11 @@
-"use client";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
-import { useState } from "react";
 import { GithubIcon } from "@/components/Icons";
-import { Mail, Send, MessageSquare, Check, ArrowUpLeft } from "lucide-react";
+import { Mail, MessageSquare } from "lucide-react";
 
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
-
   return (
     <>
       <Header />
@@ -32,10 +22,10 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          <div className="max-w-2xl mx-auto mb-16">
             {/* Direct Channels */}
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-[var(--ink-1)] mb-6">قنوات التواصل الرسمية</h2>
+              <h2 className="text-2xl font-bold text-[var(--ink-1)] mb-6 text-center">قنوات التواصل الرسمية</h2>
 
               <a
                 href="mailto:contact@jemo.co"
@@ -96,77 +86,6 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Message Form */}
-            <Card className="p-8">
-              <h2 className="text-2xl font-bold text-[var(--ink-1)] mb-6">نموذج الرسائل المباشرة</h2>
-
-              {submitted ? (
-                <div className="p-8 text-center bg-[var(--brand)]/10 rounded-2xl border border-[var(--brand)]/30 space-y-4">
-                  <Check className="w-8 h-8 text-[var(--brand)] mx-auto" />
-                  <h3 className="text-xl font-bold text-[var(--ink-1)]">تم إرسال رسالتك!</h3>
-                  <p className="text-xs text-[var(--ink-2)]">سيرد عليك أحد باحثي المؤسسة خلال 24 ساعة.</p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-mono font-bold text-[var(--ink-1)] mb-1">الاسم *</label>
-                    <input
-                      required
-                      type="text"
-                      placeholder="اسمك الكريم"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-sm text-[var(--ink-1)] focus:border-[var(--brand)] outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono font-bold text-[var(--ink-1)] mb-1">البريد الإلكتروني *</label>
-                    <input
-                      required
-                      type="email"
-                      placeholder="name@domain.com"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-sm text-[var(--ink-1)] focus:border-[var(--brand)] outline-none dir-ltr text-right"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono font-bold text-[var(--ink-1)] mb-1">موضوع الرسالة *</label>
-                    <input
-                      required
-                      type="text"
-                      placeholder="عنوان الاستفسار"
-                      value={form.subject}
-                      onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-sm text-[var(--ink-1)] focus:border-[var(--brand)] outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono font-bold text-[var(--ink-1)] mb-1">الرسالة *</label>
-                    <textarea
-                      required
-                      rows={4}
-                      placeholder="اكتب رسالتك تفصيلاً هنا..."
-                      value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      className="w-full px-4 py-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-sm text-[var(--ink-1)] focus:border-[var(--brand)] outline-none"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3 rounded-xl bg-[var(--brand)] text-white font-bold text-sm shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2"
-                  >
-                    <span>إرسال الرسالة</span>
-                    <ArrowUpLeft className="w-4 h-4" />
-                  </button>
-                </form>
-              )}
-            </Card>
-          </div>
         </div>
       </main>
       <Footer />
