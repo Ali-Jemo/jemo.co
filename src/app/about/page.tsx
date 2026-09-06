@@ -4,9 +4,13 @@ import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
-import { ABOUT_INFO, RESEARCHERS } from "@/lib/data/research-data";
+import { ABOUT_INFO } from "@/lib/data/research-data";
 import { Target, ArrowUpLeft, Compass, Sparkles, BookOpen, ShieldCheck, Cpu, GitBranch, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import BioLeadershipGrid from "@/components/BioLeadershipGrid";
+import BioPartnersGrid from "@/components/BioPartnersGrid";
+import BioButton from "@/components/BioButton";
+import WeAreSection from "@/components/WeAreSection";
 
 export const metadata: Metadata = {
   title: "من نحن | JEMO LABS — بيت الحكمة الرقمي",
@@ -182,36 +186,8 @@ export default function AboutPage() {
         </AnimatedSection>
 
         {/* SCIENTIFIC COUNCIL & LEADERSHIP */}
-        <AnimatedSection className="section bg-[var(--bg)] border-b border-[var(--line)]">
-          <div className="container">
-            <SectionHeader
-              eyebrow="الهيئة الأكاديمية"
-              title="المجلس العلمي ورؤساء المختبرات"
-              description="علماء ومهندسون يقودون الأبحاث والتطوير في مختلف المجالات."
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-              {RESEARCHERS.slice(0, 3).map((r) => (
-                <Card key={r.id} hover className="p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="w-14 h-14 rounded-2xl bg-[var(--surface)] border border-[var(--line)] text-[var(--brand)] flex items-center justify-center font-bold text-xl font-mono mb-4">
-                      {r.name.slice(0, 2)}
-                    </div>
-                    <h3 className="text-xl font-bold text-[var(--ink-1)] mb-1">
-                      <Link href={`/researchers/${r.slug}`}>{r.name}</Link>
-                    </h3>
-                    <p className="text-xs font-bold text-[var(--brand)] mb-3">{r.role}</p>
-                    <p className="text-xs text-[var(--ink-2)] line-clamp-3 leading-relaxed mb-4">{r.bio}</p>
-                  </div>
-                  <Link href={`/researchers/${r.slug}`} className="text-xs font-bold text-[var(--brand)] hover:underline flex items-center gap-1">
-                    <span>عرض الملف الأكاديمي الكامل</span>
-                    <ArrowUpLeft className="w-3.5 h-3.5" />
-                  </Link>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </AnimatedSection>
+        {/* SCIENTIFIC LEADERSHIP (IntegratedBio Style) */}
+        <BioLeadershipGrid />
 
         {/* VALUES */}
         <AnimatedSection className="section bg-[var(--surface)] border-b border-[var(--line)]">
@@ -236,6 +212,11 @@ export default function AboutPage() {
           </div>
         </AnimatedSection>
 
+        {/* ACADEMIC ALLIANCE (IntegratedBio Style) */}
+        {/* WE ARE — founder story */}
+        <WeAreSection />
+
+        <BioPartnersGrid />
         {/* CTA */}
         <AnimatedSection className="section bg-[var(--bg)] text-center">
           <div className="container max-w-2xl mx-auto space-y-6">
@@ -243,13 +224,14 @@ export default function AboutPage() {
             <p className="text-[var(--ink-2)] text-sm">
               نرحب بالباحثين، المطورين، والمصممين الراغبين بالمساهمة في بناء بيت الحكمة الرقمي.
             </p>
-            <div className="flex justify-center gap-4 pt-2">
-              <Link href="/join">
-                <button className="px-6 py-3 rounded-full bg-[var(--brand)] text-white font-bold text-sm shadow-md hover:opacity-90 transition-all flex items-center gap-2">
-                  <span>قدم طلب انضمام</span>
-                  <ArrowUpLeft className="w-4 h-4" />
-                </button>
-              </Link>
+            <div className="flex justify-center pt-2">
+              <BioButton
+                href="/join"
+                label="JOIN RESEARCH TEAM"
+                secondaryLabel="قدّم طلب انضمام"
+                variant="primary"
+                dir="ltr"
+              />
             </div>
           </div>
         </AnimatedSection>

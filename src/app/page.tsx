@@ -3,10 +3,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LivingMuseumTimeline from "@/components/LivingMuseumTimeline";
-import AnimatedSection from "@/components/AnimatedSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
-import TerminalCard from "@/components/ui/TerminalCard";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import CountUp from "@/components/CountUp";
@@ -98,7 +96,7 @@ export default function Home() {
         </section>
 
         {/* INSTITUTION STATS */}
-        <AnimatedSection className="py-16 bg-[var(--surface)] border-b border-[var(--line)]">
+        <section className="py-16 bg-[var(--surface)] border-b border-[var(--line)]">
           <div className="container">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
               <div className="p-6 rounded-2xl bg-[var(--bg)] border border-[var(--line)]">
@@ -142,10 +140,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </AnimatedSection>
+        </section>
 
         {/* LATEST RESEARCH */}
-        <AnimatedSection className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
+        <section className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
           <div className="container">
             <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
               <SectionHeader
@@ -199,10 +197,10 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </AnimatedSection>
+        </section>
 
         {/* LATEST PROJECTS */}
-        <AnimatedSection className="py-20 bg-[var(--surface)] border-b border-[var(--line)]">
+        <section className="py-20 bg-[var(--surface)] border-b border-[var(--line)]">
           <div className="container">
             <div className="flex flex-wrap items-end justify-between gap-4 mb-12">
               <SectionHeader
@@ -219,16 +217,63 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-              {RESEARCH_PROJECTS.slice(0, 3).map((proj, idx) => (
-                <TerminalCard key={proj.id} project={proj} featured={idx === 0} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {RESEARCH_PROJECTS.slice(0, 3).map((proj) => (
+                <Card key={proj.id} hover className="p-6 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-[var(--bg)] border border-[var(--line)] text-[var(--brand)]">
+                        {proj.status}
+                      </span>
+                      {proj.githubUrl && (
+                        <a
+                          href={proj.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors"
+                          title="GitHub Repository"
+                        >
+                          <FolderGit2 className="w-4 h-4" />
+                        </a>
+                      )}
+                    </div>
+
+                    <h3 className="text-lg font-bold mb-2 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
+                      <Link href={`/projects/${proj.slug}`}>{proj.title}</Link>
+                    </h3>
+
+                    <p className="text-xs text-[var(--ink-2)] leading-relaxed mb-4">
+                      {proj.description}
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {proj.techStack.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-2 py-0.5 rounded bg-[var(--bg)] border border-[var(--line)] text-[10px] font-mono text-[var(--ink-2)]"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    <Link
+                      href={`/projects/${proj.slug}`}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-[var(--brand)] hover:underline"
+                    >
+                      <span>تفاصيل المشروع</span>
+                      <ArrowUpLeft className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </Card>
               ))}
             </div>
           </div>
-        </AnimatedSection>
+        </section>
 
         {/* INITIATIVES SHOWCASE */}
-        <AnimatedSection className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
+        <section className="py-20 bg-[var(--bg)] border-b border-[var(--line)]">
           <div className="container">
             <SectionHeader
               eyebrow="المبادرات الحالية"
@@ -264,14 +309,14 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </AnimatedSection>
+        </section>
 
         {/* LIVING MUSEUM TIMELINE */}
-        <AnimatedSection className="py-24 bg-[var(--surface)] border-b border-[var(--line)]">
+        <section className="py-24 bg-[var(--surface)] border-b border-[var(--line)]">
           <div className="container">
             <LivingMuseumTimeline showFull={false} />
           </div>
-        </AnimatedSection>
+        </section>
       </main>
       <Footer />
     </>
