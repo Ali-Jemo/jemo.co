@@ -20,11 +20,11 @@ export default function BioPartnersGrid() {
               <span>الشركاء والمؤسسات الأكاديمية · ACADEMIC ALLIANCE</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-[#222f30] font-kufi">
-              شبكة بحثية تمتد عبر الجامعات والمراكز الوطنية.
+              شبكة معرفية لكل العلوم.
             </h2>
           </div>
           <p className="text-base sm:text-lg text-[#445e5f] max-w-md leading-relaxed">
-            تعاون وثيق مع أعرق الجامعات العراقية لتسهيل وصول الباحثين والطلبة إلى عتاد الحوسبة الفائقة والبيانات المفتوحة.
+            تعاون مع الجامعات والمراكز الشرعية والعلمية والتقنية لتكون كل المعرفة مفتوحة للطلبة والباحثين.
           </p>
         </div>
 

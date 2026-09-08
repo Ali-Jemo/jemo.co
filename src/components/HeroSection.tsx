@@ -8,31 +8,31 @@ import BioButton from "@/components/BioButton";
 
 const PILLARS_PREVIEW = [
   { 
-    id: "llm", 
+    id: "ai", 
     num: "01", 
-    name: "نماذج Baghdad-LLM", 
-    spec: "128K Context", 
-    field: "استدلال رياضي ولغوي", 
-    desc: "نموذج لغوي سيادي بـ 7 مليارات معلم، مُدرّب على صياغة البراهين والتحليل الرياضي الدقيق.",
-    href: "/benchmarks" 
+    name: "الذكاء الاصطناعي والحوسبة", 
+    spec: "AI • Systems • Data", 
+    field: "نماذج عربية وأنظمة مفتوحة", 
+    desc: "أبحاث الذكاء الاصطناعي، النماذج اللغوية العربية، نواة Ziqa، والحوسبة الفائقة — بنية معرفية رقمية مفتوحة.",
+    href: "/research" 
   },
   { 
-    id: "kernel", 
+    id: "islamic", 
     num: "02", 
-    name: "نواة Ziqa التشغيلية", 
-    spec: "0.12µs Switch", 
-    field: "نواة ميكروية Rust", 
-    desc: "نواة دقيقة عالية الاعتمادية للأنظمة الحرجة مع بروتوكول نقل رسائل (IPC) صفري النسخ.",
-    href: "/labs" 
+    name: "العلوم الشرعية والتراث", 
+    spec: "Islamic • Heritage", 
+    field: "فقه • لغة • مخطوطات", 
+    desc: "العلوم الشرعية، الدراسات القرآنية والحديثية، الفقه والأصول، اللغة العربية، وتحقيق التراث والمخطوطات.",
+    href: "/initiatives" 
   },
   { 
-    id: "hpc", 
+    id: "natural", 
     num: "03", 
-    name: "عنقود بغداد-١ HPC", 
-    spec: "512 Nodes", 
-    field: "حوسبة وطنية معزولة", 
-    desc: "عنقود حوسبة فائق بقدرة 18.2 PFLOPS لتسريع تدريب النماذج والبيانات الوطنية في بيئة معزولة.",
-    href: "/infrastructure" 
+    name: "العلوم الطبيعية والكونية", 
+    spec: "Physics • Bio • Med", 
+    field: "فيزياء • طب • فلك", 
+    desc: "الفيزياء والكيمياء والرياضيات، علوم الحياة والطب، الفلك والبيئة، والعلوم الإنسانية والاجتماعية.",
+    href: "/labs" 
   },
 ];
 
@@ -144,6 +144,7 @@ export default function HeroSection() {
             loop
             muted
             playsInline
+            poster="/hero-bg.png"
             className="w-full h-full object-cover object-center opacity-90 scale-105 transition-opacity duration-1000"
           >
             <source src="/hero-loop.mp4" type="video/mp4" />
@@ -173,11 +174,11 @@ export default function HeroSection() {
         >
           <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse" aria-hidden />
           <span className="font-mono text-[11px] font-bold tracking-wider text-white/95 uppercase">
-            SOVEREIGN INTELLIGENCE
+            ALL SCIENCES · OPEN KNOWLEDGE
           </span>
           <span className="h-3 w-px bg-white/20" aria-hidden />
           <span className="text-[11px] text-white/90 font-medium">
-            مختبرات JEMO · بيت الحكمة الرقمي
+            مختبرات JEMO · لجميع العلوم
           </span>
         </motion.div>
 
@@ -225,7 +226,7 @@ export default function HeroSection() {
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="block"
             >
-              هندسة المستقبل
+              هندسة المعرفة
             </motion.span>
           </span>
 
@@ -236,7 +237,7 @@ export default function HeroSection() {
               transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               className="block"
             >
-              والسيادة الرقمية<span className="text-[#bef264]">.</span>
+              لجميع العلوم<span className="text-[#bef264]">.</span>
             </motion.span>
           </span>
         </h1>
@@ -278,7 +279,7 @@ export default function HeroSection() {
             style={{ color: "rgba(255, 255, 255, 0.95)" }}
             className="text-base sm:text-lg leading-relaxed font-normal [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
           >
-            مؤسسة أبحاث وطنية مستقلة تُهندس النوى الذكية وحوسبة السيادة الفائقة — من <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">بغداد</strong> إلى العالم.
+            مؤسسة علمية مستقلة لجميع العلوم — من <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">العلوم الشرعية والإسلامية</strong> إلى <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">الذكاء الاصطناعي</strong> والعلوم الطبيعية والطبية والإنسانية — من <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">بغداد</strong> إلى العالم.
           </p>
 
           {/* 3 Quick Research Pillars Switchers */}

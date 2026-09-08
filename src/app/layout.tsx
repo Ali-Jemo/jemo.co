@@ -9,14 +9,14 @@ import ScrollProgress from "@/components/ScrollProgress";
 const noto = Noto_Kufi_Arabic({
   subsets: ["arabic"],
   variable: "--font-kufi",
-  display: "swap",
+  display: "optional",
 });
 
 const mono = IBM_Plex_Mono({
   weight: ["400", "500"],
   subsets: ["latin"],
   variable: "--font-mono",
-  display: "swap",
+  display: "optional",
 });
 
 export const viewport: Viewport = {
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
     default: "JEMO LABS — بيت الحكمة الرقمي",
     template: "%s | JEMO LABS",
   },
-  description: "مؤسسة بحثية سيادية غير ربحية تعنى ببناء المعرفة المفتوحة، النواة التشغيلية الميكروية، وتطوير أبحاث الذكاء الاصطناعي العربي في العراق.",
-  keywords: ["JEMO LABS", "بيت الحكمة الرقمي", "أبحاث الذكاء الاصطناعي", "Ziqa Kernel", "أنظمة التشغيل", "المصادر المفتوحة", "العراق", "بغداد"],
+  description: "مؤسسة بحثية مستقلة غير ربحية لجميع العلوم: العلوم الشرعية والإسلامية، الذكاء الاصطناعي، الفيزياء، الكيمياء، الرياضيات، الطب، الفلك، الهندسة، والعلوم الإنسانية — معرفة مفتوحة من العراق إلى العالم.",
+  keywords: ["JEMO LABS", "بيت الحكمة الرقمي", "جميع العلوم", "العلوم الشرعية", "الدراسات الإسلامية", "الذكاء الاصطناعي", "الفيزياء", "الكيمياء", "الرياضيات", "الطب", "الفلك", "Ziqa Kernel", "المصادر المفتوحة", "العراق", "بغداد"],
   authors: [{ name: "JEMO LABS Research Team", url: "https://jemo.co" }],
   publisher: "JEMO LABS",
   icons: {
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "JEMO LABS — بيت الحكمة الرقمي",
-    description: "مؤسسة بحثية مستقلة لبناء المعرفة المفتوحة والأبحاث الرقمية السيادية.",
+    description: "مؤسسة مستقلة لجميع العلوم: الشرعية، الطبيعية، الطبية، الهندسية، والذكاء الاصطناعي — معرفة مفتوحة للجميع.",
     url: "https://jemo.co",
     siteName: "JEMO LABS",
     locale: "ar_IQ",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "JEMO LABS — بيت الحكمة الرقمي",
-    description: "مؤسسة بحثية مستقلة لبناء المعرفة المفتوحة والأبحاث الرقمية السيادية.",
+    description: "مؤسسة مستقلة لجميع العلوم: الشرعية، الطبيعية، الطبية، الهندسية، والذكاء الاصطناعي — معرفة مفتوحة للجميع.",
     images: ["/jemo-logo.svg"],
   },
 };
@@ -68,7 +68,7 @@ const jsonLd = {
       "alternateName": ["بيت الحكمة الرقمي", "جيمو لابس"],
       "url": "https://jemo.co",
       "logo": "https://jemo.co/jemo-logo.svg",
-      "description": "مؤسسة بحثية سيادية غير ربحية تعنى ببناء المعرفة المفتوحة، النواة التشغيلية الميكروية، وتطوير أبحاث الذكاء الاصطناعي العربي في العراق."
+      "description": "مؤسسة بحثية مستقلة غير ربحية لجميع العلوم: العلوم الشرعية والإسلامية، الذكاء الاصطناعي، العلوم الطبيعية والطبية والهندسية والإنسانية — معرفة مفتوحة من العراق إلى العالم."
     },
     {
       "@type": "WebSite",

@@ -10,20 +10,20 @@ export default function BioManifesto() {
         
         {/* Sidebar Label (IntegratedBio style) */}
         <div className="text-xs sm:text-sm font-mono tracking-wider uppercase text-[#738284] font-semibold sticky top-24">
-          المنظومة المتكاملة · THE INTEGRATED PLATFORM
+          لجميع العلوم · ALL SCIENCES
         </div>
 
         {/* Content Section */}
         <div className="flex flex-col gap-8 max-w-4xl">
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.12] tracking-tight font-kufi text-[#222f30]">
-            دمج النوى التشغيلية، والذكاء الاصطناعي، والحوسبة الفائقة في{" "}
+            من العلوم الشرعية والإسلامية، إلى الذكاء الاصطناعي، إلى{" "}
             <span className="text-[#a4a89a]">
-              محرك وطني موحّد للاكتشاف العلمي والسيادة التقنية.
+              جميع العلوم الطبيعية والطبية والإنسانية في بيت معرفي واحد.
             </span>
           </h2>
 
           <p className="text-base sm:text-lg text-[#55696a] leading-relaxed max-w-2xl font-normal">
-            نحن نبني منظومة متكاملة تجمع بين أحدث نماذج الاستدلال اللغوي والرياضي العربي، ونواة Ziqa البرمجية متناهية الصغر، وعنقود بغداد-١ للحوسبة الفائقة. لا نكتفي بنقل التقنيات — بل نُهندسها من النواة لضمان استقلال علمي كامل.
+            نحن مؤسسة لجميع العلوم دون استثناء: القرآن وعلومه، الحديث والفقه، اللغة العربية والتراث، الفيزياء والكيمياء والرياضيات، الطب وعلوم الحياة، الفلك والبيئة، الهندسة والحاسوب، والعلوم الإنسانية — نبحث ونوثّق وننشر معرفة مفتوحة للجميع.
           </p>
         </div>
 

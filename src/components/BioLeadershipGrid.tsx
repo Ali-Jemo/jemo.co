@@ -26,11 +26,11 @@ export default function BioLeadershipGrid() {
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-[#222f30] font-kufi">
-              كادرٌ علمي يجمع بين عمق الأبحاث وهندسة النظم.
+              علماء من كل علمٍ: شرعي وتقني وطبيعي.
             </h2>
 
             <p className="text-sm sm:text-base text-[#445e5f] leading-relaxed">
-              يقود JEMO LABS نخبة من الباحثين ومهندسي النظم العراقيين الذين يكرسون خبراتهم لبناء البنية التحتية الرقمية السيادية وإثراء بيت الحكمة المعرفي.
+              يقود JEMO LABS علماء وباحثون في العلوم الشرعية والإسلامية، والذكاء الاصطناعي والهندسة، والعلوم الطبيعية والطبية والإنسانية — بروح بيت الحكمة الجامعة.
             </p>
 
             <div className="pt-2">

@@ -6,7 +6,7 @@ import { Mail, CheckCircle2, ShieldCheck, ArrowLeft } from "lucide-react";
 export default function ResearchNewsletter() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [topics, setTopics] = useState<string[]>(["النوى التشغيلية", "الذكاء الاصطناعي العربي"]);
+  const [topics, setTopics] = useState<string[]>(["العلوم الشرعية", "الذكاء الاصطناعي"]);
 
   const toggleTopic = (topic: string) => {
     if (topics.includes(topic)) {
@@ -33,11 +33,11 @@ export default function ResearchNewsletter() {
         </div>
 
         <h3 className="text-2xl sm:text-4xl font-black text-[#222f30] tracking-tight font-kufi">
-          اشترك في إيداعات الأوراق والأبحاث السيادية.
+          اشترك في جديد جميع العلوم.
         </h3>
 
         <p className="text-xs sm:text-base text-[#445e5f] leading-relaxed">
-          احصل على الأوراق العلمية والشيفرات المصدرية فور إيداعها مسبقاً قبل النشر الرسمي في المؤتمرات الدولية. بدون إعلانات وبخصوصية مطلقة.
+          احصل على الدروس والكتب والأوراق العلمية في الشرعية والذكاء الاصطناعي والطب والطبيعة والإنسانية فور صدورها. بدون إعلانات وبخصوصية مطلقة.
         </p>
 
         {submitted ? (
@@ -49,7 +49,7 @@ export default function ResearchNewsletter() {
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             {/* Topic Filter Pills */}
             <div className="flex flex-wrap justify-center gap-2 text-xs font-mono">
-              {["النوى التشغيلية", "الذكاء الاصطناعي العربي", "الرؤية الحاسوبية", "الحوسبة الفائقة"].map((t) => (
+              {["العلوم الشرعية", "الذكاء الاصطناعي", "الطب وعلوم الحياة", "الفيزياء والفلك", "العلوم الإنسانية", "التراث والمخطوطات"].map((t) => (
                 <button
                   type="button"
                   key={t}

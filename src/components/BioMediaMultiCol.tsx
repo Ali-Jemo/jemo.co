@@ -17,7 +17,7 @@ export default function BioMediaMultiCol() {
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-            <span>المنظومة المتكاملة · INTEGRATED PLATFORM</span>
+            <span>لجميع العلوم · ALL SCIENCES PLATFORM</span>
           </div>
         </div>
 
@@ -34,7 +34,7 @@ export default function BioMediaMultiCol() {
           >
             <Image
               src="/departments-bg.png"
-              alt="JEMO LABS Research Hardware Infrastructure"
+              alt="JEMO LABS — مكتبة جميع العلوم: شرعية وتقنية وطبيعية"
               fill
               sizes="(max-width: 1024px) 100vw, 40vw"
               className="object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-105"
@@ -44,10 +44,10 @@ export default function BioMediaMultiCol() {
             {/* Overlay badge */}
             <div className="absolute bottom-6 inset-x-6 z-10 text-white space-y-2">
               <span className="inline-block px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider bg-[#a7e26e] text-[#222f30] font-bold">
-                عنقود بغداد-١ HPC
+                جميع العلوم · شرعية وطبيعية وتقنية
               </span>
               <p className="text-sm font-medium text-white/90 leading-relaxed">
-                استدلال وتدريب حوسبي فائق السرعة عبر العنقود الأكاديمي الوطني.
+                من المخطوطات والتراث الإسلامي إلى الذكاء الاصطناعي والطب والفلك — معرفة واحدة مفتوحة.
               </p>
             </div>
           </motion.div>
@@ -55,11 +55,11 @@ export default function BioMediaMultiCol() {
           {/* Right Content (Col 6 to 12): Bold Statement + 2-Column Technical Columns */}
           <div className="lg:col-span-7 space-y-8">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-[#222f30] font-kufi">
-              أبحاثٌ جريئة تُهندس الذكاء الاصطناعي والنوى السيادية من الأساس.
+              بيتٌ واحد لجميع العلوم: شرعية، طبيعية، تقنية، وإنسانية.
             </h2>
 
             <p className="text-base sm:text-lg text-[#445e5f] leading-relaxed">
-              نجمع بين علوم النظم الحاسوبية الدقيقة ونماذج الاستدلال اللغوي المتقدمة لبناء بيئة رقمية مستقلة تماماً، قائمة على مبادئ العلم المفتوح والسيادة التقنية الكاملة.
+              نجمع بين العلوم الشرعية والتراث الإسلامي، والذكاء الاصطناعي والهندسة، والطب والفيزياء والفلك، والعلوم الإنسانية — بروح بيت الحكمة: لا علمٌ منعزل، بل معرفة متكاملة ومفتوحة للجميع.
             </p>
 
             {/* 2-Column Comparative Technical Breakdown */}
@@ -70,10 +70,10 @@ export default function BioMediaMultiCol() {
                   <Cpu className="w-5 h-5" />
                 </div>
                 <h4 className="text-lg font-bold text-[#222f30]">
-                  النواة والأنظمة الحرجة
+                  الشرعية والتراث واللغة
                 </h4>
                 <p className="text-xs sm:text-sm text-[#445e5f] leading-relaxed">
-                  تطوير نواة Ziqa المصغرة بلغة Rust للأجهزة المدمجة والخوادم السيادية مع بروتوكول IPC محمي رسمياً.
+                  قرآن وحديث وفقه وأصول، لغة عربية، سيرة وحضارة إسلامية، وتحقيق المخطوطات وترميم التراث العلمي.
                 </p>
               </div>
 
@@ -83,10 +83,10 @@ export default function BioMediaMultiCol() {
                   <Database className="w-5 h-5" />
                 </div>
                 <h4 className="text-lg font-bold text-[#222f30]">
-                  الاستدلال والبيانات المفتوحة
+                  التقنية والطبيعة والحياة
                 </h4>
                 <p className="text-xs sm:text-sm text-[#445e5f] leading-relaxed">
-                  بناء نماذج Baghdad-LLM وتوفير مجموعات البيانات الأكاديمية المفتوحة لتحفيز البحث العلمي العربي.
+                  ذكاء اصطناعي وحوسبة، فيزياء وكيمياء ورياضيات، طب وأحياء، فلك وبيئة — إضافة للعلوم الإنسانية والاجتماعية.
                 </p>
               </div>
             </div>

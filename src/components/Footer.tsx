@@ -25,7 +25,7 @@ export default function Footer() {
             </Link>
 
             <p className="text-sm text-[var(--ink-2)] leading-relaxed mb-4 max-w-md font-sans">
-              بيت الحكمة الرقمي — مؤسسة بحثية مستقلة تهدف لبناء المعرفة المفتوحة، النواة التشغيلية السيادية، وتطوير أبحاث الذكاء الاصطناعي في العراق.
+              بيت الحكمة الرقمي — مؤسسة مستقلة لجميع العلوم: الشرعية والإسلامية، الذكاء الاصطناعي والحاسوب، الطبيعية والطبية، والإنسانية — معرفة مفتوحة للجميع.
             </p>
 
             <div className="flex items-center gap-3">
@@ -75,7 +75,7 @@ export default function Footer() {
             <h4 className="font-bold text-sm text-[var(--ink-1)] mb-4 font-mono uppercase tracking-wider">الشفافية والحوكمة</h4>
             <ul className="flex flex-col gap-2.5 text-xs text-[var(--ink-2)]">
               <li>
-                <a href="/transparency" className="hover:text-[var(--brand)] transition-colors">الشفافية</a>
+                <a href="/transparency" className="hover:text-[var(--brand)] transition-colors">النشرة العلمية</a>
               </li>
               <li>
                 <a href="/initiatives" className="hover:text-[var(--brand)] transition-colors">المبادرات</a>

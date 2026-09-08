@@ -27,14 +27,14 @@ export default function ContributeCTA() {
                 style={{ color: "#ffffff" }}
                 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight font-kufi !text-white"
               >
-                ابنِ معنا مستقبل العلم العربي والسيادة الرقمية.
+                ابنِ معنا موسوعة العلوم المفتوحة للجميع.
               </h2>
 
               <p
                 style={{ color: "rgba(255, 255, 255, 0.9)" }}
                 className="text-base sm:text-lg !text-white/90 leading-relaxed max-w-2xl font-normal"
               >
-                نبحث عن باحثين ومطوري نظم يؤمنون بأن المعرفة تُنتج ولا تُستهلك فقط. كل أبحاثنا، خوارزمياتنا، وشيفراتنا البرمجية مفتوحة ومتاحة للمجتمع العلمي الدولي.
+                نبحث عن علماء شرعيين، وباحثين في الذكاء الاصطناعي، وأطباء وطبيعيين ومهندسين وإنسانيين يؤمنون بأن المعرفة تُنتج ولا تُستهلك فقط. كل الدروس والكتب والأبحاث والشيفرات مفتوحة للجميع.
               </p>
             </div>
 
