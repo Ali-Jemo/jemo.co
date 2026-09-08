@@ -4,7 +4,8 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { Resend } from 'resend';
 import { DEPT_CHANNELS, DEPT_BOT_KEY } from '@/lib/departments';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resendKey = process.env.RESEND_API_KEY;
+const resend = resendKey && resendKey !== 're_YOUR_KEY' ? new Resend(resendKey) : null;
 
 function generateContractId() {
   return `IJL-2026-${String(Math.floor(1000 + Math.random() * 9000))}`;
@@ -18,6 +19,7 @@ async function sendAcceptanceEmail(app: {
   const deptKey = DEPT_BOT_KEY[app.section] ?? 'research';
   const botLink = `https://t.me/${process.env.TELEGRAM_BOT_USERNAME ?? 'jemo_bot'}?start=accepted_${app.contractId}_${deptKey}`;
 
+  if (!resend) return;
   await resend.emails.send({
     from: process.env.EMAIL_FROM ?? 'Jemo <noreply@jemo-labs.com>',
     to: app.email,
@@ -66,6 +68,7 @@ async function sendAcceptanceEmail(app: {
 }
 
 async function sendRejectionEmail(app: { name: string; email: string; section: string }) {
+  if (!resend) return;
   await resend.emails.send({
     from: process.env.EMAIL_FROM ?? 'Jemo <noreply@jemo-labs.com>',
     to: app.email,
