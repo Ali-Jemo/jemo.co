@@ -22,8 +22,8 @@ const STATUS_AR: Record<string, string> = {
 };
 
 // Sovereign layer labels — editorial numbering, not data-driven.
-const LAYER_AR = ["طبقة النواة", "طبقة الذكاء", "طبقة التراث"];
-const LAYER_EN = ["KERNEL LAYER", "INTELLIGENCE LAYER", "HERITAGE LAYER"];
+const LAYER_AR = ["طبقة النواة", "طبقة الذكاء", "طبقة الأدوات والتحقق"];
+const LAYER_EN = ["KERNEL LAYER", "INTELLIGENCE LAYER", "VERIFICATION LAYER"];
 
 const SIDE_ICONS = [Cpu, FlaskConical, Layers];
 
@@ -269,7 +269,7 @@ export default function FeaturedScenes() {
       <div className="flex flex-wrap items-center justify-between gap-3 mt-4 p-3.5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-xs font-mono text-[#445e5f]">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#a7e26e] animate-pulse" />
-          <span className="font-bold text-[#222f30]">سيادة من النواة · SOVEREIGN PLATFORM</span>
+          <span className="font-bold text-[#222f30]">مشاريع وتجارب مفتوحة المصدر · OPEN SOURCE EXPERIMENTS</span>
         </div>
         <div className="flex flex-wrap items-center gap-4 text-[11px]">
           <span>فريق: {hero.team.map((m) => m.name).join(" ، ")}</span>

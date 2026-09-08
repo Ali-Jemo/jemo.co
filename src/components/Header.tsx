@@ -9,13 +9,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import CommandPalette from "@/components/CommandPalette";
 
 const NAV_ITEMS = [
-  { href: "/", label: "المعرفة" },
-  { href: "/research", label: "الأبحاث" },
+  { href: "/", label: "الرئيسية" },
+  { href: "/publish", label: "انشر بحثك" },
+  { href: "/research", label: "سجلات الاكتشاف" },
   { href: "/projects", label: "المشاريع" },
   { href: "/labs", label: "المختبرات" },
   { href: "/researchers", label: "الباحثون" },
-  { href: "/initiatives", label: "المبادرات" },
-  { href: "/transparency", label: "النشرة العلمية" },
   { href: "/about", label: "من نحن" },
 ];
 
@@ -159,16 +158,16 @@ export default function Header() {
               <span>تواصل معنا</span>
             </Link>
 
-            {/* Primary CTA: Join */}
+            {/* Primary CTA: Publish / Share Discovery */}
             <Link
-              href="/join"
+              href="/publish"
               className={`group inline-flex items-center gap-2 px-5 py-2 text-xs font-bold rounded-full transition-all duration-200 shrink-0 shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
                 isTransparent
                   ? "bg-gradient-to-r from-[#bef264] to-[#a3e635] text-[#162224] hover:from-[#d9f99d] hover:to-[#bef264] shadow-[#bef264]/20 border border-white/30"
                   : "bg-[var(--brand)] hover:bg-[var(--brand-700)] text-white shadow-[var(--brand)]/20"
               }`}
             >
-              <span>انضم إلينا</span>
+              <span>انشر بحثك</span>
               <ArrowUpLeft size={13} className="transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
 
@@ -239,10 +238,10 @@ export default function Header() {
                   تواصل معنا
                 </Link>
                 <Link
-                  href="/join"
+                  href="/publish"
                   className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl bg-[#bef264] text-[#162224] shadow-sm font-bold"
                 >
-                  انضم إلينا
+                  انشر بحثك الآن
                 </Link>
               </div>
             </motion.div>

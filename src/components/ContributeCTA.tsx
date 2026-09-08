@@ -20,40 +20,38 @@ export default function ContributeCTA() {
             <div className="lg:col-span-8 space-y-5">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/10 font-mono text-xs uppercase tracking-widest text-white shadow-xs">
                 <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-                <span>المجتمع المفتوح · OPEN SCIENCE ALLIANCE</span>
+                <span>مختبر الشخص الواحد · THE HYPER-INDIVIDUAL ERA</span>
               </div>
 
               <h2
                 style={{ color: "#ffffff" }}
                 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight font-kufi !text-white"
               >
-                ابنِ معنا موسوعة العلوم المفتوحة للجميع.
+                حاسوبك مع واجهة AI يصنع مختبراً لشخص واحد.
               </h2>
-
               <p
                 style={{ color: "rgba(255, 255, 255, 0.9)" }}
                 className="text-base sm:text-lg !text-white/90 leading-relaxed max-w-2xl font-normal"
               >
-                نبحث عن علماء شرعيين، وباحثين في الذكاء الاصطناعي، وأطباء وطبيعيين ومهندسين وإنسانيين يؤمنون بأن المعرفة تُنتج ولا تُستهلك فقط. كل الدروس والكتب والأبحاث والشيفرات مفتوحة للجميع.
+                لا تدع مجهود 8 ساعات في تفكيك خوارزمية، حل علة في نواة نظام، أو تقييم نموذج ذكي يتبخر في شاشة المحادثة. وثّق مسارك عبر قالب التحقق البشري الصارم (Proof of Work) وانشره كمرجع تقني نخبوي يحفظ سبقك الفكري.
               </p>
             </div>
 
             {/* Actions using BioButton */}
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-4 lg:items-end justify-start">
               <BioButton
-                href="/join"
-                label="JOIN AS RESEARCHER"
-                secondaryLabel="انضم كباحث"
+                href="/publish"
+                label="PUBLISH PROOF"
+                secondaryLabel="وثّق بحثك الآن (Proof of Work)"
                 variant="primary"
                 dir="ltr"
               />
               <BioButton
-                href="https://github.com/Ali-Jemo/ziqa-kernal"
-                label="OPEN SOURCE REPOS"
-                secondaryLabel="الشيفرات"
+                href="/research"
+                label="EXPLORE LOGS"
+                secondaryLabel="سجلات الاكتشافات المحققة"
                 variant="dark-glass"
                 dir="ltr"
-                target="_blank"
               />
             </div>
 

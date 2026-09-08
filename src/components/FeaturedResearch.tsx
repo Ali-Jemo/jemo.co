@@ -10,10 +10,15 @@ import { ArrowUpLeft, Database, GitBranch, FileText, Users, Filter } from "lucid
 // bio-lime category pills, pine titles, slate metadata, and arrow-slide links.
 export default function FeaturedResearch() {
   const [field, setField] = useState("الكل");
-  const fields = ["الكل", "النوى التشغيلية", "معالجة اللغة العربية", "الرؤية الحاسوبية"];
+  const fields = [
+    "الكل",
+    "سجلات الاكتشاف بالذكاء الاصطناعي",
+    "حلول برمجية بالذكاء الاصطناعي",
+    "تجارب الفريق الاستكشافية"
+  ];
 
   const filtered = RESEARCH_PAPERS.filter((p) => {
-    if (field === "الكل") return p.featured;
+    if (field === "الكل") return true;
     return p.field.includes(field) || p.keywords.some((k) => k.includes(field));
   });
 
@@ -55,10 +60,20 @@ export default function FeaturedResearch() {
           <article className="j-card lg:col-span-2 lg:row-span-2 p-4 sm:p-8 md:p-10 flex flex-col justify-between bg-white">
             <div>
               <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 mb-3 sm:mb-5">
-                <span className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-mono font-semibold uppercase tracking-wide bg-[#cef79e] text-[#222f30] border border-[#a7e26e] px-2 py-0.5">
-                  <span className="text-[#222f30] font-bold">01.</span>
-                  <span>{hero.field}</span>
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wide bg-[#cef79e] text-[#222f30] border border-[#a7e26e] px-2.5 py-0.5 rounded-md">
+                    <span>{hero.field}</span>
+                  </span>
+                  {hero.field.includes("سجلات") || hero.field.includes("برمجية") ? (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                      🧠 مساهمة مجتمعية بمساعدة AI
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-mono text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
+                      🛠️ تجارب الفريق (Sandbox)
+                    </span>
+                  )}
+                </div>
                 <span className="text-[11px] sm:text-xs font-mono text-[#445e5f]">{hero.publishDate}</span>
               </div>
               <h3 className="text-lg sm:text-2xl md:text-3xl font-bold leading-snug text-[#222f30] mb-2">
@@ -75,9 +90,9 @@ export default function FeaturedResearch() {
                 <span>{hero.authors.map((a) => a.name).join(" ، ")}</span>
               </div>
               <div className="flex flex-wrap items-center gap-3 pt-5 border-t border-[var(--j-line)]">
-                <Link href={`/research/${hero.slug}`} className="j-link text-xs inline-flex items-center gap-1 group">
+                <Link href={`/research/${hero.slug}`} className="j-link text-xs inline-flex items-center gap-1 group font-bold">
                   <span className="inline-flex items-center gap-1">
-                    <FileText className="w-3.5 h-3.5" /> اقرأ الورقة العلمية
+                    <FileText className="w-3.5 h-3.5" /> اقرأ تفاصيل البحث وسجل الاكتشاف
                     <span className="inline-block transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-1 group-hover:-translate-y-1">←</span>
                   </span>
                 </Link>
@@ -99,9 +114,8 @@ export default function FeaturedResearch() {
           {rest.map((p, idx) => (
             <article key={p.id} className="j-card p-4 sm:p-6 flex flex-col justify-between bg-white">
               <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-mono font-semibold uppercase tracking-wide bg-[#f5f8f7] text-[#222f30] border border-[#e4e3e3] px-2 py-0.5">
-                    <span className="text-[#222f30] font-bold">{`0${idx + 2}.`}</span>
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                  <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-semibold uppercase tracking-wide bg-[#f5f8f7] text-[#222f30] border border-[#e4e3e3] px-2 py-0.5 rounded-md">
                     <span>{p.field}</span>
                   </span>
                   <span className="text-[10px] font-mono text-[#445e5f]">{p.publishDate}</span>
@@ -113,9 +127,9 @@ export default function FeaturedResearch() {
                 </h3>
                 <p className="text-xs text-[#445e5f] leading-relaxed line-clamp-2">{p.abstract}</p>
               </div>
-              <Link href={`/research/${p.slug}`} className="j-link text-xs mt-4 inline-flex items-center gap-1 group">
+              <Link href={`/research/${p.slug}`} className="j-link text-xs mt-4 inline-flex items-center gap-1 group font-bold">
                 <span className="inline-flex items-center gap-1">
-                  اقرأ الورقة العلمية
+                  عرض سجل الاكتشاف
                   <span className="inline-block transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-x-1 group-hover:-translate-y-1">←</span>
                 </span>
               </Link>

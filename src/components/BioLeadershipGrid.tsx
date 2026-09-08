@@ -22,15 +22,15 @@ export default function BioLeadershipGrid() {
           <div className="lg:col-span-4 lg:sticky lg:top-28 space-y-5">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] shadow-xs">
               <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-              <span>القيادة العلمية · LEADERSHIP</span>
+              <span>فريق التنسيق والمبادرة · CORE STEWARDS</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-[#222f30] font-kufi">
-              علماء من كل علمٍ: شرعي وتقني وطبيعي.
+              فريق المبادرة وبناء المنصة.
             </h2>
 
             <p className="text-sm sm:text-base text-[#445e5f] leading-relaxed">
-              يقود JEMO LABS علماء وباحثون في العلوم الشرعية والإسلامية، والذكاء الاصطناعي والهندسة، والعلوم الطبيعية والطبية والإنسانية — بروح بيت الحكمة الجامعة.
+              فريقٌ تقني ومعرفي مستقل ييسّر المنصة، يطوّر أدوات النشر المفتوح، ويدير البنية التجريبية — بينما المعرفة الحقيقية يصنعها آلاف الباحثين والمساهمين المستقلين عبر أبحاثهم اليومية.
             </p>
 
             <div className="pt-2">
@@ -38,7 +38,7 @@ export default function BioLeadershipGrid() {
                 href="/researchers"
                 className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold font-mono tracking-wider uppercase border-b border-[#222f30] pb-1 hover:gap-3 transition-all"
               >
-                <span>كافة الباحثين ({RESEARCHERS.length})</span>
+                <span>فريق العمل والمساهمون ({RESEARCHERS.length})</span>
                 <ArrowUpLeft className="w-4 h-4" />
               </Link>
             </div>

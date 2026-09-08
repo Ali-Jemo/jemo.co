@@ -153,18 +153,18 @@ export const INSTITUTION_STATS = {
 };
 
 export const ABOUT_INFO = {
-  nameMeaning: "اسم JEMO LABS رمز لبيت الحكمة الجامع: بيتٌ واحد يجمع جميع العلوم — الشرعية والإسلامية، والتقنية والذكاء الاصطناعي، والطبيعية والطبية، والإنسانية.",
-  whyCreated: "تأسست JEMO LABS لتكون بيت حكمةٍ جامعاً لجميع العلوم: ننشر العلوم الشرعية والتراث الإسلامي، ونطوّر الذكاء الاصطناعي والتقنية، ونبحث في الفيزياء والكيمياء والطب والفلك والعلوم الإنسانية — بمعرفة مفتوحة تخدم الجميع.",
-  coreQuote: "نؤمن أن كل علمٍ نور: من علوم الشريعة إلى الذكاء الاصطناعي إلى الطب والفلك — والمعرفة يجب أن تكون مفتوحة للجميع.",
-  mission: "جمع جميع العلوم في بيت واحد: نشر العلوم الشرعية والإسلامية، وتطوير الذكاء الاصطناعي والتقنية، والبحث في العلوم الطبيعية والطبية والإنسانية — بمعرفة مفتوحة المصدر ذات أثر عالمي.",
-  vision: "أن تصبح JEMO LABS بيت الحكمة الجامع: المرجع المفتوح الأول لجميع العلوم — الشرعية والطبيعية والتقنية والإنسانية — في المنطقة والعالم.",
+  nameMeaning: "JEMO هي الطبقة التشاركية بين السؤال والمعرفة، وبين العقل البشري والذكاء الاصطناعي — المكان الذي يذهب إليه الناس بعد أن بحثوا لتوثيق ومشاركة ما اكتشفوه.",
+  whyCreated: "تأسست JEMO لتكون سجلاً مفتوحاً لاكتشافات وأبحاث عصر الذكاء الاصطناعي: منصة لحفظ الأبحاث والاستقصاءات التي يجريها الناس يومياً بمساعدة نماذج AI، وتحويل محادثات البحث العميقة التي تضيع في الحسابات الشخصية إلى رصيد معرفي عام ومفتوح للجميع.",
+  coreQuote: "كل سؤال يمكن أن يصبح بحثًا، وكل بحث يمكن أن يصبح معرفة.",
+  mission: "حفظ وتوثيق نتائج البحث البشري المدعوم بالذكاء الاصطناعي في سجل عام مفتوح، وتمكين أي شخص — أكاديمياً كان أو مطوراً أو باحثاً هاوياً — من توثيق مسار بحثه ومشاركة اكتشافاته وحمايتها من الضياع.",
+  vision: "أن تصبح JEMO المنصة المفتوحة الأولى لاكتشافات العقل البشري في عصر الذكاء الاصطناعي: ذاكرة جماعية حية للمعرفة المتطورة، التحدي المجتمعي للنتائج، وحفظ التجارب من النسيان.",
   values: [
-    { title: "الشفافية المفتوحة", desc: "نشر كافة الأبحاث، الشيفرات، والبيانات مجاناً وللجميع." },
-    { title: "الأثر الفعلي", desc: "التركيز على ابتكارات تحل مشاكل حقيقية وتخدم المجتمع العلمية." },
-    { title: "الاستقلالية العلمية", desc: "أبحاث موجهة بالدقة المعرفية الخالصة بعيداً عن التبعية." },
-    { title: "التميز والصرامة", desc: "تطبيق أعلى المعايير الأكاديمية الدولية في التدقيق والنشر." }
+    { title: "توثيق مسار البحث (Full Trail)", desc: "لا نكتفي بالنتيجة النهائية، بل نوثق السؤال، النماذج المستخدمة، ومسار التفاعل لنبني معرفة قابلة للفحص." },
+    { title: "التحقق البشري الشفاف", desc: "تمييز واضح بين ما أنتجه الذكاء الاصطناعي وما تحقّق منه الباحث بشرياً لتصحيح الهلوسة وحماية المصداقية." },
+    { title: "بحث المواطن للجميع", desc: "فتح باب التوثيق والنشر لكل من أجرى بحثاً جاداً، دون اشتراط ألقاب أكاديمية أو انتماءات مؤسسية." },
+    { title: "المعرفة الحية المتطورة", desc: "إتاحة التحدي المجتمعي للنتائج، تقديم الأدلة المضادة، وتحديث الاكتشافات بنسخ تراكمية (v1 → v2)." }
   ],
-  researchPhilosophy: "نتبع فلسفة بيت الحكمة الجامعة: لا نفرّق بين علمٍ وعلم — من أصول الفقه إلى الفيزياء، ومن تحقيق المخطوطات إلى الذكاء الاصطناعي. كل علمٍ يُبحث بأصوله ومنهجه، ويُنشر مفتوحاً، ويُوصَل لغير المختصين بلغة واضحة."
+  researchPhilosophy: "منهجية البحث في عصر الذكاء الاصطناعي: سؤال محدد ← أدوات ونماذج مستخدمة ← مسار التفاعل والافتراضات ← نتيجة وخلاصة ← تحقق بشري وتصحيح للهلوثة ← نشر مفتوح قابل للتكرار والتطوير المجتمعي."
 };
 
 export const TIMELINE_EVENTS: TimelineEvent[] = [
@@ -484,41 +484,96 @@ export const RESEARCHERS: Researcher[] = [
 
 export const RESEARCH_PAPERS: Paper[] = [
   {
+    id: "ai-assisted-arabic-texts-analysis",
+    slug: "ai-assisted-arabic-texts-analysis",
+    title: "استقصاء ومقارنة 6 نماذج ذكاء اصطناعي في تحليل واستعادة نصوص عربية تراثية",
+    titleEn: "Comparative Investigation of 6 LLMs in Arabic Classical Text Retrieval & Analysis",
+    abstract: "سجل رحلة بحثية استمرت 8 ساعات قارنت بين Claude 3.5 وGPT-4o وDeepSeek-R1 في تحليل وتصحيح نصوص عربية تالفة جزئياً، مع توثيق دقيق لأماكن هلوسة النماذج والتحقق البشري من المصادر التاريخية الأصلية لتصحيحها.",
+    authors: [
+      { name: "عمر الكرخي (مساهمة مجتمعية)", slug: "omar-al-karkhi", role: "باحث مواطن • AI-Assisted Research" }
+    ],
+    publishDate: "2026-08-15",
+    doi: "10.1016/j.jemo.2026.08.019",
+    pdfUrl: "/papers/arabic-texts-ai-study.pdf",
+    datasetUrl: "https://github.com/jemo-labs/open-research-logs",
+    codeUrl: "https://github.com/jemo-labs/open-research-logs",
+    field: "سجلات الاكتشاف بالذكاء الاصطناعي",
+    labSlug: "ai-lab",
+    keywords: ["Research Story", "AI-Assisted", "Classical Arabic", "Human Verification", "Discovery Log"],
+    citation: {
+      bibtex: `@article{karkhi2026arabictexts,
+  title={Comparative Investigation of 6 LLMs in Arabic Classical Text Retrieval & Analysis},
+  author={Al-Karkhi, Omar},
+  journal={JEMO Open Discovery Logs},
+  year={2026}
+}`,
+      apa: "Al-Karkhi, O. (2026). Comparative Investigation of 6 LLMs in Arabic Classical Text Retrieval & Analysis. JEMO Open Discovery Logs, 1(4)."
+    },
+    featured: true
+  },
+  {
+    id: "ai-debug-memory-leak-investigation",
+    slug: "ai-debug-memory-leak-investigation",
+    title: "حل معضلة تسريب الذاكرة في خدمات Node.js عالية الحمل عبر سلاسل التوجيه التكرارية",
+    titleEn: "Resolving High-Load Node.js Memory Leak Through Iterative AI Prompt Chains",
+    abstract: "توثيق استقصاء برمجي معمق: استخدام النماذج اللغوية لتحليل تفريغ الذاكرة (Heap Snapshot)، واكتشاف خطأ خفي في مصفوفات الإغلاق، مع تسجيل كيف قادت بعض الاقتراحات إلى مسارات خاطئة وكيف تم التحقق والاختبار الفعلي.",
+    authors: [
+      { name: "م. زيد التميمي (مساهمة مجتمعية)", slug: "zaid-al-tamimi", role: "مطور برمجيات • Bug Solved via AI" }
+    ],
+    publishDate: "2026-07-28",
+    doi: "10.1016/j.jemo.2026.07.031",
+    pdfUrl: "/papers/nodejs-memory-leak-ai.pdf",
+    codeUrl: "https://github.com/jemo-labs/open-research-logs",
+    field: "حلول برمجية بالذكاء الاصطناعي",
+    labSlug: "ai-lab",
+    keywords: ["Bug Solved via AI", "Node.js", "Memory Leak", "AI Debugging", "Prompt Chains"],
+    citation: {
+      bibtex: `@article{tamimi2026nodejsleak,
+  title={Resolving High-Load Node.js Memory Leak Through Iterative AI Prompt Chains},
+  author={Al-Tamimi, Zaid},
+  journal={JEMO Open Discovery Logs},
+  year={2026}
+}`,
+      apa: "Al-Tamimi, Z. (2026). Resolving High-Load Node.js Memory Leak Through Iterative AI Prompt Chains. JEMO Open Discovery Logs."
+    },
+    featured: true
+  },
+  {
     id: "ziqa-kernel-paper",
     slug: "ziqa-kernel-architecture",
-    title: "تصميم نواة Ziqa: بنية خفيفة وآمنة الذاكرة مخصصة للأنظمة الحرجة",
-    titleEn: "Ziqa Kernel: Safe and Lightweight Microkernel Architecture for Critical Systems",
-    abstract: "نقدم في هذه الورقة البحثية تصميم ونواة Ziqa Kernel المكتوبة بلغة Rust مع استعراض نتائج الأداء وعزل الأخطاء مقارنة بالنوى التقليدية. تُظهر النتائج تقليل وقت الاستجابة بنسبة 35% وضمان عدم حدوث تسريب في الذاكرة تحت أقصى حظر تشغيلي.",
+    title: "نواة Ziqa: مختبر تجريبي لنواة دقيقة آمنة الذاكرة بلغة Rust للأجهزة المدمجة",
+    titleEn: "Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures in Rust",
+    abstract: "نستعرض في هذه الورقة والمستودع المفتوح معمارية تجريبية (Experimental Sandbox) لنواة دقيقة مكتوبة بلغة Rust لاستكشاف عزل الأخطاء وإدارة الذاكرة الآمنة بدون كود غير آمن. المشروع تجربة استكشافية مفتوحة لدراسة جدوى البنى المصغرة وتطوير أنظمة تشغيل تعلمية خفيفة.",
     authors: [
-      { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "المؤلف الرئيسي" },
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "المؤلف المشارك" }
+      { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "مطور النواة" },
+      { name: "د. علي الجمو", slug: "ali-jemo", role: "مستشار التجربة" }
     ],
     publishDate: "2026-05-14",
     doi: "10.1016/j.jemo.2026.05.001",
     pdfUrl: "/papers/ziqa-kernel.pdf",
     datasetUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
     codeUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
-    field: "أنظمة التشغيل",
+    field: "تجارب الفريق الاستكشافية",
     labSlug: "os-lab",
-    keywords: ["Microkernel", "Rust", "Memory Safety", "Ziqa Kernel", "Real-Time"],
+    keywords: ["Microkernel", "Rust", "Experimental Sandbox", "Memory Safety", "Ziqa Kernel"],
     citation: {
       bibtex: `@article{furati2026ziqa,
-  title={Ziqa Kernel: Safe and Lightweight Microkernel Architecture},
+  title={Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures},
   author={Al-Furati, Ahmed and Jemo, Ali},
-  journal={JEMO LABS Research Papers},
+  journal={JEMO LABS Open Reports},
   year={2026},
   doi={10.1016/j.jemo.2026.05.001}
 }`,
-      apa: "Al-Furati, A., & Jemo, A. (2026). Ziqa Kernel: Safe and Lightweight Microkernel Architecture for Critical Systems. JEMO LABS Research Papers, 1(1), 14-29."
+      apa: "Al-Furati, A., & Jemo, A. (2026). Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures in Rust. JEMO LABS Open Reports."
     },
     featured: true
   },
   {
     id: "arabic-nlp-paper",
     slug: "open-iraq-arabic-nlp",
-    title: "نموذج 'بغداد': استدلال متقدم باللغة العربية مع تكييف اللهجات العراقية",
-    titleEn: "Baghdad LLM: Advanced Arabic Reasoning and Iraqi Dialect Adaptation",
-    abstract: "تستعرض هذه الورقة هندسة نموذج 'بغداد' المطور في JEMO LABS، والذي يجمع بين فهم الفصحى الدقيقة واستيعاب المصطلحات التقنية واللهجات العراقية. حقق النموذج نتائج قياسية في اختبارات الاستدلال المنطقي العربي.",
+    title: "تكييف النماذج اللغوية المفتوحة للهجات العراقية والمصطلحات التخصصية",
+    titleEn: "Adapting Open-Weights LLMs for Iraqi Dialects and Domain Terminology",
+    abstract: "تستعرض هذه الورقة والمبادرة تجربة ضبط وتكييف دقيق (Fine-tuning & Quantization) لنماذج لغوية مفتوحة المصدر لخدمة اللهجات العراقية والمصطلحات العلمية والتقنية، مع تقييم كفاءة الاستدلال على العتاد المتاح وإتاحة مجموعات الاختبار للباحثين مجاناً.",
     authors: [
       { name: "د. علي الجمو", slug: "ali-jemo", role: "المؤلف الرئيسي" },
       { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "باحث مشارك" }
@@ -528,17 +583,17 @@ export const RESEARCH_PAPERS: Paper[] = [
     pdfUrl: "/papers/baghdad-llm.pdf",
     datasetUrl: "https://github.com/jemo-labs/open-iraq-dataset",
     codeUrl: "https://github.com/jemo-labs/baghdad-llm",
-    field: "الذكاء الاصطناعي",
+    field: "تجارب الفريق الاستكشافية",
     labSlug: "ai-lab",
-    keywords: ["Arabic NLP", "Dialect Adaptation", "Large Language Models", "Open Science"],
+    keywords: ["Arabic NLP", "Dialect Adaptation", "Open Weights", "Fine-Tuning"],
     citation: {
       bibtex: `@article{jemo2026baghdad,
-  title={Baghdad LLM: Advanced Arabic Reasoning and Iraqi Dialect Adaptation},
+  title={Adapting Open-Weights LLMs for Iraqi Dialects and Domain Terminology},
   author={Jemo, Ali and Al-Hussaini, Sara},
   journal={JEMO LABS AI Reports},
   year={2026}
 }`,
-      apa: "Jemo, A., & Al-Hussaini, S. (2026). Baghdad LLM: Advanced Arabic Reasoning and Iraqi Dialect Adaptation. JEMO LABS AI Reports."
+      apa: "Jemo, A., & Al-Hussaini, S. (2026). Adapting Open-Weights LLMs for Iraqi Dialects and Domain Terminology. JEMO LABS AI Reports."
     },
     featured: true
   },
@@ -766,16 +821,16 @@ export const RESEARCH_PROJECTS: Project[] = [
   {
     id: "ziqa-os-project",
     slug: "ziqa-kernel",
-    title: "نواة Ziqa التشغيلية",
-    titleEn: "Ziqa Microkernel",
-    description: "مشروع بناء نواة تشغيل سيادية خفيفة وآمنة من الصفر بلغة Rust لضمان السيادة الرقمية والحوسبة عالية الاعتمادية.",
-    fullDescription: "نواة Ziqa هي مشروع مفتوح المصدر طُور داخل JEMO LABS بالكامل بهدف تقديم نواة آمنة، سريعة، ومتحققة رسمياً لخدمة الأجهزة المدمجة والخوادم عالية الأمان.",
+    title: "مختبر نواة Ziqa (Experimental Sandbox)",
+    titleEn: "Ziqa Kernel Sandbox",
+    description: "مختبر تجريبي استكشافي لنواة دقيقة آمنة الذاكرة مكتوبة بلغة Rust/Zig لاستكشاف معمارية الأنظمة خفيفة الوزن.",
+    fullDescription: "مشروع استكشافي تعليمي مفتوح المصدر (Experimental Sandbox) طُوّر لدراسة آليات أمان الذاكرة وعزل المعالجات في النوى المصغرة، متاح بالكامل على GitHub للمطورين والمهتمين.",
     status: "Active",
     team: [
-      { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "مطور النواة الرئيسي" },
+      { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "مطور النواة" },
       { name: "د. علي الجمو", slug: "ali-jemo", role: "مستشار المعمارية" }
     ],
-    techStack: ["Rust", "Assembly", "C", "QEMU", "RISC-V"],
+    techStack: ["Rust", "Zig", "Assembly", "QEMU", "RISC-V"],
     labSlug: "os-lab",
     githubUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
     image: "/departments-bg.png",
@@ -784,16 +839,16 @@ export const RESEARCH_PROJECTS: Project[] = [
   {
     id: "baghdad-ai-project",
     slug: "baghdad-ai",
-    title: "نموذج الذكاء الاصطناعي بغداد",
-    titleEn: "Baghdad LLM Initiative",
-    description: "نموذج لغوي مفتوح المصدر مدرب على أكبر مدونة نصية أكاديمية وعلمية باللغة العربية.",
-    fullDescription: "مبادرة لبناء نموذج ذكاء اصطناعي عربي مفتوح المصدر يتفوق في معالجة المصطلحات العلمية والتقنية وتلبية احتجيات المؤسسات البحثية.",
+    title: "مبادرة تكييف النماذج اللغوية (Baghdad LLM)",
+    titleEn: "Baghdad LLM Adaptation Initiative",
+    description: "مبادرة مفتوحة لتكييف وتخصيص النماذج اللغوية مفتوحة المصدر لدعم اللهجات العراقية والمصطلحات المحلية بكفاءة استدلال عالية.",
+    fullDescription: "بدلاً من تدريب نماذج ضخمة من الصفر، تركز المبادرة على الاستفادة من النماذج المفتوحة وتخصيصها عبر التكميم (Quantization) وتدريب محولات LoRA لتوفير استدلال سريع ومجاني على العتاد المتاح.",
     status: "Research",
     team: [
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "قائد الفريق" },
-      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "باحث بيانات" }
+      { name: "د. علي الجمو", slug: "ali-jemo", role: "قائد المبادرة" },
+      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "باحثة بيانات" }
     ],
-    techStack: ["Python", "PyTorch", "Transformers", "CUDA", "FlashAttention"],
+    techStack: ["Python", "PyTorch", "HuggingFace", "LoRA", "Quantization"],
     labSlug: "ai-lab",
     githubUrl: "https://github.com/jemo-labs/baghdad-ai",
     image: "/wisdom-bg-new.png",

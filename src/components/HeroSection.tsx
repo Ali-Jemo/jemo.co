@@ -8,31 +8,31 @@ import BioButton from "@/components/BioButton";
 
 const PILLARS_PREVIEW = [
   { 
-    id: "ai", 
+    id: "systems", 
     num: "01", 
-    name: "الذكاء الاصطناعي والحوسبة", 
-    spec: "AI • Systems • Data", 
-    field: "نماذج عربية وأنظمة مفتوحة", 
-    desc: "أبحاث الذكاء الاصطناعي، النماذج اللغوية العربية، نواة Ziqa، والحوسبة الفائقة — بنية معرفية رقمية مفتوحة.",
+    name: "أبحاث النظم والأنوية", 
+    spec: "Kernels • OS • Low-Level", 
+    field: "نواة Ziqa ومترجمات النظم", 
+    desc: "أبحاث برمجية عميقة في معمارية نظم التشغيل، الأنوية المصغرة، والعتاد المباشر مع شفرات قابلة للتشغيل المباشر.", 
+    href: "/projects" 
+  },
+  { 
+    id: "ai-eval", 
+    num: "02", 
+    name: "نماذج الذكاء والاستدلال", 
+    spec: "Reasoning • Benchmarks • Debunking", 
+    field: "تقييم النماذج وفحص الهلوسة", 
+    desc: "اختبارات أداء حقيقية، تفكيك وتصحيح هلوسات النماذج التوليدية، وبناء خطوط استدلال موثقة بالبيانات.", 
     href: "/research" 
   },
   { 
-    id: "islamic", 
-    num: "02", 
-    name: "العلوم الشرعية والتراث", 
-    spec: "Islamic • Heritage", 
-    field: "فقه • لغة • مخطوطات", 
-    desc: "العلوم الشرعية، الدراسات القرآنية والحديثية، الفقه والأصول، اللغة العربية، وتحقيق التراث والمخطوطات.",
-    href: "/initiatives" 
-  },
-  { 
-    id: "natural", 
+    id: "proof-of-work", 
     num: "03", 
-    name: "العلوم الطبيعية والكونية", 
-    spec: "Physics • Bio • Med", 
-    field: "فيزياء • طب • فلك", 
-    desc: "الفيزياء والكيمياء والرياضيات، علوم الحياة والطب، الفلك والبيئة، والعلوم الإنسانية والاجتماعية.",
-    href: "/labs" 
+    name: "بروتوكول التحقق الفردي", 
+    spec: "Proof of Work • Registry", 
+    field: "توثيق الاكتشافات الفردية الفائقة", 
+    desc: "أرشيف عام ومفتوح يحفظ الاكتشافات الفردية الفائقة مع إثبات التحقق البشري الصارم وتوثيق السبق الفكري.", 
+    href: "/publish" 
   },
 ];
 
@@ -175,11 +175,11 @@ export default function HeroSection() {
         >
           <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse" aria-hidden />
           <span className="font-mono text-[11px] font-bold tracking-wider text-white/95 uppercase">
-            ALL SCIENCES · OPEN KNOWLEDGE
+            OPEN DISCOVERY ARCHIVE · سجل الاكتشافات المفتوح
           </span>
           <span className="h-3 w-px bg-white/20" aria-hidden />
           <span className="text-[11px] text-white/90 font-medium">
-            مختبرات JEMO · لجميع العلوم
+            منصة توثيق وتدقيق أبحاث النظم والبرمجة والذكاء الاصطناعي
           </span>
         </motion.div>
 
@@ -227,7 +227,7 @@ export default function HeroSection() {
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
               className="block"
             >
-              هندسة المعرفة
+              كل جلسة محادثة قد تصنع كشفاً،
             </motion.span>
           </span>
 
@@ -236,9 +236,9 @@ export default function HeroSection() {
               initial={{ y: "115%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="block"
+              className="block text-white"
             >
-              لجميع العلوم<span className="text-[#bef264]">.</span>
+              لكن 99% من هذا الجهد يتبخر دون توثيق<span className="text-[#bef264]">.</span>
             </motion.span>
           </span>
         </h1>
@@ -280,7 +280,7 @@ export default function HeroSection() {
             style={{ color: "rgba(255, 255, 255, 0.95)" }}
             className="text-base sm:text-lg leading-relaxed font-normal [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
           >
-            مؤسسة علمية مستقلة لجميع العلوم — من <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">العلوم الشرعية والإسلامية</strong> إلى <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">الذكاء الاصطناعي</strong> والعلوم الطبيعية والطبية والإنسانية — من <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">بغداد</strong> إلى العالم.
+            نحن نبحث، نكتشف، ونصل لنتائج غير مسبوقة يومياً داخل شاشات المحادثة. <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">JEMO هي المنصة التي تذهب إليها بعد أن بحثت</strong> — لتحويل رحلتك من حوار عابر إلى مرجع تقني نخبوي محمي بمعيار التحقق البشري الصارم (Proof of Work).
           </p>
 
           {/* 3 Quick Research Pillars Switchers */}
@@ -311,16 +311,16 @@ export default function HeroSection() {
         {/* Left side (end in RTL): The Iconic IntegratedBio Chamfered BioButtons (Image #2) */}
         <div className="flex flex-wrap items-center gap-3.5 shrink-0">
           <BioButton
-            href="/research"
-            label="EXPLORE PLATFORM"
-            secondaryLabel="استكشف المنظومة"
+            href="/publish"
+            label="SHARE DISCOVERY"
+            secondaryLabel="وثّق اكتشافك الآن"
             variant="primary"
             dir="ltr"
           />
           <BioButton
-            href="/labs"
-            label="WHAT WE DO"
-            secondaryLabel="المختبرات والأنظمة"
+            href="/research"
+            label="EXPLORE LOGS"
+            secondaryLabel="سجلات الاكتشافات المحققة"
             variant="secondary"
             iconType="arrow-up-right"
             dir="ltr"

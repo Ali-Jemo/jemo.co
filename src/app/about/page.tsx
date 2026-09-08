@@ -13,37 +13,37 @@ import BioButton from "@/components/BioButton";
 import WeAreSection from "@/components/WeAreSection";
 
 export const metadata: Metadata = {
-  title: "من نحن | JEMO LABS — بيت الحكمة الرقمي",
-  description: "لماذا أنشئت JEMO LABS؟ فلسفة البحث، الهيكلية التنظيمية، الرسالة، الرؤية، والقيم المؤسسية.",
+  title: "من نحن | JEMO — سجل أبحاث واكتشافات عصر الذكاء الاصطناعي",
+  description: "ما هي JEMO؟ لماذا أنشئت؟ وكيف تحول أبحاثك واستقصاءاتك بمساعدة الذكاء الاصطناعي إلى معرفة مشتركة وموثقة للجميع.",
 };
 
 const METHODOLOGY_STEPS = [
   {
     step: "01",
-    title: "صياغة المسألة من المبادئ الأولى",
-    titleEn: "First-Principles Problem Formulation",
-    desc: "تفكيك التحديات التقنية والعلمية المعقدة إلى مكوناتها الأساسية دون الاعتماد على افتراضات سابقة.",
+    title: "السؤال والمعضلة (The Question)",
+    titleEn: "What were you trying to find?",
+    desc: "تحديد المسألة أو الفكرة التي دفعتك للبحث بوضوح: معضلة برمجية، نص تراثي، فرضية علمية، أو مقارنة بين أدوات.",
     icon: Compass,
   },
   {
     step: "02",
-    title: "بناء النماذج وإثبات النظرية",
-    titleEn: "Prototyping & Microkernel Verification",
-    desc: "تطوير النوى والمكتبات البرمجية بلغات آمنة الذاكرة مثل Rust وإجراء التقييمات العتادية الميدانية.",
+    title: "الأدوات ومسار الحوار (The Tools)",
+    titleEn: "What did you use & how?",
+    desc: "توثيق النماذج والمراجع المستخدمة (Claude, GPT, Gemini, كتب، أكواد) ومسار التفاعل والافتراضات التي فُحصت.",
     icon: Cpu,
   },
   {
     step: "03",
-    title: "التدقيق الأكاديمي والقياس المرجعي",
-    titleEn: "Peer Review & Benchmark Verification",
-    desc: "تدقيق نتائج الأداء عبر لوحات القياس (Benchmarks) المفتوحة لضمان التفوق وتكرار التجربة.",
+    title: "الخلاصة والنتيجة (The Findings)",
+    titleEn: "What did you discover?",
+    desc: "عرض النتيجة الملموسة أو الحل النهائي الذي تم التوصل إليه، ومشاركته مفتوحاً للجميع ليكون رصيداً معرفياً عاماً.",
     icon: GitBranch,
   },
   {
     step: "04",
-    title: "النشر المفتوح والأرشفة العامة",
-    titleEn: "Universal Open Access & Deposit",
-    desc: "نشر الأوراق المسبقة، مجموعات البيانات، والشيفرات المصدرية مجاناً وبدون أي حظر تجاري.",
+    title: "التحقق وتصحيح الهلوسة (Verification)",
+    titleEn: "Human Verification & Challenge",
+    desc: "بيان أين أصاب الذكاء الاصطناعي وأين هلوس وتم تصحيحه يدوياً، مع إتاحة التحدي والتحديث المستمر للنسخ.",
     icon: ShieldCheck,
   },
 ];
@@ -58,11 +58,11 @@ export default function AboutPage() {
           <div className="container text-center max-w-4xl mx-auto py-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand)]/10 border border-[var(--brand)]/20 text-[var(--brand)] text-xs font-mono mb-4">
               <Compass className="w-3.5 h-3.5" />
-              <span>عن المؤسسة ورسالتها الأكاديمية</span>
+              <span>سجل الاكتشافات المفتوح · OPEN RESEARCH REGISTRY</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--ink-1)] mb-6 leading-tight">
-              بيت الحكمة الرقمي <br />
-              <span className="text-gradient">صرح البحث والسيادة المعرفية</span>
+              بوابة المعرفة المشتركة <br />
+              <span className="text-gradient">سجل أبحاث واكتشافات عصر الذكاء الاصطناعي</span>
             </h1>
             <blockquote className="text-lg md:text-xl font-bold text-[var(--brand)] border-y border-[var(--line)] py-6 my-6 bg-[var(--bg)]/50 rounded-xl leading-relaxed max-w-3xl mx-auto">
               "{ABOUT_INFO.coreQuote}"
@@ -220,15 +220,15 @@ export default function AboutPage() {
         {/* CTA */}
         <AnimatedSection className="section bg-[var(--bg)] text-center">
           <div className="container max-w-2xl mx-auto space-y-6">
-            <h2 className="text-3xl font-bold text-[var(--ink-1)]">هل ترغب بالانضمام أو المساهمة في الأبحاث؟</h2>
+            <h2 className="text-3xl font-bold text-[var(--ink-1)]">أجريت بحثاً بالذكاء الاصطناعي وتريد توثيقه؟</h2>
             <p className="text-[var(--ink-2)] text-sm">
-              نرحب بالباحثين، المطورين، والمصممين الراغبين بالمساهمة في بناء بيت الحكمة الرقمي.
+              لا تدع المعرفة تضيع في أرشيف المحادثات الخاصة. وثّق سؤالك، أدواتك، وما توصلت إليه ليكون رصيداً مفتوحاً للجميع.
             </p>
             <div className="flex justify-center pt-2">
               <BioButton
-                href="/join"
-                label="JOIN RESEARCH TEAM"
-                secondaryLabel="قدّم طلب انضمام"
+                href="/publish"
+                label="PUBLISH YOUR RESEARCH"
+                secondaryLabel="انشر بحثك واكتشافك"
                 variant="primary"
                 dir="ltr"
               />

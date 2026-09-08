@@ -17,7 +17,7 @@ export default function BioMediaMultiCol() {
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-            <span>لجميع العلوم · ALL SCIENCES PLATFORM</span>
+            <span>منصة تدقيق الاكتشافات · VERIFIED DISCOVERY REGISTRY</span>
           </div>
         </div>
 
@@ -34,7 +34,7 @@ export default function BioMediaMultiCol() {
           >
             <Image
               src="/departments-bg.png"
-              alt="JEMO LABS — مكتبة جميع العلوم: شرعية وتقنية وطبيعية"
+              alt="JEMO LABS — منصة توثيق وتدقيق أبحاث النظم والذكاء الاصطناعي"
               fill
               sizes="(max-width: 1024px) 100vw, 40vw"
               className="object-cover opacity-85 transition-transform duration-700 ease-out group-hover:scale-105"
@@ -44,10 +44,10 @@ export default function BioMediaMultiCol() {
             {/* Overlay badge */}
             <div className="absolute bottom-6 inset-x-6 z-10 text-white space-y-2">
               <span className="inline-block px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider bg-[#a7e26e] text-[#222f30] font-bold">
-                جميع العلوم · شرعية وطبيعية وتقنية
+                معيار إثبات العمل · PROOF OF WORK
               </span>
               <p className="text-sm font-medium text-white/90 leading-relaxed">
-                من المخطوطات والتراث الإسلامي إلى الذكاء الاصطناعي والطب والفلك — معرفة واحدة مفتوحة.
+                لا مكان لغثاء الـ AI. المعيار الوحيد: الفرضية الواضحة، التحقق البشري الصارم، والنتائج القابلة للتكرار.
               </p>
             </div>
           </motion.div>
@@ -55,11 +55,11 @@ export default function BioMediaMultiCol() {
           {/* Right Content (Col 6 to 12): Bold Statement + 2-Column Technical Columns */}
           <div className="lg:col-span-7 space-y-8">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-[#222f30] font-kufi">
-              بيتٌ واحد لجميع العلوم: شرعية، طبيعية، تقنية، وإنسانية.
+              منصة توثيق وتدقيق للاكتشافات المتقدمة — لا مجرد منتدى مفتوح.
             </h2>
 
             <p className="text-base sm:text-lg text-[#445e5f] leading-relaxed">
-              نجمع بين العلوم الشرعية والتراث الإسلامي، والذكاء الاصطناعي والهندسة، والطب والفيزياء والفلك، والعلوم الإنسانية — بروح بيت الحكمة: لا علمٌ منعزل، بل معرفة متكاملة ومفتوحة للجميع.
+              إذا أردت منصة ذات قيمة حقيقية، فالمعركة اليومية هي تصفية الهلوسة والغثاء (AI Slop). وضعنا معياراً هندسياً يركز على أبحاث النظم، البرمجة، والذكاء الاصطناعي — كل نتيجة منشورة مدعومة بكود، واختبارات قياسية، وتدقيق بشري موثق.
             </p>
 
             {/* 2-Column Comparative Technical Breakdown */}
@@ -70,10 +70,10 @@ export default function BioMediaMultiCol() {
                   <Cpu className="w-5 h-5" />
                 </div>
                 <h4 className="text-lg font-bold text-[#222f30]">
-                  الشرعية والتراث واللغة
+                  قالب التحقق البشري (Proof of Work)
                 </h4>
                 <p className="text-xs sm:text-sm text-[#445e5f] leading-relaxed">
-                  قرآن وحديث وفقه وأصول، لغة عربية، سيرة وحضارة إسلامية، وتحقيق المخطوطات وترميم التراث العلمي.
+                  فصل قاطع بين ما أنتجه النموذج وما دققه الباحث بنفسه: تتبع الفرضيات، تصحيح الهلوسات، وفحص المخرجات ضد بيئات تشغيل فعلية.
                 </p>
               </div>
 
@@ -83,10 +83,10 @@ export default function BioMediaMultiCol() {
                   <Database className="w-5 h-5" />
                 </div>
                 <h4 className="text-lg font-bold text-[#222f30]">
-                  التقنية والطبيعة والحياة
+                  فهرسة تقنية نخبوية وسبق فكري
                 </h4>
                 <p className="text-xs sm:text-sm text-[#445e5f] leading-relaxed">
-                  ذكاء اصطناعي وحوسبة، فيزياء وكيمياء ورياضيات، طب وأحياء، فلك وبيئة — إضافة للعلوم الإنسانية والاجتماعية.
+                  رابط مرجعي معتمد وتوثيق للسبق الفكري باسمك، مع شفرات قابلة للتكرار تمنحك سلطة بحثية مستقلة عن الأكاديميا التقليدية.
                 </p>
               </div>
             </div>
@@ -94,9 +94,9 @@ export default function BioMediaMultiCol() {
             {/* Action Button using BioButton */}
             <div className="pt-4 flex items-center gap-4">
               <BioButton
-                href="/labs"
-                label="EXPLORE PLATFORM"
-                secondaryLabel="استكشف المنظومة"
+                href="/publish"
+                label="START PUBLISHING"
+                secondaryLabel="وثّق بحثك الآن"
                 variant="primary"
                 dir="ltr"
               />

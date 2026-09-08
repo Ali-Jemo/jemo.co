@@ -11,7 +11,7 @@ import BioLeadershipGrid from "@/components/BioLeadershipGrid";
 import BioPartnersGrid from "@/components/BioPartnersGrid";
 import ContributeCTA from "@/components/ContributeCTA";
 import ResearchNewsletter from "@/components/ResearchNewsletter";
-
+import BioButton from "@/components/BioButton";
 export default function Home() {
   return (
     <>
@@ -32,21 +32,30 @@ export default function Home() {
         {/* 6. TECHNICAL BENCHMARKS — Hardware & System Metrics (0.12µs, 18.2 PFLOPS, 128K) */}
         <BioMetricsBand />
 
-        {/* 7. NEWSROOM / PUBLICATIONS — Latest Scientific Papers & Preprints */}
-        <section className="py-20 sm:py-28 bg-[#f7f7f5] border-b border-[#e4e3e3]" dir="rtl">
+        {/* 7. DISCOVERIES FEED — AI-Assisted Research & Citizen Investigations */}
+        <section className="py-20 sm:py-28 bg-[#f7f7f5] border-b border-[#e4e3e3]" dir="rtl" id="discoveries">
           <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div>
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] mb-4 shadow-xs">
                   <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-                  <span>المكتبة الجامعة · ALL SCIENCES LIBRARY</span>
+                  <span>أرشيف الاكتشافات المحققة · VERIFIED DISCOVERY LOGS</span>
                 </div>
                 <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-[#222f30] font-kufi">
-                  من الشرعية إلى الذكاء الاصطناعي إلى الطب والفلك.
+                  سجلات الاكتشافات والتحقيقات التقنية المحققة بشرياً.
                 </h2>
                 <p className="mt-4 text-base sm:text-lg text-[#55696a] max-w-2xl leading-relaxed">
-                  أوراق وبحوث ودروس في جميع العلوم: الإسلامية، والتقنية، والطبيعية، والطبية، والإنسانية.
+                  أوراق ومذكرات وتجارب هندسية في النظم، والبرمجة، ونماذج الذكاء الاصطناعي خضعت لمعيار التحقق البشري الصارم (Proof of Work).
                 </p>
+              </div>
+              <div className="shrink-0">
+                <BioButton
+                  href="/publish"
+                  label="SUBMIT DISCOVERY"
+                  secondaryLabel="وثّق اكتشافك الآن"
+                  variant="primary"
+                  dir="ltr"
+                />
               </div>
             </div>
             <FeaturedResearch />
@@ -60,13 +69,13 @@ export default function Home() {
               <div>
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] mb-4 shadow-xs">
                   <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-                  <span>مجالات المعرفة · FIELDS OF KNOWLEDGE</span>
+                  <span>ركائز التركيز الهندسي · CORE LAB SANDBOXES</span>
                 </div>
                 <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight text-[#222f30] font-kufi">
-                  علومٌ نبحثها وننشرها للجميع.
+                  تركيز نخبوي: النظم، والبرمجيات، والذكاء الاصطناعي.
                 </h2>
                 <p className="mt-4 text-base sm:text-lg text-[#55696a] max-w-2xl leading-relaxed">
-                  مشاريع ومنظومات في كل علم — مثالٌ حي من كل مجال، والبقية في صفحات الأبحاث والمشاريع.
+                  بداية مركزة في القطاع الأعلى قيمة: أنوية التشغيل المدمجة (نواة Ziqa)، تقييم النماذج الاستدلالية، وهندسة البرمجيات المتقدمة.
                 </p>
               </div>
             </div>
