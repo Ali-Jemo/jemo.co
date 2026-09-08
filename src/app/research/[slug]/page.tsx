@@ -9,7 +9,6 @@ import ExportCitationModal from "@/components/ExportCitationModal";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RESEARCH_PAPERS } from "@/lib/data/research-data";
-import { getCustomPapers } from "@/lib/dynamic-papers";
 import { Download, Code2, Database, FileText, Calendar, Tag, UserCheck, ArrowRight } from "lucide-react";
 
 interface PaperPageProps {
@@ -18,8 +17,7 @@ interface PaperPageProps {
 
 export async function generateMetadata({ params }: PaperPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const custom = await getCustomPapers();
-  const paper = [...custom, ...RESEARCH_PAPERS].find((p) => p.slug === slug);
+  const paper = RESEARCH_PAPERS.find((p) => p.slug === slug);
   if (!paper) return { title: "الورقة غير موجودة | JEMO LABS" };
 
   return {
@@ -30,8 +28,7 @@ export async function generateMetadata({ params }: PaperPageProps): Promise<Meta
 
 export default async function PaperDetailPage({ params }: PaperPageProps) {
   const { slug } = await params;
-  const custom = await getCustomPapers();
-  const paper = [...custom, ...RESEARCH_PAPERS].find((p) => p.slug === slug);
+  const paper = RESEARCH_PAPERS.find((p) => p.slug === slug);
   if (!paper) notFound();
 
   return (
