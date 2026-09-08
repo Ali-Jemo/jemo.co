@@ -2,10 +2,8 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Card from "@/components/ui/Card";
-import SectionHeader from "@/components/ui/SectionHeader";
-import { Users, UserCheck, Code2, Palette, Languages, GraduationCap, HeartHandshake, ArrowUpLeft } from "lucide-react";
-
+import BioButton from "@/components/BioButton";
+import { UserCheck, Code2, Palette, Languages, GraduationCap, HeartHandshake } from "lucide-react";
 const TRACKS = [
   {
     id: "researcher",
@@ -50,51 +48,54 @@ export default function JoinUsPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 py-16 bg-[var(--bg)]">
-        <div className="container max-w-4xl">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-xs font-mono">
-              <Users className="w-3.5 h-3.5" />
-              <span>مجتمع JEMO LABS المعرفي</span>
+      <main className="flex-1 pt-24 sm:pt-28 pb-20 bg-[#f7f7f5]" dir="rtl">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+          <div className="max-w-4xl mb-12 sm:mb-16">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] mb-4 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
+              <span>المسارات والزمالات · WORK WITH US</span>
             </div>
-            <h1 className="text-4xl font-extrabold text-[var(--ink-1)]">انضم إلى بيت الحكمة الرقمي</h1>
-            <p className="text-[var(--ink-2)] text-base leading-relaxed">
-              هذه ليست صفحة توظيف اعتيادية، بل دعوة لكل عقل مبدع وشغوف بالبحث والعلم للانضمام والمساهمة في بناء بيئة بحثية عراقية سيادية.
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#222f30] mb-4 tracking-tight leading-tight font-kufi">
+              انضم إلى مجتمع JEMO LABS العلمي.
+            </h1>
+            <p className="text-base sm:text-xl text-[#445e5f] leading-relaxed max-w-2xl">
+              دعوة مفتوحة لكل باحث، مطور، ومصمم يؤمن بأن المعرفة تُنتج ولا تُستهلك فقط، للمساهمة في بناء بيئة بحثية عراقية سيادية.
             </p>
           </div>
 
           {/* Tracks Selection */}
+          {/* Tracks Grid (IntegratedBio rounded-3xl cards) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {TRACKS.map((track) => {
               const Icon = track.icon;
               return (
-                <Card
+                <div
                   key={track.id}
-                  className="p-6 transition-all border border-[var(--line)] opacity-90 hover:opacity-100 hover:border-[var(--brand)] hover:shadow-md"
+                  className="group p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] hover:shadow-xl transition-all duration-500 flex flex-col justify-between"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] flex items-center justify-center">
-                      <Icon className="w-5 h-5" />
+                  <div>
+                    <div className="w-12 h-12 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-[#222f30] flex items-center justify-center mb-6 group-hover:bg-[#cef79e] transition-colors">
+                      <Icon className="w-6 h-6 stroke-[1.8]" />
                     </div>
+                    <h2 className="text-xl font-bold mb-3 text-[#222f30] font-kufi">{track.title}</h2>
+                    <p className="text-sm text-[#445e5f] leading-relaxed">{track.desc}</p>
                   </div>
-
-                  <h2 className="text-lg font-bold mb-2 text-[var(--ink-1)]">{track.title}</h2>
-                  <p className="text-xs text-[var(--ink-2)] leading-relaxed">{track.desc}</p>
-                </Card>
+                </div>
               );
             })}
           </div>
 
           {/* Call to Action to official apply page */}
-          <div className="text-center mt-12">
-            <a
+          {/* Call to Action using BioButton */}
+          <div className="flex flex-col items-center text-center mt-16 pt-12 border-t border-[#e4e3e3] space-y-4">
+            <BioButton
               href="/apply"
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[var(--brand)] text-white font-bold text-lg shadow-md hover:opacity-90 transition-all hover:scale-[1.02]"
-            >
-              <span>الانتقال إلى بوابة التقديم الرسمية</span>
-              <ArrowUpLeft className="w-5 h-5" />
-            </a>
-            <p className="mt-4 text-sm text-[var(--ink-2)]">
+              label="APPLY TO FELLOWSHIP"
+              secondaryLabel="بوابة التقديم الرسمية"
+              variant="primary"
+              dir="ltr"
+            />
+            <p className="text-xs sm:text-sm font-mono text-[#445e5f] pt-2">
               سيتم تحويلك إلى صفحة التقديم الآمنة الخاصة بمؤسسة JEMO LABS.
             </p>
           </div>

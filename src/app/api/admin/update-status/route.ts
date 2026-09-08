@@ -173,7 +173,9 @@ export async function POST(req: NextRequest) {
   try {
     if (status === 'accepted') {
       await sendAcceptanceEmail({ ...app, contractId: contractId! });
-      await notifyTelegramBot({ name: app.name, section: app.section, contractId: contractId!, chatId: app.telegram_chat_id });
+      const rawTel = String(app.telegram || app.telegram_chat_id || '');
+      const tgChatId = rawTel.includes('|') ? rawTel.split('|')[0].trim() : rawTel.trim();
+      await notifyTelegramBot({ name: app.name || app.full_name, section: app.section || app.track, contractId: contractId!, chatId: tgChatId });
     } else {
       await sendRejectionEmail(app);
     }

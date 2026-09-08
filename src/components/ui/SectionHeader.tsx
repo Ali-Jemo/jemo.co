@@ -18,14 +18,15 @@ export default function SectionHeader({
   return (
     <div className={`section-head mb-10 ${center ? "text-center mx-auto max-w-2xl" : "max-w-2xl"} ${className}`}>
       {eyebrow && (
-        <div className={`flex items-center gap-2 mb-3 ${center ? "justify-center" : ""}`}>
-          <span className="h-1 w-8 rounded-full bg-[var(--brand)]" />
-          <p className="text-xs font-mono font-bold text-[var(--brand)] tracking-wider uppercase">
+        <div className={`flex items-center gap-2.5 mb-3 ${center ? "justify-center" : ""}`}>
+          <span className="h-px w-6 bg-gradient-to-r from-transparent to-[var(--brand)]" />
+          <p className="eyebrow-bar !py-0 !px-0 !bg-transparent !border-0">
             {eyebrow}
           </p>
+          <span className="h-px w-6 bg-gradient-to-l from-transparent to-[var(--brand)]" />
         </div>
       )}
-      <h2 className={`text-3xl md:text-4xl font-extrabold text-[var(--ink-1)] mb-4 leading-tight ${gradientTitle ? "text-gradient" : ""}`}>
+      <h2 className={`text-3xl md:text-4xl font-bold text-[var(--ink-1)] mb-4 leading-tight ${gradientTitle ? "text-gradient" : ""}`}>
         {title}
       </h2>
       {description && (

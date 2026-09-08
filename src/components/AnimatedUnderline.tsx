@@ -1,7 +1,6 @@
-"use client";
+import React from "react";
 
-import { motion } from "framer-motion";
-
+// ponytail: pure CSS underline hover effect — zero client JS, zero Framer Motion overhead
 interface AnimatedUnderlineProps {
   children: React.ReactNode;
   className?: string;
@@ -13,18 +12,8 @@ export default function AnimatedUnderline({ children, className = "", href }: An
   const props = href ? { href } : {};
 
   return (
-    <Tag
-      className={`relative inline-block group ${className}`}
-      {...props}
-    >
+    <Tag className={`link-underline inline-flex items-center gap-1 ${className}`} {...props}>
       {children}
-      <motion.span
-        className="absolute bottom-0 left-0 h-[2px] bg-[var(--brand)] origin-left"
-        initial={{ scaleX: 0 }}
-        whileHover={{ scaleX: 1 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        style={{ width: "100%" }}
-      />
     </Tag>
   );
 }

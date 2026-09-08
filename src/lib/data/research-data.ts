@@ -75,12 +75,21 @@ export interface Initiative {
   slug: string;
   title: string;
   description: string;
+  fullDescription?: string;
   vision: string;
   progress: number;
+  status: "Research" | "Active" | "Scaling" | "Completed";
   lead: string;
+  leadSlug?: string;
+  team?: string[];
   deliverables: string[];
+  milestones?: { title: string; date: string; done: boolean }[];
   link?: string;
+  tags?: string[];
+  image?: string;
+  gallery?: string[];
 }
+
 
 export interface NewsItem {
   id: string;
@@ -896,53 +905,115 @@ export const RESEARCH_PROJECTS: Project[] = [
 export const INITIATIVES: Initiative[] = [
   {
     id: "open-iraq-ai",
+    image: "/initiatives/open-ai.jpg",
     slug: "open-iraq-ai",
     title: "مبادرة الذكاء الاصطناعي العراقي المفتوح",
     description: "توفير النماذج والبيانات والأدوات الأساسية لجميع الباحثين والطلاب مجاناً ودون قيود تجارية.",
-    vision: "ضمان عدم احتكار التكنولوجيا وتكين أي باحث عراقي من بناء وتطوير نماذج ذكاء اصطناعي سيادية.",
+    fullDescription: "تهدف هذه المبادرة إلى بناء منظومة شاملة من نماذج الذكاء الاصطناعي والبيانات والمكتبات البرمجية التي يمكن لأي باحث عراقي الوصول إليها واستخدامها وتعديلها وتوزيعها. نؤمن أن التكنولوجيا يجب أن تكون أداة تمكين جماعية وليست سلطة احتكارية، وأن كل باحث في العراق يستحق أدوات متقدمة لبناء مستقبله الرقمي.",
+    vision: "ضمان عدم احتكار التكنولوجيا وتمكين أي باحث عراقي من بناء وتطوير نماذج ذكاء اصطناعي سيادية ذات جودة عالمية.",
     progress: 75,
+    status: "Active",
     lead: "د. علي الجمو",
-    deliverables: ["مجموعة بيانات شاملة", "نماذج أوزان مفتوحة", "دليل الباحث العربي"]
+    leadSlug: "ali-jemo",
+    team: ["د. علي الجمو", "م. حيدر البغدادي", "م. أحمد الفراتي"],
+    deliverables: ["مجموعة بيانات شاملة", "نماذج أوزان مفتوحة", "دليل الباحث العربي"],
+    milestones: [
+      { title: "إطلاق المجموعة التدريبية", date: "يناير 2026", done: true },
+      { title: "نماذج أوزان أولية", date: "مايو 2026", done: true },
+      { title: "دليل الباحث العربي", date: "سبتمبر 2026", done: false },
+      { title: "نشر النماذج المتقدمة", date: "ديسمبر 2026", done: false },
+    ],
+    link: "https://github.com/jemo-labs/open-iraq-ai",
+    tags: ["AI", "Arabic LLMs", "Open Data"],
   },
   {
     id: "open-datasets-iraq",
+    image: "/initiatives/datasets.jpg",
     slug: "open-datasets-iraq",
     title: "بيانات العراق المفتوحة",
     description: "تجميع وأرشفة البيانات الجغرافية، البيئية، والتاريخية العراقية في مستودعات أكاديمية سهلة الاستخدام.",
+    fullDescription: "تجمع هذه المبادرة البيانات الجغرافية والبيئية والتاريخية العراقية في مستودعات أكاديمية موحدة وسهلة الاستخدام، مع واجهات برمجية API مجانية تسمح للباحثين والمطورين بالوصول إلى هذه البيانات وبناء تطبيقات تستند إلى الواقع العراقي.",
     vision: "توفير أرضية صلبة للأبحاث التطبيقية المبنية على واقع البيئة والمجتمع العراقي.",
     progress: 90,
+    status: "Scaling",
     lead: "د. سارة الحسيني",
-    deliverables: ["منصة أرشفة مفتوحة", "واجهة برمجية API مجانية", "دليل النشر الرقمي"]
+    leadSlug: "sara-al-hussaini",
+    team: ["د. سارة الحسيني", "د. يوسف النجفي"],
+    deliverables: ["منصة أرشفة مفتوحة", "واجهة برمجية API مجانية", "دليل النشر الرقمي"],
+    milestones: [
+      { title: "إطلاق المنصة", date: "مارس 2026", done: true },
+      { title: "واجهة API الأولى", date: "يونيو 2026", done: true },
+      { title: "دليل النشر الرقمي", date: "أغسطس 2026", done: true },
+      { title: "التوسع للبيانات البيئية", date: "ديسمبر 2026", done: false },
+    ],
+    tags: ["Data", "Geospatial", "API"],
   },
   {
     id: "arabic-nlp-initiative",
+    image: "/initiatives/nlp.jpg",
     slug: "arabic-nlp",
     title: "مبادرة معالجة اللغة العربية العلمية",
     description: "تطوير أدوات ومكتبات برمجية متخصصة في فهم النصوص الطبية والأكاديمية باللغة العربية.",
+    fullDescription: "تطوير مجموعة متكاملة من الأدوات والمكتبات البرمجية المتخصصة في فهم النصوص الطبية والأكاديمية باللغة العربية، بما في ذلك أدوات التقطيع والمعجمات المتخصصة ومقيمات الاستدلال التي تدعم البحث العلمي العربي.",
     vision: "سد الفجوة المعرفية بين المحتوى الأكاديمي العالمي والمحتوى المتاح باللغة العربية.",
     progress: 60,
+    status: "Research",
     lead: "د. علي الجمو",
-    deliverables: ["مكتبة تقطيع النصوص", "معجم المصطلحات التقنية", "مقيم الاستدلال العربي"]
+    leadSlug: "ali-jemo",
+    team: ["د. علي الجمو", "د. مريم البابلية"],
+    deliverables: ["مكتبة تقطيع النصوص", "معجم المصطلحات التقنية", "مقيم الاستدلال العربي"],
+    milestones: [
+      { title: "مكتبة تقطيع النصوص", date: "فبراير 2026", done: true },
+      { title: "معجم المصطلحات", date: "أغسطس 2026", done: false },
+      { title: "مقيم الاستدلال العربي", date: "نوفمبر 2026", done: false },
+    ],
+    link: "https://github.com/jemo-labs/arabic-nlp",
+    tags: ["NLP", "Arabic", "Medical"],
   },
   {
     id: "digital-house-of-wisdom",
+    image: "/initiatives/dhw.jpg",
     slug: "digital-house-of-wisdom",
     title: "مبادرة بيت الحكمة الرقمي",
     description: "إعادة بناء التراث العلمي لبغداد برؤية رقمية حديثة تدمج الأبحاث، المخطوطات، والتعليم المفتوح.",
+    fullDescription: "إعادة بناء التراث العلمي لبغداد الرقمي باستخدام تقنيات حديثة تدمج الأبحاث والمخطوطات التاريخية والتعليم المفتوح في منصة واحدة شاملة، مستوحاة من روح بيت الحكمة العريق كرمز للمعرفة المفتوحة.",
     vision: "جعل JEMO LABS المنارة الرقمية الحديثة لبيت الحكمة العريق.",
     progress: 85,
+    status: "Scaling",
     lead: "م. أحمد الفراتي",
-    deliverables: ["متحف العلوم الرقمي", "أرشيف الأوراق المفتوحة", "دليل الباحث المستقل"]
+    leadSlug: "ahmed-al-furati",
+    team: ["م. أحمد الفراتي", "د. سارة الحسيني"],
+    deliverables: ["متحف العلوم الرقمي", "أرشيف الأوراق المفتوحة", "دليل الباحث المستقل"],
+    milestones: [
+      { title: "المتحف الرقمي", date: "أبريل 2026", done: true },
+      { title: "أرشيف الأوراق", date: "يوليو 2026", done: true },
+      { title: "دليل الباحث المستقل", date: "سبتمبر 2026", done: false },
+    ],
+    link: "https://github.com/jemo-labs/digital-house-of-wisdom",
+    tags: ["Heritage", "Digital", "Education"],
   },
   {
     id: "100-iraqi-researchers",
+    image: "/initiatives/researchers.jpg",
     slug: "100-iraqi-researchers",
     title: "مبادرة 100 باحث عراقي",
     description: "برنامج زمالة ودعم لـ 100 عقل عراقي شاب لتأهيلهم لنشر أبحاث عالمية المستوى.",
+    fullDescription: "برنامج زمالة مكثف ودعم شامل لـ 100 عقل عراقي شاب لتأهيلهم لنشر أبحاث عالمية المستوى، يشمل التوجيه الأكاديمي من كبار الباحثين وتمويل نشر الأوراق وتوفير الموارد الحاسوبية المتقدمة اللازمة لإجراء الأبحاث.",
     vision: "بناء الرصيد البشري العلمي الذي سيقود التحول التكنولوجي في المنطقة.",
     progress: 50,
+    status: "Research",
     lead: "د. مريم البابلية",
-    deliverables: ["برنامج توجيه أكاديمي", "تمويل نشر الأوراق", "توفير الموارد الحاسوبية"]
+    leadSlug: "maryam-al-babili",
+    team: ["د. مريم البابلية", "د. علي الجمو", "د. سارة الحسيني"],
+    deliverables: ["برنامج توجيه أكاديمي", "تمويل نشر الأوراق", "توفير الموارد الحاسوبية"],
+    milestones: [
+      { title: "بدء التوظيف", date: "يناير 2026", done: true },
+      { title: "الزمالة الأولى", date: "يونيو 2026", done: true },
+      { title: "50 باحث مؤهل", date: "ديسمبر 2026", done: false },
+      { title: "الهدف الكامل 100", date: "2028", done: false },
+    ],
+    link: "https://github.com/jemo-labs/100-iraqi-researchers",
+    tags: ["Fellowship", "Talent", "Mentorship"],
   }
 ];
 

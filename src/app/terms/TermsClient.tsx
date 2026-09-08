@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   ShieldCheck,
   Users,
   Globe,
-  FileText,
   CheckCircle,
   Search,
   Sparkles,
@@ -14,8 +13,6 @@ import {
   Check,
   HelpCircle,
   ChevronDown,
-  Lock,
-  RefreshCw,
   CreditCard,
   UserX,
   Scale,
@@ -30,13 +27,15 @@ import {
   Sliders,
   HelpCircle as QuizIcon,
   Award,
-  CheckSquare,
-  XCircle
+  XCircle,
+  ArrowUp,
+  X,
+  Link2
 } from "lucide-react";
 import GlowingBorder from "@/components/GlowingBorder";
 import MagneticCard from "@/components/MagneticCard";
 import GlowButton from "@/components/GlowButton";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring, MotionConfig } from "framer-motion";
 interface Clause {
   code: string;
   title: string;
@@ -385,14 +384,101 @@ const faqData = [
   }
 ];
 
+const TERMS_VERSION = "v2.2";
+
+function escapeRegExp(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightMatch(text: string, query: string): React.ReactNode {
+  const q = query.trim();
+  if (!q) return text;
+  const parts = text.split(new RegExp(`(${escapeRegExp(q)})`, "g"));
+  if (parts.length <= 1) return text;
+  return parts.map((p, i) =>
+    p === q ? (
+      <mark key={i} className="bg-[var(--brand)]/15 text-inherit rounded px-0.5">
+        {p}
+      </mark>
+    ) : (
+      <React.Fragment key={i}>{p}</React.Fragment>
+    )
+  );
+}
+
 export default function TermsClient() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [copied, setCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showChangelog, setShowChangelog] = useState(false);
-  const [feedbackState, setFeedbackState] = useState<Record<string, "yes" | "no">>({});
+  const [feedbackState, setFeedbackState] = useState<Record<string, "yes" | "no">>(() => {
+    try {
+      if (typeof window === "undefined") return {};
+      const fb = localStorage.getItem("jemo-terms-feedback");
+      return fb ? (JSON.parse(fb) as Record<string, "yes" | "no">) : {};
+    } catch {
+      return {};
+    }
+  });
   const [copiedClause, setCopiedClause] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
+
+  const handleCopyClauseLink = (code: string) => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(
+        `${window.location.origin}${window.location.pathname}#clause-${code}`
+      );
+      setCopiedLink(code);
+      setTimeout(() => setCopiedLink(null), 2000);
+    }
+  };
+
+  // Read acknowledgement (persisted per version)
+  const [acceptedAt, setAcceptedAt] = useState<string | null>(() => {
+    try {
+      if (typeof window === "undefined") return null;
+      return localStorage.getItem(`jemo-terms-accept-${TERMS_VERSION}`);
+    } catch {
+      return null;
+    }
+  });
+
+  const handleAccept = () => {
+    const now = new Date().toISOString();
+    setAcceptedAt(now);
+    try {
+      localStorage.setItem(`jemo-terms-accept-${TERMS_VERSION}`, now);
+    } catch {}
+  };
+
+  const handleResetAccept = () => {
+    setAcceptedAt(null);
+    try {
+      localStorage.removeItem(`jemo-terms-accept-${TERMS_VERSION}`);
+    } catch {}
+  };
+
+  // "/" focuses search, Esc clears it
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      const typing =
+        !!t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
+      if (e.key === "/" && !typing) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+      if (e.key === "Escape" && document.activeElement === searchRef.current) {
+        setSearchTerm("");
+        searchRef.current?.blur();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   // Cookie Preferences State
   const [perfCookies, setPerfCookies] = useState(true);
@@ -402,6 +488,43 @@ export default function TermsClient() {
   // Quiz State
   const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+
+  // Reading progress + scrollspy + back-to-top
+  const { scrollYProgress } = useScroll();
+  const progressScale = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.4 });
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [showBackTop, setShowBackTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowBackTop(window.scrollY > 900);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("section[id^='section-']"));
+    if (!sections.length || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: "-35% 0px -55% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [searchTerm, selectedCategory]);
+
+  const totalClauses = useMemo(
+    () => termsData.reduce((acc, s) => acc + s.clauses.length, 0),
+    []
+  );
+
+  const scrollToTop = () => {
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleCopyLink = () => {
     if (typeof window !== "undefined") {
@@ -426,7 +549,13 @@ export default function TermsClient() {
   };
 
   const handleFeedback = (sectionId: string, value: "yes" | "no") => {
-    setFeedbackState((prev) => ({ ...prev, [sectionId]: value }));
+    setFeedbackState((prev) => {
+      const next = { ...prev, [sectionId]: value };
+      try {
+        localStorage.setItem("jemo-terms-feedback", JSON.stringify(next));
+      } catch {}
+      return next;
+    });
   };
 
   const handleSaveCookiePreferences = () => {
@@ -455,10 +584,22 @@ export default function TermsClient() {
   });
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[var(--bg)] py-12 px-4 sm:px-6 lg:px-8 font-kufi text-[var(--ink)]">
+    <MotionConfig reducedMotion="user">
+    <div dir="rtl" className="min-h-screen bg-[var(--bg)] py-12 px-4 sm:px-6 lg:px-8 font-kufi text-[var(--ink)] scroll-smooth">
+      {/* Reading progress */}
+      <motion.div
+        aria-hidden="true"
+        style={{ scaleX: progressScale }}
+        className="fixed top-0 right-0 left-0 h-1 z-[60] origin-right bg-gradient-to-l from-[var(--brand)] via-[var(--brand)] to-[var(--brand-700)] print:hidden"
+      />
+      {/* Print-only document header */}
+      <div className="hidden print:block text-center mb-8">
+        <p className="font-bold text-lg">الشروط والأحكام المنظمة — jemo labs ({TERMS_VERSION})</p>
+        <p className="text-xs mt-1">آخر تحديث: 23 يوليو 2026 • jemo.co/terms</p>
+      </div>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <header className="mb-12 text-center relative">
+        <header className="mb-10 text-center relative">
           <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--brand)]/20 bg-[var(--brand)]/5 text-[var(--brand)] text-xs font-mono shadow-xs">
               <span className="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse" />
@@ -466,18 +607,22 @@ export default function TermsClient() {
             </div>
             <button
               onClick={() => setShowChangelog(!showChangelog)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--line)] text-xs text-[var(--ink-2)] hover:text-[var(--brand)] font-mono transition-colors cursor-pointer"
+              aria-expanded={showChangelog}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--line)] text-xs text-[var(--ink-2)] hover:text-[var(--brand)] font-mono transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--brand)]"
             >
               <History size={13} className="text-[var(--brand)]" />
               <span>آخر تحديث: 23 يوليو 2026</span>
             </button>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[var(--ink)] mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[var(--ink)] mb-4 text-balance">
             الشروط <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand)] to-[var(--brand-700)] italic">والأحكام المنظمة</span>
           </h1>
-          <p className="text-base md:text-lg text-[var(--ink-2)] max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-base md:text-lg text-[var(--ink-2)] max-w-3xl mx-auto leading-relaxed mb-6 text-pretty">
             وثيقة قانونية وفنية تفصيلية تهدف لترسيخ حقوقك، حماية بياناتك، وتحديد التزامات المنظومة داخل منصة jemo labs.
+          </p>
+          <p className="text-xs font-mono text-[var(--ink-2)] mb-8 tabular-nums">
+            {termsData.length} أقسام • {totalClauses} بند • قراءة ≈ 12 دقيقة
           </p>
 
           {/* Header Action Controls */}
@@ -579,44 +724,80 @@ export default function TermsClient() {
           </div>
         </div>
 
-        {/* Quick Nav Anchor Bar */}
-        <div className="mb-10 overflow-x-auto pb-2 scrollbar-none print:hidden">
+        {/* Quick Nav Anchor Bar (sticky + scrollspy) */}
+        <nav aria-label="التنقل بين أقسام الشروط" className="mb-10 sticky top-16 z-30 -mx-4 px-4 sm:mx-0 sm:px-0 py-2 bg-[var(--bg)]/85 backdrop-blur-md print:hidden">
+        <div className="overflow-x-auto pb-1 scrollbar-none">
           <div className="flex items-center gap-2 min-w-max">
-            <span className="text-xs font-bold text-[var(--ink-2)] pl-2 flex items-center gap-1">
+            <span className="text-xs font-bold text-[var(--ink-2)] pl-2 flex items-center gap-1 shrink-0">
               <Bookmark size={13} className="text-[var(--brand)]" /> الانتقال السريع:
             </span>
-            {termsData.map((sec) => (
+            {termsData.map((sec) => {
+              const isActive = activeSection === `section-${sec.id}`;
+              return (
               <a
                 key={sec.id}
                 href={`#section-${sec.id}`}
-                className="px-3 py-1.5 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-xs text-[var(--ink-2)] hover:text-[var(--brand)] hover:border-[var(--brand)]/40 transition-all font-medium"
+                aria-current={isActive ? "true" : undefined}
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all border ${
+                  isActive
+                    ? "bg-[var(--brand)] text-white border-[var(--brand)] shadow-sm"
+                    : "bg-[var(--surface)] border-[var(--line)] text-[var(--ink-2)] hover:text-[var(--brand)] hover:border-[var(--brand)]/40"
+                }`}
               >
                 {sec.num}. {sec.title.split(" ")[0]}
               </a>
-            ))}
+              );
+            })}
           </div>
         </div>
+        </nav>
 
         {/* Search & Category Filter Section */}
         <div className="mb-12 space-y-5 print:hidden">
           <div className="relative max-w-xl mx-auto">
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--ink-2)]" size={18} />
+            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--ink-2)] pointer-events-none" size={18} />
             <input
-              type="text"
+              ref={searchRef}
+              type="search"
+              role="searchbox"
+              aria-label="ابحث داخل بنود الشروط"
               placeholder="ابحث داخل بنود الشروط (مثال: تشفير، استرجاع، اختراق، تراخيص...)"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pr-11 pl-4 py-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] text-sm text-[var(--ink)] placeholder-[var(--ink-2)] focus:outline-none focus:border-[var(--brand)] transition-all shadow-xs"
+              className="w-full pr-11 pl-11 py-3.5 rounded-2xl bg-[var(--surface)] border border-[var(--line)] text-sm text-[var(--ink)] placeholder-[var(--ink-2)] focus:outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20 transition-all shadow-xs"
             />
+            {!searchTerm && (
+              <kbd
+                aria-hidden="true"
+                className="absolute left-4 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded-md bg-[var(--bg)] border border-[var(--line)] text-[11px] font-mono text-[var(--ink-2)] pointer-events-none"
+              >
+                /
+              </kbd>
+            )}
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                aria-label="مسح البحث"
+                className="absolute left-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-[var(--ink-2)] hover:text-[var(--ink)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
+              >
+                <X size={15} />
+              </button>
+            )}
           </div>
+          {(searchTerm || selectedCategory !== "all") && (
+            <p aria-live="polite" className="text-center text-xs text-[var(--ink-2)] tabular-nums">
+              {filteredTerms.length} من {termsData.length} أقسام مطابقة
+            </p>
+          )}
 
           {/* Category Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2" role="group" aria-label="تصفية حسب الفئة">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                aria-pressed={selectedCategory === cat.id}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--brand)] ${
                   selectedCategory === cat.id
                     ? "bg-[var(--brand)] text-white shadow-sm"
                     : "bg-[var(--surface)] text-[var(--ink-2)] border border-[var(--line)] hover:text-[var(--ink)] hover:border-[var(--brand)]/30"
@@ -636,10 +817,14 @@ export default function TermsClient() {
               const isFeedbackGiven = feedbackState[section.id];
 
               return (
-                <section
+                <motion.section
                   id={`section-${section.id}`}
                   key={section.id}
-                  className="scroll-mt-8"
+                  className="scroll-mt-32"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
                 >
                   <MagneticCard className="w-full">
                     <GlowingBorder className="w-full">
@@ -657,7 +842,7 @@ export default function TermsClient() {
                                 <span className="uppercase">{section.category}</span>
                               </div>
                               <h2 className="text-2xl md:text-3xl font-bold text-[var(--ink)]">
-                                {section.title}
+                                {highlightMatch(section.title, searchTerm)}
                               </h2>
                             </div>
                           </div>
@@ -672,7 +857,7 @@ export default function TermsClient() {
 
                         {/* Section Summary */}
                         <p className="text-sm md:text-base text-[var(--ink-2)] leading-relaxed mb-8 bg-[var(--bg)]/50 p-4 rounded-2xl border border-[var(--line)]/60">
-                          {section.summary}
+                          {highlightMatch(section.summary, searchTerm)}
                         </p>
 
                         {/* Clauses List */}
@@ -680,28 +865,47 @@ export default function TermsClient() {
                           {section.clauses.map((clause) => (
                             <div
                               key={clause.code}
-                              className="p-5 rounded-2xl bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--brand)]/30 transition-colors group relative"
+                              id={`clause-${clause.code}`}
+                              className="p-5 rounded-2xl bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--brand)]/30 hover:shadow-sm transition-all group relative scroll-mt-32"
                             >
                               <div className="flex items-center justify-between gap-3 mb-2">
                                 <div className="flex items-center gap-2.5">
-                                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[var(--brand)]/10 text-[var(--brand)]">
+                                  <a
+                                    href={`#clause-${clause.code}`}
+                                    title="رابط مباشر لهذا البند"
+                                    aria-label={`رابط مباشر للبند ${clause.code}`}
+                                    className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[var(--brand)]/10 text-[var(--brand)] hover:bg-[var(--brand)]/20 transition-colors tabular-nums"
+                                  >
                                     البند {clause.code}
-                                  </span>
+                                  </a>
                                   <h3 className="text-base font-bold text-[var(--ink)]">
-                                    {clause.title}
+                                    {highlightMatch(clause.title, searchTerm)}
                                   </h3>
                                 </div>
 
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1.5">
                                   {clause.mandatory && (
                                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
                                       إجباري
                                     </span>
                                   )}
                                   <button
+                                    onClick={() => handleCopyClauseLink(clause.code)}
+                                    title="نسخ رابط البند"
+                                    aria-label={`نسخ رابط البند ${clause.code}`}
+                                    className="p-1.5 rounded-lg text-[var(--ink-2)] hover:text-[var(--brand)] hover:bg-[var(--surface)] transition-all opacity-70 group-hover:opacity-100 cursor-pointer print:hidden focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-[var(--brand)]"
+                                  >
+                                    {copiedLink === clause.code ? (
+                                      <Check size={14} className="text-green-500" />
+                                    ) : (
+                                      <Link2 size={14} />
+                                    )}
+                                  </button>
+                                  <button
                                     onClick={() => handleCopyClause(clause.code, clause.text)}
                                     title="نسخ نص البند"
-                                    className="p-1.5 rounded-lg text-[var(--ink-2)] hover:text-[var(--brand)] hover:bg-[var(--surface)] transition-all opacity-70 group-hover:opacity-100 cursor-pointer print:hidden"
+                                    aria-label={`نسخ نص البند ${clause.code}`}
+                                    className="p-1.5 rounded-lg text-[var(--ink-2)] hover:text-[var(--brand)] hover:bg-[var(--surface)] transition-all opacity-70 group-hover:opacity-100 cursor-pointer print:hidden focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-[var(--brand)]"
                                   >
                                     {copiedClause === clause.code ? (
                                       <Check size={14} className="text-green-500" />
@@ -713,7 +917,7 @@ export default function TermsClient() {
                               </div>
 
                               <p className="text-xs md:text-sm text-[var(--ink-2)] leading-relaxed font-medium">
-                                {clause.text}
+                                {highlightMatch(clause.text, searchTerm)}
                               </p>
                             </div>
                           ))}
@@ -748,7 +952,7 @@ export default function TermsClient() {
                       </div>
                     </GlowingBorder>
                   </MagneticCard>
-                </section>
+                </motion.section>
               );
             })}
           </div>
@@ -804,7 +1008,10 @@ export default function TermsClient() {
               </div>
               <button
                 onClick={() => setPerfCookies(!perfCookies)}
-                className="text-[var(--brand)] cursor-pointer"
+                role="switch"
+                aria-checked={perfCookies}
+                aria-label="كوكيز تسريع الأداء الفني"
+                className="text-[var(--brand)] cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--brand)] rounded-full"
               >
                 {perfCookies ? <ToggleRight size={32} /> : <ToggleLeft size={32} className="text-[var(--ink-2)]" />}
               </button>
@@ -818,7 +1025,10 @@ export default function TermsClient() {
               </div>
               <button
                 onClick={() => setAnalyticsCookies(!analyticsCookies)}
-                className="text-[var(--brand)] cursor-pointer"
+                role="switch"
+                aria-checked={analyticsCookies}
+                aria-label="كوكيز تحسين التجربة والتحليلات"
+                className="text-[var(--brand)] cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--brand)] rounded-full"
               >
                 {analyticsCookies ? <ToggleRight size={32} /> : <ToggleLeft size={32} className="text-[var(--ink-2)]" />}
               </button>
@@ -900,7 +1110,8 @@ export default function TermsClient() {
                           setQuizAnswers((prev) => ({ ...prev, [q.id]: optIdx }));
                           setQuizSubmitted(true);
                         }}
-                        className={`w-full text-right p-3 rounded-xl text-xs font-medium transition-all flex items-center justify-between cursor-pointer border ${
+                        aria-pressed={isSelected}
+                        className={`w-full text-right p-3 rounded-xl text-xs font-medium transition-all flex items-center justify-between cursor-pointer border focus-visible:outline-2 focus-visible:outline-[var(--brand)] ${
                           isSelected
                             ? isCorrect
                               ? "bg-green-500/10 border-green-500/40 text-green-700 dark:text-green-300 font-bold"
@@ -980,7 +1191,8 @@ export default function TermsClient() {
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : i)}
-                    className="w-full p-5 text-right flex items-center justify-between gap-4 font-bold text-sm md:text-base text-[var(--ink)] hover:text-[var(--brand)] transition-colors cursor-pointer"
+                    aria-expanded={isOpen}
+                    className="w-full p-5 text-right flex items-center justify-between gap-4 font-bold text-sm md:text-base text-[var(--ink)] hover:text-[var(--brand)] transition-colors cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--brand)] rounded-2xl"
                   >
                     <span>{faq.q}</span>
                     <ChevronDown
@@ -1009,6 +1221,54 @@ export default function TermsClient() {
           </div>
         </div>
 
+        {/* Read acknowledgement */}
+        <div className="mt-16 bg-[var(--surface)] border border-[var(--brand)]/20 rounded-3xl p-6 sm:p-8 shadow-xs print:hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] shrink-0">
+                <ShieldCheck size={22} />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-[var(--ink)]">إقرار الاطلاع على الشروط</h2>
+                <p className="text-xs text-[var(--ink-2)] mt-1 leading-relaxed">
+                  بتأكيد الاطلاع تُسجَّل موافقتك محلياً في متصفحك على النسخة {TERMS_VERSION} فقط — لا تُرسل أي بيانات لخوادمنا.
+                </p>
+                {acceptedAt && (
+                  <p className="text-xs font-semibold text-green-600 dark:text-green-400 mt-2 tabular-nums">
+                    تم الإقرار بتاريخ{" "}
+                    {new Date(acceptedAt).toLocaleString("ar", {
+                      dateStyle: "medium",
+                      timeStyle: "short",
+                    })}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {acceptedAt ? (
+                <>
+                  <span className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-green-500/10 border border-green-500/30 text-green-700 dark:text-green-300 text-xs font-bold">
+                    <Check size={14} /> تم الإقرار
+                  </span>
+                  <button
+                    onClick={handleResetAccept}
+                    className="px-4 py-2.5 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-xs font-semibold text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors cursor-pointer"
+                  >
+                    تراجع
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleAccept}
+                  className="px-5 py-2.5 bg-[var(--brand)] text-white text-xs font-bold rounded-xl hover:bg-[var(--brand-700)] transition-all cursor-pointer shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+                >
+                  أقر بأنني قرأت الشروط ({TERMS_VERSION})
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Footer Support Banner */}
         <div className="mt-16 text-center bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-xs print:hidden flex flex-col items-center justify-center">
           <div
@@ -1024,6 +1284,23 @@ export default function TermsClient() {
           </div>
         </div>
       </div>
+
+      {/* Back to top */}
+      <AnimatePresence>
+        {showBackTop && (
+          <motion.button
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 16 }}
+            onClick={scrollToTop}
+            aria-label="العودة إلى أعلى الصفحة"
+            className="fixed bottom-6 left-6 z-40 p-3.5 rounded-2xl bg-[var(--brand)] text-white shadow-lg hover:bg-[var(--brand-700)] transition-colors cursor-pointer print:hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]"
+          >
+            <ArrowUp size={18} />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
+    </MotionConfig>
   );
 }

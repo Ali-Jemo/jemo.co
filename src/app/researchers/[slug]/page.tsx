@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
+import Badge from "@/components/ui/Badge";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { RESEARCHERS, RESEARCH_PAPERS, RESEARCH_PROJECTS } from "@/lib/data/research-data";
+import { RESEARCHERS, RESEARCH_PAPERS, RESEARCH_PROJECTS, RESEARCH_LABS } from "@/lib/data/research-data";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { ArrowRight, Mail, FileText, FolderGit2, BookOpen } from "lucide-react";
 
@@ -27,6 +28,8 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
   const { slug } = await params;
   const researcher = RESEARCHERS.find((r) => r.slug === slug);
   if (!researcher) notFound();
+
+  const lab = RESEARCH_LABS.find((l) => l.slug === researcher.labSlug);
 
   const authoredPapers = RESEARCH_PAPERS.filter((p) => p.authors.some((a) => a.slug === researcher.slug));
   const ledProjects = RESEARCH_PROJECTS.filter((p) => p.team.some((t) => t.slug === researcher.slug));
@@ -62,11 +65,21 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
                 {researcher.bio}
               </p>
 
-              {researcher.orcid && (
-                <div className="text-xs font-mono text-[var(--ink-2)] bg-[var(--bg)] px-3 py-1.5 rounded-lg border border-[var(--line)] inline-block dir-ltr">
-                  ORCID: {researcher.orcid}
-                </div>
-              )}
+              <div className="flex flex-wrap gap-3 items-center">
+                {lab && (
+                  <Link
+                    href={`/labs/${lab.slug}`}
+                    className="inline-block"
+                  >
+                    <Badge variant="info">{lab.name}</Badge>
+                  </Link>
+                )}
+                {researcher.orcid && (
+                  <span className="text-xs font-mono text-[var(--ink-2)] bg-[var(--bg)] px-3 py-1.5 rounded-lg border border-[var(--line)] inline-block dir-ltr">
+                    ORCID: {researcher.orcid}
+                  </span>
+                )}
+              </div>
 
               {/* Scholar Social Links */}
               <div className="flex flex-wrap gap-3 pt-2">
@@ -120,21 +133,25 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
               <FileText className="w-5 h-5 text-[var(--brand)]" />
               <span>الأوراق العلمية المنشورة ({authoredPapers.length})</span>
             </h2>
-            <div className="space-y-4">
-              {authoredPapers.map((paper) => (
-                <Card key={paper.id} hover className="p-6">
-                  <div className="text-xs font-mono text-[var(--ink-2)] mb-1">{paper.publishDate}</div>
-                  <h3 className="font-bold text-lg text-[var(--ink-1)] mb-2 hover:text-[var(--brand)] transition-colors">
-                    <Link href={`/research/${paper.slug}`}>{paper.title}</Link>
-                  </h3>
-                  <p className="text-xs font-mono text-[var(--brand)] mb-3 dir-ltr text-right">{paper.titleEn}</p>
-                  <p className="text-xs text-[var(--ink-2)] line-clamp-2 leading-relaxed mb-4">{paper.abstract}</p>
-                  <Link href={`/research/${paper.slug}`} className="text-xs font-bold text-[var(--brand)] hover:underline">
-                    عرض الورقة والمصادر →
-                  </Link>
-                </Card>
-              ))}
-            </div>
+            {authoredPapers.length === 0 ? (
+              <p className="text-sm text-[var(--ink-2)]">لا توجد أوراق منشورة بعد.</p>
+            ) : (
+              <div className="space-y-4">
+                {authoredPapers.map((paper) => (
+                  <Card key={paper.id} hover className="p-6">
+                    <div className="text-xs font-mono text-[var(--ink-2)] mb-1">{paper.publishDate}</div>
+                    <h3 className="font-bold text-lg text-[var(--ink-1)] mb-2 hover:text-[var(--brand)] transition-colors">
+                      <Link href={`/research/${paper.slug}`}>{paper.title}</Link>
+                    </h3>
+                    <p className="text-xs font-mono text-[var(--brand)] mb-3 dir-ltr text-right">{paper.titleEn}</p>
+                    <p className="text-xs text-[var(--ink-2)] line-clamp-2 leading-relaxed mb-4">{paper.abstract}</p>
+                    <Link href={`/research/${paper.slug}`} className="text-xs font-bold text-[var(--brand)] hover:underline">
+                      عرض الورقة والمصادر →
+                    </Link>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Associated Projects */}
@@ -147,10 +164,20 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {ledProjects.map((proj) => (
                   <Card key={proj.id} hover className="p-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="info">{proj.status}</Badge>
+                    </div>
                     <h3 className="font-bold text-base mb-2">
                       <Link href={`/projects/${proj.slug}`}>{proj.title}</Link>
                     </h3>
                     <p className="text-xs text-[var(--ink-2)] mb-3">{proj.description}</p>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {proj.techStack.map((tech) => (
+                        <span key={tech} className="text-[10px] font-mono text-[var(--brand)] bg-[var(--brand)]/10 px-1.5 py-0.5 rounded">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                     <Link href={`/projects/${proj.slug}`} className="text-xs font-bold text-[var(--brand)]">
                       صفحة المشروع →
                     </Link>

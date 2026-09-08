@@ -13,11 +13,14 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     }
 
     const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (isTouchDevice) {
+      return; // Mobile and touch devices use native 120Hz compositor scrolling with zero CPU overhead
+    }
 
     const lenis = new Lenis({
-      duration: isTouchDevice ? 0.4 : 0.6,
+      duration: 0.6,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: !isTouchDevice,
+      smoothWheel: true,
     });
     lenisRef.current = lenis;
 

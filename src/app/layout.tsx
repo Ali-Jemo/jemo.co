@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Kufi_Arabic, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import AnalyticsTracker from "@/components/AnalyticsTracker";
 import LenisProvider from "@/lib/lenis-provider";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ScrollProgress from "@/components/ScrollProgress";
-
 
 
 const noto = Noto_Kufi_Arabic({
@@ -19,6 +18,13 @@ const mono = IBM_Plex_Mono({
   variable: "--font-mono",
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#08090d",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://jemo.co"),
@@ -90,10 +96,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)]" suppressHydrationWarning>
         {/* Background Assets */}
-        <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+        <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden transform-gpu will-change-transform" style={{ contain: 'strict' }}>
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
         </div>
-        
         <ScrollProgress />
         <AnalyticsTracker />
         <LenisProvider>

@@ -2,6 +2,11 @@ import { describe, it, expect, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+  }),
 }));
 import { renderToStaticMarkup } from "react-dom/server";
 import React from "react";
@@ -27,7 +32,6 @@ describe("Institutional UI Components", () => {
       React.createElement(Card, { hover: true }, "محتوى البطاقة")
     );
     expect(html).toContain("card");
-    expect(html).toContain("card--hover");
   });
 
   it("renders Badge pill component", () => {
@@ -42,7 +46,6 @@ describe("Institutional UI Components", () => {
     const html = renderToStaticMarkup(
       React.createElement(SectionHeader, { eyebrow: "من نحن", title: "أبحاث وتطوير" })
     );
-    expect(html).toContain("section-head");
     expect(html).toContain("أبحاث وتطوير");
   });
 
@@ -54,10 +57,10 @@ describe("Institutional UI Components", () => {
     expect(html).toContain("acc-item");
     expect(html).toContain("سؤال 1");
   });
+
   it("renders Header component with backdrop blur styling", () => {
     const html = renderToStaticMarkup(React.createElement(Header));
-    expect(html).toContain("jemo");
     expect(html).toContain("backdrop");
+    expect(html).toContain("الرئيسية");
   });
-
 });

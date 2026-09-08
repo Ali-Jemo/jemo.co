@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
+import Badge from "@/components/ui/Badge";
 import Link from "next/link";
-import { RESEARCHERS } from "@/lib/data/research-data";
-import { Users, ArrowUpLeft } from "lucide-react";
+import { RESEARCHERS, RESEARCH_LABS } from "@/lib/data/research-data";
+import { GithubIcon, LinkedinIcon } from "@/components/Icons";
+import { Users, ArrowUpLeft, BookOpen } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "دليل الباحثين | JEMO LABS",
@@ -29,45 +31,94 @@ export default function ResearchersIndexPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {RESEARCHERS.map((r) => (
-              <Card key={r.id} hover className="p-8 flex flex-col justify-between">
-                <div>
-                  <div className="w-16 h-16 rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--brand)] flex items-center justify-center font-bold text-xl font-mono mb-6">
-                    {r.name.slice(0, 2)}
+            {RESEARCHERS.map((r) => {
+              const lab = RESEARCH_LABS.find((l) => l.slug === r.labSlug);
+              return (
+                <Card key={r.id} hover className="p-8 flex flex-col justify-between">
+                  <div>
+                    <div className="w-16 h-16 rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--brand)] flex items-center justify-center font-bold text-xl font-mono mb-6">
+                      {r.name.slice(0, 2)}
+                    </div>
+
+                    <h2 className="text-2xl font-bold mb-1 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
+                      <Link href={`/researchers/${r.slug}`}>{r.name}</Link>
+                    </h2>
+                    <p className="text-xs font-semibold text-[var(--brand)] mb-4">{r.role}</p>
+
+                    <p className="text-sm text-[var(--ink-2)] leading-relaxed line-clamp-3 mb-6">
+                      {r.bio}
+                    </p>
                   </div>
 
-                  <h2 className="text-2xl font-bold mb-1 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
-                    <Link href={`/researchers/${r.slug}`}>{r.name}</Link>
-                  </h2>
-                  <p className="text-xs font-semibold text-[var(--brand)] mb-4">{r.role}</p>
-
-                  <p className="text-sm text-[var(--ink-2)] leading-relaxed line-clamp-3 mb-6">
-                    {r.bio}
-                  </p>
-                </div>
-
-                <div>
-                  {r.orcid && (
-                    <div className="text-[10px] font-mono text-[var(--ink-2)] mb-4 dir-ltr">
-                      ORCID: {r.orcid}
+                  <div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {r.github && (
+                        <a
+                          href={r.github}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors"
+                          aria-label="GitHub"
+                        >
+                          <GithubIcon className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      {r.linkedin && (
+                        <a
+                          href={r.linkedin}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors"
+                          aria-label="LinkedIn"
+                        >
+                          <LinkedinIcon className="w-3.5 h-3.5 text-sky-500" />
+                        </a>
+                      )}
+                      {r.scholar && (
+                        <a
+                          href={r.scholar}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors"
+                          aria-label="Google Scholar"
+                        >
+                          <BookOpen className="w-3.5 h-3.5" />
+                        </a>
+                      )}
                     </div>
-                  )}
 
-                  <div className="pt-4 border-t border-[var(--line)] flex items-center justify-between text-xs">
-                    <div className="text-[var(--ink-2)] font-mono">
-                      <span>{r.papersCount} أوراق</span> • <span>{r.projectsCount} مشاريع</span>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {lab && (
+                        <Link
+                          href={`/labs/${lab.slug}`}
+                          className="text-[10px] font-mono inline-block"
+                        >
+                          <Badge variant="info">{lab.name}</Badge>
+                        </Link>
+                      )}
+                      {r.orcid && (
+                        <span className="text-[10px] font-mono text-[var(--ink-2)] bg-[var(--surface)] px-2 py-0.5 rounded border border-[var(--line)] dir-ltr">
+                          ORCID: {r.orcid}
+                        </span>
+                      )}
                     </div>
-                    <Link
-                      href={`/researchers/${r.slug}`}
-                      className="inline-flex items-center gap-1 font-bold text-[var(--brand)] hover:underline"
-                    >
-                      <span>الملف الأكاديمي</span>
-                      <ArrowUpLeft className="w-3.5 h-3.5" />
-                    </Link>
+
+                    <div className="pt-4 border-t border-[var(--line)] flex items-center justify-between text-xs">
+                      <div className="text-[var(--ink-2)] font-mono">
+                        <span>{r.papersCount} أوراق</span> • <span>{r.projectsCount} مشاريع</span>
+                      </div>
+                      <Link
+                        href={`/researchers/${r.slug}`}
+                        className="inline-flex items-center gap-1 font-bold text-[var(--brand)] hover:underline"
+                      >
+                        <span>الملف الأكاديمي</span>
+                        <ArrowUpLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              );
+            })}
           </div>
         </div>
       </main>

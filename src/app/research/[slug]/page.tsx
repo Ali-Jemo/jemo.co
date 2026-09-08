@@ -144,7 +144,7 @@ export default async function PaperDetailPage({ params }: PaperPageProps) {
               <FileText className="w-5 h-5 text-[var(--brand)]" />
               <span>الملخص الأكاديمي (Abstract)</span>
             </h2>
-            <p className="text-[var(--ink-2)] leading-relaxed text-base">
+            <p className="text-[var(--ink-1)] leading-[2] text-lg md:text-xl text-justify font-medium opacity-90">
               {paper.abstract}
             </p>
           </Card>

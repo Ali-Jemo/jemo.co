@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Card from "@/components/ui/Card";
-import Link from "next/link";
+import InitiativeSearchFilter from "@/components/InitiativeSearchFilter";
 import { INITIATIVES } from "@/lib/data/research-data";
-import { Sparkles, ArrowUpLeft, CheckCircle2 } from "lucide-react";
+import { Sparkles, ArrowUpLeft, Users, Target, BookOpen, Rocket } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "المبادرات الوطنية | JEMO LABS",
   description: "مبادرات JEMO LABS لبناء البنية التحتية العلمية والتعليمية المفتوحة المصدر.",
 };
+
+const STATS = [
+  { icon: Users, label: "باحث مشارك", value: "53" },
+  { icon: Target, label: "مبادرة نشطة", value: String(INITIATIVES.length) },
+  { icon: BookOpen, label: "مخرجات مستهدفة", value: String(INITIATIVES.reduce((a, i) => a + i.deliverables.length, 0)) },
+  { icon: Rocket, label: "متوسط التقدم", value: `${Math.round(INITIATIVES.reduce((a, i) => a + i.progress, 0) / INITIATIVES.length)}%` },
+];
 
 export default function InitiativesIndexPage() {
   return (
@@ -17,6 +23,7 @@ export default function InitiativesIndexPage() {
       <Header />
       <main className="flex-1 py-16 bg-[var(--bg)]">
         <div className="container">
+          {/* Hero header */}
           <div className="max-w-3xl mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-xs font-mono mb-4">
               <Sparkles className="w-3.5 h-3.5" />
@@ -28,58 +35,19 @@ export default function InitiativesIndexPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {INITIATIVES.map((init) => (
-              <Card key={init.id} hover className="p-8 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-mono font-bold text-[var(--brand)]">
-                      نسبة الإنجاز: {init.progress}%
-                    </span>
-                    <Sparkles className="w-4 h-4 text-[var(--accent)]" />
-                  </div>
-
-                  <h2 className="text-2xl font-bold mb-3 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
-                    <Link href={`/initiatives/${init.slug}`}>{init.title}</Link>
-                  </h2>
-
-                  <p className="text-sm text-[var(--ink-2)] leading-relaxed mb-6">
-                    {init.description}
-                  </p>
-
-                  <div className="w-full bg-[var(--bg)] h-2 rounded-full overflow-hidden border border-[var(--line)] mb-6">
-                    <div
-                      className="bg-[var(--brand)] h-full rounded-full transition-all duration-500"
-                      style={{ width: `${init.progress}%` }}
-                    />
-                  </div>
-
-                  <div className="space-y-1.5 mb-6">
-                    <div className="text-xs font-mono text-[var(--ink-2)]">المخرجات المستهدفة:</div>
-                    {init.deliverables.map((d) => (
-                      <div key={d} className="text-xs text-[var(--ink-1)] flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3 h-3 text-[var(--brand)]" />
-                        <span>{d}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-[var(--line)] flex items-center justify-between text-xs">
-                  <div className="text-[var(--ink-2)] font-mono">
-                    المسؤول: <span className="font-bold text-[var(--ink-1)]">{init.lead}</span>
-                  </div>
-                  <Link
-                    href={`/initiatives/${init.slug}`}
-                    className="inline-flex items-center gap-1 font-bold text-[var(--brand)] hover:underline"
-                  >
-                    <span>تفاصيل المبادرة</span>
-                    <ArrowUpLeft className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </Card>
+          {/* Stats band */}
+          <div className="init-stats mb-12">
+            {STATS.map((s) => (
+              <div key={s.label} className="init-stat">
+                <s.icon className="w-5 h-5 text-[var(--brand)] mx-auto mb-2" />
+                <div className="init-stat__number">{s.value}</div>
+                <div className="init-stat__label">{s.label}</div>
+              </div>
             ))}
           </div>
+
+          {/* Search & Filter + Grid */}
+          <InitiativeSearchFilter initiatives={INITIATIVES} />
         </div>
       </main>
       <Footer />

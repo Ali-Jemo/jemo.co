@@ -1,97 +1,130 @@
-<svg width="1024" height="1024" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Primary Metallic Olive-Gold Body Gradient -->
-    <linearGradient id="jemo-metallic-body" x1="15%" y1="10%" x2="85%" y2="90%">
-      <stop offset="0%" stop-color="#DEEE88" />
-      <stop offset="30%" stop-color="#BACB62" />
-      <stop offset="70%" stop-color="#8DA03E" />
-      <stop offset="100%" stop-color="#5E7026" />
+    <!-- Rich Metallic Olive-Emerald Body -->
+    <linearGradient id="j-metallic" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#EEFA9E" />
+      <stop offset="18%" stop-color="#D4EA5E" />
+      <stop offset="48%" stop-color="#9FB92A" />
+      <stop offset="78%" stop-color="#647E16" />
+      <stop offset="100%" stop-color="#3A4B0C" />
     </linearGradient>
 
-    <!-- Top-Right Chamfer Specular Highlight -->
-    <linearGradient id="jemo-chamfer-glint" x1="100%" y1="0%" x2="50%" y2="50%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
-      <stop offset="50%" stop-color="#EAF6AE" stop-opacity="0.5" />
-      <stop offset="100%" stop-color="#BACB62" stop-opacity="0.0" />
+    <!-- Diamond Core: Brilliant Sovereign Gold -->
+    <linearGradient id="diamond-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#F2FDB5" />
+      <stop offset="70%" stop-color="#C0D64E" />
+      <stop offset="100%" stop-color="#738F1C" />
     </linearGradient>
 
-    <!-- Outer Ambient Glow Filter -->
-    <radialGradient id="jemo-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#BACB62" stop-opacity="0.3" />
-      <stop offset="70%" stop-color="#5E7026" stop-opacity="0.08" />
-      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
-    </radialGradient>
+    <!-- Top Chamfer Mirror Shine -->
+    <linearGradient id="chamfer-shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#EEFA9E" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#9FB92A" stop-opacity="0.0" />
+    </linearGradient>
 
-    <!-- Carved Cutout Inner Shadow -->
-    <filter id="carve-depth" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="3" dy="6" stdDeviation="5" flood-color="#1A2208" flood-opacity="0.85" />
-      <feInnerShadow dx="-2" dy="-2" stdDeviation="3" flood-color="#FFFFFF" flood-opacity="0.2" />
+    <!-- Precision Spine Reflection -->
+    <linearGradient id="spine-shine" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.85" />
+      <stop offset="40%" stop-color="#D4EA5E" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#647E16" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Deep Ambient Elevation Shadow -->
+    <filter id="j-depth" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#141C04" flood-opacity="0.25" />
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#141C04" flood-opacity="0.18" />
+    </filter>
+
+    <!-- Diamond Core Pulse Glow -->
+    <filter id="diamond-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#D4EA5E" flood-opacity="0.6" />
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#3A4B0C" flood-opacity="0.4" />
     </filter>
   </defs>
 
-  <!-- Dark Metallic Canvas Background (Social Media Frame) -->
-  <rect width="512" height="512" rx="112" fill="#0A0C07" />
-
-  <!-- Ambient Glow Ring -->
-  <circle cx="256" cy="256" r="220" fill="url(#jemo-glow)" />
-
-  <!-- MAIN LOGO EMBLEM GROUP -->
-  <g transform="translate(256, 256) scale(0.92) translate(-256, -256)">
-
-    <!-- Outer Shield Body Path with Chamfered Top-Right Corner and Inner Carved 'j' Cutout -->
-    <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
-      d="
-        M 170 96
-        C 125 96 100 121 100 166
-        L 100 300
-        C 100 380 156 416 256 416
-        C 356 416 412 380 412 300
-        L 412 166
-        L 342 96
-        L 170 96 Z
-
-        M 352 144
-        L 352 284
-        C 352 334 322 358 256 358
-        C 190 358 160 334 160 284
-        L 160 262
-        C 160 236 178 220 206 220
-        L 242 220
-        L 242 254
-        L 214 254
-        C 204 254 198 260 198 270
-        L 198 280
-        C 198 304 216 320 256 320
-        C 296 320 314 304 314 280
-        L 314 236
-        L 230 188
-        L 230 144
-        L 352 144 Z
-
-        M 352 188
-        L 264 238
-        L 314 266
-        L 314 188
-        L 352 188 Z
-      "
-      fill="url(#jemo-metallic-body)"
-      filter="url(#carve-depth)"
-    />
-
-    <!-- Top-Right Chamfer Specular Highlight Overlay -->
+  <g transform="translate(16, 12)" filter="url(#j-depth)">
+    <!-- 1. The Main Architectural J Glyph -->
     <path
       d="
-        M 260 96
-        L 342 96
-        L 412 166
-        L 412 250
-        C 412 200 382 170 352 144
-        L 260 96 Z
+        M 176 80
+        L 340 80
+        L 384 124
+        L 384 320
+        C 384 400 328 448 240 448
+        C 152 448 104 396 104 320
+        L 104 256
+        L 192 256
+        L 192 316
+        C 192 344 212 364 240 364
+        C 268 364 288 344 288 316
+        L 288 168
+        L 176 168
+        Z
       "
-      fill="url(#jemo-chamfer-glint)"
+      fill="url(#j-metallic)"
     />
 
+    <!-- 2. Chamfer 45-Degree Facet -->
+    <path
+      d="
+        M 288 80
+        L 340 80
+        L 384 124
+        L 384 188
+        L 288 188
+        Z
+      "
+      fill="url(#chamfer-shine)"
+    />
+
+    <!-- 3. Diagonal Light Slice across the Stem -->
+    <path
+      d="
+        M 384 188
+        L 288 284
+        L 288 188
+        Z
+      "
+      fill="url(#spine-shine)"
+    />
+
+    <!-- 4. Razor-Thin Top Highlight Line -->
+    <path
+      d="M 176 80 L 340 80 L 384 124"
+      stroke="#FFFFFF"
+      stroke-width="3"
+      stroke-linecap="round"
+      opacity="0.9"
+    />
+
+    <!-- 5. Embossed Inner Rim Bevel -->
+    <path
+      d="M 192 256 L 192 316 C 192 344 212 364 240 364 C 268 364 288 344 288 316 L 288 168"
+      stroke="#3A4B0C"
+      stroke-width="2"
+      opacity="0.35"
+    />
+
+    <!-- 6. Bottom Sweeping Rim Light Curve -->
+    <path
+      d="M 110 324 C 114 392 162 442 240 442 C 318 442 378 392 382 324"
+      stroke="#EEFA9E"
+      stroke-width="3"
+      stroke-linecap="round"
+      opacity="0.65"
+    />
+
+    <!-- 7. THE SOVEREIGN CORE (Floating 45-degree Precision Diamond above the Chamfer) -->
+    <g transform="translate(384, 52) rotate(45)" filter="url(#diamond-glow)">
+      <!-- Diamond Outer Facet -->
+      <rect x="-18" y="-18" width="36" height="36" rx="4" fill="url(#diamond-gold)" />
+      <!-- Diamond Inner Facet Plane -->
+      <polygon points="-18,-18 18,-18 0,0" fill="#FFFFFF" opacity="0.6" />
+      <polygon points="18,-18 18,18 0,0" fill="#D4EA5E" opacity="0.4" />
+      <polygon points="18,18 -18,18 0,0" fill="#738F1C" opacity="0.4" />
+      <polygon points="-18,18 -18,-18 0,0" fill="#9FB92A" opacity="0.3" />
+    </g>
   </g>
 </svg>

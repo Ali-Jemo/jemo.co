@@ -14,16 +14,18 @@ export default function ProjectsIndexPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 py-16 bg-[var(--bg)]">
-        <div className="container">
-          <div className="max-w-3xl mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-xs font-mono mb-4">
-              <FolderGit2 className="w-3.5 h-3.5" />
-              <span>البنية التحتية المفتوحة المصدر</span>
+      <main className="flex-1 pt-24 sm:pt-28 pb-20 bg-[#f7f7f5]" dir="rtl">
+        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+          <div className="max-w-4xl mb-12 sm:mb-16">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] mb-4 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
+              <span>المشاريع البرمجية المفتوحة · SOVEREIGN OPEN REPOSITORIES</span>
             </div>
-            <h1 className="text-4xl font-extrabold text-[var(--ink-1)] mb-4">مشاريع المختبرات</h1>
-            <p className="text-[var(--ink-2)] leading-relaxed">
-              منظومات برمجية ونوى تشغيل سيادية طُورت في العراق ومتاحة للجميع مجاناً.
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#222f30] mb-4 tracking-tight leading-tight font-kufi">
+              المشاريع والنوى السيادية.
+            </h1>
+            <p className="text-base sm:text-xl text-[#445e5f] leading-relaxed max-w-2xl">
+              منظومات برمجية ونوى تشغيل متقدمة طُوّرت داخل مختبرات JEMO ومتاحة للجميع مجاناً تحت تراخيص مفتوحة المصدر.
             </p>
           </div>
 

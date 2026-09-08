@@ -70,14 +70,14 @@ export default function NextGenButton() {
       }}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className="relative overflow-hidden inline-flex items-center justify-center gap-4 px-12 py-5 rounded-2xl bg-[#020617] border border-[var(--line)] group shadow-2xl"
+      className="relative overflow-hidden inline-flex items-center justify-center gap-4 px-12 py-5 rounded-full bg-[var(--brand)] border border-[var(--brand-700)] group shadow-2xl"
     >
       {/* Hardware Accelerated Flashlight Reveal */}
       <motion.div
         className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-300 transform-gpu"
         style={{
           opacity: isHovered ? 1 : 0,
-          background: useMotionTemplate`radial-gradient(120px circle at ${mouseX}px ${mouseY}px, rgba(14, 165, 233, 0.4), transparent 100%)`,
+          background: useMotionTemplate`radial-gradient(120px circle at ${mouseX}px ${mouseY}px, rgba(37, 99, 235, 0.4), transparent 100%)`,
         }}
       />
 
@@ -92,7 +92,7 @@ export default function NextGenButton() {
       />
 
       {/* Interactive Particles */}
-      <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden rounded-2xl">
+      <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden rounded-full">
         <AnimatePresence>
           {particles.map((p) => (
             <motion.div
@@ -101,7 +101,7 @@ export default function NextGenButton() {
               animate={{ opacity: 0, scale: 1.5, y: p.y - 40, x: p.x + (Math.random() * 20 - 10) }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="absolute text-[#0ea5e9]"
+              className="absolute text-[var(--gold)]"
             >
               <Sparkles size={14} />
             </motion.div>
@@ -117,7 +117,7 @@ export default function NextGenButton() {
         animate={{ 
           x: isHovered ? -5 : 0,
           rotate: isHovered ? 90 : 0,
-          color: isHovered ? "#0ea5e9" : "#ffffff"
+          color: isHovered ? "var(--gold)" : "#ffffff"
         }}
         transition={{ type: "spring", stiffness: 200, damping: 10 }}
         className="relative z-20"
@@ -127,7 +127,7 @@ export default function NextGenButton() {
 
       {/* Liquid Bottom Border */}
       <motion.div 
-        className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-transparent via-[#0ea5e9] to-transparent z-20"
+        className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-transparent via-[var(--gold)] to-transparent z-20"
         animate={{
             width: isHovered ? "200%" : "0%",
             x: isHovered ? "-50%" : "50%",

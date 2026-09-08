@@ -14,19 +14,43 @@ export default function ResearchIndexPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 py-16 bg-[var(--bg)]">
+      <main className="flex-1 pt-24 sm:pt-28 pb-16 bg-[var(--bg)]">
         <div className="container">
-          <div className="max-w-3xl mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] text-xs font-mono mb-4">
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>مستودع الأبحاث المفتوحة</span>
+          <div className="max-w-4xl mb-8 sm:mb-12 border-b-2 border-[var(--ink)] pb-6 sm:pb-10">
+            <div className="flex items-center gap-2 text-[var(--brand)] text-xs sm:text-sm font-bold font-mono uppercase tracking-widest mb-4 sm:mb-6">
+              <span className="bg-[var(--brand)] text-white px-2 py-0.5 rounded-sm">JEMO_LABS</span>
+              <span>/ OPEN_RESEARCH</span>
             </div>
-            <h1 className="text-4xl font-extrabold text-[var(--ink-1)] mb-4">الأوراق البحثية المحكمة</h1>
-            <p className="text-[var(--ink-2)] leading-relaxed">
-              كافة الأوراق والنسخ المسبقة (Preprints) المنتجة في JEMO LABS متاحة مجاناً مع البيانات والشيفرات المصدرية.
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-[var(--ink-1)] mb-4 sm:mb-6 leading-tight tracking-tight">
+              الأوراق البحثية المحكمة.
+            </h1>
+            <p className="text-sm sm:text-lg md:text-xl text-[var(--ink-2)] leading-relaxed max-w-2xl font-mono">
+              {">"} نشر مفتوح للشيفرات المصدرية، البيانات، والمنهجيات. كافة الأوراق والنسخ المسبقة متاحة مجاناً للمجتمع العلمي.
             </p>
           </div>
+        </div>
+        
+        {/* Mistral-style Ticker Tape */}
+        <div className="w-full bg-[var(--ink-1)] text-white overflow-hidden py-2 sm:py-3 mb-10 sm:mb-16 border-y-2 border-black flex items-center font-mono text-xs sm:text-sm tracking-widest uppercase whitespace-nowrap">
+          <div className="flex w-fit animate-[marquee_20s_linear_infinite]">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex items-center">
+                <span className="mx-8">ARTIFICIAL INTELLIGENCE</span>
+                <span className="text-[var(--brand)]">✦</span>
+                <span className="mx-8">MICROKERNELS</span>
+                <span className="text-[var(--brand)]">✦</span>
+                <span className="mx-8">COMPUTER VISION</span>
+                <span className="text-[var(--brand)]">✦</span>
+                <span className="mx-8">OPEN SOURCE</span>
+                <span className="text-[var(--brand)]">✦</span>
+                <span className="mx-8">ROBOTICS</span>
+                <span className="text-[var(--brand)]">✦</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
+        <div className="container">
           <ResearchSearchFilter papers={RESEARCH_PAPERS} />
         </div>
       </main>
