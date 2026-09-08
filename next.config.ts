@@ -17,6 +17,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/transparency",
+        destination: "/newsletter",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

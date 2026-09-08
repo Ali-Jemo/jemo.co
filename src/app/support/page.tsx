@@ -77,10 +77,10 @@ export default function SupportPage() {
             </p>
             <div className="pt-2">
               <Link
-                href="/transparency"
+                href="/newsletter"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--brand)] text-white text-sm font-bold shadow-md hover:opacity-90 transition-all"
               >
-                <span>الانتقال لصفحة الشفافية والتقارير</span>
+                <span>الاطلاع على تقارير ونشرة الشركة</span>
                 <ArrowUpLeft className="w-4 h-4" />
               </Link>
             </div>

@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { href: "/labs", label: "المختبرات" },
   { href: "/researchers", label: "الباحثون" },
   { href: "/initiatives", label: "المبادرات" },
-  { href: "/transparency", label: "الشفافية" },
+  { href: "/transparency", label: "النشرة العلمية" },
   { href: "/about", label: "من نحن" },
 ];
 

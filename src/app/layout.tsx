@@ -9,14 +9,14 @@ import ScrollProgress from "@/components/ScrollProgress";
 const noto = Noto_Kufi_Arabic({
   subsets: ["arabic"],
   variable: "--font-kufi",
-  display: "optional",
+  display: "swap",
 });
 
 const mono = IBM_Plex_Mono({
   weight: ["400", "500"],
   subsets: ["latin"],
   variable: "--font-mono",
-  display: "optional",
+  display: "swap",
 });
 
 export const viewport: Viewport = {

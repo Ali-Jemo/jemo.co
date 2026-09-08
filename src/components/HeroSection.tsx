@@ -147,6 +147,7 @@ export default function HeroSection() {
             poster="/hero-bg.png"
             className="w-full h-full object-cover object-center opacity-90 scale-105 transition-opacity duration-1000"
           >
+            <source src="/hero-loop.webm" type="video/webm" />
             <source src="/hero-loop.mp4" type="video/mp4" />
           </video>
         </motion.div>

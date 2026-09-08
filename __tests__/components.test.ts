@@ -16,6 +16,9 @@ import Card from "../src/components/ui/Card";
 import Badge from "../src/components/ui/Badge";
 import SectionHeader from "../src/components/ui/SectionHeader";
 import Accordion from "../src/components/ui/Accordion";
+import TermsPage from "../src/app/terms/page";
+import PrivacyPage from "../src/app/privacy/page";
+import NewsletterPage from "../src/app/newsletter/page";
 
 describe("Institutional UI Components", () => {
   it("renders Button variants with correct css classes", () => {
@@ -62,5 +65,29 @@ describe("Institutional UI Components", () => {
     const html = renderToStaticMarkup(React.createElement(Header));
     expect(html).toContain("backdrop");
     expect(html).toContain("الرئيسية");
+  });
+
+  it("renders redesigned TermsPage with sections and FAQ", () => {
+    const html = renderToStaticMarkup(React.createElement(TermsPage));
+    expect(html).toContain("الشروط والأحكام والسياسات العامة");
+    expect(html).toContain("الخصوصية وحماية البيانات الشخصية");
+    expect(html).toContain("الملكية الفكرية والحقوق الرقمية");
+    expect(html).toContain("اتفاقية مستوى الخدمة (SLA)");
+    expect(html).toContain("legal@jemo.co");
+  });
+
+  it("renders PrivacyPage with pillars and sections", () => {
+    const html = renderToStaticMarkup(React.createElement(PrivacyPage));
+    expect(html).toContain("سياسة الخصوصية وحماية البيانات");
+    expect(html).toContain("المبادئ الأساسية لحوكمة الخصوصية");
+    expect(html).toContain("البيانات التي نجمعها وكيفية جمعها");
+    expect(html).toContain("privacy@jemo.co");
+  });
+
+  it("renders NewsletterPage with dispatch archive", () => {
+    const html = renderToStaticMarkup(React.createElement(NewsletterPage));
+    expect(html).toContain("النشرة الإخبارية والعلمية للشركة");
+    expect(html).toContain("أرشيف الأعداد السابقة");
+    expect(html).toContain("اشترك");
   });
 });

@@ -72,10 +72,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-bold text-sm text-[var(--ink-1)] mb-4 font-mono uppercase tracking-wider">الشفافية والحوكمة</h4>
+            <h4 className="font-bold text-sm text-[var(--ink-1)] mb-4 font-mono uppercase tracking-wider">النشر والتواصل</h4>
             <ul className="flex flex-col gap-2.5 text-xs text-[var(--ink-2)]">
               <li>
-                <a href="/transparency" className="hover:text-[var(--brand)] transition-colors">النشرة العلمية</a>
+                <a href="/newsletter" className="hover:text-[var(--brand)] transition-colors">نشرة الشركة</a>
               </li>
               <li>
                 <a href="/initiatives" className="hover:text-[var(--brand)] transition-colors">المبادرات</a>
