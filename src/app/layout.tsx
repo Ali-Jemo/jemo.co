@@ -10,6 +10,7 @@ const noto = Noto_Kufi_Arabic({
   subsets: ["arabic"],
   variable: "--font-kufi",
   display: "swap",
+  preload: false,
 });
 
 const mono = IBM_Plex_Mono({
@@ -17,6 +18,7 @@ const mono = IBM_Plex_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
+  preload: false,
 });
 
 export const viewport: Viewport = {
