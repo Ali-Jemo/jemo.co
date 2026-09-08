@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProjectSearchFilter from "@/components/ProjectSearchFilter";
-import { RESEARCH_PROJECTS } from "@/lib/data/research-data";
+import { getLiveProjects } from "@/lib/live-content";
 import { FolderGit2 } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   description: "مستودع المشاريع البرمجية والنوى التشغيلية المفتوحة المصدر المبتكرة في JEMO LABS.",
 };
 
-export default function ProjectsIndexPage() {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function ProjectsIndexPage() {
+  const projects = await getLiveProjects();
   return (
     <>
       <Header />
@@ -29,7 +33,7 @@ export default function ProjectsIndexPage() {
             </p>
           </div>
 
-          <ProjectSearchFilter projects={RESEARCH_PROJECTS} />
+          <ProjectSearchFilter projects={projects} />
         </div>
       </main>
       <Footer />

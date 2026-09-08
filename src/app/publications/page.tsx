@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Link from "next/link";
-import { RESEARCH_PAPERS } from "@/lib/data/research-data";
+import { getLiveResearchPapers } from "@/lib/live-content";
 import { FileText, ArrowUpLeft, Users, Filter, Calendar } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -12,10 +12,13 @@ export const metadata: Metadata = {
   description: "مستودع المنشورات العلمية لـ JEMO LABS مصنفة حسب السنة، المجال، والمؤلف.",
 };
 
-export default function PublicationsPage() {
-  const fields = Array.from(new Set(RESEARCH_PAPERS.map((p) => p.field)));
-  const years = Array.from(new Set(RESEARCH_PAPERS.map((p) => p.publishDate.slice(0, 4))));
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
+export default async function PublicationsPage() {
+  const papers = await getLiveResearchPapers();
+  const fields = Array.from(new Set(papers.map((p) => p.field)));
+  const years = Array.from(new Set(papers.map((p) => p.publishDate.slice(0, 4))));
   return (
     <>
       <Header />
@@ -63,7 +66,7 @@ export default function PublicationsPage() {
 
           {/* Publications List */}
           <div className="space-y-6">
-            {RESEARCH_PAPERS.map((paper) => (
+            {papers.map((paper) => (
               <Card key={paper.id} hover className="p-8">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                   <Badge variant="info">{paper.field}</Badge>

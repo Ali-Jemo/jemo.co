@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ResearchSearchFilter from "@/components/ResearchSearchFilter";
-import { RESEARCH_PAPERS } from "@/lib/data/research-data";
+import { getLiveResearchPapers } from "@/lib/live-content";
 import { BookOpen } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   description: "المستودع الرقمي للأوراق والأبحاث العلمية المحكمة من مختبرات JEMO LABS.",
 };
 
-export default function ResearchIndexPage() {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function ResearchIndexPage() {
+  const papers = await getLiveResearchPapers();
   return (
     <>
       <Header />
@@ -51,7 +55,7 @@ export default function ResearchIndexPage() {
         </div>
 
         <div className="container">
-          <ResearchSearchFilter papers={RESEARCH_PAPERS} />
+          <ResearchSearchFilter papers={papers} />
         </div>
       </main>
       <Footer />
