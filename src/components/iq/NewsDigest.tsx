@@ -67,10 +67,10 @@ const NEWS_ITEMS: NewsItem[] = [
 
 export default function NewsDigest() {
   return (
-    <div className="p-4 sm:p-5 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md space-y-4">
+    <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md space-y-4">
       <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[#bef264]/10 border border-[#bef264]/30 flex items-center justify-center text-[#bef264]">
+          <div className="w-8 h-8 rounded-lg bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-[var(--gold)]">
             <Newspaper className="w-4 h-4" />
           </div>
           <div>
@@ -83,7 +83,7 @@ export default function NewsDigest() {
           </div>
         </div>
 
-        <span className="text-[10px] font-mono text-[#bef264] px-2.5 py-1 rounded-full bg-[#bef264]/10 border border-[#bef264]/20 hidden xs:inline-flex items-center gap-1">
+        <span className="text-[10px] font-mono text-[var(--gold)] px-2.5 py-1 rounded-full bg-[var(--gold)]/10 border border-[var(--gold)]/20 hidden xs:inline-flex items-center gap-1">
           <ShieldCheck className="w-3 h-3" />
           مصادر معلنة
         </span>
@@ -98,7 +98,7 @@ export default function NewsDigest() {
           >
             <div className="flex items-center justify-between gap-2 text-[10px] font-mono">
               <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-md bg-[#bef264]/15 text-[#bef264] font-bold flex items-center justify-center text-[10px]">
+                <span className="w-5 h-5 rounded-md bg-[var(--gold)]/15 text-[var(--gold)] font-bold flex items-center justify-center text-[10px]">
                   0{idx + 1}
                 </span>
                 <span className="text-white/70 font-semibold">{item.source}</span>
@@ -111,7 +111,7 @@ export default function NewsDigest() {
               </span>
             </div>
 
-            <h4 className="font-kufi font-bold text-sm text-white/95 group-hover:text-[#bef264] transition-colors leading-snug">
+            <h4 className="font-kufi font-bold text-sm text-white/95 group-hover:text-[var(--gold)] transition-colors leading-snug">
               {item.title}
             </h4>
 

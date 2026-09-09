@@ -214,7 +214,7 @@ export default function IraqSvgMap({
   return (
     <div className="space-y-4" dir="rtl">
       {/* 1. Map Search & Google/Community Style Controls Bar */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-[#0e1618] p-3 sm:p-4 rounded-3xl border border-white/10 shadow-md">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 bg-[var(--surface)] p-3 sm:p-4 rounded-3xl border border-white/10 shadow-md">
         {/* Search on Map */}
         <div className="relative flex-1">
           <input
@@ -222,7 +222,7 @@ export default function IraqSvgMap({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="ابحث في الخريطة: اسم محافظة، قضاء، معلم Google، أو محل (مثلاً: نينوى، المتنبي، الكرادة، سبالت)..."
-            className="w-full h-11 pr-10 pl-4 bg-black/40 border border-white/10 focus:border-[#bef264] rounded-2xl text-white text-xs sm:text-sm font-sans outline-none transition-colors"
+            className="w-full h-11 pr-10 pl-4 bg-black/40 border border-white/10 focus:border-[var(--gold)] rounded-2xl text-white text-xs sm:text-sm font-sans outline-none transition-colors"
           />
           <Search className="w-4 h-4 text-white/40 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           {searchQuery && (
@@ -241,7 +241,7 @@ export default function IraqSvgMap({
             onClick={() => setSourceFilter("all")}
             className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
               sourceFilter === "all"
-                ? "bg-[#bef264] text-[#0c1415] font-bold shadow-xs"
+                ? "bg-[var(--gold)] text-[var(--surface)] font-bold shadow-xs"
                 : "text-white/60 hover:text-white"
             }`}
           >
@@ -295,7 +295,7 @@ export default function IraqSvgMap({
               onClick={() => setMapTheme("dark")}
               className={`px-2.5 py-1.5 rounded-lg transition-all ${
                 mapTheme === "dark"
-                  ? "bg-[#bef264]/20 text-[#bef264] font-bold border border-[#bef264]/40"
+                  ? "bg-[var(--gold)]/20 text-[var(--gold)] font-bold border border-[var(--gold)]/40"
                   : "text-white/50 hover:text-white"
               }`}
               title="النمط الليلي الداكن"
@@ -309,14 +309,14 @@ export default function IraqSvgMap({
             <button
               onClick={() => setZoomLevel((z) => Math.min(z + 0.25, 2.25))}
               title="تكبير"
-              className="p-1.5 hover:text-[#bef264] rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 hover:text-[var(--gold)] rounded-lg transition-colors cursor-pointer"
             >
               <ZoomIn className="w-4 h-4" />
             </button>
             <button
               onClick={() => setZoomLevel((z) => Math.max(z - 0.25, 0.75))}
               title="تصغير"
-              className="p-1.5 hover:text-[#bef264] rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 hover:text-[var(--gold)] rounded-lg transition-colors cursor-pointer"
             >
               <ZoomOut className="w-4 h-4" />
             </button>
@@ -328,7 +328,7 @@ export default function IraqSvgMap({
                 setInspectedGov(null);
               }}
               title="إعادة ضبط الرؤية"
-              className="p-1.5 hover:text-[#bef264] rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 hover:text-[var(--gold)] rounded-lg transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -337,7 +337,7 @@ export default function IraqSvgMap({
           {/* Download Map Button */}
           <button
             onClick={handleDownloadPng}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#bef264] hover:bg-[#a3e635] text-[#0c1415] font-kufi font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--gold)] hover:bg-[var(--accent-tint)] text-[var(--surface)] font-kufi font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
             title="تحميل خريطة العراق كصورة عالية الجودة"
           >
             <Download className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -388,7 +388,7 @@ export default function IraqSvgMap({
           <button
             onClick={() => setShowSpots(!showSpots)}
             className={`px-2.5 py-1 rounded-lg transition-colors text-[11px] ${
-              showSpots ? "bg-[#bef264]/20 text-[#bef264] font-bold border border-[#bef264]/30" : "bg-black/40 text-white/40"
+              showSpots ? "bg-[var(--gold)]/20 text-[var(--gold)] font-bold border border-[var(--gold)]/30" : "bg-black/40 text-white/40"
             }`}
           >
             📍 الأماكن ({mapSpots.length})
@@ -412,8 +412,8 @@ export default function IraqSvgMap({
           }}
           className={`px-3 py-1 rounded-full transition-all shrink-0 cursor-pointer ${
             selectedGov === null
-              ? "bg-[#bef264] text-[#0c1415] font-bold shadow-xs"
-              : "bg-[#0e1618] text-white/60 hover:text-white border border-white/10"
+              ? "bg-[var(--gold)] text-[var(--surface)] font-bold shadow-xs"
+              : "bg-[var(--surface)] text-white/60 hover:text-white border border-white/10"
           }`}
         >
           كل العراق (18 محافظة)
@@ -427,15 +427,15 @@ export default function IraqSvgMap({
               onClick={() => handleGovClick(g)}
               className={`px-3 py-1 rounded-full transition-all shrink-0 cursor-pointer flex items-center gap-1 ${
                 isSelected
-                  ? "bg-[#bef264] text-[#0c1415] font-bold shadow-xs"
-                  : "bg-[#0e1618] text-white/70 hover:text-white border border-white/10 hover:border-white/20"
+                  ? "bg-[var(--gold)] text-[var(--surface)] font-bold shadow-xs"
+                  : "bg-[var(--surface)] text-white/70 hover:text-white border border-white/10 hover:border-white/20"
               }`}
             >
               <span>{g.nameAr}</span>
               {count > 0 && (
                 <span
                   className={`text-[10px] px-1 rounded-full ${
-                    isSelected ? "bg-[#0c1415]/20 text-[#0c1415]" : "bg-white/10 text-white/60"
+                    isSelected ? "bg-white/5 text-[var(--ink)]" : "bg-white/10 text-white/60"
                   }`}
                 >
                   {count}
@@ -455,13 +455,13 @@ export default function IraqSvgMap({
           } ${
             mapTheme === "google"
               ? "bg-[#18232c] border-sky-900/40"
-              : "bg-gradient-to-b from-[#0e1618] to-[#070b0c] border-white/10"
+              : "bg-gradient-to-b from-[var(--surface)] to-[#070b0c] border-white/10"
           }`}
         >
           {/* Watermark and Style Badge */}
           <div className="absolute top-4 right-4 z-10 pointer-events-none flex flex-col items-end gap-1">
             <div className="flex items-center gap-1.5 text-xs font-kufi font-bold text-white/90 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-              <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[var(--gold)] animate-pulse" />
               <span>خريطة جمهورية العراق</span>
               {mapTheme === "google" && (
                 <span className="text-[10px] text-sky-300 font-mono">· نمط Google</span>
@@ -492,7 +492,7 @@ export default function IraqSvgMap({
               <span>معالم Google المعتمدة</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#bef264]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[var(--gold)]" />
               <span>توثيقات هسه المجتمعية</span>
             </div>
           </div>
@@ -512,7 +512,7 @@ export default function IraqSvgMap({
                   <stop offset="100%" stopColor="#0284c7" stopOpacity="0.95" />
                 </linearGradient>
                 <filter id="glowPin" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#bef264" floodOpacity="0.6" />
+                  <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="var(--gold)" floodOpacity="0.6" />
                 </filter>
                 <filter id="glowGoogle" x="-50%" y="-50%" width="200%" height="200%">
                   <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#38bdf8" floodOpacity="0.7" />
@@ -535,14 +535,14 @@ export default function IraqSvgMap({
 
                   if (isSelected) {
                     fillColor = mapTheme === "google" ? "#1e3a47" : "#1a3229";
-                    strokeColor = "#bef264";
+                    strokeColor = "var(--gold)";
                     strokeWidth = "2.6";
                   } else if (isHovered) {
                     fillColor = mapTheme === "google" ? "#2a3d4c" : "#19282b";
-                    strokeColor = "#bef264";
+                    strokeColor = "var(--gold)";
                     strokeWidth = "2";
                   } else if (!isMatchingSearch && normalizedQuery) {
-                    fillColor = mapTheme === "google" ? "#152028" : "#090f10";
+                    fillColor = mapTheme === "google" ? "#152028" : "#0c1415";
                     strokeColor = "rgba(255, 255, 255, 0.05)";
                   }
 
@@ -710,8 +710,8 @@ export default function IraqSvgMap({
                           cx={cx}
                           cy={cy}
                           r={isBaghdad ? 5 : 2.8}
-                          fill={isBaghdad ? "#bef264" : isSelected ? "#bef264" : "#ffffff"}
-                          stroke="#0c1415"
+                          fill={isBaghdad ? "var(--gold)" : isSelected ? "var(--gold)" : "#ffffff"}
+                          stroke="var(--surface)"
                           strokeWidth="1.2"
                         />
                         {isBaghdad && (
@@ -720,7 +720,7 @@ export default function IraqSvgMap({
                             cy={cy}
                             r="9"
                             fill="none"
-                            stroke="#bef264"
+                            stroke="var(--gold)"
                             strokeWidth="1.2"
                             opacity="0.7"
                             strokeDasharray="2 2"
@@ -730,7 +730,7 @@ export default function IraqSvgMap({
                           x={cx}
                           y={cy - 7}
                           textAnchor="middle"
-                          fill={isSelected ? "#bef264" : isBaghdad ? "#ffffff" : "#e2e8f0"}
+                          fill={isSelected ? "var(--gold)" : isBaghdad ? "#ffffff" : "#e2e8f0"}
                           fontSize={isBaghdad ? "11" : "9"}
                           fontWeight={isBaghdad || isSelected ? "bold" : "500"}
                           fontFamily="sans-serif"
@@ -766,15 +766,15 @@ export default function IraqSvgMap({
                         {/* Pulse Ring */}
                         <circle
                           r={isSelected ? "11" : "7"}
-                          fill={isGoogle ? "#38bdf8" : "#bef264"}
+                          fill={isGoogle ? "#38bdf8" : "var(--gold)"}
                           opacity={isSelected ? "0.4" : "0.18"}
                           className="animate-ping origin-center"
                         />
                         {/* Pin Dot */}
                         <circle
                           r={isSelected ? "6.5" : isGoogle ? "5" : "4.5"}
-                          fill={isGoogle ? (isSelected ? "#38bdf8" : "#0284c7") : isSelected ? "#bef264" : "#a3e635"}
-                          stroke="#0c1415"
+                          fill={isGoogle ? (isSelected ? "#38bdf8" : "#0284c7") : isSelected ? "var(--gold)" : "var(--accent-tint)"}
+                          stroke="var(--surface)"
                           strokeWidth="1.4"
                           filter={isGoogle ? "url(#glowGoogle)" : "url(#glowPin)"}
                         />
@@ -791,7 +791,7 @@ export default function IraqSvgMap({
           {/* Selected Spot Floating Card Popup */}
           {selectedSpot && (
             <div
-              className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-20 p-4 rounded-3xl bg-[#0c1415]/95 backdrop-blur-md border border-white/20 shadow-2xl space-y-3 animate-fadeIn text-right"
+              className="absolute bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-20 p-4 rounded-3xl bg-[var(--surface)]/95 backdrop-blur-md border border-white/20 shadow-2xl space-y-3 animate-fadeIn text-right"
               dir="rtl"
             >
               <div className="flex items-start justify-between gap-2">
@@ -868,12 +868,12 @@ export default function IraqSvgMap({
 
         {/* Small Detail of Each محافظة (Governorate Detailed Sheet) */}
         {inspectedGov && (
-          <aside className="lg:col-span-4 p-5 rounded-3xl bg-[#0e1618] border border-white/15 shadow-xl space-y-4 animate-fadeIn">
+          <aside className="lg:col-span-4 p-5 rounded-3xl bg-[var(--surface)] border border-white/15 shadow-xl space-y-4 animate-fadeIn">
             {/* Header with Title & Close */}
             <div className="flex items-start justify-between gap-2 pb-3 border-b border-white/10">
               <div>
-                <div className="flex items-center gap-2 text-xs font-mono text-[#bef264]">
-                  <Compass className="w-4 h-4 text-[#bef264]" />
+                <div className="flex items-center gap-2 text-xs font-mono text-[var(--gold)]">
+                  <Compass className="w-4 h-4 text-[var(--gold)]" />
                   <span>تفاصيل المحافظة</span>
                   <span className="text-white/30">·</span>
                   <span className="text-white/60">{inspectedGov.region}</span>
@@ -904,7 +904,7 @@ export default function IraqSvgMap({
               </div>
               <div className="p-2.5 rounded-2xl bg-black/40 border border-white/10">
                 <span className="text-[10px] text-white/50 block">السكان</span>
-                <span className="font-bold text-[#bef264] text-xs">{inspectedGov.population}</span>
+                <span className="font-bold text-[var(--gold)] text-xs">{inspectedGov.population}</span>
               </div>
               <div className="p-2.5 rounded-2xl bg-black/40 border border-white/10">
                 <span className="text-[10px] text-white/50 block">المساحة</span>
@@ -959,7 +959,7 @@ export default function IraqSvgMap({
             <div className="pt-2 border-t border-white/10 space-y-2">
               <div className="flex items-center justify-between text-xs font-mono text-white/70">
                 <span>المحلات والأماكن الموثقة:</span>
-                <span className="font-bold text-[#bef264]">
+                <span className="font-bold text-[var(--gold)]">
                   {spots.filter((s) => s.governorate === inspectedGov.nameAr).length} مكان
                 </span>
               </div>
@@ -985,14 +985,14 @@ export default function IraqSvgMap({
       {selectedGov && !inspectedGov && currentGovObj && (
         <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between gap-2 text-xs font-mono">
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-[#bef264]" />
+            <MapPin className="w-4 h-4 text-[var(--gold)]" />
             <span className="text-white/80">المحافظة النشطة:</span>
-            <span className="font-bold text-[#bef264]">{selectedGov}</span>
+            <span className="font-bold text-[var(--gold)]">{selectedGov}</span>
             <span className="text-white/40">({currentGovObj.population} · {currentGovObj.capital})</span>
           </div>
           <button
             onClick={() => setInspectedGov(currentGovObj)}
-            className="text-xs text-[#bef264] hover:underline cursor-pointer flex items-center gap-1"
+            className="text-xs text-[var(--gold)] hover:underline cursor-pointer flex items-center gap-1"
           >
             <Info className="w-3.5 h-3.5" />
             <span>عرض تفاصيل {selectedGov} كاملة</span>

@@ -45,10 +45,10 @@ export default function CurrencyConverter() {
   };
 
   return (
-    <div className="p-4 sm:p-5 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md space-y-4">
+    <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md space-y-4">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[#bef264]/10 border border-[#bef264]/30 flex items-center justify-center text-[#bef264]">
+          <div className="w-8 h-8 rounded-lg bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-[var(--gold)]">
             <Calculator className="w-4 h-4" />
           </div>
           <div>
@@ -61,7 +61,7 @@ export default function CurrencyConverter() {
 
         <button
           onClick={handleSwap}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono bg-white/5 hover:bg-white/10 text-white/80 hover:text-[#bef264] border border-white/10 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono bg-white/5 hover:bg-white/10 text-white/80 hover:text-[var(--gold)] border border-white/10 transition-colors cursor-pointer"
           title="عكس اتجاه التحويل"
         >
           <ArrowLeftRight className="w-3.5 h-3.5" />
@@ -83,7 +83,7 @@ export default function CurrencyConverter() {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0"
-              className="w-full h-11 px-3.5 bg-black/40 border border-white/15 focus:border-[#bef264] rounded-xl text-white font-mono text-lg font-bold outline-none transition-colors"
+              className="w-full h-11 px-3.5 bg-black/40 border border-white/15 focus:border-[var(--gold)] rounded-xl text-white font-mono text-lg font-bold outline-none transition-colors"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-mono text-white/40">
               {direction === "usdToIqd" ? "USD" : "IQD"}
@@ -96,8 +96,8 @@ export default function CurrencyConverter() {
           <label className="text-[11px] font-mono text-white/60 block">
             المعادل بـ {direction === "usdToIqd" ? "الدينار العراقي (د.ع)" : "الدولار الأمريكي ($)"}
           </label>
-          <div className="h-11 px-3.5 bg-[#141e20] border border-[#bef264]/30 rounded-xl flex items-center justify-between text-white font-mono">
-            <span className="text-lg sm:text-xl font-black text-[#bef264]">
+          <div className="h-11 px-3.5 bg-[var(--surface-2)] border border-[var(--gold)]/30 rounded-xl flex items-center justify-between text-white font-mono">
+            <span className="text-lg sm:text-xl font-black text-[var(--gold)]">
               {result.toLocaleString()}
             </span>
             <div className="flex items-center gap-1.5">

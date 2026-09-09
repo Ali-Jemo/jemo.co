@@ -136,11 +136,11 @@ export default function IqIntelPage() {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* 1. Header Banner */}
-      <section className="p-4 sm:p-6 rounded-3xl bg-[#0e1618] border border-white/10 shadow-lg space-y-3">
+      <section className="p-4 sm:p-6 rounded-3xl bg-[var(--surface)] border border-white/10 shadow-lg space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#bef264]">
-              <BookOpen className="w-4 h-4 text-[#bef264]" />
+            <div className="flex items-center gap-2 text-xs font-mono text-[var(--gold)]">
+              <BookOpen className="w-4 h-4 text-[var(--gold)]" />
               <span>الباب الثالث · مجتمع الخبرة والأدلة الحية</span>
               <span className="text-white/30">·</span>
               <span className="text-white/60">معلومات لا يوميات</span>
@@ -164,7 +164,7 @@ export default function IqIntelPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="ابحث في الأدلة (مثلاً: جواز، بطاقة، سبلت، غرامات، الكرادة)..."
-            className="w-full h-11 pr-10 pl-4 bg-[#0e1618] border border-white/10 focus:border-[#bef264] rounded-xl text-white font-sans text-sm outline-none transition-colors"
+            className="w-full h-11 pr-10 pl-4 bg-[var(--surface)] border border-white/10 focus:border-[var(--gold)] rounded-xl text-white font-sans text-sm outline-none transition-colors"
           />
           <Search className="w-4 h-4 text-white/40 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
@@ -183,8 +183,8 @@ export default function IqIntelPage() {
               onClick={() => setSelectedFilter(tab.id)}
               className={`px-3 py-1.5 rounded-full transition-all shrink-0 cursor-pointer ${
                 selectedFilter === tab.id
-                  ? "bg-[#bef264] text-[#0c1415] font-bold shadow-xs"
-                  : "bg-[#0e1618] text-white/70 hover:text-white border border-white/10 hover:border-white/20"
+                  ? "bg-[var(--gold)] text-[var(--surface)] font-bold shadow-xs"
+                  : "bg-[var(--surface)] text-white/70 hover:text-white border border-white/10 hover:border-white/20"
               }`}
             >
               {tab.label}
@@ -198,7 +198,7 @@ export default function IqIntelPage() {
         {filteredPosts.map((post) => (
           <article
             key={post.id}
-            className="p-4 sm:p-5 rounded-2xl bg-[#0e1618] border border-white/10 hover:border-white/20 transition-all space-y-3 shadow-md"
+            className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-white/10 hover:border-white/20 transition-all space-y-3 shadow-md"
           >
             {/* Header: Tag + District + Date */}
             <div className="flex items-center justify-between gap-2 text-[11px] font-mono flex-wrap">
@@ -239,7 +239,7 @@ export default function IqIntelPage() {
               <div className="text-xs font-mono pt-1">
                 <Link
                   href="/iq/map"
-                  className="inline-flex items-center gap-1 text-[#bef264] hover:underline"
+                  className="inline-flex items-center gap-1 text-[var(--gold)] hover:underline"
                 >
                   <span>عرض بطاقة المحل في الخريطة ({post.placeName})</span>
                   <span>←</span>

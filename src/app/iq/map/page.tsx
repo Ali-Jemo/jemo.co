@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import {
   SEEDED_SPOTS,
   LocalSpot,
@@ -12,10 +13,22 @@ import {
   MapPin,
   Star,
   Compass,
+  Layers,
 } from "lucide-react";
 
+// Dynamic import for Leaflet-backed Google Map to prevent Next.js SSR window errors
+const IraqGoogleMap = dynamic(() => import("@/components/iq/IraqGoogleMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[580px] sm:h-[680px] rounded-3xl bg-[#0e1618] border border-white/10 flex flex-col items-center justify-center space-y-3 font-mono text-xs text-white/60">
+      <div className="w-9 h-9 rounded-full border-2 border-[#bef264] border-t-transparent animate-spin" />
+      <span>جاري تحميل خريطة Google المباشرة مع طبقة الأماكن والموقع...</span>
+    </div>
+  ),
+});
+
 export default function IqMapPage() {
-  const [activeView, setActiveView] = useState<"map" | "places">("map");
+  const [activeView, setActiveView] = useState<"google" | "vector" | "places">("google");
   const [spots, setSpots] = useState<LocalSpot[]>(SEEDED_SPOTS);
   const [selectedGovernorate, setSelectedGovernorate] = useState<string | null>(null);
 
@@ -45,74 +58,75 @@ export default function IqMapPage() {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8" dir="rtl">
-      {/* 1. Header Banner */}
-      <section className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-[#121c1e] via-[#0d1618] to-[#0a1012] border border-white/10 shadow-lg relative overflow-hidden space-y-4">
+    <div className="space-y-4 sm:space-y-6" dir="rtl">
+      {/* 1. Header Banner (Compact & Dark) */}
+      <section className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-[#121c1e] via-[#0e1618] to-[#0a1012] border border-white/10 shadow-lg relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-1.5 max-w-3xl">
+          <div className="space-y-1 max-w-3xl">
             <div className="flex items-center gap-2 text-xs font-mono text-[#bef264]">
               <MapPin className="w-4 h-4 text-[#bef264]" />
-              <span>الباب الثاني · خريطة العراق ودليل المحلة الحقيقي</span>
+              <span>خريطة العراق الحقيقية · طبقتان (Google + أماكننا)</span>
               <span className="text-white/30">·</span>
-              <span className="text-white/60">تحديثات مجتمعية وتغطية شاملة</span>
+              <span className="text-emerald-400">تفاعل مباشر مع موقعك GPS</span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-kufi font-black text-white tracking-tight leading-tight">
-              خريطة العراق التفاعلية، وأقرب الأماكن الأعلى تقييماً من المجتمع.
+            <h1 className="text-lg sm:text-2xl font-kufi font-black text-white tracking-tight leading-tight">
+              خريطة Google المباشرة مجاناً، مدمجة بأماكن محلتك وموقعك الجغرافي.
             </h1>
 
-            <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-sans">
-              خريطة كاملة خاصة بالعراق فقط تشمل جميع المحافظات الـ 18 مع إمكانية البحث والتحميل الفوري، مقترنة بدليل تفاعلي لأقرب المحلات، الورش، والخدمات الموثوقة مع تقييمات أهالي المنطقة الحقيقية.
+            <p className="text-xs text-white/70 leading-relaxed font-sans">
+              شوارع وأقمار Google Maps الحقيقية لمحافظات وأحياء العراق، مع طبقة تفاعلية تحدد موقعك، تعرض الأماكن المحيطة بك بدقة، وتتيح النقر على أي مكان لإضافته.
             </p>
           </div>
 
           {/* Quick Stats Pill */}
-          <div className="flex items-center gap-2 self-start md:self-auto bg-black/40 border border-white/10 p-2.5 rounded-2xl text-xs font-mono text-white/80 shrink-0">
-            <div className="text-center px-2 border-l border-white/10">
-              <div className="font-bold text-[#bef264] text-sm font-kufi">18</div>
-              <div className="text-[10px] text-white/50">محافظة</div>
+          <div className="flex items-center gap-2 self-start md:self-auto bg-black/50 border border-white/10 p-2 rounded-2xl text-xs font-mono text-white/80 shrink-0">
+            <div className="text-center px-2.5 border-l border-white/10">
+              <div className="font-bold text-sky-400 text-xs sm:text-sm font-kufi">Google Maps</div>
+              <div className="text-[10px] text-white/50">طبقة الشوارع والأقمار</div>
             </div>
-            <div className="text-center px-2 border-l border-white/10">
-              <div className="font-bold text-amber-300 text-sm font-kufi">{spots.length}</div>
-              <div className="text-[10px] text-white/50">مكان موثق</div>
+            <div className="text-center px-2.5 border-l border-white/10">
+              <div className="font-bold text-[#bef264] text-xs sm:text-sm font-kufi">{spots.length}</div>
+              <div className="text-[10px] text-white/50">مكان ومعلم موثق</div>
             </div>
             <div className="text-center px-2">
-              <div className="font-bold text-emerald-400 text-sm font-kufi">4.9 ★</div>
-              <div className="text-[10px] text-white/50">متوسط النخبة</div>
+              <div className="font-bold text-amber-300 text-xs sm:text-sm font-kufi">18</div>
+              <div className="text-[10px] text-white/50">محافظة</div>
             </div>
           </div>
         </div>
 
-        {/* Ambient subtle glow */}
         <div className="absolute -left-20 -bottom-20 w-60 h-60 bg-[#bef264]/5 rounded-full blur-3xl pointer-events-none" />
       </section>
 
-      {/* 2. Sub-Page View Switcher Tabs (In the same page) */}
-      <div className="p-1.5 rounded-2xl bg-[#0c1415] border border-white/10 shadow-md flex items-center gap-1.5 text-xs font-mono">
+      {/* 2. Sub-Page View Switcher Tabs */}
+      <div className="p-1.5 rounded-2xl bg-[#0c1415] border border-white/10 shadow-md flex items-center gap-1.5 text-xs font-mono overflow-x-auto no-scrollbar">
+        {/* Tab 1: Google Map with 2 Layers (Default) */}
         <button
-          onClick={() => setActiveView("map")}
-          className={`flex-1 py-3 px-4 rounded-xl font-kufi font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
-            activeView === "map"
+          onClick={() => setActiveView("google")}
+          className={`flex-1 min-w-[200px] py-2.5 px-4 rounded-xl font-kufi font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            activeView === "google"
               ? "bg-[#bef264] text-[#0c1415] shadow-md"
               : "text-white/60 hover:text-white hover:bg-white/5"
           }`}
-          aria-selected={activeView === "map"}
+          aria-selected={activeView === "google"}
           role="tab"
         >
-          <Compass className="w-4 h-4 stroke-[2.5]" />
-          <span>خريطة العراق التفاعلية (مع البحث والتحميل)</span>
+          <Layers className="w-4 h-4 stroke-[2.5]" />
+          <span>خريطة Google التفاعلية وموقعي (طبقتان)</span>
           <span
-            className={`hidden sm:inline-block text-[11px] px-2 py-0.5 rounded-full font-mono ${
-              activeView === "map" ? "bg-[#0c1415]/20 text-[#0c1415]" : "bg-white/10 text-white/60"
+            className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono font-bold ${
+              activeView === "google" ? "bg-[#0c1415]/20 text-[#0c1415]" : "bg-sky-500/20 text-sky-300"
             }`}
           >
-            18 محافظة
+            مجاناً
           </span>
         </button>
 
+        {/* Tab 2: Nearest Places & Community Ratings */}
         <button
           onClick={() => setActiveView("places")}
-          className={`flex-1 py-3 px-4 rounded-xl font-kufi font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+          className={`flex-1 min-w-[170px] py-2.5 px-4 rounded-xl font-kufi font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
             activeView === "places"
               ? "bg-[#bef264] text-[#0c1415] shadow-md"
               : "text-white/60 hover:text-white hover:bg-white/5"
@@ -121,53 +135,59 @@ export default function IqMapPage() {
           role="tab"
         >
           <Star className="w-4 h-4 fill-current stroke-[2]" />
-          <span>أقرب الأماكن وتقييمات المجتمع (الأعلى تقييماً)</span>
-          <span
-            className={`hidden sm:inline-block text-[11px] px-2 py-0.5 rounded-full font-mono ${
-              activeView === "places" ? "bg-[#0c1415]/20 text-[#0c1415]" : "bg-white/10 text-white/60"
-            }`}
-          >
-            {spots.length} مكان
-          </span>
+          <span>أقرب الأماكن وتقييمات المجتمع</span>
+        </button>
+
+        {/* Tab 3: Full Vector Map of Iraq & Download */}
+        <button
+          onClick={() => setActiveView("vector")}
+          className={`flex-1 min-w-[160px] py-2.5 px-4 rounded-xl font-kufi font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            activeView === "vector"
+              ? "bg-[#bef264] text-[#0c1415] shadow-md"
+              : "text-white/60 hover:text-white hover:bg-white/5"
+          }`}
+          aria-selected={activeView === "vector"}
+          role="tab"
+        >
+          <Compass className="w-4 h-4 stroke-[2.5]" />
+          <span>خريطة المحافظات المتجهة (SVG)</span>
         </button>
       </div>
 
       {/* 3. Conditional Sub-Page Content */}
-      {activeView === "map" ? (
-        <section aria-label="خريطة جمهورية العراق التفاعلية" className="space-y-4">
-          <IraqSvgMap
+      {activeView === "google" && (
+        <section aria-label="خريطة Google المباشرة بطبقتين" className="space-y-4">
+          <IraqGoogleMap
             spots={spots}
+            onAddSpot={handleAddSpot}
             selectedGovernorate={selectedGovernorate}
             onSelectGovernorate={setSelectedGovernorate}
-            onSelectSpot={(spot) => {
-              // Option to directly switch to places view and view this spot
-              setSelectedGovernorate(spot.governorate);
-            }}
-            onAddSpotClick={() => setActiveView("places")}
           />
-
-          {/* Bottom helper prompt to explore community ratings */}
-          <div className="p-4 rounded-2xl bg-[#0e1618] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
-            <div className="flex items-center gap-2 text-white/80">
-              <Star className="w-4 h-4 text-amber-300 fill-amber-300 shrink-0" />
-              <span>تريد رؤية أقرب الأماكن لموقعك مرتبة بالأعلى تقييماً من المجتمع؟</span>
-            </div>
-            <button
-              onClick={() => setActiveView("places")}
-              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-[#bef264] font-bold transition-colors cursor-pointer shrink-0"
-            >
-              الانتقال إلى دليل الأماكن والتقييمات ←
-            </button>
-          </div>
         </section>
-      ) : (
+      )}
+
+      {activeView === "places" && (
         <section aria-label="دليل الأماكن الأقرب وتقييمات المجتمع" className="space-y-4">
           <CommunityPlacesView
             spots={spots}
             initialGovernorate={selectedGovernorate}
             onAddSpot={handleAddSpot}
             onAddReview={handleAddReview}
-            onOpenMap={() => setActiveView("map")}
+            onOpenMap={() => setActiveView("google")}
+          />
+        </section>
+      )}
+
+      {activeView === "vector" && (
+        <section aria-label="خريطة جمهورية العراق المتجهة" className="space-y-4">
+          <IraqSvgMap
+            spots={spots}
+            selectedGovernorate={selectedGovernorate}
+            onSelectGovernorate={setSelectedGovernorate}
+            onSelectSpot={(spot) => {
+              setSelectedGovernorate(spot.governorate);
+            }}
+            onAddSpotClick={() => setActiveView("places")}
           />
         </section>
       )}

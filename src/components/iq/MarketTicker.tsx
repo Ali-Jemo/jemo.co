@@ -141,16 +141,15 @@ export default function MarketTicker() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-white/10 text-xs font-mono">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-white/60 inline-flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-[#bef264]" /> المحافظة:
+            <MapPin className="w-3.5 h-3.5 text-[var(--gold)]" /> المحافظة:
           </span>
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
             {Object.entries(PROVINCES).map(([key, item]) => (
               <button
-                key={key}
                 onClick={() => setSelectedProvince(key)}
                 className={`px-2.5 py-1 rounded-full text-[11px] transition-all cursor-pointer shrink-0 ${
                   selectedProvince === key
-                    ? "bg-[#bef264] text-[#0c1415] font-bold shadow-xs"
+                    ? "bg-[var(--gold)] text-[var(--surface)] font-bold shadow-xs"
                     : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/5"
                 }`}
               >
@@ -161,7 +160,7 @@ export default function MarketTicker() {
         </div>
 
         <div className="inline-flex items-center gap-1.5 text-white/50 text-[11px]">
-          <Clock className="w-3 h-3 text-[#bef264]" />
+          <Clock className="w-3 h-3 text-[var(--gold)]" />
           <span>تحديث حي: مزامنة كل دقيقة</span>
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
         </div>
@@ -171,15 +170,15 @@ export default function MarketTicker() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         
         {/* 1. USD / IQD — Live Market Rate from Aya Naseer & @dollariraqi */}
-        <div className="p-4 rounded-2xl bg-gradient-to-b from-[#14261d] to-[#0c1713] border border-emerald-500/40 shadow-lg relative overflow-hidden group">
+        <div className="p-4 rounded-2xl bg-gradient-to-b from-[var(--surface-2)] to-[var(--surface)] border border-emerald-500/40 shadow-lg relative overflow-hidden group">
           <div className="flex items-center justify-between gap-2 mb-2">
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#bef264]">
-              <DollarSign className="w-4 h-4 text-[#bef264]" />
+            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[var(--gold)]">
+              <DollarSign className="w-4 h-4 text-[var(--gold)]" />
               <span>الدولار / 100$</span>
             </div>
             <button
               onClick={handleCopyRate}
-              className="inline-flex items-center gap-1 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[#bef264]/15 text-[#bef264] border border-[#bef264]/30 hover:bg-[#bef264]/25 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 hover:bg-[var(--gold)]/25 transition-colors cursor-pointer"
               title="نسخ السعر للمشاركة"
             >
               {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
@@ -205,12 +204,12 @@ export default function MarketTicker() {
               <ShieldCheck className="w-3 h-3 text-emerald-400" />
               <span>المصدر: @dollariraqi</span>
             </span>
-            <span className="text-[#bef264] font-bold">بغداد</span>
+            <span className="text-[var(--gold)] font-bold">بغداد</span>
           </div>
         </div>
 
         {/* 2. Gold & Silver Market */}
-        <div className="p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md relative overflow-hidden">
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-amber-300">
               <Coins className="w-4 h-4 text-amber-300" />
@@ -238,7 +237,7 @@ export default function MarketTicker() {
         </div>
 
         {/* 3. Generator Ampere Rate (أمبير المولد) */}
-        <div className="p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md relative overflow-hidden">
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-300">
               <Zap className="w-4 h-4 text-cyan-300" />
@@ -266,7 +265,7 @@ export default function MarketTicker() {
         </div>
 
         {/* 4. Gas Cylinder Rate (أسطوانة الغاز) */}
-        <div className="p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md relative overflow-hidden">
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-orange-300">
               <Flame className="w-4 h-4 text-orange-300" />
@@ -296,7 +295,7 @@ export default function MarketTicker() {
       </div>
 
       {/* Integrated Live Source & 7-Day Market Analytics Card (Aya Naseer & @dollariraqi Theme) */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#14261d] via-[#101e17] to-[#0c1611] border border-emerald-500/30 shadow-md space-y-3 relative overflow-hidden">
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[var(--surface-2)] via-[var(--surface)] to-[var(--surface)] border border-emerald-500/30 shadow-md space-y-3 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-emerald-500/20">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
