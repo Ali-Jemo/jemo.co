@@ -8,7 +8,6 @@ import {
   DollarSign,
   Coins,
   MapPin,
-  ExternalLink,
   ShieldCheck,
   ArrowUpRight,
   Copy,
@@ -50,7 +49,7 @@ const PROVINCES: Record<string, ProvinceData> = {
     gasStreet: 11000,
   },
   najaf: {
-    name: "النجف الأشرف",
+    name: "النجف",
     usdSell: 155600,
     usdBuy: 154950,
     ampereAvg: 13500,
@@ -58,7 +57,7 @@ const PROVINCES: Record<string, ProvinceData> = {
     gasStreet: 9000,
   },
   nineveh: {
-    name: "نينوى (الموصل)",
+    name: "الموصل",
     usdSell: 155700,
     usdBuy: 155050,
     ampereAvg: 14500,
@@ -78,21 +77,13 @@ const PROVINCES: Record<string, ProvinceData> = {
 interface DollarLiveInfo {
   sellRate: number;
   buyRate: number;
-  marketName: string;
-  location: string;
   sourceName: string;
-  sourceFullTitle: string;
   sourceUrl: string;
-  sourcePublishedAt: string;
   avg7Days: number;
   high7Days: number;
   low7Days: number;
   change7Days: number;
   status: string;
-  platform: {
-    name: string;
-    url: string;
-  };
 }
 
 export default function MarketTicker() {
@@ -129,241 +120,153 @@ export default function MarketTicker() {
 
   const handleCopyRate = () => {
     navigator.clipboard?.writeText?.(
-      `سعر صرف الدولار في بغداد اليوم: بيع ${currentSell.toLocaleString()} د.ع — شراء ${currentBuy.toLocaleString()} د.ع / 100$ | المصدر: @dollariraqi عبر هسه`
+      `سعر صرف الدولار في بغداد: بيع ${currentSell.toLocaleString()} — شراء ${currentBuy.toLocaleString()} د.ع / 100$`
     );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <section className="space-y-4" aria-label="شريط الأسعار الحية والمؤشرات الاقتصادية">
-      {/* Province Switcher & Update Stamp */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-white/10 text-xs font-mono">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-white/60 inline-flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-[var(--gold)]" /> المحافظة:
+    <section className="space-y-3" aria-label="شريط الأسعار الحية والمؤشرات الاقتصادية">
+      {/* Province Switcher & Time Stamp */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          <span className="text-white/50 text-[11px] flex items-center gap-1 shrink-0 ml-1">
+            <MapPin className="w-3.5 h-3.5 text-[#bef264]" /> المحافظة:
           </span>
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
-            {Object.entries(PROVINCES).map(([key, item]) => (
-              <button
-                onClick={() => setSelectedProvince(key)}
-                className={`px-2.5 py-1 rounded-full text-[11px] transition-all cursor-pointer shrink-0 ${
-                  selectedProvince === key
-                    ? "bg-[var(--gold)] text-[var(--surface)] font-bold shadow-xs"
-                    : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/5"
-                }`}
-              >
-                {item.name}
-              </button>
-            ))}
-          </div>
+          {Object.entries(PROVINCES).map(([key, item]) => (
+            <button
+              key={key}
+              onClick={() => setSelectedProvince(key)}
+              className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer shrink-0 ${
+                selectedProvince === key
+                  ? "bg-[#bef264] text-[#0c1415] shadow-xs"
+                  : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/5"
+              }`}
+            >
+              {item.name}
+            </button>
+          ))}
         </div>
 
-        <div className="inline-flex items-center gap-1.5 text-white/50 text-[11px]">
-          <Clock className="w-3 h-3 text-[var(--gold)]" />
-          <span>تحديث حي: مزامنة كل دقيقة</span>
+        <div className="inline-flex items-center gap-1.5 text-white/50 text-[11px] shrink-0 self-end sm:self-auto">
+          <Clock className="w-3 h-3 text-[#bef264]" />
+          <span>تحديث مباشر</span>
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
         </div>
       </div>
 
-      {/* Main Rates Grid (Bourse Dollar, Gold, Ampere & Gas) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* 4 Core Essential Rate Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
         
-        {/* 1. USD / IQD — Live Market Rate from Aya Naseer & @dollariraqi */}
-        <div className="p-4 rounded-2xl bg-gradient-to-b from-[var(--surface-2)] to-[var(--surface)] border border-emerald-500/40 shadow-lg relative overflow-hidden group">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[var(--gold)]">
-              <DollarSign className="w-4 h-4 text-[var(--gold)]" />
-              <span>الدولار / 100$</span>
-            </div>
+        {/* 1. Dollar */}
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-[#14261d] to-[#0c1713] border border-emerald-500/30 shadow-md flex flex-col justify-between space-y-2">
+          <div className="flex items-center justify-between gap-1">
+            <span className="text-xs font-mono font-bold text-[#bef264] flex items-center gap-1">
+              <DollarSign className="w-3.5 h-3.5" /> الدولار / $100
+            </span>
             <button
               onClick={handleCopyRate}
-              className="inline-flex items-center gap-1 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-[var(--gold)]/15 text-[var(--gold)] border border-[var(--gold)]/30 hover:bg-[var(--gold)]/25 transition-colors cursor-pointer"
-              title="نسخ السعر للمشاركة"
+              className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#bef264]/10 text-[#bef264] border border-[#bef264]/20 hover:bg-[#bef264]/20 cursor-pointer flex items-center gap-1"
             >
-              {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-              <span>{copied ? "تم النسخ" : "+750 د.ع"}</span>
+              {copied ? <Check className="w-2.5 h-2.5" /> : <Copy className="w-2.5 h-2.5" />}
+              <span>{copied ? "تم" : "+750"}</span>
             </button>
           </div>
 
-          <div className="space-y-1">
-            <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-mono font-black text-white tracking-tight">
-                {currentSell.toLocaleString()}
-              </span>
-              <span className="text-[11px] font-mono text-emerald-300 font-medium">بيع الصيرفات</span>
+          <div>
+            <div className="text-xl sm:text-2xl font-mono font-black text-white tracking-tight">
+              {currentSell.toLocaleString()}
             </div>
-            <div className="flex items-baseline justify-between text-xs font-mono text-white/70 border-t border-emerald-500/20 pt-1.5 mt-1.5">
-              <span>شراء: {currentBuy.toLocaleString()}</span>
-              <span className="text-[10px] text-white/50">الرسمي: 131,000</span>
+            <div className="text-[11px] font-mono text-emerald-300 font-medium pt-0.5">
+              شراء: {currentBuy.toLocaleString()}
             </div>
-          </div>
-
-          <div className="text-[10px] font-mono text-emerald-400/90 mt-2.5 flex items-center justify-between pt-1 border-t border-emerald-500/15">
-            <span className="flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-emerald-400" />
-              <span>المصدر: @dollariraqi</span>
-            </span>
-            <span className="text-[var(--gold)] font-bold">بغداد</span>
           </div>
         </div>
 
-        {/* 2. Gold & Silver Market */}
-        <div className="p-4 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md relative overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-amber-300">
-              <Coins className="w-4 h-4 text-amber-300" />
-              <span>مثقال الذهب (21)</span>
-            </div>
-            <span className="text-[10px] font-mono text-white/50">سوق الصاغة</span>
-          </div>
+        {/* 2. Gold */}
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md flex flex-col justify-between space-y-2">
+          <span className="text-xs font-mono font-bold text-amber-300 flex items-center gap-1">
+            <Coins className="w-3.5 h-3.5" /> الذهب (مثقال 21)
+          </span>
 
-          <div className="space-y-1">
-            <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-mono font-black text-amber-300 tracking-tight">
-                575,000
-              </span>
-              <span className="text-[11px] font-mono text-white/60">دينار / مثقال</span>
+          <div>
+            <div className="text-xl sm:text-2xl font-mono font-black text-amber-300 tracking-tight">
+              575,000
             </div>
-            <div className="flex items-baseline justify-between text-xs font-mono text-white/60 border-t border-white/10 pt-1.5 mt-1.5">
-              <span>عيار 18: 492,000</span>
-              <span className="text-white/40">الفضة: 2,150/غرام</span>
+            <div className="text-[11px] font-mono text-white/60 pt-0.5">
+              عيار 18: 492,000 · فضة: 2,150
             </div>
-          </div>
-          <div className="text-[9px] font-mono text-white/40 mt-2 flex items-center justify-between">
-            <span>الخليجي والتركي والأوروبي</span>
-            <span className="text-amber-300/80">عيار 21</span>
           </div>
         </div>
 
-        {/* 3. Generator Ampere Rate (أمبير المولد) */}
-        <div className="p-4 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md relative overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-300">
-              <Zap className="w-4 h-4 text-cyan-300" />
-              <span>أمبير المولد ({baseProvinceData.name})</span>
-            </div>
-            <span className="text-[10px] font-mono text-white/50">الخط الذهبي</span>
-          </div>
+        {/* 3. Ampere */}
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md flex flex-col justify-between space-y-2">
+          <span className="text-xs font-mono font-bold text-cyan-300 flex items-center gap-1">
+            <Zap className="w-3.5 h-3.5" /> أمبير المولد ({baseProvinceData.name})
+          </span>
 
-          <div className="space-y-1">
-            <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-mono font-black text-cyan-300 tracking-tight">
-                {baseProvinceData.ampereAvg.toLocaleString()}
-              </span>
-              <span className="text-[11px] font-mono text-white/60">دينار / أمبير</span>
+          <div>
+            <div className="text-xl sm:text-2xl font-mono font-black text-cyan-300 tracking-tight">
+              {baseProvinceData.ampereAvg.toLocaleString()}
             </div>
-            <div className="flex items-baseline justify-between text-xs font-mono text-white/60 border-t border-white/10 pt-1.5 mt-1.5">
-              <span>التشغيل: 24 ساعة</span>
-              <span className="text-white/40">تسعيرة آذار</span>
+            <div className="text-[11px] font-mono text-white/60 pt-0.5">
+              تشغيل 24 ساعة (خط ذهبي)
             </div>
-          </div>
-          <div className="text-[9px] font-mono text-white/40 mt-2 flex items-center justify-between">
-            <span>متوسط الأحياء السكنية</span>
-            <span className="text-cyan-300/80">بدون قطع</span>
           </div>
         </div>
 
-        {/* 4. Gas Cylinder Rate (أسطوانة الغاز) */}
-        <div className="p-4 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md relative overflow-hidden">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-orange-300">
-              <Flame className="w-4 h-4 text-orange-300" />
-              <span>أسطوانة الغاز</span>
-            </div>
-            <span className="text-[10px] font-mono text-white/50">منزلي</span>
-          </div>
+        {/* 4. Gas */}
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md flex flex-col justify-between space-y-2">
+          <span className="text-xs font-mono font-bold text-orange-300 flex items-center gap-1">
+            <Flame className="w-3.5 h-3.5" /> أسطوانة الغاز
+          </span>
 
-          <div className="space-y-1">
-            <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-mono font-black text-orange-300 tracking-tight">
-                {baseProvinceData.gasStreet.toLocaleString()}
-              </span>
-              <span className="text-[11px] font-mono text-white/60">واصل للبيت</span>
+          <div>
+            <div className="text-xl sm:text-2xl font-mono font-black text-orange-300 tracking-tight">
+              {baseProvinceData.gasStreet.toLocaleString()}
             </div>
-            <div className="flex items-baseline justify-between text-xs font-mono text-white/60 border-t border-white/10 pt-1.5 mt-1.5">
-              <span>الساحة الرسمية: {baseProvinceData.gasOfficial.toLocaleString()}</span>
-              <span className="text-emerald-400">متوفر</span>
+            <div className="text-[11px] font-mono text-white/60 pt-0.5">
+              الساحة الرسمية: {baseProvinceData.gasOfficial.toLocaleString()}
             </div>
-          </div>
-          <div className="text-[9px] font-mono text-white/40 mt-2 flex items-center justify-between">
-            <span>وكلاء التوزيع بالأحياء</span>
-            <span className="text-orange-300/80">أسطوانة حديد</span>
           </div>
         </div>
 
       </div>
 
-      {/* Integrated Live Source & 7-Day Market Analytics Card (Aya Naseer & @dollariraqi Theme) */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[var(--surface-2)] via-[var(--surface)] to-[var(--surface)] border border-emerald-500/30 shadow-md space-y-3 relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-emerald-500/20">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-mono font-bold text-emerald-300 uppercase tracking-wide">
-                حالة سوق الدولار في العراق
-              </span>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[10px] font-mono text-emerald-300 font-bold">
-                بيع · {liveDollar?.status ?? "مرتفع — أعلى من متوسط الأسبوع"}
-              </span>
-            </div>
-            <p className="text-xs text-white/70 font-sans">
-              مؤشر سوقي مباشر مبني على رسائل البورصة وقناة سعر الدولار في العراق مع فحص مستمر كل 5 دقائق.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 flex-wrap shrink-0">
-            <a
-              href={liveDollar?.sourceUrl ?? "https://t.me/dollariraqi"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/30 text-emerald-200 text-xs font-mono font-bold transition-all group"
-            >
-              <span>فتح قناة {liveDollar?.sourceName ?? "@dollariraqi"}</span>
-              <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
-
-            <a
-              href={liveDollar?.platform.url ?? "https://ayanadollar-dhkgohtw.manus.space/dashboard"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 hover:text-white text-xs font-mono transition-all"
-            >
-              <span>لوحة {liveDollar?.platform.name ?? "آيا نصير"}</span>
-              <ExternalLink className="w-3 h-3 text-white/40" />
-            </a>
-          </div>
+      {/* Slim 1-Line Status & Source Banner (Replacing the big card) */}
+      <div className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#14261d] to-[#0c1611] border border-emerald-500/25 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="font-bold text-white">حالة السوق:</span>
+          <span className="text-emerald-400 font-bold">
+            {liveDollar?.status ?? "مرتفع — أعلى من متوسط الأسبوع"}
+          </span>
+          <span className="text-white/30">·</span>
+          <span className="text-white/70">
+            متوسط 7 أيام: {(liveDollar?.avg7Days ?? 155290).toLocaleString()}
+          </span>
+          <span className="text-white/30 hidden sm:inline">·</span>
+          <span className="text-white/70 hidden sm:inline">
+            الأعلى: {(liveDollar?.high7Days ?? 156000).toLocaleString()}
+          </span>
+          <span className="text-white/30 hidden sm:inline">·</span>
+          <span className="text-white/70 hidden sm:inline">
+            الأدنى: {(liveDollar?.low7Days ?? 154900).toLocaleString()}
+          </span>
         </div>
 
-        {/* 7-Day Performance Indicators Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 text-xs font-mono">
-          <div className="p-2.5 rounded-xl bg-black/30 border border-emerald-500/15">
-            <span className="text-[10px] text-white/50 block mb-0.5">متوسط 7 أيام</span>
-            <span className="font-bold text-white text-sm">
-              {(liveDollar?.avg7Days ?? 155290).toLocaleString()} د.ع
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-xl bg-black/30 border border-emerald-500/15">
-            <span className="text-[10px] text-white/50 block mb-0.5">حركة 7 أيام</span>
-            <span className="font-bold text-emerald-400 text-sm">
-              +{(liveDollar?.change7Days ?? 750).toLocaleString()} د.ع
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-xl bg-black/30 border border-emerald-500/15">
-            <span className="text-[10px] text-white/50 block mb-0.5">الأعلى هذا الأسبوع</span>
-            <span className="font-bold text-amber-300 text-sm">
-              {(liveDollar?.high7Days ?? 156000).toLocaleString()} د.ع
-            </span>
-          </div>
-
-          <div className="p-2.5 rounded-xl bg-black/30 border border-emerald-500/15">
-            <span className="text-[10px] text-white/50 block mb-0.5">الأدنى هذا الأسبوع</span>
-            <span className="font-bold text-cyan-300 text-sm">
-              {(liveDollar?.low7Days ?? 154900).toLocaleString()} د.ع
-            </span>
-          </div>
+        <div className="flex items-center gap-2">
+          <a
+            href={liveDollar?.sourceUrl ?? "https://t.me/dollariraqi"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#bef264] hover:underline font-bold inline-flex items-center gap-1 text-[11px]"
+          >
+            <ShieldCheck className="w-3 h-3 text-emerald-400" />
+            <span>المصدر: @dollariraqi</span>
+            <ArrowUpRight className="w-3 h-3" />
+          </a>
         </div>
       </div>
     </section>

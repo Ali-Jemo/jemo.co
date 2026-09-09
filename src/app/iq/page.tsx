@@ -3,7 +3,6 @@ import CurrencyConverter from "@/components/iq/CurrencyConverter";
 import NewsDigest from "@/components/iq/NewsDigest";
 import ToolsHub from "@/components/iq/ToolsHub";
 import Link from "next/link";
-import { HeartHandshake } from "lucide-react";
 
 export default function IqPage() {
   return (
@@ -14,28 +13,8 @@ export default function IqPage() {
       {/* 3. Middle Two-Column Grid: Converter + News Digest */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left column in RTL: Currency Calculator (5 cols) */}
-        <div className="lg:col-span-5 space-y-6" id="calculator">
+        <div className="lg:col-span-5" id="calculator">
           <CurrencyConverter />
-
-          {/* Micro-Community CTA Card */}
-          <div className="p-4 rounded-2xl bg-[var(--surface)] border border-[var(--brand)]/10 shadow-sm space-y-2.5">
-            <div className="flex items-center gap-2 text-xs font-mono font-bold text-[var(--gold)]">
-              <HeartHandshake className="w-4 h-4 text-[var(--gold)]" />
-              <span>مجتمع يصنع خريطته بنفسه</span>
-            </div>
-            <p className="text-xs text-[var(--ink-2)]/70 leading-relaxed">
-              تعرف محل كوزمتك بضاعته أصلية؟ أسواق يوصل للبيت؟ مصلح سبالت ثقة وما ينصب؟ ساهم بتوثيقهم في خريطة هسه لخدمة جيرانك ومحلتك.
-            </p>
-            <div className="pt-1">
-              <Link
-                href="/iq/map"
-                className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[var(--gold)] hover:underline"
-              >
-                <span>أضف مكاناً في منطقتك الآن</span>
-                <span>←</span>
-              </Link>
-            </div>
-          </div>
         </div>
 
         {/* Right column in RTL: 5 Sourced News Digest (7 cols) */}
