@@ -7,8 +7,8 @@ export default function BioManifesto() {
       className="w-full bg-[#f7f7f5] text-[#222f30] py-14 sm:py-28 px-4 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
     >
       <div className="max-w-7xl mx-auto grid lg:grid-cols-[280px_1fr] gap-6 lg:gap-16 items-start">
-        {/* Academic Sidebar Folio Mark */}
-        <div className="sticky top-24 space-y-2.5">
+        {/* ponytail: sticky sidebar folio mark during section scroll */}
+        <div className="lg:sticky lg:top-24 space-y-2.5 self-start">
           <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
             <span className="font-bold text-[#222f30] text-sm tracking-normal">01</span>
             <span className="w-5 h-px bg-[#c9cbbe]" />
