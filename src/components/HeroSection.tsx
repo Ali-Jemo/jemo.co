@@ -215,30 +215,30 @@ export default function HeroSection() {
       </div>
 
       {/* 3. Center: Massive Monumental Display Headline with Line-Mask Entrance */}
-      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 my-auto py-2 sm:py-4">
+      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 my-auto py-2 sm:py-3">
         <h1 
           style={{ color: "#ffffff" }}
-          className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] font-medium leading-[1.04] tracking-tight max-w-6xl font-kufi text-white select-none [text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.14] tracking-tight max-w-4xl font-kufi text-white select-none [text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
         >
-          <span className="block overflow-hidden pb-1.5 -mb-1.5">
+          <span className="block overflow-hidden pb-1 -mb-1">
             <motion.span
               initial={{ y: "115%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="block"
             >
-              كل جلسة محادثة قد تصنع كشفاً،
+              أبحاثٌ تولد في المحادثة،
             </motion.span>
           </span>
 
-          <span className="block overflow-hidden pb-1.5 -mb-1.5">
+          <span className="block overflow-hidden pb-1 -mb-1">
             <motion.span
               initial={{ y: "115%", opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.8, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
               className="block text-white"
             >
-              لكن 99% من هذا الجهد يتبخر دون توثيق<span className="text-[#bef264]">.</span>
+              وتُحفظ كمعرفة دائمة<span className="text-[#bef264]">.</span>
             </motion.span>
           </span>
         </h1>

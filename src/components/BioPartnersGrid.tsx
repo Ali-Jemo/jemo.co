@@ -2,7 +2,7 @@
 
 import { PARTNERS } from "@/lib/data/research-data";
 import { motion } from "framer-motion";
-import { Building2, ExternalLink } from "lucide-react";
+import { Building2, ExternalLink, Check } from "lucide-react";
 
 export default function BioPartnersGrid() {
   return (
@@ -59,7 +59,10 @@ export default function BioPartnersGrid() {
               </div>
 
               <div className="pt-4 border-t border-[#e4e3e3] flex items-center justify-between">
-                <span className="text-xs font-mono text-[#445e5f]">شراكة موثقة ✓</span>
+                <span className="text-xs font-mono text-[#445e5f] flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>شراكة موثقة</span>
+                </span>
                 <a
                   href={partner.website}
                   target="_blank"

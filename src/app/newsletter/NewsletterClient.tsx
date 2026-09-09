@@ -433,7 +433,14 @@ export default function NewsletterClient() {
                             : "bg-[var(--bg)] text-[var(--ink-2)] border-[var(--line)] hover:border-[var(--accent)]"
                         }`}
                       >
-                        {isSelected ? `✓ ${topic}` : `+ ${topic}`}
+                        {isSelected ? (
+                          <span className="inline-flex items-center gap-1">
+                            <Check className="w-3 h-3" />
+                            <span>{topic}</span>
+                          </span>
+                        ) : (
+                          <span>+ {topic}</span>
+                        )}
                       </button>
                     );
                   })}

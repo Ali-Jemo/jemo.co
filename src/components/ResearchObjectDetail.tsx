@@ -26,7 +26,10 @@ import {
   Sparkles,
   Layers,
   Send,
-  Eye
+  Eye,
+  FlaskConical,
+  Wrench,
+  BookOpen
 } from "lucide-react";
 import CitationBox from "@/components/ui/CitationBox";
 import PaperReaderModal from "@/components/PaperReaderModal";
@@ -522,47 +525,58 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             <div className="pr-4 pl-2 space-y-2 border-r-2 border-[#e4e3e3] mr-2">
               <div className="flex flex-wrap items-center justify-between text-[#55696a] gap-2">
                 <span className="flex items-center gap-1.5">
-                  <span>├── 🔬 Replication:</span>
+                  <span className="flex items-center gap-1 font-mono text-xs">
+                    <FlaskConical className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Replication:</span>
+                  </span>
                   <span className="font-bold text-[#222f30]">إعادة تجربة بنجاح ومطابقة لنسبة الهلوسة</span>
                 </span>
                 <span className="text-[10px] text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded font-bold">Verified × 14</span>
               </div>
               <div className="flex flex-wrap items-center justify-between text-[#55696a] gap-2">
                 <span className="flex items-center gap-1.5">
-                  <span>├── ⚔️ Challenge:</span>
+                  <span className="flex items-center gap-1 font-mono text-xs">
+                    <Scale className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Challenge:</span>
+                  </span>
                   <span className="font-bold text-[#222f30]">تحدي الدقة عند ربط النموذج بقواعد بيانات حية</span>
                 </span>
                 <span className="text-[10px] text-amber-800 bg-amber-100 px-2 py-0.5 rounded font-bold">Disputed</span>
               </div>
               <div className="flex flex-wrap items-center justify-between text-[#55696a] gap-2">
                 <span className="flex items-center gap-1.5">
-                  <span>└── 🌱 Extension:</span>
+                  <span className="flex items-center gap-1 font-mono text-xs">
+                    <GitFork className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Extension:</span>
+                  </span>
                   <span className="font-bold text-[#222f30]">امتداد وتوسيع الاختبار لعينة جديدة من المصادر</span>
                 </span>
                 <span className="text-[10px] text-purple-800 bg-purple-100 px-2 py-0.5 rounded font-bold">Extended</span>
               </div>
             </div>
           </div>
-
           {/* 3 Fork Actions */}
           <div className="flex flex-wrap items-center gap-2.5 pt-2">
             <Link
               href={`/publish?replicate=${paper.slug}`}
               className="px-4 py-2 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all flex items-center gap-1.5 shadow-xs"
             >
-              <span>🔬 أعد التجربة بنفسك (Replicate)</span>
+              <FlaskConical className="w-3.5 h-3.5 text-[#bef264]" />
+              <span>أعد التجربة بنفسك (Replicate)</span>
             </Link>
             <Link
               href={`/publish?challenge=${paper.slug}`}
               className="px-4 py-2 rounded-xl bg-white border border-[#e4e3e3] text-[#222f30] text-xs font-bold hover:border-amber-400 transition-all flex items-center gap-1.5 shadow-xs"
             >
-              <span>⚔️ قدّم دليلاً مضاداً (Challenge)</span>
+              <Scale className="w-3.5 h-3.5 text-amber-600" />
+              <span>قدّم دليلاً مضاداً (Challenge)</span>
             </Link>
             <Link
               href={`/publish?extend=${paper.slug}`}
               className="px-4 py-2 rounded-xl bg-white border border-[#e4e3e3] text-[#222f30] text-xs font-bold hover:border-purple-400 transition-all flex items-center gap-1.5 shadow-xs"
             >
-              <span>🌱 ابنِ على هذا البحث (Extend)</span>
+              <GitFork className="w-3.5 h-3.5 text-purple-600" />
+              <span>ابنِ على هذا البحث (Extend)</span>
             </Link>
           </div>
         </div>
@@ -739,11 +753,36 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
                         r.type === "correction" ? "bg-blue-100 text-blue-800" :
                         "bg-[#f0f3f2] text-[#222f30]"
                       }`}>
-                        {r.type === "replication" && "✓ تم التكرار (Replication)"}
-                        {r.type === "challenge" && "⚖️ تحدي ودليل مضاد"}
-                        {r.type === "evidence" && "📖 دليل داعم"}
-                        {r.type === "correction" && "🛠️ تصحيح"}
-                        {r.type === "extension" && "🍴 امتداد للبحث"}
+                        {r.type === "replication" && (
+                          <span className="inline-flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-700" />
+                            <span>تم التكرار (Replication)</span>
+                          </span>
+                        )}
+                        {r.type === "challenge" && (
+                          <span className="inline-flex items-center gap-1">
+                            <Scale className="w-3 h-3 text-amber-700" />
+                            <span>تحدي ودليل مضاد</span>
+                          </span>
+                        )}
+                        {r.type === "evidence" && (
+                          <span className="inline-flex items-center gap-1">
+                            <BookOpen className="w-3 h-3 text-blue-700" />
+                            <span>دليل داعم</span>
+                          </span>
+                        )}
+                        {r.type === "correction" && (
+                          <span className="inline-flex items-center gap-1">
+                            <Wrench className="w-3 h-3 text-slate-700" />
+                            <span>تصحيح</span>
+                          </span>
+                        )}
+                        {r.type === "extension" && (
+                          <span className="inline-flex items-center gap-1">
+                            <GitFork className="w-3 h-3 text-purple-700" />
+                            <span>امتداد للبحث</span>
+                          </span>
+                        )}
                       </span>
                       <span className="text-xs font-bold text-[#222f30]">{r.author}</span>
                     </div>

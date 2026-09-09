@@ -19,7 +19,9 @@ import {
   Copy,
   Eye,
   Check,
-  ArrowLeft
+  ArrowLeft,
+  FlaskConical,
+  Zap
 } from "lucide-react";
 
 export default function PublishResearchPage() {
@@ -186,26 +188,30 @@ export default function PublishResearchPage() {
                           </label>
                           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                             {[
-                              { id: "Experiment", label: "🧪 Experiment", desc: "تجربة عملية" },
-                              { id: "Quick Investigation", label: "⚡ Investigation", desc: "استقصاء سريع" },
-                              { id: "Full Research", label: "📚 Full Paper", desc: "بحث متكامل" },
-                              { id: "Discovery", label: "💡 Discovery", desc: "اكتشاف" },
-                              { id: "Replication", label: "🔬 Replication", desc: "إعادة تجربة" },
-                            ].map((t) => (
-                              <button
-                                key={t.id}
-                                type="button"
-                                onClick={() => setResearchType(t.id)}
-                                className={`p-2.5 rounded-xl border text-center font-mono transition-all ${
-                                  researchType === t.id
-                                    ? "bg-[#222f30] text-white border-[#222f30] shadow-xs"
-                                    : "bg-white border-[#e4e3e3] text-[#55696a] hover:border-[#222f30]"
-                                }`}
-                              >
-                                <div className="text-xs font-bold">{t.label}</div>
-                                <div className="text-[10px] opacity-75">{t.desc}</div>
-                              </button>
-                            ))}
+                              { id: "Experiment", label: "Experiment", icon: FlaskConical, desc: "تجربة عملية" },
+                              { id: "Quick Investigation", label: "Investigation", icon: Zap, desc: "استقصاء سريع" },
+                              { id: "Full Research", label: "Full Paper", icon: BookOpen, desc: "بحث متكامل" },
+                              { id: "Discovery", label: "Discovery", icon: Sparkles, desc: "اكتشاف" },
+                              { id: "Replication", label: "Replication", icon: CheckCircle2, desc: "إعادة تجربة" },
+                            ].map((t) => {
+                              const Icon = t.icon;
+                              return (
+                                <button
+                                  key={t.id}
+                                  type="button"
+                                  onClick={() => setResearchType(t.id)}
+                                  className={`p-2.5 rounded-xl border text-center font-mono transition-all flex flex-col items-center justify-center gap-1 ${
+                                    researchType === t.id
+                                      ? "bg-[#222f30] text-white border-[#222f30] shadow-xs"
+                                      : "bg-white border-[#e4e3e3] text-[#55696a] hover:border-[#222f30]"
+                                  }`}
+                                >
+                                  <Icon className="w-4 h-4 text-[#a7e26e]" />
+                                  <div className="text-xs font-bold">{t.label}</div>
+                                  <div className="text-[10px] opacity-75">{t.desc}</div>
+                                </button>
+                              );
+                            })}
                           </div>
                         </div>
 

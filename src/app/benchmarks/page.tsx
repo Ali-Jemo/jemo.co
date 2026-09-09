@@ -54,7 +54,10 @@ export default function BenchmarksPage() {
                   <div className="p-4 rounded-xl bg-[var(--brand)]/10 border-2 border-[var(--brand)]/40 space-y-1">
                     <div className="text-[10px] text-[var(--brand)] font-bold uppercase">JEMO LABS Score</div>
                     <div className="text-2xl font-extrabold text-[var(--brand)]">{bench.jemoScore}</div>
-                    <div className="text-[10px] text-emerald-400 font-bold">✓ الأعلى كفاءة</div>
+                    <div className="text-[10px] text-emerald-400 font-bold flex items-center justify-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>الأعلى كفاءة</span>
+                    </div>
                   </div>
 
                   <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--line)] space-y-1">

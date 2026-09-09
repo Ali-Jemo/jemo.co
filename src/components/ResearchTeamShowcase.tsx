@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpLeft, BookOpen, FolderGit2 } from "lucide-react";
+import { ArrowUpLeft, BookOpen, FolderGit2, Check } from "lucide-react";
 import { RESEARCHERS } from "@/lib/data/research-data";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
@@ -58,7 +58,10 @@ export default function ResearchTeamShowcase() {
                   {r.projectsCount} مشاريع
                 </span>
                 {r.orcid && (
-                  <span className="text-[var(--brand)] mr-auto">ORCID ✓</span>
+                  <span className="text-[var(--brand)] mr-auto flex items-center gap-1">
+                    <span>ORCID</span>
+                    <Check className="w-3 h-3" />
+                  </span>
                 )}
               </div>
             </Card>

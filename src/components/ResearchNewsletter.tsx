@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, CheckCircle2, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Mail, CheckCircle2, ShieldCheck, ArrowLeft, Check } from "lucide-react";
 
 export default function ResearchNewsletter() {
   const [email, setEmail] = useState("");
@@ -60,7 +60,14 @@ export default function ResearchNewsletter() {
                       : "bg-[#f5f8f7] text-[#445e5f] border-[#e4e3e3] hover:border-[#a7e26e]"
                   }`}
                 >
-                  {topics.includes(t) ? `✓ ${t}` : `+ ${t}`}
+                  {topics.includes(t) ? (
+                    <span className="inline-flex items-center gap-1">
+                      <Check className="w-3 h-3 text-[#222f30]" />
+                      <span>{t}</span>
+                    </span>
+                  ) : (
+                    <span>+ {t}</span>
+                  )}
                 </button>
               ))}
             </div>

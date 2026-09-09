@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { RESEARCH_PAPERS } from "@/lib/data/research-data";
-import { ArrowUpLeft, Database, GitBranch, FileText, Users, Filter } from "lucide-react";
+import { ArrowUpLeft, Database, GitBranch, FileText, Users, Filter, BrainCircuit, Wrench } from "lucide-react";
 
 // IntegratedBio-style editorial research grid: numbered publication cards with
 // bio-lime category pills, pine titles, slate metadata, and arrow-slide links.
@@ -65,12 +65,14 @@ export default function FeaturedResearch() {
                     <span>{hero.field}</span>
                   </span>
                   {hero.field.includes("سجلات") || hero.field.includes("برمجية") ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
-                      🧠 مساهمة مجتمعية بمساعدة AI
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                      <BrainCircuit className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>مساهمة مجتمعية بمساعدة AI</span>
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-mono text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
-                      🛠️ تجارب الفريق (Sandbox)
+                    <span className="inline-flex items-center gap-1.5 text-[10px] font-mono text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
+                      <Wrench className="w-3.5 h-3.5 text-slate-500" />
+                      <span>تجارب الفريق (Sandbox)</span>
                     </span>
                   )}
                 </div>
