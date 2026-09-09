@@ -1,3 +1,12 @@
+export interface ResearchResponse {
+  id: string;
+  type: "replication" | "challenge" | "evidence" | "correction" | "extension";
+  author: string;
+  date: string;
+  content: string;
+  verified?: boolean;
+}
+
 export interface Paper {
   id: string;
   slug: string;
@@ -18,8 +27,51 @@ export interface Paper {
     apa: string;
   };
   featured?: boolean;
-}
+  // Research Object Structured Extensions
+  researchType?: "Experiment" | "Quick Investigation" | "Full Research" | "Research Note" | "Discovery" | "Replication";
+  evidenceStatus?: "Evidence-backed" | "Reproduced" | "Under Review" | "Disputed" | "Expert Reviewed";
+  question?: string;
+  toolsUsed?: string[];
+  promptWorkflow?: string;
+  methodology?: string;
+  findings?: string;
+  humanVerification?: {
+    accuracyCheck: string;
+    hallucinationCorrected?: string;
+    confidence: "مرتفعة - تم التكرار بنجاح" | "متوسطة - قيد المراجعة" | "استكشافية / أولية";
+  };
+  researchTrail?: { step: string; note: string }[];
+  limitations?: string;
+  metrics?: {
+    reproducedCount: number;
+    evidenceBackedCount: number;
+    disputedCount: number;
+    insightfulCount: number;
+  };
+  lineage?: {
+    replicationsCount: number;
+    challengesCount: number;
+    extensionsCount: number;
+    forkedFrom?: string;
+  };
+  responses?: ResearchResponse[];
+};
 
+export type ResearchObject = Paper;
+export interface OpenQuestion {
+  id: string;
+  slug: string;
+  title: string;
+  titleEn: string;
+  field: string;
+  status: "مفتوح للنقاش والبحث" | "قيد التجارب والتكرار" | "غير محسوم بعد" | "محلول جزئياً";
+  description: string;
+  researchCount: number;
+  experimentsCount: number;
+  replicationsCount: number;
+  consensus: string;
+  tags: string[];
+}
 export interface Project {
   id: string;
   slug: string;
@@ -166,6 +218,65 @@ export const ABOUT_INFO = {
   ],
   researchPhilosophy: "منهجية البحث في عصر الذكاء الاصطناعي: سؤال محدد ← أدوات ونماذج مستخدمة ← مسار التفاعل والافتراضات ← نتيجة وخلاصة ← تحقق بشري وتصحيح للهلوثة ← نشر مفتوح قابل للتكرار والتطوير المجتمعي."
 };
+
+export const OPEN_QUESTIONS: OpenQuestion[] = [
+  {
+    id: "arabic-dialects-llm-reasoning",
+    slug: "arabic-dialects-llm-reasoning",
+    title: "لماذا تواجه النماذج اللغوية صعوبة في فهم وتمييز اللهجات العربية المعقدة؟",
+    titleEn: "Why Do Current LLMs Struggle with Nuanced Arabic Dialects & Local Slang?",
+    field: "معالجة اللغة الطبيعية",
+    status: "غير محسوم بعد",
+    description: "استقصاء مفتوح لفحص سبب تدهور الاستدلال عند الانتقال من الفصحى إلى اللهجات المنطوقة، وهل الحل في تكبير النموذج أم في هندسة التوجيه وتدريب محولات LoRA المتخصصة.",
+    researchCount: 12,
+    experimentsCount: 7,
+    replicationsCount: 4,
+    consensus: "تظهر التجارب الأولية أن التكميم العنيف يفقد النماذج الفروق الدقيقة، بينما محولات LoRA المدربة على حوارات محلية تحقق دقة أعلى بنسبة 38%.",
+    tags: ["Arabic NLP", "Dialects", "LoRA", "Evaluation Benchmark"]
+  },
+  {
+    id: "historical-manuscripts-multimodal-restoration",
+    slug: "historical-manuscripts-multimodal-restoration",
+    title: "هل تستطيع النماذج متعددة الوسائط ترميم المخطوطات التالفة دون اختلاق أو هلوسة؟",
+    titleEn: "Can Multimodal Vision-LLMs Faithfully Restore Damaged Manuscripts Without Hallucination?",
+    field: "الرؤية الحاسوبية والتراث",
+    status: "قيد التجارب والتكرار",
+    description: "فحص قدرة نماذج الرؤية على قراءة الكلمات المطموسة ومقارنتها بالقواميس التاريخية، وتحديد نسبة اختلاق التواريخ والأعلام عند غياب الأدلة.",
+    researchCount: 8,
+    experimentsCount: 5,
+    replicationsCount: 3,
+    consensus: "النماذج تنجح في استعادة السياق النحوي لكنها تميل لاختلاق تواريخ دقيقة بنسبة 35% مما يجعل التحقق البشري الصارم شرطاً إلزامياً.",
+    tags: ["OCR", "Heritage", "Multimodal", "Hallucination Auditing"]
+  },
+  {
+    id: "system-memory-leaks-prompt-chains",
+    slug: "system-memory-leaks-prompt-chains",
+    title: "ما هي أكثر سلاسل التوجيه (Prompt Chains) فاعلية في عزل تسريبات الذاكرة البرمجية؟",
+    titleEn: "What Prompt Engineering Chains Are Most Effective in Diagnosing Memory Leaks?",
+    field: "هندسة النظم والبرمجيات",
+    status: "محلول جزئياً",
+    description: "بناء وتوثيق منهجية معيارية لتغذية تفريغ الذاكرة (Heap Snapshots) لنماذج التفكير (DeepSeek-R1 / Claude 3.7) لاكتشاف المراجع المعلقة آلياً.",
+    researchCount: 14,
+    experimentsCount: 9,
+    replicationsCount: 6,
+    consensus: "تقسيم التحليل إلى 3 خطوات (تحديد العقد الأثقل ← فحص مسارات الإغلاق ← كتابة اختبار فحص الإجهاد) يخفض زمن حل المشكلة بنسبة 70%.",
+    tags: ["Debugging", "Memory Safety", "Node.js", "Prompt Chains"]
+  },
+  {
+    id: "microkernel-memory-safety-verification",
+    slug: "microkernel-memory-safety-verification",
+    title: "كيف نتحقق رياضياً من أمان الذاكرة في النوى المصغرة دون التضحية بالسرعة؟",
+    titleEn: "How Can Microkernels Formally Verify Memory Safety Without Performance Overhead?",
+    field: "أنظمة التشغيل والنوى",
+    status: "مفتوح للنقاش والبحث",
+    description: "دراسة مقارنة لأدوات الإثبات الشكلي في Rust (مثل Kani وCreusot) لضمان استحالة حدوث اختراق للذاكرة في بروتوكولات IPC السريعة.",
+    researchCount: 6,
+    experimentsCount: 3,
+    replicationsCount: 2,
+    consensus: "التحقق ممكن على مستوى المجدول وحلقات المعالجة، لكنه يفرض قيوداً على استخدام التراكيب الديناميكية.",
+    tags: ["Microkernel", "Formal Verification", "Rust", "Safety"]
+  }
+];
 
 export const TIMELINE_EVENTS: TimelineEvent[] = [
   {
@@ -509,7 +620,55 @@ export const RESEARCH_PAPERS: Paper[] = [
 }`,
       apa: "Al-Karkhi, O. (2026). Comparative Investigation of 6 LLMs in Arabic Classical Text Retrieval & Analysis. JEMO Open Discovery Logs, 1(4)."
     },
-    featured: true
+    featured: true,
+    researchType: "Experiment",
+    evidenceStatus: "Reproduced",
+    lineage: {
+      replicationsCount: 14,
+      challengesCount: 2,
+      extensionsCount: 3,
+      forkedFrom: "OPEN-Q-01"
+    },
+    question: "هل تستطيع النماذج اللغوية الحديثة استعادة كلمات مطموسة في نصوص عربية تعود للقرن الرابع الهجري دون اختلاق مصادر وهمية؟",
+    toolsUsed: ["Claude 3.5 Sonnet", "ChatGPT-4o", "DeepSeek-R1", "المكتبة الشاملة", "Google Books"],
+    promptWorkflow: "تغذية 20 فقرة بها طمس جزئي مع توجيه صارم: 'استنتج الكلمة المفقودة مع ذكر 3 احتمالات واستشهد بمصادر من نفس العصر'. ثم فحص استجابات كل نموذج وتتبع التكرار.",
+    methodology: "مقارنة مخرجات النماذج الستة عبر جدول مقارنة شمل: الدقة اللغوية، نسبة اختلاق أسماء الكتب، ودقة الوزن العروضي في الشواهد الشعرية.",
+    findings: "تفوق Claude 3.5 في السياق النحوي بنسبة 84%، بينما تميز DeepSeek-R1 في التعليل والاستدلال الداخلي. لكن جميع النماذج اختلقت مصادر وهمية بنسبة 28% عند محاصرتها بطلب شواهد إضافية.",
+    humanVerification: {
+      accuracyCheck: "تمت مراجعة الشواهد المكتشفة يدوياً بمطابقتها مع المخطوطات المحققة في دار الكتب والمكتبة الظاهرية.",
+      hallucinationCorrected: "صحح الباحث 6 إحالات لكتب غير موجودة نسبتها النماذج لأبي علي القالي وابن جني.",
+      confidence: "مرتفعة - تم التكرار بنجاح"
+    },
+    researchTrail: [
+      { step: "اليوم الأول", note: "اختيار 20 مقطعاً موثقاً وتفريغ الكلمات المطموسة عمداً لاختبار النماذج." },
+      { step: "اليوم الثاني", note: "تشغيل سلاسل التوجيه المقارنة على 6 نماذج وتدوين الإجابات الصافية." },
+      { step: "اليوم الثالث", note: "الفحص البشري في المراجع الأصلية وعزل الهلوسات وتوثيق النتائج في JEMO." }
+    ],
+    limitations: "العينة اقتصرت على نصوص أدبية ولغوية، ولا تشمل النصوص الطبية أو الفلكية التي قد تختلف دقة النماذج فيها.",
+    metrics: {
+      reproducedCount: 14,
+      evidenceBackedCount: 31,
+      disputedCount: 2,
+      insightfulCount: 48
+    },
+    responses: [
+      {
+        id: "rep-1",
+        type: "replication",
+        author: "د. خالد السامرائي",
+        date: "2026-08-18",
+        content: "أعدت التجربة على 10 مقاطع جديدة من كتاب الحيوان للجاحظ؛ تكررت نفس نسبة الهلوسة (حوالي 26%) في اختلاق المصادر الفرعية، مما يؤكد صحة استنتاج البحث.",
+        verified: true
+      },
+      {
+        id: "rep-2",
+        type: "challenge",
+        author: "م. أنس البغدادي",
+        date: "2026-08-20",
+        content: "عند تفعيل نمط التفكير العميق والبحث الحي في الويب، انخفضت نسبة الهلوسة إلى 8%؛ أرجو تحديث التجربة باختبار النمط الموصول بقواعد البيانات.",
+        verified: false
+      }
+    ]
   },
   {
     id: "ai-debug-memory-leak-investigation",
@@ -536,7 +695,37 @@ export const RESEARCH_PAPERS: Paper[] = [
 }`,
       apa: "Al-Tamimi, Z. (2026). Resolving High-Load Node.js Memory Leak Through Iterative AI Prompt Chains. JEMO Open Discovery Logs."
     },
-    featured: true
+    featured: true,
+    researchType: "Quick Investigation",
+    evidenceStatus: "Evidence-backed",
+    lineage: {
+      replicationsCount: 8,
+      challengesCount: 1,
+      extensionsCount: 2
+    },
+    question: "كيف يمكن لسلاسل التوجيه التكرارية عزل تسريب ذاكرة غير مرئي في مصفوفات الإغلاق داخل خدمات Node.js؟",
+    toolsUsed: ["DeepSeek-R1", "Claude 3.7 Sonnet", "Chrome DevTools", "Clinic.js"],
+    findings: "عزل العلة بعد 4 جولات من تفكيك الـ Heap Snapshot وتصحيح مرجع معلق في EventEmitter.",
+    humanVerification: {
+      accuracyCheck: "تم اختبار الحل تحت ضغط 50,000 req/sec وثبات استهلاك الذاكرة عند 140MB.",
+      confidence: "مرتفعة - تم التكرار بنجاح"
+    },
+    metrics: {
+      reproducedCount: 8,
+      evidenceBackedCount: 24,
+      disputedCount: 1,
+      insightfulCount: 39
+    },
+    responses: [
+      {
+        id: "rep-node-1",
+        type: "replication",
+        author: "م. عمار الحلبي",
+        date: "2026-08-01",
+        content: "طبقت نفس تسلسل استجواب الـ Heap Snapshot على خدمة NestJS وتم اكتشاف تسريب مماثل في معالج WebSockets.",
+        verified: true
+      }
+    ]
   },
   {
     id: "ziqa-kernel-paper",
@@ -566,7 +755,45 @@ export const RESEARCH_PAPERS: Paper[] = [
 }`,
       apa: "Al-Furati, A., & Jemo, A. (2026). Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures in Rust. JEMO LABS Open Reports."
     },
-    featured: true
+    featured: true,
+    researchType: "Full Research",
+    evidenceStatus: "Evidence-backed",
+    lineage: {
+      replicationsCount: 19,
+      challengesCount: 3,
+      extensionsCount: 7
+    },
+    question: "هل يمكن بناء نواة دقيقة بلغة Rust تحقق عزلاً تاماً لمساحات العناوين بزمن تبديل سياق أقل من 0.15 ميكروثانية؟",
+    toolsUsed: ["Rust Compiler (rustc)", "QEMU", "Claude 3.7", "GDB"],
+    findings: "تحقيق زمن تبديل سياق 0.12 ميكروثانية مع انعدام كامل لكتل Unsafe في طبقة إدارة الذاكرة.",
+    humanVerification: {
+      accuracyCheck: "اجتياز 140 اختباراً آلياً على عتاد x86_64 وARM64 حقيقي.",
+      confidence: "مرتفعة - تم التكرار بنجاح"
+    },
+    metrics: {
+      reproducedCount: 19,
+      evidenceBackedCount: 65,
+      disputedCount: 3,
+      insightfulCount: 112
+    },
+    responses: [
+      {
+        id: "rep-ziqa-1",
+        type: "replication",
+        author: "د. طارق السويدي",
+        date: "2026-06-02",
+        content: "تم تشغيل النواة على معالج RISC-V محاكى؛ اختبارات عزل مساحات العناوين أظهرت تطابقاً بنسبة 100% مع الورقة.",
+        verified: true
+      },
+      {
+        id: "rep-ziqa-2",
+        type: "challenge",
+        author: "م. يحيى البصري",
+        date: "2026-06-15",
+        content: "استهلاك الذاكرة في مرحلة الـ Boot يزيد بنسبة 4% عند تفعيل بروتوكول IPC المتزامن؛ مقترح تحسين تم إرفاقه.",
+        verified: true
+      }
+    ]
   },
   {
     id: "arabic-nlp-paper",

@@ -31,7 +31,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://jemo.co"),
   title: {
-    default: "JEMO — سجل أبحاث واكتشافات عصر الذكاء الاصطناعي",
+    default: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
     template: "%s | JEMO",
   },
   description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات التي يجريها الناس بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه معرفتك بعد انتهاء المحادثة.",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     apple: "/jemo-logo.svg",
   },
   openGraph: {
-    title: "JEMO — سجل أبحاث واكتشافات عصر الذكاء الاصطناعي",
+    title: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
     description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه المعرفة.",
     url: "https://jemo.co",
     siteName: "JEMO LABS",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "JEMO — سجل أبحاث واكتشافات عصر الذكاء الاصطناعي",
+    title: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
     description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه المعرفة.",
     images: ["/jemo-logo.svg"],
   },

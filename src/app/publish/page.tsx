@@ -28,11 +28,13 @@ export default function PublishResearchPage() {
   const [submitted, setSubmitted] = useState(false);
 
   // Form State
+  const [researchType, setResearchType] = useState<string>("Experiment");
   const [title, setTitle] = useState("استقصاء ومقارنة 6 نماذج في تصحيح نصوص عربية تراثية");
   const [authorName, setAuthorName] = useState("");
   const [authorHandle, setAuthorHandle] = useState("");
-  const [category, setCategory] = useState("AI Synthesis");
+  const [category, setCategory] = useState("Systems & Kernels");
   const [question, setQuestion] = useState("");
+  const [trail, setTrail] = useState("اليوم 1: تفريغ العينات ← اليوم 2: مقارنة النماذج ← اليوم 3: التحقق بالمصادر");
   const [tools, setTools] = useState("Claude 3.5 Sonnet, ChatGPT-4o, DeepSeek-R1, Google Books");
   const [methodology, setMethodology] = useState("");
   const [findings, setFindings] = useState("");
@@ -42,10 +44,13 @@ export default function PublishResearchPage() {
 
   const handleCopyJSON = () => {
     const payload = {
+      type: "Research Object",
+      researchType,
       title,
       author: { name: authorName || "باحث مجتمعي", handle: authorHandle },
       category,
       question,
+      trail,
       tools: tools.split(",").map(t => t.trim()),
       methodology,
       findings,
@@ -53,7 +58,6 @@ export default function PublishResearchPage() {
       confidence,
       sources: sources.split("\n").filter(Boolean),
       timestamp: new Date().toISOString(),
-      type: "Citizen AI Research Story"
     };
     navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
     setCopied(true);
@@ -176,10 +180,38 @@ export default function PublishResearchPage() {
                           <span className="w-6 h-6 rounded-full bg-[#cef79e] text-[#222f30] text-xs font-mono flex items-center justify-center font-bold">1</span>
                           العنوان وبيانات الباحث
                         </h2>
+                        <div>
+                          <label className="block text-xs font-bold text-[#222f30] mb-1.5">
+                            نوع كائن البحث (Research Object Type) *
+                          </label>
+                          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                            {[
+                              { id: "Experiment", label: "🧪 Experiment", desc: "تجربة عملية" },
+                              { id: "Quick Investigation", label: "⚡ Investigation", desc: "استقصاء سريع" },
+                              { id: "Full Research", label: "📚 Full Paper", desc: "بحث متكامل" },
+                              { id: "Discovery", label: "💡 Discovery", desc: "اكتشاف" },
+                              { id: "Replication", label: "🔬 Replication", desc: "إعادة تجربة" },
+                            ].map((t) => (
+                              <button
+                                key={t.id}
+                                type="button"
+                                onClick={() => setResearchType(t.id)}
+                                className={`p-2.5 rounded-xl border text-center font-mono transition-all ${
+                                  researchType === t.id
+                                    ? "bg-[#222f30] text-white border-[#222f30] shadow-xs"
+                                    : "bg-white border-[#e4e3e3] text-[#55696a] hover:border-[#222f30]"
+                                }`}
+                              >
+                                <div className="text-xs font-bold">{t.label}</div>
+                                <div className="text-[10px] opacity-75">{t.desc}</div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
                         <div>
                           <label className="block text-xs font-bold text-[#222f30] mb-1.5">
-                            عنوان الاكتشاف أو الرحلة البحثية *
+                            عنوان كائن البحث أو الرحلة الاستقصائية *
                           </label>
                           <input
                             type="text"

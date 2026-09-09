@@ -1,27 +1,55 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, Fragment } from "react";
-import { Paper } from "@/lib/data/research-data";
+import { Paper, OPEN_QUESTIONS, OpenQuestion } from "@/lib/data/research-data";
 import Link from "next/link";
-import { Filter, Calendar, Users, ArrowUpLeft, BookOpen, GitBranch, Database, FileText, X, ChevronDown, ArrowUpDown } from "lucide-react";
+import { 
+  Filter, 
+  Calendar, 
+  Users, 
+  ArrowUpLeft, 
+  BookOpen, 
+  GitBranch, 
+  Database, 
+  FileText, 
+  X, 
+  ChevronDown, 
+  ArrowUpDown,
+  Flame,
+  Sparkles,
+  ShieldCheck,
+  CheckCircle2,
+  HelpCircle,
+  Cpu,
+  GitFork,
+  MessageSquare,
+  Repeat,
+  AlertCircle,
+  Check
+} from "lucide-react";
 
 interface ResearchSearchFilterProps {
   papers: Paper[];
 }
 
-type SortKey = "newest" | "oldest" | "title" | "relevance";
+type SortKey = "newest" | "oldest" | "title" | "relevance" | "reproduced";
+type DiscoveryLens = "trending" | "latest" | "evidence" | "reproduced" | "open-problems";
 
-function readInitialParams(): { q: string; field: string; year: string; sort: SortKey } {
-  if (typeof window === "undefined") return { q: "", field: "all", year: "all", sort: "newest" };
+function readInitialParams(): { q: string; field: string; year: string; sort: SortKey; lens: DiscoveryLens } {
+  if (typeof window === "undefined") return { q: "", field: "all", year: "all", sort: "newest", lens: "trending" };
   const sp = new URLSearchParams(window.location.search);
   const rawSort = sp.get("sort");
   const sort: SortKey =
-    rawSort === "oldest" || rawSort === "title" || rawSort === "relevance" ? rawSort : "newest";
+    rawSort === "oldest" || rawSort === "title" || rawSort === "relevance" || rawSort === "reproduced" ? rawSort : "newest";
+  const rawLens = sp.get("lens");
+  const lens: DiscoveryLens =
+    rawLens === "latest" || rawLens === "evidence" || rawLens === "reproduced" || rawLens === "open-problems" ? rawLens : "trending";
   return {
     q: sp.get("q") ?? "",
     field: sp.get("field") ?? "all",
     year: sp.get("year") ?? "all",
     sort,
+    lens,
   };
 }
 
@@ -52,6 +80,9 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
   const [selectedField, setSelectedField] = useState<string>(initialParams.field);
   const [selectedYear, setSelectedYear] = useState<string>(initialParams.year);
   const [sort, setSort] = useState<SortKey>(initialParams.sort);
+  const [lens, setLens] = useState<DiscoveryLens>(initialParams.lens);
+  const [selectedType, setSelectedType] = useState<string>("all");
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
@@ -78,16 +109,17 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Sync filters to URL for deep-linking (q, field, year, sort)
+  // Sync filters to URL for deep-linking
   useEffect(() => {
     const sp = new URLSearchParams();
     if (query.trim()) sp.set("q", query.trim());
     if (selectedField !== "all") sp.set("field", selectedField);
     if (selectedYear !== "all") sp.set("year", selectedYear);
     if (sort !== "newest") sp.set("sort", sort);
+    if (lens !== "trending") sp.set("lens", lens);
     const url = sp.toString() ? `${window.location.pathname}?${sp}` : window.location.pathname;
     window.history.replaceState(null, "", url);
-  }, [query, selectedField, selectedYear, sort]);
+  }, [query, selectedField, selectedYear, sort, lens]);
 
   const fields = useMemo(() => {
     return Array.from(new Set(papers.map((p) => p.field))).sort((a, b) => a.localeCompare(b, "ar"));
@@ -101,15 +133,34 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
 
   const terms = useMemo(() => query.trim().split(/\s+/).filter(Boolean), [query]);
 
+  // Ranked & Filtered Papers as Research Objects
   const ranked = useMemo(() => {
     const result: { paper: Paper; score: number }[] = [];
     for (const paper of papers) {
+      // Type Filter
+      if (selectedType !== "all") {
+        if (paper.researchType !== selectedType) continue;
+      }
+      // Status Filter
+      if (selectedStatus !== "all") {
+        if (paper.evidenceStatus !== selectedStatus) continue;
+      }
+
+      // Lens Filters
+      if (lens === "evidence" && paper.evidenceStatus !== "Evidence-backed" && paper.evidenceStatus !== "Reproduced") {
+        continue;
+      }
+      if (lens === "reproduced" && (!paper.lineage || paper.lineage.replicationsCount === 0)) {
+        continue;
+      }
+
       const titleLower = paper.title.toLowerCase();
       const titleEnLower = paper.titleEn.toLowerCase();
       const abstractLower = paper.abstract.toLowerCase();
       const authorsLower = paper.authors.map((a) => a.name.toLowerCase()).join(" ");
       const keywordsLower = (paper.keywords ?? []).join(" ").toLowerCase();
       const fieldLower = paper.field.toLowerCase();
+      const questionLower = (paper.question ?? "").toLowerCase();
 
       let score = 0;
       let matchesAll = true;
@@ -117,6 +168,7 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
         const t = raw.toLowerCase();
         let termScore = 0;
         if (titleLower.includes(t)) termScore += 5;
+        if (questionLower.includes(t)) termScore += 5;
         if (titleEnLower.includes(t)) termScore += 4;
         if (authorsLower.includes(t)) termScore += 3;
         if (keywordsLower.includes(t)) termScore += 3;
@@ -133,7 +185,17 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
       if (selectedYear !== "all" && !paper.publishDate.startsWith(selectedYear)) continue;
       result.push({ paper, score });
     }
-    if (sort === "relevance" && terms.length > 0) {
+
+    // Lens-specific sorting
+    if (lens === "trending") {
+      result.sort((a, b) => {
+        const aScore = (a.paper.metrics?.reproducedCount || 0) * 3 + (a.paper.metrics?.evidenceBackedCount || 0) * 2;
+        const bScore = (b.paper.metrics?.reproducedCount || 0) * 3 + (b.paper.metrics?.evidenceBackedCount || 0) * 2;
+        return bScore - aScore || b.paper.publishDate.localeCompare(a.paper.publishDate);
+      });
+    } else if (lens === "reproduced" || sort === "reproduced") {
+      result.sort((a, b) => (b.paper.lineage?.replicationsCount || 0) - (a.paper.lineage?.replicationsCount || 0));
+    } else if (sort === "relevance" && terms.length > 0) {
       result.sort(
         (a, b) => b.score - a.score || b.paper.publishDate.localeCompare(a.paper.publishDate)
       );
@@ -145,18 +207,21 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
       result.sort((a, b) => b.paper.publishDate.localeCompare(a.paper.publishDate));
     }
     return result;
-  }, [papers, terms, selectedField, selectedYear, sort]);
+  }, [papers, terms, selectedField, selectedYear, sort, lens, selectedType, selectedStatus]);
 
   const filteredPapers = useMemo(() => ranked.map((r) => r.paper), [ranked]);
 
   const hasActiveFilters =
-    query.trim() !== "" || selectedField !== "all" || selectedYear !== "all" || sort !== "newest";
+    query.trim() !== "" || selectedField !== "all" || selectedYear !== "all" || selectedType !== "all" || selectedStatus !== "all";
 
   const clearAll = () => {
     setQuery("");
     setSelectedField("all");
     setSelectedYear("all");
+    setSelectedType("all");
+    setSelectedStatus("all");
     setSort("newest");
+    setLens("trending");
   };
 
   const handleSubscribe = () => {
@@ -169,7 +234,7 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 font-sans relative">
+    <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 font-sans relative" dir="rtl">
       {/* Mobile filter toggle */}
       <button
         onClick={() => setFiltersOpen((o) => !o)}
@@ -178,10 +243,10 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
       >
         <span className="flex items-center gap-2">
           <Filter className="w-4 h-4" />
-          {filtersOpen ? "HIDE_FILTERS" : "SHOW_FILTERS"}
+          {filtersOpen ? "إخفاء الفلاتر" : "عرض الفلاتر والتصنيف"}
           {hasActiveFilters && (
-            <span className="bg-[var(--brand)] text-white text-[10px] px-1.5 py-0.5">
-              {[query.trim(), selectedField !== "all" ? selectedField : "", selectedYear !== "all" ? selectedYear : ""].filter(Boolean).length}
+            <span className="bg-[var(--brand)] text-white text-[10px] px-1.5 py-0.5 rounded-full">
+              {[query.trim(), selectedField !== "all" ? selectedField : "", selectedType !== "all" ? selectedType : ""].filter(Boolean).length}
             </span>
           )}
         </span>
@@ -189,55 +254,119 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
       </button>
 
       {/* Sidebar (Search & Filters) */}
-      <aside className={`${filtersOpen ? "block" : "hidden"} lg:block lg:w-1/4 shrink-0 space-y-6 lg:space-y-10 lg:sticky lg:top-24 h-fit`}>
-        {/* Search */}
-        <div className="space-y-3 font-mono">
-          <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--ink-1)] border-b-2 border-[var(--ink)] pb-1">SEARCH_</h3>
-          <div role="search" className="relative group border-2 border-[var(--ink)] bg-white flex items-center">
-            <span aria-hidden="true" className="pl-3 font-bold text-[var(--brand)]">{">"}</span>
+      <aside className={`${filtersOpen ? "block" : "hidden"} lg:block lg:w-1/4 shrink-0 space-y-6 lg:space-y-8 lg:sticky lg:top-24 h-fit`}>
+        {/* Search Input */}
+        <div className="space-y-2 font-mono">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[#222f30] border-b border-[#e4e3e3] pb-1.5 flex items-center justify-between">
+            <span>البحث والاستكشاف</span>
+            <span className="text-[10px] text-[#738284]">/</span>
+          </h3>
+          <div role="search" className="relative group border border-[#e4e3e3] bg-white rounded-xl flex items-center px-3 py-1 shadow-xs focus-within:border-[#a7e26e]">
+            <span aria-hidden="true" className="font-bold text-[#a7e26e] ml-2">{">"}</span>
             <input
               ref={searchRef}
               type="search"
-              aria-label="ابحث في الأوراق البحثية"
-              placeholder="query... ( / )"
+              aria-label="ابحث في كائنات البحث"
+              placeholder="ابحث عن مسألة، أداة، أو كود..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full px-2 py-2 bg-transparent text-sm text-[var(--ink-1)] placeholder:text-[var(--ink-2)] focus:outline-none transition-colors"
+              className="w-full py-2 bg-transparent text-xs text-[#222f30] placeholder:text-[#848c8e] focus:outline-none"
             />
             {query && (
               <button
                 onClick={() => setQuery("")}
                 aria-label="مسح البحث"
-                className="pr-2 text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors"
+                className="text-[#738284] hover:text-[#222f30]"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
         </div>
 
-        {/* Fields / Categories */}
-        <div className="space-y-4 font-mono">
-          <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--ink-1)] flex items-center gap-2 border-b-2 border-[var(--ink)] pb-1">
-            <Filter className="w-3 h-3" />
-            <span>FIELDS_</span>
+        {/* Research Object Type Filter */}
+        <div className="space-y-2 font-mono">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[#222f30] border-b border-[#e4e3e3] pb-1.5 flex items-center gap-1.5">
+            <GitBranch className="w-3.5 h-3.5 text-[#a7e26e]" />
+            <span>نوع كائن البحث (Object Type)</span>
           </h3>
-          <ul className="space-y-1 text-xs font-bold uppercase">
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {[
+              { id: "all", label: "الكل" },
+              { id: "Experiment", label: "🧪 Experiment" },
+              { id: "Quick Investigation", label: "⚡ Investigation" },
+              { id: "Full Research", label: "📚 Full Paper" },
+              { id: "Discovery", label: "💡 Discovery" },
+              { id: "Replication", label: "🔬 Replication" }
+            ].map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setSelectedType(t.id)}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                  selectedType === t.id
+                    ? "bg-[#222f30] text-white shadow-xs"
+                    : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Evidence Status Filter */}
+        <div className="space-y-2 font-mono">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[#222f30] border-b border-[#e4e3e3] pb-1.5 flex items-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#a7e26e]" />
+            <span>حالة الإثبات (Evidence Status)</span>
+          </h3>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {[
+              { id: "all", label: "الكل" },
+              { id: "Evidence-backed", label: "🟢 مدعوم بالأدلة" },
+              { id: "Reproduced", label: "🟣 تمت إعادة التجربة" },
+              { id: "Under Review", label: "🟡 قيد المراجعة" },
+              { id: "Disputed", label: "🔴 محل خلاف" }
+            ].map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSelectedStatus(s.id)}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                  selectedStatus === s.id
+                    ? "bg-[#222f30] text-white shadow-xs"
+                    : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Fields / Categories */}
+        <div className="space-y-2 font-mono">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[#222f30] border-b border-[#e4e3e3] pb-1.5 flex items-center gap-1.5">
+            <Filter className="w-3.5 h-3.5 text-[#a7e26e]" />
+            <span>المجال العلمي</span>
+          </h3>
+          <ul className="space-y-1 text-xs">
             <li>
               <button 
                 onClick={() => setSelectedField("all")}
-                aria-pressed={selectedField === "all"}
-                className={`w-full text-right transition-colors hover:bg-[var(--ink-1)] hover:text-white px-2 py-1 ${selectedField === "all" ? "bg-[var(--brand)] text-white" : "text-[var(--ink-2)]"}`}
+                className={`w-full text-right transition-colors rounded-lg px-2.5 py-1.5 font-bold ${
+                  selectedField === "all" ? "bg-[#cef79e] text-[#222f30]" : "text-[#55696a] hover:bg-[#f0f2f0]"
+                }`}
               >
-                ALL FIELDS
+                جميع المجالات
               </button>
             </li>
             {fields.map((f) => (
               <li key={f}>
                 <button 
                   onClick={() => setSelectedField(f)}
-                  aria-pressed={selectedField === f}
-                  className={`w-full text-right transition-colors hover:bg-[var(--ink-1)] hover:text-white px-2 py-1 ${selectedField === f ? "bg-[var(--brand)] text-white" : "text-[var(--ink-2)]"}`}
+                  className={`w-full text-right transition-colors rounded-lg px-2.5 py-1.5 font-medium ${
+                    selectedField === f ? "bg-[#cef79e] text-[#222f30] font-bold" : "text-[#55696a] hover:bg-[#f0f2f0]"
+                  }`}
                 >
                   {f}
                 </button>
@@ -246,261 +375,374 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
           </ul>
         </div>
 
-        {/* Archive / Years */}
-        <div className="space-y-4 font-mono">
-          <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--ink-1)] flex items-center gap-2 border-b-2 border-[var(--ink)] pb-1">
-            <Calendar className="w-3 h-3" />
-            <span>ARCHIVE_</span>
-          </h3>
-          <ul className="space-y-1 text-xs font-bold">
-            <li>
-              <button 
-                onClick={() => setSelectedYear("all")}
-                aria-pressed={selectedYear === "all"}
-                className={`w-full text-right transition-colors hover:bg-[var(--ink-1)] hover:text-white px-2 py-1 ${selectedYear === "all" ? "bg-[var(--brand)] text-white" : "text-[var(--ink-2)]"}`}
-              >
-                ALL YEARS
-              </button>
-            </li>
-            {years.map((y) => (
-              <li key={y}>
-                <button 
-                  onClick={() => setSelectedYear(y)}
-                  aria-pressed={selectedYear === y}
-                  className={`w-full text-right transition-colors hover:bg-[var(--ink-1)] hover:text-white px-2 py-1 ${selectedYear === y ? "bg-[var(--brand)] text-white" : "text-[var(--ink-2)]"}`}
-                >
-                  {y}
-                </button>
-              </li>
-            ))}
-          </ul>
+        {/* Open Problems Teaser Card */}
+        <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] space-y-3 shadow-xs">
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-[#445e5f]">
+            <HelpCircle className="w-3.5 h-3.5 text-[#a7e26e]" />
+            <span>الأسئلة المفتوحة · Open Problems</span>
+          </div>
+          <h4 className="text-sm font-bold text-[#222f30] font-kufi">
+            معضلات علمية بلا إجابة حاسمة
+          </h4>
+          <p className="text-xs text-[#55696a] leading-relaxed font-normal">
+            استكشف المسائل المفتوحة التي يعمل عليها المجتمع وساهم ببحثك وتجربتك في فحصها.
+          </p>
+          <Link
+            href="/questions"
+            className="inline-flex items-center gap-1.5 text-xs font-bold font-mono text-[#222f30] hover:text-[#a7e26e] transition-colors"
+          >
+            <span>استعراض الأسئلة المفتوحة ←</span>
+          </Link>
         </div>
 
-        {/* Newsletter / RSS Subscribe */}
-        <div className="pt-8 mt-8 border-t-2 border-[var(--ink)] space-y-4 font-mono">
-          <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--ink-1)] border-b-2 border-[var(--ink)] pb-1">SUBSCRIBE_</h3>
-          {subscribed ? (
-            <p className="text-[11px] font-bold text-[var(--brand)] leading-relaxed">
-              ✓ SUBSCRIBED — WELCOME TO OPEN RESEARCH.
-            </p>
-          ) : (
-            <>
-              <p className="text-[10px] text-[var(--ink-2)] leading-relaxed">
-                RECEIVE LATEST OPEN RESEARCH & MODELS DIRECTLY.
-              </p>
-              <div className="relative border-2 border-[var(--ink)] flex bg-white">
-                <input 
-                  type="email" 
-                  aria-label="البريد الإلكتروني للاشتراك"
-                  placeholder="email@domain.com" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                  className="w-full px-2 py-2 bg-transparent text-xs text-[var(--ink-1)] focus:outline-none"
-                />
-                <button
-                  onClick={handleSubscribe}
-                  className="bg-[var(--ink-1)] text-white text-[10px] font-bold px-4 py-2 hover:bg-[var(--brand)] transition-colors uppercase border-l-2 border-[var(--ink)]"
-                >
-                  JOIN
-                </button>
-              </div>
-              {emailError && (
-                <p className="text-[10px] font-bold text-red-600">INVALID_EMAIL — TRY AGAIN.</p>
-              )}
-            </>
-          )}
+        {/* Quick CTA to Publish */}
+        <div className="p-4 rounded-2xl bg-[#222f30] text-white space-y-3 shadow-sm">
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-[#bef264]">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Research Object</span>
+          </div>
+          <h4 className="text-sm font-bold font-kufi">
+            أجريت بحثاً وتريد تحويله لأثر معرفي دائم؟
+          </h4>
+          <p className="text-xs text-white/80 leading-relaxed font-normal">
+            لا تنشر بوست عابر؛ وثّق السؤال، الأدوات، النتائج، والتحقق البشري ليكون مرجعاً تقنياً.
+          </p>
+          <Link
+            href="/publish"
+            className="block w-full py-2 text-center rounded-xl bg-[#bef264] text-[#222f30] text-xs font-bold hover:bg-[#a7e26e] transition-all shadow-xs"
+          >
+            وثّق كائن بحثك الآن ←
+          </Link>
         </div>
       </aside>
 
-      {/* Main Feed */}
+      {/* Main Feed Section */}
       <main className="lg:w-3/4 flex-1">
-        {/* Results toolbar: count + sort */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6 font-mono">
-          <p aria-live="polite" className="text-xs font-bold uppercase tracking-widest text-[var(--ink-1)] tabular-nums">
-            {filteredPapers.length} / {papers.length} PAPERS
-          </p>
-          <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--ink-2)]">
-            <ArrowUpDown className="w-3.5 h-3.5" />
-            <span>SORT_</span>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as SortKey)}
-              className="border-2 border-[var(--ink)] bg-white text-[var(--ink-1)] text-[11px] font-bold uppercase px-2 py-1.5 focus:outline-none cursor-pointer"
-            >
-              <option value="newest">NEWEST</option>
-              <option value="oldest">OLDEST</option>
-              <option value="title">TITLE A–Z</option>
-              <option value="relevance">RELEVANCE</option>
-            </select>
-          </label>
+        {/* Top Discovery Lenses Tabs (Reddit in Discovery) */}
+        <div className="flex flex-wrap items-center gap-2 mb-6 border-b border-[#e4e3e3] pb-3 font-mono">
+          <button
+            onClick={() => setLens("trending")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+              lens === "trending"
+                ? "bg-[#222f30] text-white shadow-xs"
+                : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+            }`}
+          >
+            <Flame className="w-3.5 h-3.5 text-amber-400" />
+            <span>الرائج معرفياً (Trending)</span>
+          </button>
+
+          <button
+            onClick={() => setLens("latest")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+              lens === "latest"
+                ? "bg-[#222f30] text-white shadow-xs"
+                : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#a7e26e]" />
+            <span>أحدث الاكتشافات (Latest)</span>
+          </button>
+
+          <button
+            onClick={() => setLens("evidence")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+              lens === "evidence"
+                ? "bg-[#222f30] text-white shadow-xs"
+                : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+            <span>الأكثر توثيقاً (Evidence-Backed)</span>
+          </button>
+
+          <button
+            onClick={() => setLens("reproduced")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+              lens === "reproduced"
+                ? "bg-[#222f30] text-white shadow-xs"
+                : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+            }`}
+          >
+            <Repeat className="w-3.5 h-3.5 text-purple-400" />
+            <span>المُعاد تجربته (Reproduced)</span>
+          </button>
+
+          <button
+            onClick={() => setLens("open-problems")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+              lens === "open-problems"
+                ? "bg-[#222f30] text-[#bef264] shadow-xs"
+                : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+            }`}
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-[#bef264]" />
+            <span>المسائل المفتوحة (Open Problems)</span>
+          </button>
         </div>
 
-        {/* Active filter chips */}
-        {hasActiveFilters && (
-          <div className="flex flex-wrap items-center gap-2 mb-6 font-mono">
-            {query.trim() && (
-              <button
-                onClick={() => setQuery("")}
-                className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase bg-[var(--ink-1)] text-white px-2 py-1 hover:bg-[var(--brand)] transition-colors"
-              >
-                “{query.trim().slice(0, 24)}” <X className="w-3 h-3" />
-              </button>
-            )}
-            {selectedField !== "all" && (
-              <button
-                onClick={() => setSelectedField("all")}
-                className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase bg-[var(--ink-1)] text-white px-2 py-1 hover:bg-[var(--brand)] transition-colors"
-              >
-                {selectedField} <X className="w-3 h-3" />
-              </button>
-            )}
-            {selectedYear !== "all" && (
-              <button
-                onClick={() => setSelectedYear("all")}
-                className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase bg-[var(--ink-1)] text-white px-2 py-1 hover:bg-[var(--brand)] transition-colors"
-              >
-                {selectedYear} <X className="w-3 h-3" />
-              </button>
-            )}
-            <button
-              onClick={clearAll}
-              className="text-[10px] font-bold uppercase underline underline-offset-2 text-[var(--ink-2)] hover:text-[var(--brand)] transition-colors px-1"
-            >
-              CLEAR_ALL
-            </button>
-          </div>
-        )}
+        {/* When Lens is OPEN PROBLEMS, render the Open Questions Collaborative Board */}
+        {lens === "open-problems" ? (
+          <div className="space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#bef264]/20 border border-[#bef264]/40 font-mono text-xs text-[#222f30] font-bold">
+                <HelpCircle className="w-3.5 h-3.5 text-[#222f30]" />
+                <span>OPEN PROBLEMS · أسئلة لم تُحسم بعد</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold font-kufi text-[#222f30]">
+                المسائل المفتوحة والأبحاث المشتركة
+              </h2>
+              <p className="text-sm sm:text-base text-[#55696a] leading-relaxed max-w-2xl font-normal">
+                في JEMO، لا ننشر الإجابات المحسومة فقط؛ بل نضع المسائل العالقة التي لم يصل فيها الذكاء الاصطناعي ولا الباحثون إلى كلمة نهائية، ليعمل المجتمع عليها تجريبياً.
+              </p>
+            </div>
 
-        {filteredPapers.length === 0 ? (
-          <div className="py-20 text-center space-y-4 border-2 border-[var(--ink)] bg-[var(--surface)] px-6">
-            <BookOpen className="w-12 h-12 text-[var(--ink-2)] mx-auto opacity-20" />
-            <h3 className="text-xl font-bold font-mono uppercase text-[var(--ink-1)]">NO_RESULTS_FOUND</h3>
-            <p className="text-sm font-mono text-[var(--ink-2)]">UPDATE QUERY OR CLEAR FILTERS.</p>
-            <button
-              onClick={clearAll}
-              className="inline-flex items-center gap-2 text-xs font-mono font-bold text-white bg-[var(--brand)] hover:bg-[var(--ink-1)] transition-colors px-5 py-2.5 uppercase border-2 border-[var(--ink)]"
-            >
-              <X className="w-4 h-4" /> CLEAR_ALL_FILTERS
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-6 lg:gap-12">
-            {filteredPapers.map((paper) => (
-              <article
-                key={paper.id}
-                className={`flex flex-col md:flex-row gap-6 md:gap-10 group p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] hover:shadow-xl transition-all duration-500 ${paper.featured ? 'border-2 border-[#a7e26e]/60 bg-gradient-to-br from-white to-[#f5f8f7]' : ''}`}
-              >
-                {/* Meta Sidebar */}
-                <aside className="md:w-36 shrink-0 flex flex-col gap-3 pt-1 font-mono">
-                  <div>
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-[#cef79e] text-[#222f30] mb-2">
-                      {paper.field}
+            <div className="space-y-4">
+              {OPEN_QUESTIONS.map((q) => (
+                <div
+                  key={q.id}
+                  className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] hover:shadow-md transition-all space-y-4"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 font-mono text-xs">
+                      <span className="px-2.5 py-1 rounded-full bg-[#f0f2f0] text-[#222f30] font-bold">
+                        {q.field}
+                      </span>
+                      <span className={`px-2.5 py-1 rounded-full font-bold ${
+                        q.status === "غير محسوم بعد" ? "bg-amber-100 text-amber-900" : "bg-blue-100 text-blue-900"
+                      }`}>
+                        {q.status}
+                      </span>
+                    </div>
+
+                    <span className="font-mono text-xs text-[#738284]">
+                      {q.researchCount} أبحاث · {q.experimentsCount} تجارب · {q.replicationsCount} إعادة
                     </span>
-                    <div className="text-xs font-bold text-[#445e5f] mt-1">
-                      {paper.publishDate}
-                    </div>
-                  </div>
-                  
-                  {paper.doi && (
-                    <div className="hidden md:block">
-                      <span className="block text-[10px] text-[var(--ink-2)] font-bold uppercase tracking-wider mb-0.5">DOI</span>
-                      <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer" className="text-[10px] font-mono text-[var(--ink-1)] hover:bg-[var(--ink-1)] hover:text-white transition-colors break-all leading-tight px-1 -mx-1">
-                        {paper.doi}
-                      </a>
-                    </div>
-                  )}
-                  
-                  <div className="hidden md:flex flex-col gap-1 pt-4 border-t-2 border-[var(--ink)] mt-2">
-                    <span className="text-[10px] text-[var(--ink-2)] uppercase tracking-wider font-bold">READ_TIME</span>
-                    <span className="text-xs font-bold font-mono text-[var(--ink-1)]">~{Math.max(5, Math.floor(paper.abstract.length / 50))} MIN</span>
-                  </div>
-                </aside>
-
-                {/* Content */}
-                <div className="flex-1">
-                  {/* Featured Graphic Cover */}
-                  {paper.featured && (
-                    <div className="relative mb-8 w-full h-32 border-2 border-[var(--ink)] bg-[var(--ink-1)] overflow-hidden flex items-center justify-center group-hover:bg-[var(--brand)] transition-colors duration-500">
-                      <div className="absolute inset-0 opacity-30" style={{ backgroundImage: 'linear-gradient(var(--bg) 2px, transparent 2px), linear-gradient(90deg, var(--bg) 2px, transparent 2px)', backgroundSize: '24px 24px' }}></div>
-                      <div className="relative z-10 border-2 border-white bg-black/50 px-4 py-2 font-mono text-xs font-bold text-white uppercase tracking-widest backdrop-blur-sm">
-                        {">"} FEATURED_RESEARCH
-                      </div>
-                    </div>
-                  )}
-                  
-                  <h2 className={`${paper.featured ? 'text-3xl md:text-5xl font-black' : 'text-2xl md:text-3xl font-extrabold'} text-[var(--ink-1)] leading-[1.1] mb-2 tracking-tight`}>
-                    <Link href={`/research/${paper.slug}`} className="hover:bg-[var(--ink-1)] hover:text-white transition-colors px-1 -mx-1">
-                      {highlightTerms(paper.title, terms)}
-                    </Link>
-                  </h2>
-                  
-                  {paper.titleEn && (
-                    <p className="text-sm font-mono text-[var(--ink-2)] dir-ltr text-right mb-6">
-                      {paper.titleEn}
-                    </p>
-                  )}
-
-                  <div className="flex items-center gap-2 text-sm text-[var(--ink-2)] font-mono font-bold uppercase mb-6">
-                    <Users className="w-4 h-4 opacity-50" />
-                    <span>{paper.authors.map((a) => a.name).join(" • ")}</span>
                   </div>
 
-                  <div className="pr-4 border-r-4 border-[var(--ink)] mb-8 rtl">
-                    <p className="text-[var(--ink-1)] leading-relaxed font-medium line-clamp-4">
-                      {highlightTerms(paper.abstract, terms)}
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-bold font-kufi text-[#222f30] leading-snug">
+                      {q.title}
+                    </h3>
+                    <p className="text-xs font-mono text-[#738284] mt-1 dir-ltr text-right">
+                      {q.titleEn}
                     </p>
                   </div>
 
-                  {/* Footer: Tags and Action Links */}
-                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+                  <p className="text-xs sm:text-sm text-[#55696a] leading-relaxed">
+                    {q.description}
+                  </p>
+
+                  {/* Consensus Box */}
+                  <div className="p-4 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3] space-y-1">
+                    <span className="text-[11px] font-mono font-bold text-[#222f30] block">
+                      الإجماع الحالي (Current Consensus):
+                    </span>
+                    <p className="text-xs text-[#55696a] leading-relaxed">
+                      {q.consensus}
+                    </p>
+                  </div>
+
+                  {/* Tags and CTA */}
+                  <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-[#e4e3e3]">
                     <div className="flex flex-wrap items-center gap-2">
-                      {paper.keywords && paper.keywords.slice(0, 3).map((keyword, i) => (
-                        <span key={i} className="text-[11px] font-mono rounded-full border border-[#e4e3e3] bg-[#f5f8f7] text-[#445e5f] px-3 py-1">
-                          {keyword}
+                      {q.tags.map((t, idx) => (
+                        <span key={idx} className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#f0f2f0] text-[#55696a]">
+                          #{t}
                         </span>
                       ))}
-                      {paper.keywords && paper.keywords.length > 3 && (
-                        <span className="text-[11px] font-mono rounded-full border border-[#e4e3e3] bg-white text-[#445e5f] px-2.5 py-1">
-                          +{paper.keywords.length - 3}
-                        </span>
-                      )}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-4">
-                      <Link 
-                        href={`/research/${paper.slug}`} 
-                        className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#222f30] border-b border-[#222f30] pb-1 hover:gap-3 transition-all"
-                      >
-                        <span>READ_PAPER</span>
-                        <ArrowUpLeft className="w-4 h-4" />
-                      </Link>
-                      
-                      <div className="flex gap-2 border-r border-[#e4e3e3] pr-3 mr-1">
-                        {paper.pdfUrl && (
-                          <a href={paper.pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#222f30] hover:bg-[#cef79e] transition-colors px-3 py-1.5 rounded-xl border border-[#e4e3e3] bg-[#f5f8f7]" title="تحميل PDF">
-                            <FileText className="w-3.5 h-3.5" />
-                            <span className="hidden sm:inline">PDF</span>
-                          </a>
-                        )}
-                        {paper.codeUrl && (
-                          <a href={paper.codeUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#222f30] hover:bg-[#cef79e] transition-colors px-3 py-1.5 rounded-xl border border-[#e4e3e3] bg-[#f5f8f7]" title="مستودع الشيفرة">
-                            <GitBranch className="w-3.5 h-3.5" />
-                            <span className="hidden sm:inline">CODE</span>
-                          </a>
-                        )}
-                        {paper.datasetUrl && (
-                          <a href={paper.datasetUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#222f30] hover:bg-[#cef79e] transition-colors px-3 py-1.5 rounded-xl border border-[#e4e3e3] bg-[#f5f8f7]" title="البيانات المفتوحة">
-                            <Database className="w-3.5 h-3.5" />
-                            <span className="hidden sm:inline">DATA</span>
-                          </a>
-                        )}
-                      </div>
-                    </div>
+                    <Link
+                      href={`/publish?question=${encodeURIComponent(q.title)}`}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all shadow-xs"
+                    >
+                      <span>سأحاول حل المسألة (Attempt Solution)</span>
+                      <ArrowUpLeft className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
                 </div>
-              </article>
-            ))}
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* Standard Research Objects Feed */
+          <div>
+            {/* Toolbar: count + sort */}
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-6 font-mono">
+              <p aria-live="polite" className="text-xs font-bold text-[#222f30]">
+                {filteredPapers.length} كائنات بحثية (Research Objects)
+              </p>
+              <label className="flex items-center gap-2 text-[11px] font-bold text-[#55696a]">
+                <ArrowUpDown className="w-3.5 h-3.5" />
+                <span>الترتيب:</span>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as SortKey)}
+                  className="border border-[#e4e3e3] rounded-lg bg-white text-[#222f30] text-xs font-bold px-2 py-1 focus:outline-none cursor-pointer"
+                >
+                  <option value="newest">الأحدث</option>
+                  <option value="reproduced">الأكثر إعادة للتجربة</option>
+                  <option value="relevance">الأعلى صلة</option>
+                  <option value="title">العنوان أ–ي</option>
+                </select>
+              </label>
+            </div>
+
+            {filteredPapers.length === 0 ? (
+              <div className="py-20 text-center space-y-4 border border-[#e4e3e3] rounded-3xl bg-white px-6">
+                <BookOpen className="w-12 h-12 text-[#738284] mx-auto opacity-30" />
+                <h3 className="text-lg font-bold font-kufi text-[#222f30]">لم نجد نتائج مطابقة</h3>
+                <p className="text-xs text-[#55696a]">جرب تغيير الكلمات المفتاحية أو إزالة الفلاتر المحددة.</p>
+                <button
+                  onClick={clearAll}
+                  className="inline-flex items-center gap-2 text-xs font-mono font-bold text-white bg-[#222f30] hover:bg-[#162224] transition-colors px-4 py-2 rounded-xl"
+                >
+                  <X className="w-3.5 h-3.5" /> إعادة ضبط الفلاتر
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-6">
+                {filteredPapers.map((paper) => {
+                  const rType = paper.researchType || "Full Research";
+                  const eStatus = paper.evidenceStatus || "Evidence-backed";
+                  const repCount = paper.lineage?.replicationsCount || paper.metrics?.reproducedCount || 0;
+
+                  return (
+                    <article
+                      key={paper.id}
+                      className="group p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] hover:shadow-xl transition-all duration-300 space-y-4"
+                    >
+                      {/* Top Bar: Object Type + Evidence Status Badges */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e4e3e3] pb-3">
+                        <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+                          {/* Type Pill */}
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f0f2f0] text-[#222f30] font-bold">
+                            <span>{rType === "Experiment" ? "🧪 Experiment" : rType === "Quick Investigation" ? "⚡ Investigation" : "📚 Research Object"}</span>
+                          </span>
+
+                          {/* Evidence Status */}
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold ${
+                            eStatus === "Reproduced"
+                              ? "bg-purple-100 text-purple-900 border border-purple-200"
+                              : eStatus === "Evidence-backed"
+                              ? "bg-emerald-100 text-emerald-900 border border-emerald-200"
+                              : "bg-amber-100 text-amber-900 border border-amber-200"
+                          }`}>
+                            <CheckCircle2 className="w-3 h-3" />
+                            <span>{eStatus === "Reproduced" ? `تمت إعادة التجربة (${repCount}×)` : eStatus === "Evidence-backed" ? "مدعوم بالأدلة" : "قيد المراجعة"}</span>
+                          </span>
+
+                          <span className="text-[11px] text-[#738284]">
+                            {paper.field}
+                          </span>
+                        </div>
+
+                        <div className="text-xs font-mono text-[#738284]">
+                          {paper.publishDate}
+                        </div>
+                      </div>
+
+                      {/* Title & Author */}
+                      <div>
+                        <h2 className="text-xl sm:text-2xl font-bold font-kufi text-[#222f30] leading-snug group-hover:text-[#222f30]">
+                          <Link href={`/research/${paper.slug}`} className="hover:underline">
+                            {highlightTerms(paper.title, terms)}
+                          </Link>
+                        </h2>
+                        {paper.titleEn && (
+                          <p className="text-xs font-mono text-[#738284] mt-1 dir-ltr text-right">
+                            {paper.titleEn}
+                          </p>
+                        )}
+                        <div className="flex items-center gap-2 text-xs text-[#55696a] font-mono mt-2">
+                          <Users className="w-3.5 h-3.5 opacity-60" />
+                          <span>{paper.authors.map((a) => a.name).join(" • ")}</span>
+                        </div>
+                      </div>
+
+                      {/* The Question Box (Atomic to Research Object) */}
+                      {paper.question && (
+                        <div className="p-3.5 rounded-2xl bg-[#f9faf9] border border-[#e4e3e3] text-xs leading-relaxed space-y-1">
+                          <span className="font-mono font-bold text-[#222f30] flex items-center gap-1.5">
+                            <HelpCircle className="w-3.5 h-3.5 text-[#a7e26e]" />
+                            <span>المسألة المراد حلها (The Question):</span>
+                          </span>
+                          <p className="text-[#55696a]">
+                            {paper.question}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Abstract / Findings */}
+                      <p className="text-xs sm:text-sm text-[#445e5f] leading-relaxed line-clamp-3">
+                        {highlightTerms(paper.findings || paper.abstract, terms)}
+                      </p>
+
+                      {/* AI Tools Badges */}
+                      {paper.toolsUsed && paper.toolsUsed.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5 font-mono text-[11px]">
+                          <span className="text-[#738284] ml-1">الأدوات:</span>
+                          {paper.toolsUsed.map((tool, idx) => (
+                            <span key={idx} className="px-2.5 py-0.5 rounded-full bg-[#f0f2f0] border border-[#e4e3e3] text-[#222f30] font-semibold">
+                              {tool}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Lineage Indicator & Forks */}
+                      {paper.lineage && (
+                        <div className="flex items-center gap-2 font-mono text-[11px] text-[#55696a] pt-1">
+                          <GitFork className="w-3.5 h-3.5 text-[#a7e26e]" />
+                          <span>شجرة التراكم (Lineage):</span>
+                          <span className="font-bold text-[#222f30]">
+                            {paper.lineage.replicationsCount} إعادة تجربة · {paper.lineage.challengesCount} تحديات · {paper.lineage.extensionsCount} امتداد
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Footer Actions */}
+                      <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-[#e4e3e3]">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Link
+                            href={`/research/${paper.slug}`}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all shadow-xs"
+                          >
+                            <span>قراءة كائن البحث (Read Object)</span>
+                            <ArrowUpLeft className="w-3.5 h-3.5" />
+                          </Link>
+
+                          <Link
+                            href={`/publish?replicate=${paper.slug}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#e4e3e3] bg-[#f5f8f7] text-[#222f30] text-xs font-bold hover:border-[#a7e26e] transition-all"
+                            title="إعادة التجربة بنفسك وتوثيق نتيجتك"
+                          >
+                            <Repeat className="w-3.5 h-3.5 text-purple-600" />
+                            <span>Replicate (أعد التجربة)</span>
+                          </Link>
+
+                          <Link
+                            href={`/publish?challenge=${paper.slug}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#e4e3e3] bg-white text-[#55696a] text-xs font-bold hover:text-red-700 hover:border-red-200 transition-all"
+                            title="تحدي النتيجة وتقديم أدلة مضادة"
+                          >
+                            <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
+                            <span>Challenge (تحدي)</span>
+                          </Link>
+                        </div>
+
+                        {paper.doi && (
+                          <span className="text-[10px] font-mono text-[#738284]">
+                            DOI: {paper.doi}
+                          </span>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </main>

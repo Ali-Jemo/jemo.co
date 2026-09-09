@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/", label: "الرئيسية" },
   { href: "/publish", label: "انشر بحثك" },
   { href: "/research", label: "سجلات الاكتشاف" },
+  { href: "/questions", label: "الأسئلة المفتوحة" },
   { href: "/projects", label: "المشاريع" },
   { href: "/labs", label: "المختبرات" },
   { href: "/researchers", label: "الباحثون" },
