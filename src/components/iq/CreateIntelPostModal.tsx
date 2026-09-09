@@ -15,7 +15,7 @@ import {
   UserCheck,
   Check,
 } from "lucide-react";
-import type { IntelPostCategory, IntelSocialPost } from "@/lib/data/iq-social-data";
+import { type IntelPostCategory, type IntelSocialPost, isIraqiEmail } from "@/lib/data/iq-social-data";
 
 interface CreateIntelPostModalProps {
   isOpen: boolean;
@@ -92,7 +92,7 @@ export default function CreateIntelPostModal({
       .map((t) => t.trim().replace(/^#/, ""))
       .filter(Boolean);
 
-    const isEmailVerified = iraqiEmail.endsWith("@jemo.co") || iraqiEmail.endsWith("@iraq.iq") || iraqiEmail.includes("@");
+    const isEmailVerified = isIraqiEmail(iraqiEmail);
 
     const newPost: IntelSocialPost = {
       id: `post-${Date.now()}`,
@@ -121,11 +121,14 @@ export default function CreateIntelPostModal({
       authorName: isAnonymous
         ? `عراقي مجهول #${Math.floor(Math.random() * 900 + 100)}`
         : authorName.trim() || "مشارك عراقي",
-      authorBadge: isEmailVerified && !isAnonymous ? "بريد عراقي موثق 🇮🇶" : undefined,
+      authorBadge: isEmailVerified && !isAnonymous ? "موثق بالبريد العراقي 🇮🇶" : undefined,
       isAnonymous,
       isIraqiEmailVerified: isEmailVerified && !isAnonymous,
       date: "الآن",
       upvotesCount: 1,
+      repostsCount: 0,
+      viewsCount: "1",
+      authorHandle: isAnonymous ? "anon" : "@" + (authorName.trim().replace(/\s+/g, "_") || "user"),
       commentsCount: 0,
       comments: [],
       rating: category === "place_review" ? rating : undefined,

@@ -27,18 +27,80 @@ export interface IntelSocialPost {
   governorate: string;
   district?: string;
   authorName: string;
+  authorHandle?: string;
+  authorAvatar?: string;
   authorBadge?: string;
   isAnonymous: boolean;
   isIraqiEmailVerified?: boolean;
   date: string;
   upvotesCount: number;
+  repostsCount: number;
   commentsCount: number;
+  viewsCount: string;
   comments: IntelComment[];
   rating?: number; // For restaurant / place reviews
   placeName?: string;
   aiToolsUsed?: string[]; // For AI mini-research
   methodology?: string;
   tags: string[];
+}
+
+export interface IraqiTrendingTopic {
+  id: string;
+  category: string;
+  tag: string;
+  postsCount: string;
+}
+
+export const IRAQI_TRENDING: IraqiTrendingTopic[] = [
+  { id: "t1", category: "سوق وعملة · متداول", tag: "الدولار_اليوم", postsCount: "٢.٤ ألف" },
+  { id: "t2", category: "طاقة وكهرباء · بغداد", tag: "سبالت_الإنفرتر", postsCount: "١.١ ألف" },
+  { id: "t3", category: "معاملات حكومية · شائع", tag: "الجواز_الإلكتروني", postsCount: "٣.٢ ألف" },
+  { id: "t4", category: "مطاعم وتجارب · الكرادة", tag: "كباب_أبو_حيدر", postsCount: "٨٤٠" },
+  { id: "t5", category: "تقنية واتصالات · البصرة", tag: "إنترنت_الألياف", postsCount: "٦٥٠" },
+];
+
+export interface SuggestedIraqiUser {
+  id: string;
+  name: string;
+  handle: string;
+  badge: string;
+  bio: string;
+  isVerified: boolean;
+}
+
+export const SUGGESTED_USERS: SuggestedIraqiUser[] = [
+  {
+    id: "u1",
+    name: "م. سنان العبيدي",
+    handle: "sinan_tech",
+    badge: "موثق ببريد وطني 🇮🇶",
+    bio: "أبحاث الطاقة والذكاء الاصطناعي في بغداد",
+    isVerified: true,
+  },
+  {
+    id: "u2",
+    name: "ذواق بغدادي",
+    handle: "baghdad_food",
+    badge: "ناقد مطاعم مستقل",
+    bio: "تقييمات حقيقية للأكل الشعبي بدون إعلانات",
+    isVerified: true,
+  },
+  {
+    id: "u3",
+    name: "دليل المعاملات الحي",
+    handle: "iq_procedures",
+    badge: "مواطن رقمي",
+    bio: "خطوات المعاملات الرسمية بدون معقبين",
+    isVerified: true,
+  },
+];
+// ponytail: only sovereign Iraqi domains earn the verified 🇮🇶 badge; Gmail/etc must NOT.
+const IRAQI_EMAIL_DOMAINS = ["@jemo.co", "@iraq.iq"];
+export function isIraqiEmail(email: string): boolean {
+  const e = email.trim().toLowerCase();
+  if (!e.includes("@") || e.startsWith("@") || e.endsWith("@")) return false;
+  return IRAQI_EMAIL_DOMAINS.some((d) => e.endsWith(d));
 }
 
 export const SEEDED_INTEL_POSTS: IntelSocialPost[] = [
@@ -54,7 +116,10 @@ export const SEEDED_INTEL_POSTS: IntelSocialPost[] = [
     governorate: "بغداد",
     district: "اليرموك",
     authorName: "م. سنان العبيدي",
-    authorBadge: "مهندس نظم وطاقة",
+    authorHandle: "sinan_tech",
+    authorAvatar: "س",
+    repostsCount: 38,
+    viewsCount: "١٢.٤ ألف",
     isAnonymous: false,
     isIraqiEmailVerified: true,
     date: "قبل ساعتين",
@@ -94,11 +159,15 @@ export const SEEDED_INTEL_POSTS: IntelSocialPost[] = [
       "بعيداً عن إعلانات المؤثرين المدفوعة بالإنستغرام: الكباب عراقي بلدي 100% بدون دهن مستورد ولا خلط فول صويا. السعر 14 ألف للنفر مع المقبلات والخبز الحار من الفرن. الخدمة سريعة جداً وماكو تأخير حتى بوقت ذروة الغداء.",
     governorate: "بغداد",
     district: "الكرادة داخل",
-    authorName: "ذواق_بغدادي",
+    authorName: "ذواق بغدادي",
+    authorHandle: "baghdad_food",
+    authorAvatar: "ذ",
     isAnonymous: false,
     isIraqiEmailVerified: true,
     date: "اليوم 01:30 م",
     upvotesCount: 142,
+    repostsCount: 29,
+    viewsCount: "٨.٦ ألف",
     commentsCount: 18,
     rating: 4.9,
     placeName: "كباب أبو حيدر — الكرادة",
@@ -125,10 +194,15 @@ export const SEEDED_INTEL_POSTS: IntelSocialPost[] = [
     content:
       "أريد أسافر قريباً وأحتاج بطاقة ماستر أو فيزا أودع بيها بالدينار العراقي وتسحب دولار برة بدون فرق تصريف جائر أو عمولة استقطاع مبالغ بيها. جربت بطاقة مصرف معين وقطعوا 6% فرق صرف!",
     governorate: "كل العراق",
-    authorName: "عراقي مجهول (أظهر عقلي لا وجهي)",
+    authorName: "عراقي مجهول",
+    authorHandle: "anon_iq_492",
+    authorAvatar: "🎭",
+    authorBadge: "أظهر عقلي لا وجهي 🎭",
     isAnonymous: true,
     date: "قبل 4 ساعات",
     upvotesCount: 96,
+    repostsCount: 14,
+    viewsCount: "٥.١ ألف",
     commentsCount: 31,
     tags: ["اسأل_العراقيين", "بنوك", "ماستر_كارد", "سفر"],
     comments: [
@@ -156,10 +230,14 @@ export const SEEDED_INTEL_POSTS: IntelSocialPost[] = [
     governorate: "بغداد",
     district: "موقع الكندي المروري",
     authorName: "عمر العاني",
+    authorHandle: "omar_alani",
+    authorAvatar: "ع",
     isAnonymous: false,
     isIraqiEmailVerified: true,
     date: "أمس",
     upvotesCount: 167,
+    repostsCount: 45,
+    viewsCount: "١٤.٢ ألف",
     commentsCount: 12,
     tags: ["إجازة_سوق", "المرور", "معاملات_حكومية", "بدون_معقب"],
     comments: [],
@@ -176,10 +254,14 @@ export const SEEDED_INTEL_POSTS: IntelSocialPost[] = [
     governorate: "البصرة",
     district: "البراضعية / الجبيلة",
     authorName: "مهندس_شبكات_جنوبي",
+    authorHandle: "basra_net",
+    authorAvatar: "ب",
     isAnonymous: false,
     isIraqiEmailVerified: true,
     date: "قبل يومين",
     upvotesCount: 124,
+    repostsCount: 19,
+    viewsCount: "٦.٨ ألف",
     commentsCount: 15,
     tags: ["البصرة", "إنترنت", "ألياف_ضوئية", "نصيحة"],
     comments: [],

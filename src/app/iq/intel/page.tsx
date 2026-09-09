@@ -1,26 +1,27 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import ProcedureChecklist from "@/components/iq/ProcedureChecklist";
-import CreateIntelPostModal from "@/components/iq/CreateIntelPostModal";
-import IntelSocialCard from "@/components/iq/IntelSocialCard";
+import TwitterComposer from "@/components/iq/TwitterComposer";
+import TwitterPostItem from "@/components/iq/TwitterPostItem";
+import TwitterSidebar from "@/components/iq/TwitterSidebar";
 import TellonymBox from "@/components/iq/TellonymBox";
 import {
   SEEDED_INTEL_POSTS,
   type IntelSocialPost,
   type IntelComment,
 } from "@/lib/data/iq-social-data";
-import { BookOpen, Plus, Search } from "lucide-react";
+import { Sparkles, MessageCircleQuestion, X } from "lucide-react";
+
 export default function IqIntelPage() {
   const [posts, setPosts] = useState<IntelSocialPost[]>(SEEDED_INTEL_POSTS);
-  const [selectedFilter, setSelectedFilter] = useState<string>("الكل");
+  const [activeTab, setActiveTab] = useState<string>("forYou");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showTellonymBox, setShowTellonymBox] = useState(false);
 
   // Load posts from localStorage on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("hassa-intel-posts");
+      const saved = localStorage.getItem("hassa-twitter-posts");
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -34,7 +35,7 @@ export default function IqIntelPage() {
   const savePosts = (updated: IntelSocialPost[]) => {
     setPosts(updated);
     try {
-      localStorage.setItem("hassa-intel-posts", JSON.stringify(updated));
+      localStorage.setItem("hassa-twitter-posts", JSON.stringify(updated));
     } catch {}
   };
 
@@ -67,170 +68,175 @@ export default function IqIntelPage() {
     savePosts(updated);
   };
 
-  // Filter and search logic
+  const handleTagClick = (tag: string) => {
+    setSearchQuery(tag);
+  };
+
+  // Filter logic based on active Twitter tab and search query
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
-      const matchCategory =
-        selectedFilter === "الكل" ||
-        (selectedFilter === "تقييمات" && post.category === "place_review") ||
-        (selectedFilter === "ذكاء_اصطناعي" && post.category === "ai_research") ||
-        (selectedFilter === "مجهول" && post.category === "anonymous_ask") ||
-        (selectedFilter === "معاملات" && (post.category === "procedure" || post.category === "local_intel"));
+      // Tab filter
+      let matchTab = true;
+      if (activeTab === "latest") {
+        matchTab = true; // sorted by latest below
+      } else if (activeTab === "reviews") {
+        matchTab = post.category === "place_review";
+      } else if (activeTab === "ai") {
+        matchTab = post.category === "ai_research";
+      } else if (activeTab === "anonymous") {
+        matchTab = post.category === "anonymous_ask" || post.isAnonymous;
+      }
 
-      const q = searchQuery.trim().toLowerCase();
+      // Search query filter
+      const q = searchQuery.trim().toLowerCase().replace(/^#/, "");
       const matchSearch =
         !q ||
         post.title.toLowerCase().includes(q) ||
         post.content.toLowerCase().includes(q) ||
         post.authorName.toLowerCase().includes(q) ||
+        (post.authorHandle && post.authorHandle.toLowerCase().includes(q)) ||
         (post.placeName && post.placeName.toLowerCase().includes(q)) ||
         (post.district && post.district.toLowerCase().includes(q)) ||
         post.tags.some((t) => t.toLowerCase().includes(q));
 
-      return matchCategory && matchSearch;
+      return matchTab && matchSearch;
     });
-  }, [posts, selectedFilter, searchQuery]);
+  }, [posts, activeTab, searchQuery]);
 
   return (
-    <div className="space-y-6 sm:space-y-8 text-[#222f30] font-sans" dir="rtl">
-      {/* 1. Master Header Banner */}
-      <section className="p-5 sm:p-6 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1 max-w-3xl">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#55696a]">
-            <BookOpen className="w-4 h-4 text-[#728825]" />
-            <span className="font-bold text-[#222f30]">ميدان هسه · شبكة المعرفة والتجارب العراقية</span>
-            <span>·</span>
-            <span className="text-[#728825] font-bold">أظهر عقلك لا وجهك 🎭</span>
+    <div className="text-[#222f30] font-sans pb-16" dir="rtl">
+      {/* Twitter 2-Column Responsive Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        
+        {/* =========================================================================
+            CENTER TIMELINE COLUMN (Twitter Stream) — 8 cols on desktop
+           ========================================================================= */}
+        <div className="lg:col-span-8 bg-white border border-[#e4e3e3] rounded-3xl shadow-xs overflow-hidden">
+          
+          {/* 1. Sticky Timeline Header */}
+          <div className="sticky top-14 z-30 bg-white/95 backdrop-blur-md border-b border-[#e4e3e3]">
+            {/* Top row */}
+            <div className="px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h1 className="font-kufi font-black text-base sm:text-lg text-[#222f30]">
+                  ميدان هسه
+                </h1>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e] animate-pulse" />
+                <span className="text-[11px] font-mono text-[#55696a]">
+                  شبكة المعرفة العراقية
+                </span>
+              </div>
+
+              {/* Tellonym Quick Trigger */}
+              <button
+                onClick={() => setShowTellonymBox(!showTellonymBox)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold transition-all cursor-pointer ${
+                  showTellonymBox
+                    ? "bg-[#222f30] text-[#cef79e]"
+                    : "bg-[#f7f7f5] hover:bg-[#e4e3e3] text-[#222f30] border border-[#e4e3e3]"
+                }`}
+                title="طرح سؤال مجهول (أظهر عقلي لا وجهي)"
+              >
+                <MessageCircleQuestion className="w-3.5 h-3.5 text-sky-700" />
+                <span>سؤال مجهول 🎭</span>
+              </button>
+            </div>
+
+            {/* Twitter-style Tab Navigation Bar */}
+            <div className="flex items-center overflow-x-auto no-scrollbar text-xs font-kufi font-bold border-t border-[#e4e3e3]/60">
+              {[
+                { id: "forYou", label: "لك (الرئيسية)" },
+                { id: "latest", label: "الأحدث" },
+                { id: "reviews", label: "تقييمات المطاعم" },
+                { id: "ai", label: "أبحاث AI" },
+                { id: "anonymous", label: "أسئلة مجهولة" },
+              ].map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 min-w-[90px] py-3 text-center transition-colors cursor-pointer relative ${
+                      isActive ? "text-[#222f30]" : "text-[#55696a] hover:text-[#222f30] hover:bg-[#f7f7f5]/60"
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                    {isActive && (
+                      <span className="absolute bottom-0 inset-x-4 h-[3px] bg-[#222f30] rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-kufi font-black text-[#222f30] tracking-tight">
-            مساحة للعراقيين لتبادل المعرفة الحقيقية، تقييمات الأماكن، وأبحاث الـ AI.
-          </h1>
+          {/* 2. Optional Tellonym Box Accordion */}
+          {showTellonymBox && (
+            <div className="p-3 border-b border-[#e4e3e3] bg-[#f7f7f5]">
+              <TellonymBox
+                onQuestionAsked={(post) => {
+                  handlePostCreated(post);
+                  setShowTellonymBox(false);
+                }}
+              />
+            </div>
+          )}
 
-          <p className="text-xs sm:text-sm text-[#55696a] leading-relaxed font-sans">
-            لا صور شخصية ولا منشورات يومية فارغة. هنا تجارب مطاعم حقيقية بلا إعلانات، حلول ذكاء اصطناعي لمشاكلنا، وأسئلة مجهولة تجيب عنها الخبرة الحقيقية.
-          </p>
-        </div>
+          {/* 3. Inline Twitter Composer (Always open at the top) */}
+          <TwitterComposer onPostCreated={handlePostCreated} />
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#222f30] hover:bg-[#162021] text-[#cef79e] font-kufi font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-95 cursor-pointer shrink-0 self-start md:self-auto"
-        >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
-          <span>انشر معرفة أو تقييم</span>
-        </button>
-      </section>
-
-      {/* 2. Dedicated Tellonym-Style Anonymous Box ("أظهر عقلي لا وجهي") */}
-      <TellonymBox onQuestionAsked={handlePostCreated} />
-
-      {/* 3. Search Bar & Category Navigation */}
-      <div className="space-y-3">
-        {/* Search */}
-        <div className="relative">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="ابحث في الميدان (مطاعم، سبالت، ذكاء اصطناعي، الكرادة، بنوك، معاملات)..."
-            className="w-full h-11 pr-10 pl-4 bg-white border border-[#e4e3e3] focus:border-[#a7e26e] rounded-xl text-[#222f30] font-sans text-xs sm:text-sm outline-none shadow-xs transition-colors placeholder-[#55696a]/50"
-          />
-          <Search className="w-4 h-4 text-[#55696a] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-        </div>
-
-        {/* Category Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 text-xs font-mono">
-          {[
-            { id: "الكل", label: "كل الميدان", count: posts.length },
-            {
-              id: "تقييمات",
-              label: "تقييمات الأماكن والمطاعم",
-              count: posts.filter((p) => p.category === "place_review").length,
-            },
-            {
-              id: "ذكاء_اصطناعي",
-              label: "أبحاث الذكاء الاصطناعي",
-              count: posts.filter((p) => p.category === "ai_research").length,
-            },
-            {
-              id: "مجهول",
-              label: "أسئلة مجهولة (Tellonym)",
-              count: posts.filter((p) => p.category === "anonymous_ask").length,
-            },
-            {
-              id: "معاملات",
-              label: "أدلة ومعاملات",
-              count: posts.filter((p) => p.category === "procedure" || p.category === "local_intel").length,
-            },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setSelectedFilter(tab.id)}
-              className={`px-3 py-1.5 rounded-full transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
-                selectedFilter === tab.id
-                  ? "bg-[#222f30] text-white font-bold shadow-xs"
-                  : "bg-white text-[#55696a] hover:bg-[#f0f2f0] hover:text-[#222f30] border border-[#e4e3e3]"
-              }`}
-            >
-              <span>{tab.label}</span>
-              <span className={`text-[10px] opacity-70 ${selectedFilter === tab.id ? "text-[#cef79e]" : ""}`}>
-                ({tab.count})
+          {/* 4. Filter notice / Search reset if query active */}
+          {searchQuery && (
+            <div className="px-4 py-2 bg-emerald-50/60 border-b border-emerald-200/60 text-xs font-mono text-emerald-800 flex items-center justify-between">
+              <span>
+                عرض نتائج البحث عن: <strong>&ldquo;{searchQuery}&rdquo;</strong>
               </span>
-            </button>
-          ))}
+              <button
+                onClick={() => setSearchQuery("")}
+                className="hover:underline font-bold flex items-center gap-1 cursor-pointer"
+              >
+                <span>إلغاء التصفية</span>
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          {/* 5. Timeline Stream of Posts */}
+          <div className="divide-y divide-[#e4e3e3]">
+            {filteredPosts.length === 0 ? (
+              <div className="p-12 text-center space-y-3 font-sans">
+                <Sparkles className="w-10 h-10 text-[#55696a]/40 mx-auto" />
+                <h3 className="font-kufi font-bold text-base text-[#222f30]">
+                  لا توجد مشاركات مطابقة هنا حالياً
+                </h3>
+                <p className="text-xs text-[#55696a] max-w-sm mx-auto">
+                  كن أول من ينشر معلومة، تجربة مطعم، أو يطرح سؤالاً في هذا القسم!
+                </p>
+              </div>
+            ) : (
+              filteredPosts.map((post) => (
+                <TwitterPostItem
+                  key={post.id}
+                  post={post}
+                  onUpvote={handleUpvote}
+                  onAddComment={handleAddComment}
+                />
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* =========================================================================
+            RIGHT SIDEBAR COLUMN (What's happening in Iraq / Who to follow) — 4 cols
+           ========================================================================= */}
+        <div className="hidden lg:block lg:col-span-4 sticky top-20">
+          <TwitterSidebar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onTagClick={handleTagClick}
+          />
         </div>
       </div>
-
-      {/* 4. Interactive Bureaucracy Checklist Builder (Available when filtering or default) */}
-      {(selectedFilter === "الكل" || selectedFilter === "معاملات") && (
-        <section className="space-y-3">
-          <ProcedureChecklist />
-        </section>
-      )}
-
-      {/* 5. The Social Intel Stream */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between pb-1 border-b border-[#e4e3e3] text-xs font-mono text-[#55696a]">
-          <span>
-            المشاركات المطابقة: <strong className="text-[#222f30]">{filteredPosts.length}</strong> مشاركة
-          </span>
-          <span className="text-[11px]">مرتبة حسب الأحدث وتفاعل المجتمع</span>
-        </div>
-
-        {filteredPosts.length === 0 ? (
-          <div className="p-12 text-center rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
-            <BookOpen className="w-12 h-12 text-[#55696a]/30 mx-auto" />
-            <h3 className="text-base font-kufi font-bold text-[#222f30]">لا توجد مشاركات مطابقة لهذا البحث</h3>
-            <p className="text-xs text-[#55696a] max-w-md mx-auto">
-              كن أول من يشارك تجربة أو معلومة أو يطرح سؤالاً مجهولاً في هذا القسم!
-            </p>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2 rounded-xl bg-[#222f30] text-[#cef79e] text-xs font-kufi font-bold cursor-pointer"
-            >
-              + إضافة مشاركة الآن
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-3.5">
-            {filteredPosts.map((post) => (
-              <IntelSocialCard
-                key={post.id}
-                post={post}
-                onUpvote={handleUpvote}
-                onAddComment={handleAddComment}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* 6. Create Post Modal */}
-      <CreateIntelPostModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onPostCreated={handlePostCreated}
-      />
     </div>
   );
 }

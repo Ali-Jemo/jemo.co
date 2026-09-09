@@ -16,7 +16,7 @@ import {
   ChevronDown,
   Check,
 } from "lucide-react";
-import type { IntelSocialPost, IntelComment } from "@/lib/data/iq-social-data";
+import { type IntelSocialPost, type IntelComment, isIraqiEmail } from "@/lib/data/iq-social-data";
 
 interface IntelSocialCardProps {
   post: IntelSocialPost;
@@ -45,7 +45,7 @@ export default function IntelSocialCard({
         ? `مجهول #${Math.floor(Math.random() * 900 + 100)}`
         : commentAuthor.trim() || "مشارك عراقي",
       isAnonymous: isCommentAnon,
-      isIraqiEmailVerified: !isCommentAnon && commentAuthor.includes("@"),
+      isIraqiEmailVerified: !isCommentAnon && isIraqiEmail(commentAuthor),
       date: "الآن",
       content: commentText.trim(),
       likesCount: 1,
