@@ -130,7 +130,7 @@ export default function HeroSection() {
     <section
       dir="rtl"
       onMouseMove={handleMouseMove}
-      className="relative w-full min-h-[100dvh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-hidden flex flex-col justify-between -mt-16 pt-20 pb-4"
+      className="relative w-full min-h-[85dvh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-hidden flex flex-col justify-between py-6 lg:py-0 lg:-mt-16 lg:pt-20 lg:pb-4"
     >
       {/* 1. Looping 3D Sculptural Ribbon Video Background directly from IntegratedBio with Parallax */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">

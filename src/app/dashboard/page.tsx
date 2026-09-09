@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
-  const { user, profile, loading, loginAsDemo, logout } = useAuth();
+  const { user, profile, loading, loginAsDemo, logout, publishedPapers } = useAuth();
   const [activeTab, setActiveTab] = useState<"research" | "replications" | "bookmarks" | "settings">("research");
   const [copiedKey, setCopiedKey] = useState(false);
   const [apiKey] = useState("jemo_live_res_89fa41c09b2e817d");
@@ -63,36 +63,72 @@ export default function DashboardPage() {
     return (
       <>
         <Header />
-        <main className="flex-1 py-20 sm:py-28 bg-[#f7f7f5] flex items-center justify-center px-4" dir="rtl">
-          <div className="max-w-md w-full p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-md text-center space-y-5">
-            <div className="w-14 h-14 rounded-2xl bg-[#cef79e] text-[#222f30] flex items-center justify-center mx-auto font-bold">
-              <User className="w-7 h-7" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold font-kufi text-[#222f30]">
-                لوحة تحكم الباحث المستقل
-              </h1>
-              <p className="text-xs text-[#55696a] mt-1.5">
-                سجّل الدخول للوصول إلى محفظة أبحاثك، وإدارتها، ومتابعة إعادات التجارب المحققة.
-              </p>
+        <main className="flex-1 py-16 sm:py-24 bg-[#f7f7f5] flex items-center justify-center px-4" dir="rtl">
+          <div className="max-w-md w-full space-y-4">
+            {/* Pathway Progress Bar */}
+            <div className="p-3 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs text-xs font-mono">
+              <div className="flex items-center justify-between text-[11px] text-[#55696a]">
+                <span className="font-bold text-[#222f30] flex items-center gap-1.5">
+                  <span className="w-4 h-4 rounded-full bg-[#222f30] text-white flex items-center justify-center text-[10px] font-mono">1</span>
+                  <span>الهوية والتسجيل</span>
+                </span>
+                <span className="text-[#a1a1aa]">──▶</span>
+                <Link href="/publish" className="hover:text-[#222f30] flex items-center gap-1">
+                  <span className="w-4 h-4 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">2</span>
+                  <span>نشر البحث</span>
+                </Link>
+                <span className="text-[#a1a1aa]">──▶</span>
+                <span className="text-[#738284] flex items-center gap-1">
+                  <span className="w-4 h-4 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">3</span>
+                  <span>لوحة التحكم</span>
+                </span>
+              </div>
             </div>
 
-            <div className="space-y-2 pt-2">
-              <Link
-                href="/login"
-                className="block w-full py-3 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all shadow-xs"
-              >
-                تسجيل الدخول كباحث
-              </Link>
+            <div className="p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-md text-center space-y-5">
+              <div className="w-14 h-14 rounded-2xl bg-[#cef79e] text-[#222f30] flex items-center justify-center mx-auto font-bold">
+                <User className="w-7 h-7" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold font-kufi text-[#222f30]">
+                  لوحة تحكم الباحث المستقل
+                </h1>
+                <p className="text-xs text-[#55696a] mt-1.5">
+                  سجّل الدخول للوصول إلى محفظة أبحاثك، ومتابعة إعادات التجارب المحققة وتوثيق أبحاث جديدة.
+                </p>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => loginAsDemo("karkhi")}
-                className="w-full py-3 rounded-xl border border-[#cef79e] bg-[#f8fdf2] hover:bg-[#cef79e]/40 text-[#222f30] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                <span>دخول تجريبي فوري (عمر الكرخي)</span>
-              </button>
+              <div className="space-y-2 pt-2">
+                <Link
+                  href="/login?redirect=/dashboard"
+                  className="block w-full py-3 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all shadow-xs"
+                >
+                  تسجيل الدخول كباحث
+                </Link>
+
+                <Link
+                  href="/signup?redirect=/dashboard"
+                  className="block w-full py-3 rounded-xl border border-[#e4e3e3] bg-white text-[#222f30] text-xs font-bold hover:bg-[#f5f8f7] transition-all shadow-xs"
+                >
+                  إنشاء حساب باحث جديد
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => loginAsDemo("karkhi")}
+                  className="w-full py-2.5 rounded-xl border border-[#cef79e] bg-[#f8fdf2] hover:bg-[#cef79e]/40 text-[#222f30] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Zap className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>دخول تجريبي فوري (عمر الكرخي)</span>
+                </button>
+
+                <div className="pt-2 border-t border-[#e4e3e3] text-xs text-[#55696a]">
+                  <span>أو ابدأ بدون تسجيل: </span>
+                  <Link href="/publish" className="text-[#222f30] font-bold underline hover:text-[#a7e26e]">
+                    توثيق كائن بحث كضيف ➔
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </main>
@@ -101,17 +137,43 @@ export default function DashboardPage() {
     );
   }
 
-  // Filter papers authored by this researcher or demo
-  const myPapers = RESEARCH_PAPERS.filter((p) => 
+  // ponytail: merge user-published papers with default demo authored papers
+  const authoredDemoPapers = RESEARCH_PAPERS.filter((p) => 
     p.authors.some((a) => a.name.includes("عمر الكرخي") || a.name.includes(profile.name))
   );
+  const seenIds = new Set<string>();
+  const myPapers = [...publishedPapers, ...authoredDemoPapers].filter((p) => {
+    if (!p || !p.id || seenIds.has(p.id)) return false;
+    seenIds.add(p.id);
+    return true;
+  });
+
 
   return (
     <>
       <Header />
       <main className="flex-1 py-12 sm:py-16 bg-[#f7f7f5] text-[#222f30]" dir="rtl">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          
+          {/* Connected Pathway Indicator */}
+          <div className="p-3 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs text-xs font-mono">
+            <div className="flex items-center justify-between text-[11px] text-[#55696a]">
+              <span className="text-emerald-700 font-bold flex items-center gap-1">
+                <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-mono">✓</span>
+                <span>هوية الباحث: {profile.name}</span>
+              </span>
+              <span className="text-[#a1a1aa]">──▶</span>
+              <Link href="/publish" className="hover:text-[#222f30] flex items-center gap-1">
+                <span className="w-4 h-4 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">2</span>
+                <span>نشر وتوثيق بحث جديد</span>
+              </Link>
+              <span className="text-[#a1a1aa]">──▶</span>
+              <span className="font-bold text-[#222f30] flex items-center gap-1.5">
+                <span className="w-4 h-4 rounded-full bg-[#222f30] text-white flex items-center justify-center text-[10px] font-mono">3</span>
+                <span>لوحة التحكم والمحفظة</span>
+              </span>
+            </div>
+          </div>
+
           {/* Top Researcher Profile Card */}
           <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
@@ -283,72 +345,103 @@ export default function DashboardPage() {
                 </Link>
               </div>
 
-              {(myPapers.length > 0 ? myPapers : RESEARCH_PAPERS.slice(0, 2)).map((paper) => (
-                <div
-                  key={paper.id}
-                  className="p-6 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3 hover:border-[#a7e26e] transition-all"
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 font-mono text-xs">
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#f0f2f0] text-[#222f30] font-bold">
-                        {paper.researchType || "Experiment"}
-                      </span>
-                      <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-900 font-bold">
-                        تمت إعادة التجربة ({paper.lineage?.replicationsCount || 14}×)
-                      </span>
-                      <span className="text-[11px] text-[#738284]">
-                        {paper.field}
-                      </span>
-                    </div>
-                    <span className="text-xs font-mono text-[#738284]">
-                      {paper.publishDate}
-                    </span>
+              {myPapers.length === 0 ? (
+                <div className="p-8 rounded-3xl bg-white border border-[#e4e3e3] text-center space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#cef79e] text-[#222f30] flex items-center justify-center mx-auto">
+                    <FileText className="w-6 h-6" />
                   </div>
-
                   <div>
-                    <h3 className="text-lg font-bold font-kufi text-[#222f30]">
-                      <Link href={`/research/${paper.slug}`} className="hover:underline">
-                        {paper.title}
-                      </Link>
+                    <h3 className="text-base font-bold font-kufi text-[#222f30]">
+                      لم توثق أي كائن بحث بعد
                     </h3>
-                    <p className="text-xs text-[#55696a] mt-1 line-clamp-2">
-                      {paper.findings || paper.abstract}
+                    <p className="text-xs text-[#55696a] mt-1 max-w-sm mx-auto">
+                      كل اكتشاف أو تجربة استدلالية قمت بها يمكن تحويلها لمرجع دائم برقم تعريفي معتمد.
                     </p>
                   </div>
-
-                  {paper.question && (
-                    <div className="p-3 rounded-xl bg-[#f9faf9] border border-[#e4e3e3] text-xs text-[#55696a]">
-                      <strong className="text-[#222f30]">المسألة: </strong>
-                      {paper.question}
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#e4e3e3]">
-                    <div className="flex items-center gap-3 text-xs font-mono text-[#55696a]">
-                      <span>{paper.lineage?.replicationsCount || 14} إعادات</span>
-                      <span>•</span>
-                      <span>{paper.lineage?.challengesCount || 2} مراجعات</span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/research/${paper.slug}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all"
-                      >
-                        <span>عرض كائن البحث</span>
-                        <ArrowUpLeft className="w-3.5 h-3.5" />
-                      </Link>
-                      <Link
-                        href={`/publish?fork=${paper.slug}`}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-[#e4e3e3] bg-white text-xs font-mono text-[#55696a] hover:text-[#222f30]"
-                      >
-                        <GitFork className="w-3.5 h-3.5" />
-                        <span>تفريعة (Fork)</span>
-                      </Link>
-                    </div>
-                  </div>
+                  <Link
+                    href="/publish"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all"
+                  >
+                    <Plus className="w-4 h-4 text-[#bef264]" />
+                    <span>وثّق أول كائن بحث لك الآن</span>
+                  </Link>
                 </div>
-              ))}
+              ) : (
+                myPapers.map((paper) => {
+                  const isNew = publishedPapers.some((p) => p.id === paper.id);
+                  return (
+                    <div
+                      key={paper.id}
+                      className="p-6 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3 hover:border-[#a7e26e] transition-all"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 font-mono text-xs">
+                          {isNew && (
+                            <span className="px-2.5 py-0.5 rounded-full bg-[#bef264] text-[#222f30] font-bold">
+                              حديث • نُشر للتو
+                            </span>
+                          )}
+                          <span className="px-2.5 py-0.5 rounded-full bg-[#f0f2f0] text-[#222f30] font-bold">
+                            {paper.researchType || "Experiment"}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-900 font-bold">
+                            تمت إعادة التجربة ({paper.lineage?.replicationsCount || 0}×)
+                          </span>
+                          <span className="text-[11px] text-[#738284]">
+                            {paper.field}
+                          </span>
+                        </div>
+                        <span className="text-xs font-mono text-[#738284]">
+                          {paper.publishDate}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-bold font-kufi text-[#222f30]">
+                          <Link href={`/research/${paper.slug}`} className="hover:underline">
+                            {paper.title}
+                          </Link>
+                        </h3>
+                        <p className="text-xs text-[#55696a] mt-1 line-clamp-2">
+                          {paper.findings || paper.abstract}
+                        </p>
+                      </div>
+
+                      {paper.question && (
+                        <div className="p-3 rounded-xl bg-[#f9faf9] border border-[#e4e3e3] text-xs text-[#55696a]">
+                          <strong className="text-[#222f30]">المسألة: </strong>
+                          {paper.question}
+                        </div>
+                      )}
+
+                      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#e4e3e3]">
+                        <div className="flex items-center gap-3 text-xs font-mono text-[#55696a]">
+                          <span>{paper.lineage?.replicationsCount || 0} إعادات</span>
+                          <span>•</span>
+                          <span>{paper.lineage?.challengesCount || 0} مراجعات</span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={`/research/${paper.slug}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all"
+                          >
+                            <span>عرض كائن البحث</span>
+                            <ArrowUpLeft className="w-3.5 h-3.5" />
+                          </Link>
+                          <Link
+                            href={`/publish?fork=${paper.slug}`}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-[#e4e3e3] bg-white text-xs font-mono text-[#55696a] hover:text-[#222f30]"
+                          >
+                            <GitFork className="w-3.5 h-3.5" />
+                            <span>تفريعة (Fork)</span>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           )}
 

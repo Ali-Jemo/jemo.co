@@ -47,15 +47,15 @@ export default function BioUSPCards() {
   return (
     <section
       dir="rtl"
-      className="w-full bg-[#f7f7f5] py-12 sm:py-24 px-4 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
+      className="w-full bg-[#f7f7f5] py-8 sm:py-16 px-4 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
           {CARDS.map((card) => (
             <Link
               key={card.num}
               href={card.href}
-              className={`group ${card.bg} ${card.textColor} border ${card.borderColor} rounded-2xl sm:rounded-[2rem] p-6 sm:p-10 flex flex-col justify-between min-h-[340px] sm:min-h-[440px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
+              className={`group ${card.bg} ${card.textColor} border ${card.borderColor} rounded-2xl sm:rounded-[2rem] p-5 sm:p-10 flex flex-col justify-between min-h-0 sm:min-h-[440px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
             >
               {/* Top Row: Index & Icon */}
               <div className="flex items-start justify-between">

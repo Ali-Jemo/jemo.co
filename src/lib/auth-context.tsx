@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase-client";
 import type { User } from "@supabase/supabase-js";
-
+import type { Paper } from "@/lib/data/research-data";
 export interface ResearcherProfile {
   id: string;
   email: string;
@@ -76,16 +76,20 @@ interface AuthContextType {
   loginAsDemo: (type?: "karkhi" | "tamimi") => void;
   logout: () => Promise<void>;
   updateProfile: (updated: Partial<ResearcherProfile>) => void;
+  publishedPapers: Paper[];
+  publishPaper: (paper: Partial<Paper>) => Paper;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const DEMO_STORAGE_KEY = "jemo_demo_researcher_profile";
+const PAPERS_STORAGE_KEY = "jemo_user_published_papers";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<ResearcherProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [publishedPapers, setPublishedPapers] = useState<Paper[]>([]);
 
   useEffect(() => {
     // 1. Check local demo session first
@@ -100,6 +104,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // ignore
     }
+    // 1b. Check local published papers
+    try {
+      const storedPapers = localStorage.getItem(PAPERS_STORAGE_KEY);
+      if (storedPapers) {
+        setPublishedPapers(JSON.parse(storedPapers) as Paper[]);
+      }
+    } catch {
+      // ignore
+    }
+
 
     // 2. Check Supabase session safely
     try {
@@ -307,6 +321,71 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return next;
     });
   };
+  // ponytail: localStorage-backed paper publication, sync to database when multi-user table ready
+  const publishPaper = (data: Partial<Paper>): Paper => {
+    const authorName = profile?.name || data.authors?.[0]?.name || "باحث مستقل";
+    const authorHandle = profile?.handle || (profile ? `@${profile.email.split("@")[0]}` : "@guest_researcher");
+    const authorSlug = authorHandle.replace(/^@/, "");
+    const id = data.id || `JEMO-OBJ-${Date.now().toString().slice(-6)}`;
+    const title = data.title || "كائن بحث غير معنون";
+    const slug = data.slug || `${title.slice(0, 30).trim().replace(/\s+/g, "-")}-${id.toLowerCase()}`;
+
+    const newPaper: Paper = {
+      id,
+      slug,
+      title,
+      titleEn: data.titleEn || title,
+      abstract: data.abstract || data.findings || "بحث موثق عبر منصة JEMO بسجل التحقق البشري الصارم.",
+      authors: [{ name: authorName, slug: authorSlug, role: profile?.role || "باحث مساهم" }],
+      publishDate: new Date().toLocaleDateString("en-CA"),
+      pdfUrl: "#",
+      field: data.field || "Systems & Kernels",
+      labSlug: data.labSlug || "systems",
+      keywords: data.keywords || ["Research Object", "Proof of Work", "JEMO"],
+      citation: {
+        bibtex: `@article{${slug},\n  title={${title}},\n  author={${authorName}},\n  year={${new Date().getFullYear()}}\n}`,
+        apa: `${authorName} (${new Date().getFullYear()}). ${title}. JEMO Discovery Registry.`,
+      },
+      researchType: data.researchType || "Experiment",
+      evidenceStatus: "Under Review",
+      question: data.question,
+      toolsUsed: data.toolsUsed || [],
+      methodology: data.methodology,
+      findings: data.findings,
+      humanVerification: data.humanVerification || {
+        accuracyCheck: "تم الفحص البشري والتحقق من المخرجات وتصحيح الهلوسات.",
+        confidence: "مرتفعة - تم التكرار بنجاح",
+      },
+      lineage: {
+        replicationsCount: 0,
+        challengesCount: 0,
+        extensionsCount: 0,
+      },
+      ...data,
+    };
+
+    setPublishedPapers((prev) => {
+      const updated = [newPaper, ...prev];
+      try {
+        localStorage.setItem(PAPERS_STORAGE_KEY, JSON.stringify(updated));
+      } catch {
+        // ignore
+      }
+      return updated;
+    });
+
+    if (profile) {
+      updateProfile({
+        stats: {
+          ...profile.stats,
+          publishedCount: (profile.stats?.publishedCount || 0) + 1,
+        },
+      });
+    }
+
+    return newPaper;
+  };
+
 
   return (
     <AuthContext.Provider
@@ -319,6 +398,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginAsDemo,
         logout,
         updateProfile,
+        publishedPapers,
+        publishPaper,
       }}
     >
       {children}
@@ -338,6 +419,8 @@ export function useAuth(): AuthContextType {
       loginAsDemo: () => {},
       logout: async () => {},
       updateProfile: () => {},
+      publishedPapers: [],
+      publishPaper: (p: Partial<Paper>) => (p as Paper),
     };
   }
   return context;

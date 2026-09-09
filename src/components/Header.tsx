@@ -168,7 +168,7 @@ export default function Header() {
               </Link>
             ) : (
               <Link
-                href="/login"
+                href={pathname && pathname !== "/" && pathname !== "/dashboard" && pathname !== "/login" && pathname !== "/signup" ? `/login?redirect=${encodeURIComponent(pathname)}` : "/login"}
                 className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold rounded-full border transition-all duration-200 ${
                   isTransparent
                     ? "border-white/25 text-white bg-white/10 hover:bg-white/20 hover:border-white/40"
@@ -285,14 +285,14 @@ export default function Header() {
               ) : (
                 <div className="flex gap-2 pt-4 border-t border-white/10">
                   <Link
-                    href="/login"
+                    href={pathname && pathname !== "/" && pathname !== "/dashboard" && pathname !== "/login" && pathname !== "/signup" ? `/login?redirect=${encodeURIComponent(pathname)}` : "/login"}
                     onClick={() => setIsOpen(false)}
                     className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl border border-white/20 text-white bg-white/5 min-h-[44px] flex items-center justify-center"
                   >
                     تسجيل الدخول
                   </Link>
                   <Link
-                    href="/signup"
+                    href={pathname && pathname !== "/" && pathname !== "/dashboard" && pathname !== "/login" && pathname !== "/signup" ? `/signup?redirect=${encodeURIComponent(pathname)}` : "/signup"}
                     onClick={() => setIsOpen(false)}
                     className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl bg-[#bef264] text-[#162224] font-bold min-h-[44px] flex items-center justify-center"
                   >

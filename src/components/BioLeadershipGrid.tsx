@@ -10,13 +10,12 @@ export default function BioLeadershipGrid() {
 
   return (
     <section
-      dir="rtl"
-      className="c-team-grid py-20 sm:py-28 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
+      className="c-team-grid py-8 sm:py-16 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
     >
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
         
         {/* Split Sidebar + Team Grid Layout (IntegratedBio Company Page) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
           
           {/* Left Sidebar (Col 1 to 4): Leadership Statement */}
           <div className="lg:col-span-4 lg:sticky lg:top-28 space-y-5">

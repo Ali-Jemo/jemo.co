@@ -50,8 +50,51 @@ function LoginForm() {
     router.push(redirectPath);
   };
 
+  const isFromPublish = redirectPath.startsWith("/publish");
+
   return (
-    <div className="max-w-md mx-auto w-full">
+    <div className="max-w-md mx-auto w-full space-y-4">
+      {/* Pathway Progress Bar */}
+      <div className="p-3 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs text-xs font-mono">
+        <div className="flex items-center justify-between text-[11px] text-[#55696a]">
+          <span className="font-bold text-[#222f30] flex items-center gap-1.5">
+            <span className="w-4 h-4 rounded-full bg-[#222f30] text-white flex items-center justify-center text-[10px] font-mono">1</span>
+            <span>الهوية البحثية</span>
+          </span>
+          <span className="text-[#a1a1aa]">──▶</span>
+          <Link href="/publish" className="hover:text-[#222f30] flex items-center gap-1">
+            <span className="w-4 h-4 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">2</span>
+            <span>نشر البحث</span>
+          </Link>
+          <span className="text-[#a1a1aa]">──▶</span>
+          <Link href="/dashboard" className="hover:text-[#222f30] flex items-center gap-1">
+            <span className="w-4 h-4 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">3</span>
+            <span>لوحة التحكم</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Publish Redirect Alert */}
+      {isFromPublish && (
+        <div className="p-4 rounded-2xl bg-[#f8fdf2] border border-[#cef79e] text-xs text-[#222f30] space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="font-bold flex items-center gap-1.5 text-emerald-800">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              <span>مسار نشر البحث المستقل</span>
+            </span>
+            <Link
+              href="/publish"
+              className="text-[11px] font-bold text-emerald-800 underline hover:text-emerald-950"
+            >
+              المتابعة كضيف دون تسجيل ➔
+            </Link>
+          </div>
+          <p className="text-[11px] text-[#445e5f] leading-relaxed">
+            سجّل دخولك الآن ليتم توثيق كائن بحثك باسمك تلقائياً وربطه بلوحة تحكمك، أو تابع كضيف إذا أردت النشر السريع.
+          </p>
+        </div>
+      )}
+
       {/* Main Card */}
       <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#e4e3e3] shadow-md space-y-6">
         
@@ -68,7 +111,6 @@ function LoginForm() {
             أدر أبحاثك، وثّق إعادات التجارب (Replications)، واحفظ سبَقك الفكري.
           </p>
         </div>
-
         {/* Error notification */}
         {error && (
           <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center gap-2">
@@ -168,7 +210,10 @@ function LoginForm() {
         {/* Footer Link to Signup */}
         <div className="pt-2 text-center text-xs text-[#55696a] border-t border-[#e4e3e3]">
           <span>ليس لديك حساب باحث؟ </span>
-          <Link href="/signup" className="text-[#222f30] font-bold underline underline-offset-4 hover:text-[#a7e26e]">
+          <Link
+            href={redirectPath !== "/dashboard" ? `/signup?redirect=${encodeURIComponent(redirectPath)}` : "/signup"}
+            className="text-[#222f30] font-bold underline underline-offset-4 hover:text-[#a7e26e]"
+          >
             سجّل الآن كباحث مستقل
           </Link>
         </div>

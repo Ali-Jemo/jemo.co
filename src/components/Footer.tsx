@@ -50,9 +50,9 @@ const FOOTER_STATS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--line)] pt-16 pb-10 mt-auto relative overflow-hidden atmo">
-      <div className="container relative z-10">
-        <nav aria-label="روابط التذييل" className="grid grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10 mb-10 sm:mb-14">
+    <footer className="border-t border-[var(--line)] pt-8 sm:pt-16 pb-6 sm:pb-10 mt-auto relative overflow-hidden atmo">
+      <div className="container relative z-10 px-4 sm:px-6">
+        <nav aria-label="روابط التذييل" className="grid grid-cols-2 md:grid-cols-5 gap-6 sm:gap-10 mb-6 sm:mb-14">
           <div className="col-span-2 md:col-span-2">
             <Link href="/" className="inline-flex items-center gap-2 font-mono font-bold text-xl mb-4">
               <Image
