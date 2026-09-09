@@ -1,7 +1,6 @@
 import AmpereTracker from "@/components/iq/AmpereTracker";
 import MarketTicker from "@/components/iq/MarketTicker";
-import CurrencyConverter from "@/components/iq/CurrencyConverter";
-import GoldCalculator from "@/components/iq/GoldCalculator";
+
 import NewsDigest from "@/components/iq/NewsDigest";
 import PaydayTracker from "@/components/iq/PaydayTracker";
 import ToolsHub from "@/components/iq/ToolsHub";
@@ -9,7 +8,6 @@ import IqHero from "@/components/iq/IqHero";
 import WeatherDust from "@/components/iq/WeatherDust";
 import TrafficBridges from "@/components/iq/TrafficBridges";
 import { FuelStationTracker } from "@/components/iq/FuelStationTracker";
-import CarCustomsCalculator from "@/components/iq/CarCustomsCalculator";
 import Link from "next/link";
 
 export default function IqPage() {
@@ -24,36 +22,26 @@ export default function IqPage() {
       {/* 3. Real-time Weather, Dust Storm & Air Quality Advisory */}
       <WeatherDust />
 
-      {/* 4. Middle Two-Column Grid: Calculators + News & Paydays */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
-        {/* Left column in RTL: Currency & Gold Calculators (5 cols) */}
-        <div className="lg:col-span-5 space-y-4 sm:space-y-5 scroll-mt-20" id="calculator">
-          <CurrencyConverter />
-          <GoldCalculator />
-        </div>
-
-        {/* Right column in RTL: News Digest & Payday Tracker (7 cols) */}
-        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
+      {/* 4. Middle Two-Column Grid: News Digest & Paydays */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start" id="paydays">
+        <div className="lg:col-span-7">
           <NewsDigest />
+        </div>
+        <div className="lg:col-span-5">
           <PaydayTracker />
         </div>
       </div>
 
       {/* 5. Live Traffic, Bridges & Security Checkpoints Status */}
-      <TrafficBridges />
+      <div id="traffic">
+        <TrafficBridges />
+      </div>
 
       {/* 6. Neighborhood Generator Ampere Community Index & Calculator */}
       <AmpereTracker />
 
-      {/* 7. Fuel & Gas Station Tracker & Car Customs Calculator */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
-        <div className="lg:col-span-6">
-          <FuelStationTracker />
-        </div>
-        <div className="lg:col-span-6">
-          <CarCustomsCalculator />
-        </div>
-      </div>
+      {/* 7. Fuel & Gas Station Tracker */}
+      <FuelStationTracker />
 
       {/* 8. Iraqi Tools Hub (Curated Gateways & Services) */}
       <ToolsHub />

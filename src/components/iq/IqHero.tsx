@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, Calculator, MapPin, BookOpen, ChevronLeft } from "lucide-react";
+import { Activity, Car, MapPin, BookOpen, ChevronLeft } from "lucide-react";
 
 function getGreeting(hour: number): string {
   if (hour >= 5 && hour < 12) return "صباح الخير، بغداد";
@@ -86,12 +86,12 @@ export default function IqHero() {
           className="grid grid-cols-3 gap-2 text-center"
         >
           <a
-            href="#calculator"
+            href="#traffic"
             className="flex items-center justify-center gap-1.5 rounded-xl bg-[#cef79e] px-2 py-2.5 text-xs font-bold text-[#222f30] transition-colors hover:bg-[#a7e26e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#cef79e]"
           >
-            <Calculator className="h-3.5 w-3.5" aria-hidden="true" />
-            <span className="hidden xs:inline sm:inline">حاسبة الدولار</span>
-            <span className="xs:hidden sm:hidden">الحاسبة</span>
+            <Car className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="hidden xs:inline sm:inline">موقف الجسور</span>
+            <span className="xs:hidden sm:hidden">الجسور</span>
           </a>
           <Link
             href="/iq/map"
