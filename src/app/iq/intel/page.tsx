@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import ProcedureChecklist from "@/components/iq/ProcedureChecklist";
 import {
   BookOpen,
   Star,
@@ -239,39 +240,39 @@ function GuideAccordion({ guide }: { guide: Guide }) {
   };
 
   return (
-    <div className="bg-[#0e1618] border border-white/10 rounded-2xl overflow-hidden transition-all duration-300">
+    <div className="bg-white border border-[#e4e3e3] rounded-2xl overflow-hidden shadow-xs transition-all duration-300">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-4 sm:p-5 flex items-center justify-between text-right cursor-pointer hover:bg-white/5 transition-colors"
+        className="w-full p-4 sm:p-5 flex items-center justify-between text-right cursor-pointer hover:bg-[#f7f7f5] transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-[#bef264]/10 flex items-center justify-center shrink-0">
-            <BookOpen className="w-4 h-4 text-[#bef264]" />
+          <div className="w-8 h-8 rounded-lg bg-[#cef79e] text-[#222f30] flex items-center justify-center shrink-0">
+            <BookOpen className="w-4 h-4 text-[#222f30]" />
           </div>
-          <h2 className="font-kufi font-bold text-white/90 text-sm sm:text-base">
+          <h2 className="font-kufi font-bold text-[#222f30] text-sm sm:text-base">
             {guide.title}
           </h2>
         </div>
-        <ChevronDown className={`w-5 h-5 text-white/50 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-5 h-5 text-[#55696a] transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isOpen && (
-        <div className="p-4 sm:p-5 pt-0 border-t border-white/10 space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="p-4 sm:p-5 pt-0 border-t border-[#e4e3e3] space-y-5 animate-in fade-in slide-in-from-top-2 duration-300">
           
           <div className="flex flex-wrap gap-3 mt-4 text-xs font-mono">
-            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
-              <Wallet className="w-3.5 h-3.5 text-[#bef264]" />
-              <span className="text-white/80">الرسوم: {guide.fees}</span>
+            <div className="flex items-center gap-1.5 bg-[#f7f7f5] px-3 py-1.5 rounded-lg border border-[#e4e3e3]">
+              <Wallet className="w-3.5 h-3.5 text-[#728825]" />
+              <span className="text-[#222f30]">الرسوم: {guide.fees}</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
-              <Clock className="w-3.5 h-3.5 text-[#bef264]" />
-              <span className="text-white/80">الوقت: {guide.time}</span>
+            <div className="flex items-center gap-1.5 bg-[#f7f7f5] px-3 py-1.5 rounded-lg border border-[#e4e3e3]">
+              <Clock className="w-3.5 h-3.5 text-[#728825]" />
+              <span className="text-[#222f30]">الوقت: {guide.time}</span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-bold text-white/90 font-kufi flex items-center gap-2">
-              <Check className="w-4 h-4 text-[#bef264]" />
+            <h3 className="text-sm font-bold text-[#222f30] font-kufi flex items-center gap-2">
+              <Check className="w-4 h-4 text-[#728825]" />
               المستمسكات المطلوبة (جهزها)
             </h3>
             <ul className="space-y-1.5">
@@ -279,17 +280,17 @@ function GuideAccordion({ guide }: { guide: Guide }) {
                 <li 
                   key={idx} 
                   onClick={(e) => toggleDoc(idx, e)}
-                  className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors group"
+                  className="flex items-start gap-2.5 p-2 rounded-lg hover:bg-[#f7f7f5] cursor-pointer transition-colors group"
                 >
                   <div className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${
                     checkedDocs[idx] 
-                      ? "bg-[#bef264] border-[#bef264] text-[#080c0d]" 
-                      : "border-white/20 group-hover:border-[#bef264]/50"
+                      ? "bg-[#222f30] border-[#222f30] text-[#cef79e]" 
+                      : "border-[#e4e3e3] group-hover:border-[#728825]"
                   }`}>
                     {checkedDocs[idx] && <Check className="w-3 h-3" strokeWidth={3} />}
                   </div>
                   <span className={`text-sm font-sans transition-colors ${
-                    checkedDocs[idx] ? "text-white/40 line-through" : "text-white/80"
+                    checkedDocs[idx] ? "text-[#55696a]/50 line-through" : "text-[#222f30]"
                   }`}>
                     {doc}
                   </span>
@@ -299,11 +300,11 @@ function GuideAccordion({ guide }: { guide: Guide }) {
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-sm font-bold text-white/90 font-kufi">خطوات المعاملة</h3>
+            <h3 className="text-sm font-bold text-[#222f30] font-kufi">خطوات المعاملة</h3>
             <div className="space-y-2 pl-2">
               {guide.steps.map((step, idx) => (
-                <div key={idx} className="flex gap-3 text-sm font-sans text-white/80">
-                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-white/10 text-white/60 flex items-center justify-center text-[10px] font-mono mt-0.5">
+                <div key={idx} className="flex gap-3 text-sm font-sans text-[#222f30]">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#222f30] text-[#cef79e] flex items-center justify-center text-[10px] font-mono mt-0.5 font-bold">
                     {idx + 1}
                   </span>
                   <p className="leading-relaxed">{step}</p>
@@ -312,12 +313,12 @@ function GuideAccordion({ guide }: { guide: Guide }) {
             </div>
           </div>
 
-          <div className="bg-amber-900/10 border border-amber-900/30 rounded-xl p-3 sm:p-4 space-y-2 text-sm font-sans text-amber-200/90">
-            <h4 className="font-bold flex items-center gap-2 text-amber-400">
-              <AlertTriangle className="w-4 h-4" />
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 sm:p-4 space-y-2 text-sm font-sans text-amber-900">
+            <h4 className="font-bold flex items-center gap-2 text-amber-800">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
               نصائح مجربة لتجنب المعقبين والابتزاز
             </h4>
-            <ul className="list-disc list-inside space-y-1 pr-2">
+            <ul className="list-disc list-inside space-y-1 pr-2 text-xs sm:text-sm text-amber-800/90 leading-relaxed">
               {guide.tips.map((tip, idx) => (
                 <li key={idx}>{tip}</li>
               ))}
@@ -330,7 +331,7 @@ function GuideAccordion({ guide }: { guide: Guide }) {
                 href={guide.portalLink} 
                 target="_blank" 
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 bg-[#bef264] hover:bg-[#a3d650] text-[#080c0d] font-bold py-2.5 px-4 rounded-xl text-sm transition-colors"
+                className="inline-flex items-center gap-2 bg-[#222f30] hover:bg-[#162021] text-[#cef79e] font-bold py-2.5 px-4 rounded-xl text-sm transition-colors shadow-xs"
               >
                 {guide.portalName}
                 <ExternalLink className="w-4 h-4" />
@@ -381,26 +382,29 @@ export default function IqIntelPage() {
   });
 
   return (
-    <div className="space-y-6 sm:space-y-8 bg-[#080c0d] min-h-screen text-white/80 p-4 sm:p-6" dir="rtl">
+    <div className="space-y-6 sm:space-y-8" dir="rtl">
       {/* 1. Header Banner */}
-      <section className="p-4 sm:p-6 rounded-2xl bg-[#0e1618] border border-white/10 shadow-xs space-y-3">
-        <div className="flex items-center gap-2 text-xs font-mono text-white/50">
-          <BookOpen className="w-4 h-4 text-[#bef264]" />
-          <span className="font-bold text-white/90">الباب الثالث · مجتمع الخبرة والأدلة الحية</span>
+      <section className="p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-2">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#55696a]">
+          <BookOpen className="w-4 h-4 text-[#728825]" />
+          <span className="font-bold text-[#222f30]">الباب الثالث · مجتمع الخبرة والأدلة الحية</span>
           <span>·</span>
           <span>معلومات لا يوميات</span>
         </div>
-        <h1 className="text-xl sm:text-2xl font-kufi font-black text-white/90 tracking-tight">
+        <h1 className="text-lg sm:text-xl font-kufi font-black text-[#222f30] tracking-tight">
           أدلة المعاملات، تقييمات الأماكن، والأسعار الواقعية.
         </h1>
-        <p className="text-sm text-white/60 leading-relaxed font-sans max-w-3xl">
+        <p className="text-xs sm:text-sm text-[#55696a] leading-relaxed font-sans max-w-3xl">
           لا مكان للصور الشخصية أو السوالف الفارغة. هنا تجارب عملية تمنع أن تُنصب عليك، تشرح لك كيف تخلص معاملتك، وتوثق جودة المحلات المسجلة بالخريطة.
         </p>
       </section>
 
-      {/* 2. Official Guides Section */}
+      {/* 2. Interactive Bureaucracy Checklist Builder */}
+      <ProcedureChecklist />
+
+      {/* 3. Official Guides Section */}
       <section className="space-y-4">
-        <h2 className="text-lg font-kufi font-bold text-white/90 px-1">الأدلة الرسمية المعتمدة والمعاملات</h2>
+        <h2 className="text-lg font-kufi font-bold text-[#222f30] px-1">الأدلة الرسمية المعتمدة والمعاملات</h2>
         <div className="space-y-3">
           {OFFICIAL_GUIDES.map(guide => (
             <GuideAccordion key={guide.id} guide={guide} />
@@ -408,11 +412,11 @@ export default function IqIntelPage() {
         </div>
       </section>
 
-      <hr className="border-white/10" />
+      <hr className="border-[#e4e3e3]" />
 
-      {/* 3. Filters Toolbar */}
+      {/* 4. Filters Toolbar */}
       <section className="space-y-4">
-        <h2 className="text-lg font-kufi font-bold text-white/90 px-1">مشاركات المجتمع الحية</h2>
+        <h2 className="text-lg font-kufi font-bold text-[#222f30] px-1">مشاركات المجتمع الحية</h2>
         
         {/* Search */}
         <div className="relative">
@@ -421,13 +425,13 @@ export default function IqIntelPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="ابحث في الأدلة (مثلاً: جواز، بطاقة، سبلت، غرامات، الكرادة)..."
-            className="w-full h-12 pr-11 pl-4 bg-[#0e1618] border border-white/10 focus:border-[#bef264] rounded-xl text-white/90 font-sans text-sm outline-none shadow-xs transition-colors placeholder-white/30"
+            className="w-full h-11 pr-10 pl-4 bg-white border border-[#e4e3e3] focus:border-[#a7e26e] rounded-xl text-[#222f30] font-sans text-xs sm:text-sm outline-none shadow-xs transition-colors placeholder-[#55696a]/50"
           />
-          <Search className="w-5 h-5 text-white/40 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-[#55696a] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
 
         {/* Type Filter Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs font-mono">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 text-xs font-mono">
           {[
             { id: "الكل", label: "كل المشاركات" },
             { id: "معاملات", label: "أدلة المعاملات الحكومية" },
@@ -438,10 +442,10 @@ export default function IqIntelPage() {
             <button
               key={tab.id}
               onClick={() => setSelectedFilter(tab.id)}
-              className={`px-4 py-2 rounded-full transition-all shrink-0 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-full transition-all shrink-0 cursor-pointer ${
                 selectedFilter === tab.id
-                  ? "bg-[#bef264] text-[#080c0d] font-bold shadow-xs"
-                  : "bg-[#0e1618] text-white/60 hover:text-white/90 hover:bg-white/5 border border-white/10"
+                  ? "bg-[#222f30] text-white font-bold shadow-xs"
+                  : "bg-white text-[#55696a] hover:bg-[#f0f2f0] hover:text-[#222f30] border border-[#e4e3e3]"
               }`}
             >
               {tab.label}
@@ -450,31 +454,33 @@ export default function IqIntelPage() {
         </div>
       </section>
 
+      {/* 5. Posts Stream */}
+
       {/* 4. Posts Stream */}
       <section className="space-y-4">
         {filteredPosts.map((post) => (
           <article
             key={post.id}
-            className="p-4 sm:p-5 rounded-2xl bg-[#0e1618] border border-white/10 hover:border-[#bef264]/50 transition-all space-y-4 shadow-xs"
+            className="p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] hover:border-[#a7e26e] hover:shadow-sm transition-all space-y-3 shadow-xs"
           >
             {/* Header: Tag + District + Date */}
-            <div className="flex items-center justify-between gap-3 text-[11px] font-mono flex-wrap">
+            <div className="flex items-center justify-between gap-2 text-[11px] font-mono flex-wrap">
               <div className="flex items-center gap-2">
                 <span
-                  className={`px-2.5 py-1 rounded-md border font-semibold ${post.badgeColor}`}
+                  className={`px-2.5 py-0.5 rounded-md border font-semibold ${post.badgeColor}`}
                 >
                   {post.typeLabel}
                 </span>
-                <span className="text-white/50">{post.district}</span>
+                <span className="text-[#55696a]">{post.district}</span>
                 {post.rating && (
-                  <span className="inline-flex items-center gap-1 text-amber-400 font-bold bg-amber-400/10 px-2 py-0.5 rounded">
-                    <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                  <span className="inline-flex items-center gap-1 text-amber-700 font-bold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
+                    <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
                     {post.rating}
                   </span>
                 )}
               </div>
 
-              <div className="flex items-center gap-2 text-white/50">
+              <div className="flex items-center gap-2 text-[#55696a]">
                 <span>بواسطة: {post.authorAlias}</span>
                 <span>·</span>
                 <span>{post.date}</span>
@@ -482,12 +488,12 @@ export default function IqIntelPage() {
             </div>
 
             {/* Title */}
-            <h3 className="font-kufi font-bold text-base sm:text-lg text-white/90 leading-snug">
+            <h3 className="font-kufi font-bold text-base sm:text-lg text-[#222f30] leading-snug">
               {post.title}
             </h3>
 
             {/* Content body */}
-            <p className="text-sm text-white/80 leading-relaxed font-sans bg-white/5 p-4 rounded-xl border border-white/5">
+            <p className="text-xs sm:text-sm text-[#222f30] leading-relaxed font-sans bg-[#f7f7f5] p-3.5 rounded-xl border border-[#e4e3e3]">
               {post.content}
             </p>
 
@@ -496,7 +502,7 @@ export default function IqIntelPage() {
               <div className="text-xs font-mono pt-1">
                 <Link
                   href="/iq/map"
-                  className="inline-flex items-center gap-1.5 text-[#bef264] font-bold hover:underline"
+                  className="inline-flex items-center gap-1 text-[#728825] font-bold hover:underline"
                 >
                   <span>عرض بطاقة المحل في الخريطة ({post.placeName})</span>
                   <span>←</span>
@@ -505,12 +511,12 @@ export default function IqIntelPage() {
             )}
 
             {/* Bottom Actions */}
-            <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-3 text-xs font-mono">
+            <div className="pt-2 border-t border-[#e4e3e3] flex items-center justify-between gap-3 text-xs font-mono">
               <div className="flex items-center gap-2">
                 {/* Trusted Vote Button */}
                 <button
                   onClick={() => handleVote(post.id, true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-900/20 hover:bg-emerald-900/40 text-emerald-400 border border-emerald-800/30 transition-colors cursor-pointer font-bold"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 transition-colors cursor-pointer font-bold"
                   title="أؤكد هذه المعلومة / جربتها بنفسي"
                 >
                   <ThumbsUp className="w-3.5 h-3.5" />
@@ -520,7 +526,7 @@ export default function IqIntelPage() {
                 {/* Unreliable Vote Button */}
                 <button
                   onClick={() => handleVote(post.id, false)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-rose-400 border border-white/10 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#f7f7f5] hover:bg-[#f0f2f0] text-[#55696a] hover:text-rose-700 border border-[#e4e3e3] transition-colors cursor-pointer"
                   title="المعلومة غير دقيقة أو قديمة"
                 >
                   <ThumbsDown className="w-3.5 h-3.5" />
@@ -533,7 +539,7 @@ export default function IqIntelPage() {
                   navigator.clipboard?.writeText?.(window.location.href);
                   alert("تم نسخ رابط الدليل للمشاركة على واتساب!");
                 }}
-                className="inline-flex items-center gap-1.5 text-white/50 hover:text-white/90 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 text-[#55696a] hover:text-[#222f30] transition-colors cursor-pointer"
                 title="مشاركة الدليل"
               >
                 <Share2 className="w-3.5 h-3.5" />
