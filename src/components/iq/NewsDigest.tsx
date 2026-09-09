@@ -1,6 +1,7 @@
 "use client";
 
-import { Newspaper, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Newspaper, ShieldCheck, ChevronLeft } from "lucide-react";
 
 interface NewsItem {
   id: string;
@@ -50,43 +51,56 @@ const NEWS_ITEMS: NewsItem[] = [
 
 export default function NewsDigest() {
   return (
-    <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
-      <div className="flex items-center justify-between pb-2 border-b border-[#e4e3e3] text-xs font-mono">
+    <div className="space-y-3 rounded-2xl border border-[#e4e3e3] bg-white p-4 shadow-xs">
+      <div className="flex items-center justify-between gap-2 border-b border-[#e4e3e3] pb-2.5 text-xs">
         <div className="flex items-center gap-1.5 font-bold text-[#222f30]">
-          <Newspaper className="w-4 h-4 text-[#728825]" />
-          <span>موجز الأخبار (5 أحداث سريعة)</span>
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#222f30]">
+            <Newspaper className="h-3.5 w-3.5 text-[#cef79e]" aria-hidden="true" />
+          </span>
+          <span>موجز اليوم — 5 أحداث تهمك</span>
         </div>
-        <span className="text-[10px] text-[#55696a] flex items-center gap-1">
-          <ShieldCheck className="w-3 h-3 text-emerald-600" />
-          <span>مصادر رسمية مؤكدة</span>
+        <span className="flex shrink-0 items-center gap-1 text-[10px] text-[#55696a]">
+          <ShieldCheck className="h-3 w-3 text-emerald-600" aria-hidden="true" />
+          <span>مصادر رسمية</span>
         </span>
       </div>
 
-      {/* Ultra-Fast 1-Line News Bullets */}
-      <div className="space-y-2">
+      <ol className="space-y-2">
         {NEWS_ITEMS.map((item, idx) => (
-          <div
+          <li
             key={item.id}
-            className="px-3 py-2 rounded-xl bg-[#f7f7f5] hover:bg-[#f0f2f0] border border-[#e4e3e3] flex items-center justify-between gap-3 text-xs transition-colors group cursor-default"
+            className="group flex items-start justify-between gap-3 rounded-xl border border-[#e4e3e3] bg-[#f7f7f5] px-3 py-2.5 text-xs transition-colors hover:border-[#a7e26e] hover:bg-white"
           >
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="w-4 h-4 rounded bg-[#222f30] text-[#cef79e] font-mono font-bold flex items-center justify-center text-[9px] shrink-0">
-                0{idx + 1}
+            <div className="flex min-w-0 items-start gap-2">
+              <span
+                aria-hidden="true"
+                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-[#222f30] font-mono text-[9px] font-bold text-[#cef79e]"
+              >
+                {idx + 1}
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#cef79e] text-[#222f30] shrink-0 font-bold">
-                {item.category}
-              </span>
-              <span className="font-kufi font-medium text-[#222f30] group-hover:text-[#162224] transition-colors truncate">
-                {item.title}
-              </span>
+              <div className="min-w-0">
+                <span className="mb-1 inline-block rounded-md bg-[#cef79e] px-1.5 py-px text-[10px] font-bold text-[#222f30]">
+                  {item.category}
+                </span>
+                <p className="leading-relaxed font-medium text-[#222f30] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden">
+                  {item.title}
+                </p>
+                <p className="mt-0.5 text-[10px] text-[#55696a]">
+                  {item.source} · {item.time}
+                </p>
+              </div>
             </div>
-
-            <span className="text-[10px] font-mono text-[#55696a] shrink-0 whitespace-nowrap">
-              {item.source} · {item.time}
-            </span>
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
+
+      <Link
+        href="/iq/intel"
+        className="flex items-center justify-center gap-1 rounded-xl border border-dashed border-[#e4e3e3] py-2 text-[11px] font-bold text-[#55696a] transition-colors hover:border-[#a7e26e] hover:text-[#222f30] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#222f30]"
+      >
+        <span>شوف كل الأدلة والتجارب في دليل هسه</span>
+        <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
+      </Link>
     </div>
   );
 }

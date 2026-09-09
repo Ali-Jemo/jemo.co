@@ -35,15 +35,15 @@ const TILE_PROVIDERS = {
     maxZoom: 20,
   },
   googleRoad: {
-    name: "شوارع Google Maps",
-    url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+    name: "شوارع Google نظيفة (بدون محلات قديمة)",
+    url: "https://mt1.google.com/vt/lyrs=m&apistyle=s.t:33|p.v:off&x={x}&y={y}&z={z}",
     subdomains: "",
     attribution: "&copy; Google Maps",
     maxZoom: 20,
   },
-  googleClean: {
-    name: "شوارع Google نظيفة (بدون محلات قديمة)",
-    url: "https://mt1.google.com/vt/lyrs=m&apistyle=s.t:33|s.e:l|p.v:off&x={x}&y={y}&z={z}",
+  googleRoadFull: {
+    name: "شوارع Google (المحلات القديمة)",
+    url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
     subdomains: "",
     attribution: "&copy; Google Maps",
     maxZoom: 20,
@@ -103,6 +103,7 @@ export default function IraqInteractiveMap({
   const [gpsError, setGpsError] = useState<string | null>(null);
   const [selectedSpot, setSelectedSpot] = useState<LocalSpot | null>(null);
   const [clickedLocation, setClickedLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [closedLocations, setClosedLocations] = useState<Array<{ id: string; lat: number; lng: number }>>([]);
   const [searchRadiusKm, setSearchRadiusKm] = useState<number>(5);
   const [deleteNotice, setDeleteNotice] = useState<string | null>(null);
   // Add Place Modal
@@ -283,10 +284,35 @@ export default function IraqInteractiveMap({
 
         markersGroup.addLayer(marker);
       });
+
+      // Layer 2: Render Closed/Deleted Location Masks
+      closedLocations.forEach((loc) => {
+        const maskHtml = `
+          <div class="flex items-center justify-center pointer-events-auto">
+            <div class="px-2 py-0.5 rounded-md bg-red-600 text-white font-kufi font-bold text-[10px] shadow-lg border border-red-400 whitespace-nowrap flex items-center gap-1">
+              <span>🚫</span>
+              <span>مغلق نهائياً</span>
+            </div>
+          </div>
+        `;
+        const icon = L.divIcon({
+          html: maskHtml,
+          className: "closed-location-pin",
+          iconSize: [80, 24],
+          iconAnchor: [40, 12],
+        });
+        const marker = L.marker([loc.lat, loc.lng], { icon });
+        marker.bindPopup(
+          `<div style="direction: rtl; font-family: sans-serif; font-size: 11px; color: #dc2626; font-weight: bold; padding: 4px;">
+            🚫 هذا المكان تم تأكيد إغلاقه وإزالته من الخريطة.
+          </div>`
+        );
+        markersGroup.addLayer(marker);
+      });
     }
 
     renderMarkers();
-  }, [spots, searchQuery, activeCategory, selectedGovernorate, onSelectGovernorate]);
+  }, [spots, searchQuery, activeCategory, selectedGovernorate, onSelectGovernorate, closedLocations]);
 
   // 4. GPS "Locate Me / أين أنا الآن"
   const handleLocateMe = () => {
@@ -437,6 +463,35 @@ export default function IraqInteractiveMap({
     setNewPlaceName("");
     setNewPlacePhone("");
     setNewPlaceNotes("");
+    setClickedLocation(null);
+  };
+
+  // Handle marking a clicked position as closed / deleted
+  const handleMarkClosedAtLocation = () => {
+    if (!clickedLocation) return;
+
+    // Check if there is any spot within 70 meters
+    let deletedCount = 0;
+    spots.forEach((s) => {
+      const d = calculateDistanceKm(clickedLocation.lat, clickedLocation.lng, s.lat, s.lng);
+      if (d <= 0.08 && onDeleteSpot) {
+        onDeleteSpot(s.id);
+        deletedCount++;
+      }
+    });
+
+    // Add closed mark mask at location
+    setClosedLocations((prev) => [
+      ...prev,
+      { id: `closed-${Date.now()}`, lat: clickedLocation.lat, lng: clickedLocation.lng },
+    ]);
+
+    setDeleteNotice(
+      deletedCount > 0
+        ? "تم حذف المحل ووضع علامة (مغلق نهائياً) بنجاح."
+        : "تم وضع علامة (مغلق نهائياً) وإخفاء المكان القديم من الخريطة."
+    );
+    setTimeout(() => setDeleteNotice(null), 4000);
     setClickedLocation(null);
   };
 
@@ -607,30 +662,42 @@ export default function IraqInteractiveMap({
           )}
         </div>
 
-        {/* Click anywhere on map -> Prompt to Add Spot */}
+        {/* Click anywhere on map -> Actions: Add Place OR Delete/Mark Closed */}
         {clickedLocation && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#0c1415]/95 backdrop-blur-md p-3 rounded-2xl border border-[#bef264]/40 shadow-2xl flex items-center gap-3 text-xs font-mono text-white animate-fadeIn">
-            <div>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#0c1415]/95 backdrop-blur-md p-3 sm:p-3.5 rounded-3xl border border-white/20 shadow-2xl flex flex-col sm:flex-row items-center gap-2.5 sm:gap-4 text-xs font-mono text-white animate-fadeIn max-w-[95vw]">
+            <div className="text-center sm:text-right">
               <div className="font-bold text-[#bef264]">نقطة محددة على الخريطة:</div>
               <div className="text-[10px] text-white/60">
                 {clickedLocation.lat}, {clickedLocation.lng}
               </div>
             </div>
 
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="px-3 py-1.5 rounded-xl bg-[#bef264] hover:bg-[#a3e635] text-[#0c1415] font-kufi font-bold text-xs cursor-pointer flex items-center gap-1"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>أضف محلاً هنا</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="px-3 py-1.5 rounded-xl bg-[#bef264] hover:bg-[#a3e635] text-[#0c1415] font-kufi font-bold text-xs cursor-pointer flex items-center gap-1 shadow-sm"
+                title="إضافة محل أو مصلح جديد في هذه النقطة"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>أضف محلاً هنا</span>
+              </button>
 
-            <button
-              onClick={() => setClickedLocation(null)}
-              className="text-white/40 hover:text-white text-xs p-1"
-            >
-              ✕
-            </button>
+              <button
+                onClick={handleMarkClosedAtLocation}
+                className="px-3 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 font-kufi font-bold text-xs cursor-pointer flex items-center gap-1 shadow-sm"
+                title="حذف أو وضع علامة مغلق نهائياً على المحل القديم في هذا المكان"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>حذف المكان القديم (مغلق)</span>
+              </button>
+
+              <button
+                onClick={() => setClickedLocation(null)}
+                className="text-white/40 hover:text-white text-xs p-1"
+              >
+                ✕
+              </button>
+            </div>
           </div>
         )}
       </div>

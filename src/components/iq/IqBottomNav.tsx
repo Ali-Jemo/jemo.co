@@ -8,28 +8,24 @@ const NAV_TABS = [
   {
     href: "/iq",
     label: "هسه",
-    subLabel: "النبض والأدوات",
     icon: Activity,
     exact: true,
   },
   {
     href: "/iq/map",
     label: "خريطة",
-    subLabel: "محلات المحلة",
     icon: MapPin,
     exact: false,
   },
   {
     href: "/iq/intel",
     label: "دليل",
-    subLabel: "تجارب ومعاملات",
     icon: BookOpen,
     exact: false,
   },
   {
     href: "/iq/me",
     label: "أنا",
-    subLabel: "المحافظة والحساب",
     icon: User,
     exact: false,
   },
@@ -41,10 +37,11 @@ export default function IqBottomNav() {
   return (
     <nav
       aria-label="التنقل الرئيسي لمنصة هسه العراقية"
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[var(--surface)]/95 backdrop-blur-md border-t border-white/10 text-white shadow-2xl pb-[env(safe-area-inset-bottom,0px)]"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-[#e4e3e3] bg-white/95 text-[#55696a] shadow-[0_-8px_24px_rgba(9,9,11,0.06)] backdrop-blur-md md:hidden"
+      style={{ paddingBottom: "env(safe-area-inset-bottom,0px)" }}
       dir="rtl"
     >
-      <div className="grid grid-cols-4 h-14 items-center px-1">
+      <div className="grid h-16 grid-cols-4 items-stretch px-1">
         {NAV_TABS.map((tab) => {
           const isActive = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href);
           const Icon = tab.icon;
@@ -53,17 +50,29 @@ export default function IqBottomNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center h-full transition-all active:scale-90 ${
-                isActive ? "text-[var(--gold)]" : "text-white/60 hover:text-white"
+              aria-current={isActive ? "page" : undefined}
+              className={`relative flex flex-col items-center justify-center gap-0.5 rounded-xl transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#222f30] active:scale-95 ${
+                isActive ? "text-[#222f30]" : "text-[#55696a] hover:text-[#222f30]"
               }`}
             >
-              <div className="relative">
-                <Icon className={`w-5 h-5 mb-0.5 ${isActive ? "stroke-[2.5]" : "stroke-[1.8]"}`} />
-                {isActive && (
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[var(--gold)]" />
-                )}
-              </div>
-              <span className={`text-[10px] font-mono tracking-tight ${isActive ? "font-bold" : "font-medium"}`}>
+              {isActive && (
+                <span
+                  aria-hidden="true"
+                  className="absolute top-1 h-1 w-8 rounded-full bg-[#a7e26e]"
+                />
+              )}
+              <span
+                className={`flex h-7 w-12 items-center justify-center rounded-full transition-colors ${
+                  isActive ? "bg-[#cef79e]/60" : "bg-transparent"
+                }`}
+              >
+                <Icon
+                  className="h-5 w-5"
+                  strokeWidth={isActive ? 2.5 : 1.8}
+                  aria-hidden="true"
+                />
+              </span>
+              <span className={`text-[11px] ${isActive ? "font-bold" : "font-medium"}`}>
                 {tab.label}
               </span>
             </Link>

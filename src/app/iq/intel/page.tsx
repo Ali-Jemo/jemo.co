@@ -4,17 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   BookOpen,
-  CheckCircle2,
-  AlertTriangle,
-  Flame,
   Star,
   ThumbsUp,
   ThumbsDown,
   Search,
-  Filter,
-  Plus,
   Share2,
-  Calendar,
 } from "lucide-react";
 
 type PostType = "guide" | "review" | "price" | "alert";
@@ -40,7 +34,7 @@ const POSTS: IntelPost[] = [
     id: "post-1",
     type: "guide",
     typeLabel: "دليل معاملة رسمية",
-    badgeColor: "bg-purple-400/15 text-purple-300 border-purple-400/30",
+    badgeColor: "bg-purple-50 text-purple-800 border-purple-200",
     title: "خطوات تجديد الجواز الإلكتروني في دائرة الكرخ بدون معقب — تحديث آذار 2026",
     content:
       "1. ادخل بوابة أور وسدد الرسوم إلكترونياً عبر زين كاش أو الماستر (25 ألف دينار ولا تدفع أكثر بالمكاتب الخارجية). 2. احجز موعد الصباح قبل الساعة 10. 3. خذ البطاقة الوطنية الأصلية والجواز القديم فقط، لا يحتاج صور ملونة لأن التصوير فوري بالدائرة. استلمت الجواز خلال ساعتين ونصف فقط.",
@@ -54,7 +48,7 @@ const POSTS: IntelPost[] = [
     id: "post-2",
     type: "review",
     typeLabel: "تقييم مكان موثق",
-    badgeColor: "bg-emerald-400/15 text-emerald-300 border-emerald-400/30",
+    badgeColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
     title: "تجربة ورشة المهندس لتصليح السبالت في حي الجامعة",
     content:
       "السبلت كان يفصل كومبريسر بعد الظهر، صاحب الورشة فحص القطعة واكتشف عطل كبستر بسيط وكلف 15 ألف دينار فقط، بينما مصلح ثاني طلب 120 ألف وقال الكومبريسر محروق. رجل ثقة وموجود بخريطة هسه.",
@@ -70,7 +64,7 @@ const POSTS: IntelPost[] = [
     id: "post-3",
     type: "price",
     typeLabel: "سعر محلي مشاهد",
-    badgeColor: "bg-amber-400/15 text-amber-300 border-amber-400/30",
+    badgeColor: "bg-amber-50 text-amber-800 border-amber-200",
     title: "تسعيرة أمبير المولد في الدورة لشهر آذار 2026",
     content:
       "مولد فرعنا في شارع 60 فرض 16 ألف للأمبير للخط الذهبي، بعد شكوى المختار ومركز الشرطة نزل السعر للـ 13 ألف الرسمي مع تشغيل 24 ساعة. لا تدفعون أكثر من التسعيرة المحددة من المحافظة.",
@@ -84,7 +78,7 @@ const POSTS: IntelPost[] = [
     id: "post-4",
     type: "alert",
     typeLabel: "تنبيه محلي مؤقت",
-    badgeColor: "bg-rose-400/15 text-rose-300 border-rose-400/30",
+    badgeColor: "bg-rose-50 text-rose-800 border-rose-200",
     title: "تحويلة مرورية مؤقتة قرب ساحة النسور بسبب أعمال الصيانة",
     content:
       "المرور حوّلوا المسار القادم من دمشق باتجاه حي الكندي عبر النفق السفلي. تجنبوا الزخم بالذروة الصباحية واسلكوا طريق القادسية البديل.",
@@ -134,25 +128,21 @@ export default function IqIntelPage() {
   });
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-4 sm:space-y-6" dir="rtl">
       {/* 1. Header Banner */}
-      <section className="p-4 sm:p-6 rounded-3xl bg-[var(--surface)] border border-white/10 shadow-lg space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-mono text-[var(--gold)]">
-              <BookOpen className="w-4 h-4 text-[var(--gold)]" />
-              <span>الباب الثالث · مجتمع الخبرة والأدلة الحية</span>
-              <span className="text-white/30">·</span>
-              <span className="text-white/60">معلومات لا يوميات</span>
-            </div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-kufi font-black text-white tracking-tight">
-              أدلة المعاملات، تقييمات الأماكن، والأسعار الواقعية.
-            </h1>
-            <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-sans max-w-3xl">
-              لا مكان للصور الشخصية أو السوالف الفارغة. هنا تجارب عملية تمنع أن تُنصب عليك، تشرح لك كيف تخلص معاملتك، وتوثق جودة المحلات المسجلة بالخريطة.
-            </p>
-          </div>
+      <section className="p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-2">
+        <div className="flex items-center gap-2 text-xs font-mono text-[#55696a]">
+          <BookOpen className="w-4 h-4 text-[#728825]" />
+          <span className="font-bold text-[#222f30]">الباب الثالث · مجتمع الخبرة والأدلة الحية</span>
+          <span>·</span>
+          <span>معلومات لا يوميات</span>
         </div>
+        <h1 className="text-lg sm:text-xl font-kufi font-black text-[#222f30] tracking-tight">
+          أدلة المعاملات، تقييمات الأماكن، والأسعار الواقعية.
+        </h1>
+        <p className="text-xs text-[#55696a] leading-relaxed font-sans max-w-3xl">
+          لا مكان للصور الشخصية أو السوالف الفارغة. هنا تجارب عملية تمنع أن تُنصب عليك، تشرح لك كيف تخلص معاملتك، وتوثق جودة المحلات المسجلة بالخريطة.
+        </p>
       </section>
 
       {/* 2. Filters Toolbar */}
@@ -164,9 +154,9 @@ export default function IqIntelPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="ابحث في الأدلة (مثلاً: جواز، بطاقة، سبلت، غرامات، الكرادة)..."
-            className="w-full h-11 pr-10 pl-4 bg-[var(--surface)] border border-white/10 focus:border-[var(--gold)] rounded-xl text-white font-sans text-sm outline-none transition-colors"
+            className="w-full h-11 pr-10 pl-4 bg-white border border-[#e4e3e3] focus:border-[#a7e26e] rounded-xl text-[#222f30] font-sans text-xs sm:text-sm outline-none shadow-xs transition-colors"
           />
-          <Search className="w-4 h-4 text-white/40 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-[#55696a] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
 
         {/* Type Filter Tabs */}
@@ -183,8 +173,8 @@ export default function IqIntelPage() {
               onClick={() => setSelectedFilter(tab.id)}
               className={`px-3 py-1.5 rounded-full transition-all shrink-0 cursor-pointer ${
                 selectedFilter === tab.id
-                  ? "bg-[var(--gold)] text-[var(--surface)] font-bold shadow-xs"
-                  : "bg-[var(--surface)] text-white/70 hover:text-white border border-white/10 hover:border-white/20"
+                  ? "bg-[#222f30] text-white font-bold shadow-xs"
+                  : "bg-white text-[#55696a] hover:bg-[#f0f2f0] hover:text-[#222f30] border border-[#e4e3e3]"
               }`}
             >
               {tab.label}
@@ -194,11 +184,11 @@ export default function IqIntelPage() {
       </div>
 
       {/* 3. Posts Stream */}
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         {filteredPosts.map((post) => (
           <article
             key={post.id}
-            className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-white/10 hover:border-white/20 transition-all space-y-3 shadow-md"
+            className="p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] hover:border-[#a7e26e] hover:shadow-sm transition-all space-y-3 shadow-xs"
           >
             {/* Header: Tag + District + Date */}
             <div className="flex items-center justify-between gap-2 text-[11px] font-mono flex-wrap">
@@ -208,16 +198,16 @@ export default function IqIntelPage() {
                 >
                   {post.typeLabel}
                 </span>
-                <span className="text-white/60">{post.district}</span>
+                <span className="text-[#55696a]">{post.district}</span>
                 {post.rating && (
-                  <span className="inline-flex items-center gap-1 text-amber-300 font-bold">
-                    <Star className="w-3 h-3 fill-amber-300" />
+                  <span className="inline-flex items-center gap-1 text-amber-700 font-bold">
+                    <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
                     {post.rating}
                   </span>
                 )}
               </div>
 
-              <div className="flex items-center gap-2 text-white/40">
+              <div className="flex items-center gap-2 text-[#55696a]">
                 <span>بواسطة: {post.authorAlias}</span>
                 <span>·</span>
                 <span>{post.date}</span>
@@ -225,12 +215,12 @@ export default function IqIntelPage() {
             </div>
 
             {/* Title */}
-            <h3 className="font-kufi font-bold text-base sm:text-lg text-white leading-snug">
+            <h3 className="font-kufi font-bold text-base sm:text-lg text-[#222f30] leading-snug">
               {post.title}
             </h3>
 
             {/* Content body */}
-            <p className="text-xs sm:text-sm text-white/80 leading-relaxed font-sans bg-white/[0.02] p-3.5 rounded-xl border border-white/5">
+            <p className="text-xs sm:text-sm text-[#222f30] leading-relaxed font-sans bg-[#f7f7f5] p-3.5 rounded-xl border border-[#e4e3e3]">
               {post.content}
             </p>
 
@@ -239,7 +229,7 @@ export default function IqIntelPage() {
               <div className="text-xs font-mono pt-1">
                 <Link
                   href="/iq/map"
-                  className="inline-flex items-center gap-1 text-[var(--gold)] hover:underline"
+                  className="inline-flex items-center gap-1 text-[#728825] font-bold hover:underline"
                 >
                   <span>عرض بطاقة المحل في الخريطة ({post.placeName})</span>
                   <span>←</span>
@@ -248,12 +238,12 @@ export default function IqIntelPage() {
             )}
 
             {/* Bottom Actions: Explicit Verification Voting */}
-            <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-3 text-xs font-mono">
+            <div className="pt-2 border-t border-[#e4e3e3] flex items-center justify-between gap-3 text-xs font-mono">
               <div className="flex items-center gap-2">
                 {/* Trusted Vote Button */}
                 <button
                   onClick={() => handleVote(post.id, true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/20 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 transition-colors cursor-pointer font-bold"
                   title="أؤكد هذه المعلومة / جربتها بنفسي"
                 >
                   <ThumbsUp className="w-3.5 h-3.5" />
@@ -263,7 +253,7 @@ export default function IqIntelPage() {
                 {/* Unreliable Vote Button */}
                 <button
                   onClick={() => handleVote(post.id, false)}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-rose-300 border border-white/5 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#f7f7f5] hover:bg-[#f0f2f0] text-[#55696a] hover:text-rose-700 border border-[#e4e3e3] transition-colors cursor-pointer"
                   title="المعلومة غير دقيقة أو قديمة"
                 >
                   <ThumbsDown className="w-3.5 h-3.5" />
@@ -276,7 +266,7 @@ export default function IqIntelPage() {
                   navigator.clipboard?.writeText?.(window.location.href);
                   alert("تم نسخ رابط الدليل للمشاركة على واتساب!");
                 }}
-                className="inline-flex items-center gap-1 text-white/40 hover:text-white transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 text-[#55696a] hover:text-[#222f30] transition-colors cursor-pointer"
                 title="مشاركة الدليل"
               >
                 <Share2 className="w-3.5 h-3.5" />
