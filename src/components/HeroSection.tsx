@@ -42,8 +42,6 @@ export default function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activePillar, setActivePillar] = useState<number | null>(null);
 
-  const isCoarsePointer = () =>
-    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
 
   // Mouse Parallax for subtle 3D cinematic depth
   const mouseX = useMotionValue(0);
@@ -54,7 +52,7 @@ export default function HeroSection() {
   const mouseRafRef = useRef<number | null>(null);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (isCoarsePointer()) return;
+    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return;
     const clientX = e.clientX;
     const clientY = e.clientY;
     if (mouseRafRef.current !== null) return;
@@ -108,13 +106,13 @@ export default function HeroSection() {
     <section
       dir="rtl"
       onMouseMove={handleMouseMove}
-      className="relative w-full min-h-[85dvh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-hidden flex flex-col justify-between py-6 lg:py-0 lg:-mt-16 lg:pt-20 lg:pb-4"
+      className="relative w-full min-h-[85svh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-hidden flex flex-col justify-between py-6 lg:py-0 lg:-mt-16 lg:pt-20 lg:pb-4"
     >
       {/* 1. Looping 3D Sculptural Ribbon Video Background directly from IntegratedBio with Parallax */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <motion.div 
           style={{ x: springX, y: springY }}
-          className="absolute -inset-[6%] w-[112%] h-[112%]"
+          className="absolute inset-0 w-full h-full lg:-inset-[6%] lg:w-[112%] lg:h-[112%]"
         >
           <video
             ref={videoRef}
@@ -167,7 +165,7 @@ export default function HeroSection() {
       <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 my-auto py-2 sm:py-3">
         <h1 
           style={{ color: "#ffffff" }}
-          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.2] sm:leading-[1.14] tracking-tight max-w-4xl font-kufi text-white select-none [text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
+          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.2] sm:leading-[1.14] tracking-tight max-w-4xl font-kufi text-white select-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
         >
           <span className="block overflow-hidden pb-1 -mb-1">
             <motion.span
@@ -227,7 +225,7 @@ export default function HeroSection() {
 
           <p 
             style={{ color: "rgba(255, 255, 255, 0.95)" }}
-            className="text-sm sm:text-lg leading-relaxed font-normal [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
+            className="text-sm sm:text-lg leading-relaxed font-normal [text-shadow:0_1px_4px_rgba(0,0,0,0.8)] sm:[text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
           >
             نحن نبحث، نكتشف، ونصل لنتائج غير مسبوقة يومياً داخل شاشات المحادثة. <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">JEMO هي المنصة التي تذهب إليها بعد أن بحثت</strong> — لتحويل رحلتك من حوار عابر إلى مرجع تقني نخبوي محمي بمعيار التحقق البشري الصارم <bdi dir="ltr" className="inline-block whitespace-nowrap">(Proof of Work)</bdi>.
           </p>
@@ -238,8 +236,8 @@ export default function HeroSection() {
               <Link
                 key={p.id}
                 href={p.href}
-                onMouseEnter={() => { if (isCoarsePointer()) return; setActivePillar(idx) }}
-                onMouseLeave={() => { if (isCoarsePointer()) return; setActivePillar(null) }}
+                onMouseEnter={() => { if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) setActivePillar(idx); }}
+                onMouseLeave={() => { if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) setActivePillar(null); }}
                 className={`group px-3.5 py-2 rounded-full border text-xs font-mono transition-all duration-200 flex items-center gap-2.5 shadow-xs ${
                   activePillar === idx
                     ? "bg-black/90 border-[#bef264] text-white shadow-lg shadow-[#bef264]/15 -translate-y-0.5 scale-[1.02]"

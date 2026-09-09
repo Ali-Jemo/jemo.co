@@ -78,10 +78,10 @@ export default function BioButton({
       target={target}
       onClick={onClick}
       dir={dir}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
+      onMouseEnter={() => { if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) setHovered(true); }}
+      onMouseLeave={() => { if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) setHovered(false); }}
+      onFocus={() => { if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) setHovered(true); }}
+      onBlur={() => { if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) setHovered(false); }}
       className={`u-btn--1 bio-btn-compound inline-flex items-center select-none cursor-pointer group no-underline transition-transform duration-300 active:scale-[0.98] ${className}`}
       style={{
         WebkitTapHighlightColor: "transparent",

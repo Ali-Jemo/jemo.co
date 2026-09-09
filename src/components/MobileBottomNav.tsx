@@ -57,7 +57,7 @@ export default function MobileBottomNav() {
 
       <nav
         aria-label="التنقل السريع على الهاتف"
-        className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0c1415]/95 backdrop-blur-2xl border-t border-white/10 text-white shadow-2xl pb-[env(safe-area-inset-bottom,0px)]"
+        className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0c1415]/95 backdrop-blur-md border-t border-white/10 text-white shadow-2xl pb-[env(safe-area-inset-bottom,0px)]"
         dir="rtl"
       >
         <div className="grid grid-cols-5 h-14 items-center px-1">
