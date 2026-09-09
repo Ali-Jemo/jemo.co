@@ -122,7 +122,7 @@ export default function Footer() {
         </div>
 
         {/* Monumental Wordmark with Curtain Reveal & Interactive Neon Spotlight */}
-        <div className="relative border-t border-[var(--line)]/70 pt-4 sm:pt-6 overflow-hidden select-none">
+        <div className="relative border-t border-[var(--line)]/70 pt-6 sm:pt-8 overflow-hidden select-none">
           <motion.div
             ref={wordmarkRef}
             onMouseMove={handleMouseMove}
@@ -131,29 +131,31 @@ export default function Footer() {
               setIsHovered(false);
               setMousePos(null);
             }}
-            initial={{ y: "100%", opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full text-center overflow-hidden cursor-default group"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            title="اضغط للعودة إلى أعلى الصفحة ↑"
+            initial={{ y: "100%" }}
+            whileInView={{ y: "0%" }}
+            viewport={{ once: true, margin: "120px" }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full text-center overflow-hidden cursor-pointer group py-2"
           >
             {/* Subtle glow backdrop tracking cursor on hover */}
             {isHovered && mousePos && (
               <div
                 className="pointer-events-none absolute -inset-px transition-opacity duration-300 opacity-100"
                 style={{
-                  background: `radial-gradient(circle 380px at ${mousePos.x}px ${mousePos.y}px, rgba(167, 226, 110, 0.15), transparent 70%)`,
+                  background: `radial-gradient(circle 380px at ${mousePos.x}px ${mousePos.y}px, rgba(167, 226, 110, 0.18), transparent 70%)`,
                 }}
               />
             )}
 
             <h2
-              className="text-[17vw] leading-[0.82] font-black tracking-[-0.05em] group-hover:tracking-[-0.02em] transition-[letter-spacing,background] duration-500 select-none text-transparent bg-clip-text py-2"
+              className="text-[16vw] xl:text-[17vw] leading-[0.82] font-black font-mono tracking-[-0.04em] group-hover:tracking-[-0.02em] transition-[letter-spacing,background] duration-300 select-none text-transparent bg-clip-text py-2"
               style={{
                 backgroundImage:
                   isHovered && mousePos
-                    ? `radial-gradient(circle 320px at ${mousePos.x}px ${mousePos.y}px, #a7e26e 0%, rgba(68, 94, 95, 0.45) 50%, rgba(34, 47, 48, 0.14) 100%)`
-                    : "linear-gradient(180deg, rgba(34, 47, 48, 0.20) 0%, rgba(34, 47, 48, 0.06) 100%)",
+                    ? `radial-gradient(circle 340px at ${mousePos.x}px ${mousePos.y}px, #a7e26e 0%, #222f30 55%, rgba(34, 47, 48, 0.25) 100%)`
+                    : "linear-gradient(180deg, rgba(34, 47, 48, 0.30) 0%, rgba(34, 47, 48, 0.18) 100%)",
               }}
             >
               jemo.co
