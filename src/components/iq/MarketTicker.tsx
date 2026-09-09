@@ -343,11 +343,6 @@ export default function MarketTicker() {
             </strong>
           </span>
         </div>
-        {liveDollar?.sourceName && (
-          <span className="text-[10px] text-[#55696a]">
-            المصدر: {liveDollar.sourceName}
-          </span>
-        )}
       </div>
     </section>
   );
