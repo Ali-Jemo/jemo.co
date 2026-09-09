@@ -18,14 +18,14 @@ interface ToolCard {
 const TOOLS: ToolCard[] = [
   {
     id: "friend-dollar",
-    title: "منصة الصديق لمتابعة الدولار",
+    title: "آيا نصير — منصة متابعة الدولار",
     badge: "شراكة وتكامل",
-    badgeColor: "bg-[#bef264]/15 text-[#bef264] border-[#bef264]/30",
-    desc: "رسوم بيانية تاريخية وتفاصيل دقيقة لحركة الصرف لحظة بلحظة في كل البورصات والمحافظات.",
-    href: "https://dinar.today", // Placeholder customizable link
+    badgeColor: "bg-emerald-400/15 text-emerald-300 border-emerald-400/30",
+    desc: "منصة صديقنا لمتابعة سعر السوق المحلي، حركة الـ 7 أيام، ودفتر المعاملات اليومية.",
+    href: "https://ayanadollar-dhkgohtw.manus.space/dashboard",
     isExternal: true,
     icon: Coins,
-    partnerNote: "أنت الصباح، وهو العمق — شريكنا في بيانات الصرف",
+    partnerNote: "أنت الصباح، وهو العمق — شريكنا ومصدر أرقام الصرف",
   },
   {
     id: "ur-gov",

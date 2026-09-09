@@ -20,6 +20,7 @@ import {
   Compass,
   MessageSquare,
   Send,
+  ExternalLink,
 } from "lucide-react";
 
 interface CommunityPlacesViewProps {
@@ -56,6 +57,7 @@ export default function CommunityPlacesView({
   const [selectedGov, setSelectedGov] = useState<string>(initialGovernorate || "الكل");
   const [minRating, setMinRating] = useState<number>(0); // 0 = all, 4.8 = highs, 4.5, 4.0
   const [sortBy, setSortBy] = useState<"highest" | "nearest" | "reviews">("highest");
+  const [sourceFilter, setSourceFilter] = useState<"all" | "google" | "community">("all");
 
   // User location / reference point for "nearest" calculation
   const [userLocation, setUserLocation] = useState<{
@@ -137,6 +139,11 @@ export default function CommunityPlacesView({
         const matchGov = selectedGov === "الكل" || spot.governorate === selectedGov;
         // Rating threshold (Choose the highs!)
         const matchRating = spot.rating >= minRating;
+        // Source filter (Google vs Our community)
+        const matchSource =
+          sourceFilter === "all" ||
+          (sourceFilter === "google" && spot.source === "google") ||
+          (sourceFilter === "community" && spot.source === "community");
         // Search query
         const query = searchQuery.trim().toLowerCase();
         const matchSearch =
@@ -147,7 +154,7 @@ export default function CommunityPlacesView({
           spot.notes.toLowerCase().includes(query) ||
           spot.governorate.toLowerCase().includes(query);
 
-        return matchCat && matchGov && matchRating && matchSearch;
+        return matchCat && matchGov && matchRating && matchSource && matchSearch;
       })
       .map((spot) => ({
         ...spot,
@@ -214,6 +221,7 @@ export default function CommunityPlacesView({
       status: "مفتوح الآن",
       notes: newPlaceNotes.trim() || "محل معتمد من مجتمع المنطقة.",
       isVerified: true,
+      source: "community",
       reviews: [
         {
           id: `rev-init-${Date.now()}`,
@@ -418,7 +426,44 @@ export default function CommunityPlacesView({
           </div>
         </div>
 
-        {/* Row 2: Governorate & Category Chips */}
+          {/* Source Filter Buttons */}
+          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/40 border border-white/10 text-xs font-mono shrink-0">
+            <span className="text-white/40 text-[11px] px-1">المصدر:</span>
+            <button
+              onClick={() => setSourceFilter("all")}
+              className={`px-3 py-1 rounded-xl transition-all cursor-pointer ${
+                sourceFilter === "all"
+                  ? "bg-[#bef264] text-[#0c1415] font-bold shadow-xs"
+                  : "text-white/60 hover:text-white"
+              }`}
+            >
+              الكل ({spots.length})
+            </button>
+            <button
+              onClick={() => setSourceFilter("google")}
+              className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1 cursor-pointer ${
+                sourceFilter === "google"
+                  ? "bg-sky-500 text-white font-bold shadow-xs"
+                  : "text-white/60 hover:text-white"
+              }`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-300" />
+              <span>معالم Google ({spots.filter((s) => s.source === "google").length})</span>
+            </button>
+            <button
+              onClick={() => setSourceFilter("community")}
+              className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1 cursor-pointer ${
+                sourceFilter === "community"
+                  ? "bg-emerald-500 text-white font-bold shadow-xs"
+                  : "text-white/60 hover:text-white"
+              }`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300" />
+              <span>توثيقات هسه ({spots.filter((s) => s.source === "community").length})</span>
+            </button>
+          </div>
+
+          {/* Governorates */}
         <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
           {/* Governorates */}
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs font-mono">
@@ -522,14 +567,19 @@ export default function CommunityPlacesView({
               {/* Proximity / High Rank Badge */}
               <div className="flex items-center justify-between gap-2 text-xs font-mono">
                 <div className="flex items-center gap-1.5">
-                  <span className="px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/80 text-[11px]">
-                    {spot.category}
+                  <span
+                    className={`px-2.5 py-0.5 rounded-md border text-[11px] font-bold ${
+                      spot.source === "google"
+                        ? "bg-sky-500/20 text-sky-300 border-sky-500/30"
+                        : "bg-white/5 text-white/80 border-white/10"
+                    }`}
+                  >
+                    {spot.source === "google" ? "معلم Google" : spot.category}
                   </span>
                   <span className="px-2 py-0.5 rounded-md bg-white/[0.03] text-white/50 text-[10px]">
                     {spot.governorate}
                   </span>
                 </div>
-
                 {/* Distance Badge */}
                 <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold text-[11px]">
                   <Navigation className="w-3 h-3" />
@@ -597,24 +647,42 @@ export default function CommunityPlacesView({
                 </div>
 
                 {/* Direct WhatsApp & Call Buttons */}
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                  {/* Open in Google Maps */}
                   <a
-                    href={`https://wa.me/${spot.whatsapp}`}
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      spot.name + " " + spot.district
+                    )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold transition-all active:scale-95"
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/30 text-sky-300 text-[11px] font-bold transition-all"
+                    title="فتح في خرائط Google"
                   >
-                    <MessageCircle className="w-3.5 h-3.5" />
-                    <span>واتساب</span>
+                    <ExternalLink className="w-3 h-3" />
+                    <span>خرائط Google</span>
                   </a>
 
-                  <a
-                    href={`tel:${spot.phone}`}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-[11px] transition-all"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>اتصال</span>
-                  </a>
+                  {spot.whatsapp && spot.whatsapp !== "9647700000000" && (
+                    <a
+                      href={`https://wa.me/${spot.whatsapp}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-emerald-300 text-[11px] font-bold transition-all active:scale-95"
+                    >
+                      <MessageCircle className="w-3 h-3" />
+                      <span>واتساب</span>
+                    </a>
+                  )}
+
+                  {spot.phone && spot.phone !== "—" && (
+                    <a
+                      href={`tel:${spot.phone}`}
+                      className="inline-flex items-center gap-1 px-2 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-[11px] transition-all"
+                    >
+                      <Phone className="w-3 h-3" />
+                      <span>اتصال</span>
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

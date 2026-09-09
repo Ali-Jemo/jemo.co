@@ -1,21 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeftRight, Calculator, Check, Copy } from "lucide-react";
 
-const RATE = 1532.5; // 1 USD = 1,532.5 IQD (153,250 IQD per 100$)
-
 export default function CurrencyConverter() {
+  const [rate, setRate] = useState<number>(1556.5);
   const [direction, setDirection] = useState<"usdToIqd" | "iqdToUsd">("usdToIqd");
   const [amount, setAmount] = useState<string>("100");
   const [copied, setCopied] = useState<boolean>(false);
 
+  useEffect(() => {
+    async function loadRate() {
+      try {
+        const res = await fetch("/api/iq/dollar");
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.sellRate) {
+            setRate(data.sellRate / 100);
+          }
+        }
+      } catch {}
+    }
+    loadRate();
+  }, []);
+
   const numAmount = parseFloat(amount.replace(/,/g, "")) || 0;
   const result =
     direction === "usdToIqd"
-      ? Math.round(numAmount * RATE)
-      : Math.round((numAmount / RATE) * 100) / 100;
-
+      ? Math.round(numAmount * rate)
+      : Math.round((numAmount / rate) * 100) / 100;
   const handleCopy = () => {
     const text =
       direction === "usdToIqd"
@@ -41,7 +54,7 @@ export default function CurrencyConverter() {
           <div>
             <h3 className="font-kufi font-bold text-sm text-white">حاسبة الصرف السريعة</h3>
             <p className="text-[10px] font-mono text-white/50">
-              حساب فوري بسعر الصيرفات (100$ = 153,250 د.ع)
+              حساب فوري بسعر السوق الأخير (100$ = {(rate * 100).toLocaleString()} د.ع)
             </p>
           </div>
         </div>

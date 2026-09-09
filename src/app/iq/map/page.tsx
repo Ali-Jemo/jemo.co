@@ -143,6 +143,7 @@ export default function IqMapPage() {
               // Option to directly switch to places view and view this spot
               setSelectedGovernorate(spot.governorate);
             }}
+            onAddSpotClick={() => setActiveView("places")}
           />
 
           {/* Bottom helper prompt to explore community ratings */}
