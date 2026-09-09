@@ -7,6 +7,7 @@ vi.mock("next/navigation", () => ({
     replace: vi.fn(),
     prefetch: vi.fn(),
   }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 import { renderToStaticMarkup } from "react-dom/server";
 import React from "react";
@@ -19,7 +20,9 @@ import Accordion from "../src/components/ui/Accordion";
 import TermsPage from "../src/app/terms/page";
 import PrivacyPage from "../src/app/privacy/page";
 import NewsletterPage from "../src/app/newsletter/page";
-
+import LoginPage from "../src/app/login/page";
+import SignupPage from "../src/app/signup/page";
+import DashboardPage from "../src/app/dashboard/page";
 describe("Institutional UI Components", () => {
   it("renders Button variants with correct css classes", () => {
     const html = renderToStaticMarkup(
@@ -89,5 +92,22 @@ describe("Institutional UI Components", () => {
     expect(html).toContain("النشرة الإخبارية والعلمية للشركة");
     expect(html).toContain("أرشيف الأعداد السابقة");
     expect(html).toContain("اشترك");
+  });
+
+  it("renders LoginPage with email input and demo researcher access", () => {
+    const html = renderToStaticMarkup(React.createElement(LoginPage));
+    expect(html).toContain("تسجيل الدخول للمنصة");
+    expect(html).toContain("دخول تجريبي كباحث: عمر الكرخي");
+  });
+
+  it("renders SignupPage with researcher profile fields", () => {
+    const html = renderToStaticMarkup(React.createElement(SignupPage));
+    expect(html).toContain("أنشئ ملفك البحثي المستقل");
+    expect(html).toContain("المعرف (@handle)");
+  });
+
+  it("renders DashboardPage with researcher portal", () => {
+    const html = renderToStaticMarkup(React.createElement(DashboardPage));
+    expect(html).toContain("لوحة تحكم الباحث");
   });
 });

@@ -172,8 +172,8 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
     : responses.filter((r) => r.type === filterType);
 
   return (
-    <main className="flex-1 py-12 sm:py-16 bg-[#f7f7f5] text-[#222f30]" dir="rtl">
-      <div className="max-w-4xl mx-auto px-6">
+    <main className="flex-1 py-8 sm:py-16 bg-[#f7f7f5] text-[#222f30]" dir="rtl">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
         
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between gap-4 mb-8">
@@ -206,8 +206,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
         </div>
 
         {/* Paper / Research Object Main Header */}
-        <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#e4e3e3] shadow-sm mb-8 space-y-6">
-          
+        <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-sm mb-6 sm:mb-8 space-y-5 sm:space-y-6">
           {/* Badges strip */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="px-3 py-1 rounded-full bg-[#cef79e] text-[#222f30] text-xs font-mono font-bold flex items-center gap-1.5 border border-[#a7e26e]">
@@ -229,7 +228,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
           {/* Title */}
           <div>
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-[#222f30] font-kufi leading-snug mb-3">
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-[#222f30] font-kufi leading-snug mb-2 sm:mb-3">
               {paper.title}
             </h1>
             <p className="text-xs sm:text-sm font-mono text-[#738284] dir-ltr text-right">
@@ -329,9 +328,8 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
         {/* The 7 Core Structured Sections of the Research Object */}
         <div className="space-y-6 mb-12">
-          
           {/* Section 1: The Question */}
-          <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
+          <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">1</span>
               <span>ما السؤال أو المعضلة الأساسية؟ (The Question)</span>
@@ -342,12 +340,11 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           </section>
 
           {/* Section 2: AI Tools & Workflow */}
-          <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-4">
+          <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-4">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">2</span>
               <span>الأدوات ونماذج الذكاء الاصطناعي (AI Tools & Workflow)</span>
             </div>
-
             <div className="flex flex-wrap gap-2">
               {(paper.toolsUsed || ["Claude 3.5 Sonnet", "ChatGPT-4o", "DeepSeek-R1", "المصادر المفتوحة"]).map((tool, idx) => (
                 <span
@@ -369,7 +366,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           </section>
 
           {/* Section 3: Methodology & Experiments */}
-          <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
+          <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">3</span>
               <span>المنهجية ومسار التجربة (Methodology & Process)</span>
@@ -380,7 +377,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           </section>
 
           {/* Section 4: Key Findings & Solution */}
-          <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
+          <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">4</span>
               <span>الخلاصة والنتيجة المكتشفة (Findings & Takeaways)</span>
@@ -391,7 +388,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           </section>
 
           {/* Section 5: Human Verification & Hallucination Debunking (CRITICAL) */}
-          <section className="p-6 sm:p-8 rounded-3xl bg-emerald-50/60 border border-emerald-200 shadow-xs space-y-4">
+          <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-emerald-50/60 border border-emerald-200 shadow-xs space-y-4">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-emerald-900 uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">5</span>
               <span>التحقق البشري الصارم وتصحيح الهلوسة (Human Verification & Debunking)</span>
@@ -417,7 +414,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
           {/* Section 6: Research Trail */}
           {paper.researchTrail && paper.researchTrail.length > 0 && (
-            <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-4">
+            <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-4">
               <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
                 <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">6</span>
                 <span>مسار البحث (Research Trail)</span>
@@ -437,7 +434,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
           {/* Section 7: Limitations & Open Frontiers */}
           {paper.limitations && (
-            <section className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
+            <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
               <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
                 <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">7</span>
                 <span>الحدود وما لم يُحسم بعد (Limitations & Open Questions)</span>
@@ -629,7 +626,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
         </div>
 
         {/* Peer Review & Scientific Discussions (Scientific Responses over Casual Comments) */}
-        <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#e4e3e3] shadow-sm mb-12 space-y-6">
+        <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-sm mb-8 sm:mb-12 space-y-5 sm:space-y-6">
           
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e4e3e3] pb-4">
             <div>

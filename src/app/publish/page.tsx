@@ -74,17 +74,17 @@ export default function PublishResearchPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 bg-[#f7f7f5] pt-24 sm:pt-28 pb-20 text-[#222f30]" dir="rtl">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+      <main className="flex-1 bg-[#f7f7f5] pt-20 sm:pt-28 pb-16 sm:pb-20 text-[#222f30]" dir="rtl">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
           
           {/* Top Header & Positioning Banner */}
-          <div className="max-w-4xl mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] mb-4 shadow-xs">
+          <div className="max-w-4xl mb-8 sm:mb-12">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-[11px] sm:text-xs uppercase tracking-widest text-[#445e5f] mb-3 sm:mb-4 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
               <span>سجل الاكتشافات المفتوح · PROOF OF WORK REGISTRY</span>
             </div>
             
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#222f30] mb-6 tracking-tight leading-tight font-kufi">
+            <h1 className="text-2xl sm:text-5xl lg:text-6xl font-black text-[#222f30] mb-4 sm:mb-6 tracking-tight leading-tight font-kufi">
               وثّق بحثك. احفظ سبقك الفكري.
             </h1>
             
@@ -103,10 +103,10 @@ export default function PublishResearchPage() {
           </div>
 
           {/* Tab Switcher */}
-          <div className="flex items-center gap-3 mb-8 border-b border-[#e4e3e3] pb-4">
+          <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8 border-b border-[#e4e3e3] pb-3 sm:pb-4 overflow-x-auto no-scrollbar">
             <button
               onClick={() => setActiveTab("form")}
-              className={`px-5 py-2 rounded-full text-xs font-bold transition-all ${
+              className={`px-3.5 sm:px-5 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap shrink-0 ${
                 activeTab === "form"
                   ? "bg-[#222f30] text-white shadow-sm"
                   : "bg-white text-[#55696a] border border-[#e4e3e3] hover:text-[#222f30]"
@@ -116,7 +116,7 @@ export default function PublishResearchPage() {
             </button>
             <button
               onClick={() => setActiveTab("preview")}
-              className={`px-5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all ${
+              className={`px-3.5 sm:px-5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
                 activeTab === "preview"
                   ? "bg-[#222f30] text-white shadow-sm"
                   : "bg-white text-[#55696a] border border-[#e4e3e3] hover:text-[#222f30]"
@@ -127,7 +127,7 @@ export default function PublishResearchPage() {
             </button>
             <button
               onClick={() => setActiveTab("guidelines")}
-              className={`px-5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all ${
+              className={`px-3.5 sm:px-5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
                 activeTab === "guidelines"
                   ? "bg-[#222f30] text-white shadow-sm"
                   : "bg-white text-[#55696a] border border-[#e4e3e3] hover:text-[#222f30]"
@@ -145,7 +145,7 @@ export default function PublishResearchPage() {
             <div className="lg:col-span-8">
               
               {activeTab === "form" && (
-                <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#e4e3e3] shadow-sm">
+                <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-sm">
                   {submitted ? (
                     <div className="text-center py-12 space-y-6">
                       <div className="w-16 h-16 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center mx-auto shadow-sm">

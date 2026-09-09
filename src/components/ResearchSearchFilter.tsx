@@ -243,18 +243,18 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
       <button
         onClick={() => setFiltersOpen((o) => !o)}
         aria-expanded={filtersOpen}
-        className="lg:hidden flex items-center justify-between border-2 border-[var(--ink)] bg-white px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-widest text-[var(--ink-1)]"
+        className="lg:hidden flex items-center justify-between border border-[#e4e3e3] bg-white rounded-2xl px-4 py-3 font-mono text-xs font-bold text-[#222f30] shadow-xs active:scale-[0.98] transition-all min-h-[44px]"
       >
         <span className="flex items-center gap-2">
-          <Filter className="w-4 h-4" />
-          {filtersOpen ? "إخفاء الفلاتر" : "عرض الفلاتر والتصنيف"}
+          <Filter className="w-4 h-4 text-[#a7e26e]" />
+          <span>{filtersOpen ? "إخفاء الفلاتر" : "عرض الفلاتر والتصنيف"}</span>
           {hasActiveFilters && (
-            <span className="bg-[var(--brand)] text-white text-[10px] px-1.5 py-0.5 rounded-full">
+            <span className="bg-[#222f30] text-[#bef264] text-[10px] px-2 py-0.5 rounded-full font-bold">
               {[query.trim(), selectedField !== "all" ? selectedField : "", selectedType !== "all" ? selectedType : ""].filter(Boolean).length}
             </span>
           )}
         </span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-4 h-4 text-[#738284] transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
       </button>
 
       {/* Sidebar (Search & Filters) */}
@@ -429,7 +429,7 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
       {/* Main Feed Section */}
       <main className="lg:w-3/4 flex-1">
         {/* Top Discovery Lenses Tabs (Reddit in Discovery) */}
-        <div className="flex flex-wrap items-center gap-2 mb-6 border-b border-[#e4e3e3] pb-3 font-mono">
+        <div className="flex items-center gap-2 mb-6 border-b border-[#e4e3e3] pb-3 font-mono overflow-x-auto no-scrollbar flex-nowrap sm:flex-wrap">
           <button
             onClick={() => setLens("trending")}
             className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${

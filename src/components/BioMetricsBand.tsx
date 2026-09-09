@@ -42,17 +42,17 @@ export default function BioMetricsBand() {
   return (
     <section
       dir="rtl"
-      className="py-16 sm:py-24 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
+      className="py-12 sm:py-24 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
     >
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4 sm:gap-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] mb-3 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
               <span>هوية المؤسسة · ABOUT JEMO LABS</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black text-[#222f30] font-kufi">
+            <h2 className="text-xl sm:text-4xl font-black text-[#222f30] font-kufi">
               بيت حكمةٍ لجميع العلوم، يُبنى بسواعد علمائه.
             </h2>
           </div>
@@ -62,7 +62,7 @@ export default function BioMetricsBand() {
         </div>
 
         {/* 4-Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {STATS.map((s, idx) => {
             const Icon = s.icon;
             return (
@@ -72,7 +72,7 @@ export default function BioMetricsBand() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className={`p-6 sm:p-8 rounded-3xl bg-white border ${
+                className={`p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border ${
                   s.highlight
                     ? "border-[#a7e26e] shadow-md ring-1 ring-[#a7e26e]/30"
                     : "border-[#e4e3e3] shadow-xs"

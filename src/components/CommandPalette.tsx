@@ -13,6 +13,7 @@ import {
   X,
   ArrowRight,
   Command,
+  HelpCircle,
 } from "lucide-react";
 import {
   RESEARCH_PAPERS,
@@ -21,11 +22,12 @@ import {
   RESEARCHERS,
   BENCHMARKS,
   INITIATIVES,
+  OPEN_QUESTIONS,
 } from "@/lib/data/research-data";
 
 interface SearchResult {
   id: string;
-  type: "paper" | "project" | "lab" | "researcher" | "benchmark" | "initiative";
+  type: "paper" | "project" | "lab" | "researcher" | "benchmark" | "initiative" | "question";
   typeLabel: string;
   title: string;
   subtitle: string;
@@ -42,6 +44,17 @@ export default function CommandPalette() {
   // Aggregate searchable items
   const allItems = useMemo<SearchResult[]>(() => {
     const items: SearchResult[] = [];
+    OPEN_QUESTIONS.forEach((q) => {
+      items.push({
+        id: `question-${q.id}`,
+        type: "question",
+        typeLabel: "مسألة مفتوحة",
+        title: q.title,
+        subtitle: q.description,
+        url: `/questions`,
+        icon: HelpCircle,
+      });
+    });
 
     RESEARCH_PAPERS.forEach((p) => {
       items.push({
@@ -177,12 +190,12 @@ export default function CommandPalette() {
     <>
       {/* Modal Dialog */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-20 px-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-3 sm:pt-20 px-2.5 sm:px-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div
             className="fixed inset-0"
             onClick={() => setIsOpen(false)}
           />
-          <div className="relative w-full max-w-2xl bg-[var(--bg)] border border-[var(--line)] rounded-2xl shadow-2xl overflow-hidden z-10 font-sans">
+          <div className="relative w-full max-w-2xl bg-[var(--bg)] border border-[var(--line)] rounded-2xl shadow-2xl overflow-hidden z-10 font-sans max-h-[85vh] flex flex-col">
             {/* Search Input Bar */}
             <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[var(--line)] bg-[var(--surface)]">
               <Search className="w-5 h-5 text-[var(--brand)] shrink-0" />

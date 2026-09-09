@@ -164,22 +164,22 @@ export default function HeroSection() {
       </div>
 
       {/* 2. Top Institutional Clearance & Live Audio Telemetry Badge */}
-      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 pt-3 sm:pt-5 flex items-center justify-between flex-wrap gap-4">
+      <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 pt-3 sm:pt-5 flex items-center justify-between flex-wrap gap-3">
         
         {/* Institutional Pill */}
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-white/20 bg-black/30 backdrop-blur-md text-xs shadow-xs"
+          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border border-white/20 bg-black/30 backdrop-blur-md text-xs shadow-xs max-w-full overflow-hidden"
         >
-          <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse" aria-hidden />
-          <span className="font-mono text-[11px] font-bold tracking-wider text-white/95 uppercase">
-            OPEN DISCOVERY ARCHIVE · سجل الاكتشافات المفتوح
+          <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse shrink-0" aria-hidden />
+          <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-wider text-white/95 uppercase truncate">
+            OPEN DISCOVERY ARCHIVE
           </span>
-          <span className="h-3 w-px bg-white/20" aria-hidden />
-          <span className="text-[11px] text-white/90 font-medium">
-            منصة توثيق وتدقيق أبحاث النظم والبرمجة والذكاء الاصطناعي
+          <span className="h-3 w-px bg-white/20 shrink-0" aria-hidden />
+          <span className="text-[10px] sm:text-[11px] text-white/90 font-medium truncate">
+            سجل أبحاث النظم والبرمجة والـ AI
           </span>
         </motion.div>
 
@@ -215,10 +215,10 @@ export default function HeroSection() {
       </div>
 
       {/* 3. Center: Massive Monumental Display Headline with Line-Mask Entrance */}
-      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 my-auto py-2 sm:py-3">
+      <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 my-auto py-2 sm:py-3">
         <h1 
           style={{ color: "#ffffff" }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.14] tracking-tight max-w-4xl font-kufi text-white select-none [text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
+          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.2] sm:leading-[1.14] tracking-tight max-w-4xl font-kufi text-white select-none [text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
         >
           <span className="block overflow-hidden pb-1 -mb-1">
             <motion.span
@@ -245,10 +245,10 @@ export default function HeroSection() {
       </div>
 
       {/* 4. Bottom Row: Subtitle + Pillars Quick-Switcher + Split-Pill Action Button */}
-      <div className="relative z-10 w-full px-6 sm:px-10 lg:px-16 pb-8 sm:pb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
+      <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 pb-8 sm:pb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
         
         {/* Right side (start in RTL): Subtitle + 3 Research Pillars Navigation Pills */}
-        <div className="flex flex-col gap-3.5 max-w-xl relative">
+        <div className="flex flex-col gap-3.5 max-w-xl relative w-full lg:w-auto">
           {/* Floating Hover Preview Card */}
           <AnimatePresence>
             {activePillar !== null && (
@@ -278,7 +278,7 @@ export default function HeroSection() {
 
           <p 
             style={{ color: "rgba(255, 255, 255, 0.95)" }}
-            className="text-base sm:text-lg leading-relaxed font-normal [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
+            className="text-sm sm:text-lg leading-relaxed font-normal [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
           >
             نحن نبحث، نكتشف، ونصل لنتائج غير مسبوقة يومياً داخل شاشات المحادثة. <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">JEMO هي المنصة التي تذهب إليها بعد أن بحثت</strong> — لتحويل رحلتك من حوار عابر إلى مرجع تقني نخبوي محمي بمعيار التحقق البشري الصارم (Proof of Work).
           </p>
@@ -309,7 +309,7 @@ export default function HeroSection() {
           </div>
         </div>
         {/* Left side (end in RTL): The Iconic IntegratedBio Chamfered BioButtons (Image #2) */}
-        <div className="flex flex-wrap items-center gap-3.5 shrink-0">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full sm:w-auto">
           <BioButton
             href="/publish"
             label="SHARE DISCOVERY"

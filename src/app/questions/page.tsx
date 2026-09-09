@@ -78,21 +78,21 @@ export default function OpenQuestionsPage() {
   return (
     <>
       <Header />
-      <main className="flex-1 bg-[#f7f7f5] pt-24 sm:pt-28 pb-20 text-[#222f30]" dir="rtl">
-        <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+      <main className="flex-1 bg-[#f7f7f5] pt-20 sm:pt-28 pb-16 sm:pb-20 text-[#222f30]" dir="rtl">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
           
           {/* Top Hero Banner */}
-          <div className="max-w-4xl mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] mb-4 shadow-xs">
+          <div className="max-w-4xl mb-8 sm:mb-12">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-[11px] sm:text-xs uppercase tracking-widest text-[#445e5f] mb-3 sm:mb-4 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
               <span>الأسئلة المفتوحة · OPEN RESEARCH PROBLEMS</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#222f30] mb-6 tracking-tight leading-tight font-kufi">
+            <h1 className="text-2xl sm:text-5xl lg:text-6xl font-black text-[#222f30] mb-4 sm:mb-6 tracking-tight leading-tight font-kufi">
               معضلات علمية بانتظار من يستكشفها.
             </h1>
 
-            <p className="text-base sm:text-xl text-[#445e5f] leading-relaxed max-w-3xl">
+            <p className="text-sm sm:text-xl text-[#445e5f] leading-relaxed max-w-3xl">
               في JEMO، لا نكتفي بنشر النتائج الجاهزة، بل نطرح <strong className="text-[#222f30]">الأسئلة المفتوحة (Open Problems)</strong> ككيان مستقل: معضلات لم تُحسم بعد، ليعمل عليها الباحثون والمطورون معاً عبر تجارب متتالية، تكرارات، وتحديات نقدية.
             </p>
 
@@ -115,7 +115,7 @@ export default function OpenQuestionsPage() {
 
           {/* Suggest Question Modal / Slide */}
           {showSuggestForm && (
-            <div className="mb-10 p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-md max-w-3xl">
+            <div className="mb-8 sm:mb-10 p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-md max-w-3xl">
               <h3 className="text-lg font-bold text-[#222f30] font-kufi mb-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-[#a7e26e]" />
                 طرح مسألة أو سؤال مفتوح لمجتمع البحث:
@@ -190,7 +190,7 @@ export default function OpenQuestionsPage() {
           )}
 
           {/* Search & Filters Bar */}
-          <div className="p-4 sm:p-5 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+          <div className="p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs mb-6 sm:mb-8 flex flex-col md:flex-row gap-3.5 sm:gap-4 items-stretch md:items-center justify-between">
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-[#738284] absolute right-3.5 top-1/2 -translate-y-1/2" />
               <input
@@ -201,7 +201,6 @@ export default function OpenQuestionsPage() {
                 className="w-full pr-10 pl-4 py-2 text-xs rounded-full border border-[#e4e3e3] bg-[#fcfdfc] focus:outline-none focus:border-[#a7e26e]"
               />
             </div>
-
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-mono text-[#738284] flex items-center gap-1">
                 <Filter className="w-3.5 h-3.5 text-[#a7e26e]" />
@@ -224,11 +223,11 @@ export default function OpenQuestionsPage() {
           </div>
 
           {/* Questions Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {filteredQuestions.map((q) => (
               <article
                 key={q.id}
-                className="p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] hover:shadow-md transition-all flex flex-col justify-between group"
+                className="p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] hover:shadow-md transition-all flex flex-col justify-between group"
               >
                 <div className="space-y-4">
                   {/* Top Meta */}
@@ -248,7 +247,7 @@ export default function OpenQuestionsPage() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-bold font-kufi text-[#222f30] group-hover:text-[#1c6442] transition-colors leading-snug">
+                  <h2 className="text-lg sm:text-xl font-bold font-kufi text-[#222f30] group-hover:text-[#1c6442] transition-colors leading-snug">
                     {q.title}
                   </h2>
 
@@ -257,17 +256,17 @@ export default function OpenQuestionsPage() {
                   </p>
 
                   {/* Metrics Badges */}
-                  <div className="grid grid-cols-3 gap-2 py-3 border-y border-[#e4e3e3] text-center font-mono">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 py-3 border-y border-[#e4e3e3] text-center font-mono">
                     <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-base font-extrabold text-[#222f30]">{q.researchCount}</div>
+                      <div className="text-sm sm:text-base font-extrabold text-[#222f30]">{q.researchCount}</div>
                       <div className="text-[10px] text-[#738284]">أبحاث موثقة</div>
                     </div>
                     <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-base font-extrabold text-[#222f30]">{q.experimentsCount}</div>
+                      <div className="text-sm sm:text-base font-extrabold text-[#222f30]">{q.experimentsCount}</div>
                       <div className="text-[10px] text-[#738284]">تجارب واختبارات</div>
                     </div>
                     <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-base font-extrabold text-emerald-700">{q.replicationsCount}</div>
+                      <div className="text-sm sm:text-base font-extrabold text-emerald-700">{q.replicationsCount}</div>
                       <div className="text-[10px] text-[#738284]">تكرارات ناجحة</div>
                     </div>
                   </div>

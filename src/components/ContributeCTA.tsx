@@ -4,9 +4,9 @@ import BioButton from "@/components/BioButton";
 
 export default function ContributeCTA() {
   return (
-    <section className="py-20 sm:py-28 bg-[#f7f7f5] border-b border-[#e4e3e3]" dir="rtl">
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
-        <div className="relative rounded-[2.5rem] bg-[#222f30] text-white p-8 sm:p-14 lg:p-20 overflow-hidden shadow-2xl">
+    <section className="py-12 sm:py-28 bg-[#f7f7f5] border-b border-[#e4e3e3]" dir="rtl">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
+        <div className="relative rounded-2xl sm:rounded-[2.5rem] bg-[#222f30] text-white p-6 sm:p-14 lg:p-20 overflow-hidden shadow-2xl">
           
           {/* Ambient subtle mesh reflection */}
           <div className="absolute inset-0 pointer-events-none opacity-20">
@@ -25,20 +25,20 @@ export default function ContributeCTA() {
 
               <h2
                 style={{ color: "#ffffff" }}
-                className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight font-kufi !text-white"
+                className="text-2xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight font-kufi !text-white"
               >
                 حاسوبك مع واجهة AI يصنع مختبراً لشخص واحد.
               </h2>
               <p
                 style={{ color: "rgba(255, 255, 255, 0.9)" }}
-                className="text-base sm:text-lg !text-white/90 leading-relaxed max-w-2xl font-normal"
+                className="text-sm sm:text-lg !text-white/90 leading-relaxed max-w-2xl font-normal"
               >
                 لا تدع مجهود 8 ساعات في تفكيك خوارزمية، حل علة في نواة نظام، أو تقييم نموذج ذكي يتبخر في شاشة المحادثة. وثّق مسارك عبر قالب التحقق البشري الصارم (Proof of Work) وانشره كمرجع تقني نخبوي يحفظ سبقك الفكري.
               </p>
             </div>
 
             {/* Actions using BioButton */}
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-4 lg:items-end justify-start">
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3.5 lg:items-end justify-start w-full lg:w-auto">
               <BioButton
                 href="/publish"
                 label="PUBLISH PROOF"

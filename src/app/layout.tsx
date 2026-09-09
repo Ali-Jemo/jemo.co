@@ -4,7 +4,8 @@ import "./globals.css";
 import LenisProvider from "@/lib/lenis-provider";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ScrollProgress from "@/components/ScrollProgress";
-
+import { AuthProvider } from "@/lib/auth-context";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 const noto = Noto_Kufi_Arabic({
   subsets: ["arabic"],
@@ -104,7 +105,12 @@ export default function RootLayout({
         <ScrollProgress />
         <AnalyticsTracker />
         <LenisProvider>
-          {children}
+          <AuthProvider>
+            <div className="flex-1 flex flex-col pb-16 md:pb-0">
+              {children}
+            </div>
+            <MobileBottomNav />
+          </AuthProvider>
         </LenisProvider>
       </body>
     </html>

@@ -47,15 +47,15 @@ export default function BioUSPCards() {
   return (
     <section
       dir="rtl"
-      className="w-full bg-[#f7f7f5] py-16 sm:py-24 px-6 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
+      className="w-full bg-[#f7f7f5] py-12 sm:py-24 px-4 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
     >
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-8">
           {CARDS.map((card) => (
             <Link
               key={card.num}
               href={card.href}
-              className={`group ${card.bg} ${card.textColor} border ${card.borderColor} rounded-[2rem] p-8 sm:p-10 flex flex-col justify-between min-h-[440px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
+              className={`group ${card.bg} ${card.textColor} border ${card.borderColor} rounded-2xl sm:rounded-[2rem] p-6 sm:p-10 flex flex-col justify-between min-h-[340px] sm:min-h-[440px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
             >
               {/* Top Row: Index & Icon */}
               <div className="flex items-start justify-between">
@@ -74,11 +74,11 @@ export default function BioUSPCards() {
               </div>
 
               {/* Bottom Content: Title & Text */}
-              <div className="flex flex-col gap-4 mt-auto pt-12">
-                <h3 className="text-2xl sm:text-3xl font-normal tracking-tight font-kufi leading-snug">
+              <div className="flex flex-col gap-3 sm:gap-4 mt-auto pt-6 sm:pt-12">
+                <h3 className="text-xl sm:text-3xl font-normal tracking-tight font-kufi leading-snug">
                   {card.title}
                 </h3>
-                <p className={`text-sm sm:text-base leading-relaxed ${card.subColor} font-normal`}>
+                <p className={`text-xs sm:text-base leading-relaxed ${card.subColor} font-normal`}>
                   {card.desc}
                 </p>
 

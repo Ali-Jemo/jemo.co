@@ -122,7 +122,7 @@ export default function FeaturedScenes() {
 
       <div className="grid lg:grid-cols-5 gap-px bg-[var(--j-line)] border border-[var(--j-line)]">
         {/* Hero — visual first, crossfades on switch */}
-        <article className="lg:col-span-3 relative overflow-hidden bg-[#0c0c0f] group min-h-[400px] sm:min-h-[460px] lg:min-h-[560px]">
+        <article className="lg:col-span-3 relative overflow-hidden bg-[#0c0c0f] group min-h-[300px] sm:min-h-[460px] lg:min-h-[560px]">
           <AnimatePresence mode="popLayout">
             <motion.div
               key={hero.id}
@@ -211,7 +211,7 @@ export default function FeaturedScenes() {
         </article>
 
         {/* Side list — the single selector */}
-        <div className="lg:col-span-2 grid sm:grid-cols-3 lg:grid-cols-1 lg:grid-rows-3 gap-px bg-[var(--j-line)]" role="tablist" aria-label="المشاريع السيادية">
+        <div className="lg:col-span-2 flex overflow-x-auto sm:grid sm:grid-cols-3 lg:grid-cols-1 lg:grid-rows-3 gap-px bg-[var(--j-line)] no-scrollbar" role="tablist" aria-label="المشاريع التجريبية">
           {scenes.map((p, i) => {
             const isActive = i === active;
             const Icon = SIDE_ICONS[i % SIDE_ICONS.length];
@@ -221,7 +221,7 @@ export default function FeaturedScenes() {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => select(i)}
-                className={`relative overflow-hidden text-right cursor-pointer transition-colors duration-300 min-h-[190px] ${
+                className={`relative overflow-hidden text-right cursor-pointer transition-colors duration-300 min-h-[140px] sm:min-h-[190px] min-w-[260px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${
                   isActive ? "bg-[#0c0c0f]" : "bg-[var(--j-cream)] hover:bg-white"
                 }`}
               >
@@ -266,12 +266,12 @@ export default function FeaturedScenes() {
       </div>
 
       {/* bottom meta strip — clean IntegratedBio pill container */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mt-4 p-3.5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-xs font-mono text-[#445e5f]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4 p-3.5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-xs font-mono text-[#445e5f]">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#a7e26e] animate-pulse" />
-          <span className="font-bold text-[#222f30]">مشاريع وتجارب مفتوحة المصدر · OPEN SOURCE EXPERIMENTS</span>
+          <span className="w-2 h-2 rounded-full bg-[#a7e26e] animate-pulse shrink-0" />
+          <span className="font-bold text-[#222f30] text-[11px] sm:text-xs">مشاريع وتجارب مفتوحة المصدر · OPEN SOURCE EXPERIMENTS</span>
         </div>
-        <div className="flex flex-wrap items-center gap-4 text-[11px]">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px]">
           <span>فريق: {hero.team.map((m) => m.name).join(" ، ")}</span>
           <span className="dir-ltr text-[#222f30] font-bold">{hero.techStack.join(" · ")}</span>
         </div>

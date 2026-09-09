@@ -4,10 +4,9 @@ export default function BioManifesto() {
   return (
     <section 
       dir="rtl"
-      className="w-full bg-[#f7f7f5] text-[#222f30] py-24 sm:py-32 px-6 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
+      className="w-full bg-[#f7f7f5] text-[#222f30] py-14 sm:py-28 px-4 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
     >
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-[280px_1fr] gap-10 lg:gap-16 items-start">
-        
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-[280px_1fr] gap-6 lg:gap-16 items-start">
         {/* Sidebar Label (IntegratedBio style) */}
         <div className="text-xs sm:text-sm font-mono tracking-wider uppercase text-[#738284] font-semibold sticky top-24">
           عصر التوليد الفردي الفائق · HYPER-INDIVIDUAL RESEARCH
@@ -15,20 +14,20 @@ export default function BioManifesto() {
 
         {/* Content Section */}
         <div className="flex flex-col gap-8 max-w-4xl">
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal leading-[1.14] tracking-tight font-kufi text-[#222f30]">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-normal leading-[1.2] sm:leading-[1.14] tracking-tight font-kufi text-[#222f30]">
             نحن جميعاً نبحث ونصل لنتائج غير مسبوقة يومياً داخل شاشات المحادثة،{" "}
             <span className="text-[#848c8e]">
               لكن 99% من هذا الجهد يتبخر دون توثيق.
             </span>
           </h2>
 
-          <p className="text-base sm:text-lg text-[#55696a] leading-relaxed max-w-3xl font-normal">
+          <p className="text-sm sm:text-lg text-[#55696a] leading-relaxed max-w-3xl font-normal">
             الجيل الجديد لم يعد ينتظر تمويلاً أو مختبراً تقليدياً لكي يبحث؛ حاسوب مع واجهة AI يكفي ليجعله مختبراً لشخص واحد. لكن الويب العربي مهدد بفخين: إما أن تضيع هذه الاكتشافات الفردية العميقة في أرشيف المحادثات الخاصة، أو أن تتحول المنصات إلى مكب لغثاء الـ AI السطحي (AI Slop). <strong className="text-[#222f30] font-semibold">JEMO هي منصة التوثيق والتدقيق للاكتشافات المتقدمة في النظم والبرمجة والذكاء الاصطناعي</strong> — نلتقط نتائجك ونحميها بمعيار التحقق البشري الصارم (Proof of Work).
           </p>
 
           {/* 3 Core Pillars: Power, Proof of Work & Value Exchange */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            <div className="p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4 pt-2">
+            <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-2">
               <div className="inline-flex items-center gap-1.5 font-mono text-xs text-[#222f30] font-bold">
                 <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
                 <span>01. كسر احتكار البحث</span>
