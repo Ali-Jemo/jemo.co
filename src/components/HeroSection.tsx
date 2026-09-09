@@ -51,22 +51,49 @@ export default function HeroSection() {
   const springX = useSpring(mouseX, { stiffness: 40, damping: 25 });
   const springY = useSpring(mouseY, { stiffness: 40, damping: 25 });
 
+  const mouseRafRef = useRef<number | null>(null);
+
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (isCoarsePointer()) return;
-    const { innerWidth, innerHeight } = window;
-    const x = (e.clientX / innerWidth - 0.5) * 16;
-    const y = (e.clientY / innerHeight - 0.5) * 16;
-    mouseX.set(x);
-    mouseY.set(y);
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    if (mouseRafRef.current !== null) return;
+
+    mouseRafRef.current = requestAnimationFrame(() => {
+      const { innerWidth, innerHeight } = window;
+      const x = (clientX / innerWidth - 0.5) * 16;
+      const y = (clientY / innerHeight - 0.5) * 16;
+      mouseX.set(x);
+      mouseY.set(y);
+      mouseRafRef.current = null;
+    });
   }, [mouseX, mouseY]);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = true;
-      videoRef.current.play().catch(() => {});
-    }
+    return () => {
+      if (mouseRafRef.current) cancelAnimationFrame(mouseRafRef.current);
+    };
   }, []);
 
+  // ponytail: pause video when scrolled out of viewport to eliminate background GPU drain
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
 
   const scrollToContent = () => {
     const el = document.querySelector("main")?.children[1];
@@ -96,7 +123,7 @@ export default function HeroSection() {
             muted
             playsInline
             poster="/hero-bg.png"
-            className="w-full h-full object-cover object-center opacity-90 scale-105 transition-opacity duration-1000"
+            className="w-full h-full object-cover object-center transition-opacity duration-1000 transform-gpu"
           >
             <source src="/hero-loop.webm" type="video/webm" />
             <source src="/hero-loop.mp4" type="video/mp4" />
@@ -122,7 +149,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border border-white/20 bg-black/30 backdrop-blur-md text-xs shadow-xs max-w-full overflow-hidden"
+          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border border-white/20 bg-[#0c1415]/80 text-xs shadow-xs max-w-full overflow-hidden"
         >
           <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse shrink-0" aria-hidden />
           <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-wider text-white/95 uppercase truncate">
@@ -179,7 +206,7 @@ export default function HeroSection() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 5, scale: 0.97 }}
                 transition={{ duration: 0.18 }}
-                className="p-4 rounded-2xl bg-black/85 border border-white/20 backdrop-blur-xl shadow-2xl flex flex-col gap-2 max-w-md"
+                className="p-4 rounded-2xl bg-[#0c1415]/95 border border-white/20 shadow-2xl flex flex-col gap-2 max-w-md"
               >
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="text-[#bef264] font-bold">
@@ -213,10 +240,10 @@ export default function HeroSection() {
                 href={p.href}
                 onMouseEnter={() => { if (isCoarsePointer()) return; setActivePillar(idx) }}
                 onMouseLeave={() => { if (isCoarsePointer()) return; setActivePillar(null) }}
-                className={`group px-3.5 py-2 rounded-full border text-xs font-mono transition-all duration-200 flex items-center gap-2.5 backdrop-blur-md shadow-xs ${
+                className={`group px-3.5 py-2 rounded-full border text-xs font-mono transition-all duration-200 flex items-center gap-2.5 shadow-xs ${
                   activePillar === idx
-                    ? "bg-black/75 border-[#bef264] text-white shadow-lg shadow-[#bef264]/15 -translate-y-0.5 scale-[1.02]"
-                    : "bg-black/40 border-white/15 text-white/90 hover:bg-black/60 hover:border-white/35 hover:text-white hover:-translate-y-0.5"
+                    ? "bg-black/90 border-[#bef264] text-white shadow-lg shadow-[#bef264]/15 -translate-y-0.5 scale-[1.02]"
+                    : "bg-[#0c1415]/70 border-white/15 text-white/90 hover:bg-black/90 hover:border-white/35 hover:text-white hover:-translate-y-0.5"
                 }`}
               >
                 <span className="w-5 h-5 rounded-full bg-[#bef264]/20 border border-[#bef264]/40 text-[#bef264] flex items-center justify-center font-bold text-[10px] shadow-xs shrink-0">
@@ -252,16 +279,11 @@ export default function HeroSection() {
       {/* 5. Center-Bottom Scroll Cue Button */}
       <button
         onClick={scrollToContent}
-        className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/40 border border-white/15 hover:border-[#bef264]/60 hover:bg-black/60 text-[10px] font-mono tracking-wider text-white/80 hover:text-white transition-all shadow-md backdrop-blur-md hover:-translate-y-0.5 cursor-pointer group"
+        className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0c1415]/80 border border-white/15 hover:border-[#bef264]/60 hover:bg-black/90 text-[10px] font-mono tracking-wider text-white/80 hover:text-white transition-all shadow-md hover:-translate-y-0.5 cursor-pointer group"
         aria-label="الانتقال للمنظومة المتكاملة"
       >
         <span>اكتشف المنظومة</span>
-        <motion.div
-          animate={{ y: [0, 3, 0] }}
-          transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
-        >
-          <ChevronDown className="w-3.5 h-3.5 text-[#bef264] transition-transform group-hover:translate-y-0.5" />
-        </motion.div>
+        <ChevronDown className="w-3.5 h-3.5 text-[#bef264] transition-transform group-hover:translate-y-0.5 animate-[bounce_2s_infinite]" />
       </button>
     </section>
   );

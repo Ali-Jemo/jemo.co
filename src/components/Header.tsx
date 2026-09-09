@@ -108,7 +108,7 @@ export default function Header() {
           scrolled
             ? "border-b border-[var(--line)] bg-[var(--bg)]/95 backdrop-blur-xl shadow-xs text-[var(--ink)]"
             : isTransparent
-            ? "border-b border-white/10 bg-black/25 backdrop-blur-md text-white"
+            ? "border-b border-white/10 bg-[#0c1415]/80 backdrop-blur-xs text-white"
             : "border-b border-[var(--line)]/60 bg-[var(--bg)]/90 backdrop-blur-md text-[var(--ink)]"
         }`}
         style={{ pointerEvents: hidden ? "none" : "auto" }}
@@ -190,7 +190,7 @@ export default function Header() {
               onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
               className={`group hidden sm:inline-flex items-center justify-between w-44 xl:w-52 h-9 px-3 rounded-full text-xs font-mono transition-all duration-200 border ${
                 isTransparent
-                  ? "border-white/20 bg-white/10 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/15 backdrop-blur-md shadow-xs"
+                  ? "border-white/20 bg-black/40 text-white/80 hover:text-white hover:border-white/40 hover:bg-black/60 shadow-xs"
                   : "border-[#e4e3e3] bg-[#f0f2f0] text-[#55696a] hover:text-[#222f30] hover:border-[#a7e26e] hover:bg-white shadow-xs"
               }`}
               aria-label="البحث السريع"

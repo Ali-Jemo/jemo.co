@@ -73,6 +73,7 @@ const PEER_INSTITUTIONS: PeerInstitution[] = [
 
 export default function BioPartnersGrid() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isDesktopMouse, setIsDesktopMouse] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -172,7 +173,7 @@ export default function BioPartnersGrid() {
       rowsRef.current[prev]?.focus();
     } else if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      setActiveIdx(activeIdx === idx ? null : idx);
+      setExpandedIdx(expandedIdx === idx ? null : idx);
     }
   };
 
@@ -251,7 +252,7 @@ export default function BioPartnersGrid() {
                 }}
                 onKeyDown={(e) => handleKeyDown(e, idx)}
                 onClick={() => {
-                  setActiveIdx(isActive ? null : idx);
+                  setExpandedIdx(expandedIdx === idx ? null : idx);
                 }}
                 className={`group relative py-4 sm:py-7 lg:py-9 transition-all duration-300 outline-none cursor-pointer px-2 sm:px-4 rounded-xl ${
                   isActive
@@ -305,7 +306,7 @@ export default function BioPartnersGrid() {
 
                 {/* 4. Context Ribbon (Accordion Reveal) */}
                 <AnimatePresence>
-                  {isActive && (
+                  {(expandedIdx === idx || (isDesktopMouse && activeIdx === idx)) && (
                     <motion.div
                       initial={{ opacity: 0, height: 0, y: -4 }}
                       animate={{ opacity: 1, height: "auto", y: 0 }}
