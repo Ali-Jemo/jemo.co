@@ -50,14 +50,14 @@ const NEWS_ITEMS: NewsItem[] = [
 
 export default function NewsDigest() {
   return (
-    <div className="p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md space-y-3">
-      <div className="flex items-center justify-between pb-2 border-b border-white/10 text-xs font-mono">
-        <div className="flex items-center gap-1.5 font-bold text-white">
-          <Newspaper className="w-4 h-4 text-[#bef264]" />
+    <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
+      <div className="flex items-center justify-between pb-2 border-b border-[#e4e3e3] text-xs font-mono">
+        <div className="flex items-center gap-1.5 font-bold text-[#222f30]">
+          <Newspaper className="w-4 h-4 text-[#728825]" />
           <span>موجز الأخبار (5 أحداث سريعة)</span>
         </div>
-        <span className="text-[10px] text-white/40 flex items-center gap-1">
-          <ShieldCheck className="w-3 h-3 text-emerald-400" />
+        <span className="text-[10px] text-[#55696a] flex items-center gap-1">
+          <ShieldCheck className="w-3 h-3 text-emerald-600" />
           <span>مصادر رسمية مؤكدة</span>
         </span>
       </div>
@@ -67,21 +67,21 @@ export default function NewsDigest() {
         {NEWS_ITEMS.map((item, idx) => (
           <div
             key={item.id}
-            className="px-3 py-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 flex items-center justify-between gap-3 text-xs transition-colors group cursor-default"
+            className="px-3 py-2 rounded-xl bg-[#f7f7f5] hover:bg-[#f0f2f0] border border-[#e4e3e3] flex items-center justify-between gap-3 text-xs transition-colors group cursor-default"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <span className="w-4 h-4 rounded bg-[#bef264]/10 text-[#bef264] font-mono font-bold flex items-center justify-center text-[9px] shrink-0">
+              <span className="w-4 h-4 rounded bg-[#222f30] text-[#cef79e] font-mono font-bold flex items-center justify-center text-[9px] shrink-0">
                 0{idx + 1}
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-white/5 text-emerald-400 shrink-0 font-medium">
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#cef79e] text-[#222f30] shrink-0 font-bold">
                 {item.category}
               </span>
-              <span className="font-kufi font-medium text-white/90 group-hover:text-[#bef264] transition-colors truncate">
+              <span className="font-kufi font-medium text-[#222f30] group-hover:text-[#162224] transition-colors truncate">
                 {item.title}
               </span>
             </div>
 
-            <span className="text-[10px] font-mono text-white/40 shrink-0 whitespace-nowrap">
+            <span className="text-[10px] font-mono text-[#55696a] shrink-0 whitespace-nowrap">
               {item.source} · {item.time}
             </span>
           </div>

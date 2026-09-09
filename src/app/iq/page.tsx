@@ -27,9 +27,9 @@ export default function IqPage() {
       <ToolsHub />
 
       {/* 5. Institutional Footer Bridge to Jemo Labs */}
-      <footer className="p-4 sm:p-5 rounded-2xl bg-white/[0.02] border border-[var(--brand)]/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-[var(--ink)]/50">
+      <footer className="p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-[#55696a]">
         <div className="flex items-center gap-2">
-          <span className="font-bold text-[var(--ink)]/80">منصة هسه العراقية</span>
+          <span className="font-bold text-[#222f30]">منصة هسه العراقية</span>
           <span>·</span>
           <span>مشروع تقني مجتمعي مفتوح المصدر</span>
         </div>
@@ -38,7 +38,7 @@ export default function IqPage() {
           <span>مُشغل بواسطة</span>
           <Link
             href="/"
-            className="text-[var(--gold)] hover:underline font-bold transition-colors"
+            className="text-[#222f30] hover:underline font-bold transition-colors"
           >
             JEMO LABS — بيت الحكمة الرقمي
           </Link>

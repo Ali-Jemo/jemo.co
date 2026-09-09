@@ -17,12 +17,12 @@ import {
 } from "lucide-react";
 
 // Dynamic import for Leaflet-backed Google Map to prevent Next.js SSR window errors
-const IraqGoogleMap = dynamic(() => import("@/components/iq/IraqGoogleMap"), {
+const IraqInteractiveMap = dynamic(() => import("@/components/iq/IraqInteractiveMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[580px] sm:h-[680px] rounded-3xl bg-[#0e1618] border border-white/10 flex flex-col items-center justify-center space-y-3 font-mono text-xs text-white/60">
+    <div className="w-full h-[540px] sm:h-[660px] rounded-3xl bg-[#0e1618] border border-white/10 flex flex-col items-center justify-center space-y-3 font-mono text-xs text-white/60">
       <div className="w-9 h-9 rounded-full border-2 border-[#bef264] border-t-transparent animate-spin" />
-      <span>جاري تحميل خريطة Google المباشرة مع طبقة الأماكن والموقع...</span>
+      <span>جاري تحميل خريطة العراق التفاعلية وطبقة الأماكن والموقع...</span>
     </div>
   ),
 });
@@ -156,8 +156,8 @@ export default function IqMapPage() {
 
       {/* 3. Conditional Sub-Page Content */}
       {activeView === "google" && (
-        <section aria-label="خريطة Google المباشرة بطبقتين" className="space-y-4">
-          <IraqGoogleMap
+        <section aria-label="خريطة العراق التفاعلية بطبقتين" className="space-y-4">
+          <IraqInteractiveMap
             spots={spots}
             onAddSpot={handleAddSpot}
             selectedGovernorate={selectedGovernorate}
@@ -165,7 +165,6 @@ export default function IqMapPage() {
           />
         </section>
       )}
-
       {activeView === "places" && (
         <section aria-label="دليل الأماكن الأقرب وتقييمات المجتمع" className="space-y-4">
           <CommunityPlacesView

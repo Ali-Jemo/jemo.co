@@ -8,8 +8,6 @@ import {
   DollarSign,
   Coins,
   MapPin,
-  ShieldCheck,
-  ArrowUpRight,
   Copy,
   Check,
 } from "lucide-react";
@@ -128,11 +126,10 @@ export default function MarketTicker() {
 
   return (
     <section className="space-y-3" aria-label="شريط الأسعار الحية والمؤشرات الاقتصادية">
-      {/* Province Switcher & Time Stamp */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          <span className="text-white/50 text-[11px] flex items-center gap-1 shrink-0 ml-1">
-            <MapPin className="w-3.5 h-3.5 text-[#bef264]" /> المحافظة:
+          <span className="text-[#55696a] text-[11px] flex items-center gap-1 shrink-0 ml-1">
+            <MapPin className="w-3.5 h-3.5 text-[#222f30]" /> المحافظة:
           </span>
           {Object.entries(PROVINCES).map(([key, item]) => (
             <button
@@ -140,8 +137,8 @@ export default function MarketTicker() {
               onClick={() => setSelectedProvince(key)}
               className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer shrink-0 ${
                 selectedProvince === key
-                  ? "bg-[#bef264] text-[#0c1415] shadow-xs"
-                  : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white border border-white/5"
+                  ? "bg-[#222f30] text-white shadow-xs"
+                  : "bg-white text-[#55696a] hover:bg-[#f0f2f0] hover:text-[#222f30] border border-[#e4e3e3]"
               }`}
             >
               {item.name}
@@ -149,25 +146,25 @@ export default function MarketTicker() {
           ))}
         </div>
 
-        <div className="inline-flex items-center gap-1.5 text-white/50 text-[11px] shrink-0 self-end sm:self-auto">
-          <Clock className="w-3 h-3 text-[#bef264]" />
+        <div className="inline-flex items-center gap-1.5 text-[#55696a] text-[11px] shrink-0 self-end sm:self-auto">
+          <Clock className="w-3 h-3 text-[#222f30]" />
           <span>تحديث مباشر</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
         </div>
       </div>
 
-      {/* 4 Core Essential Rate Cards */}
+      {/* 4 Core Essential Rate Cards (Jemo Labs Theme) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
         
         {/* 1. Dollar */}
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-[#14261d] to-[#0c1713] border border-emerald-500/30 shadow-md flex flex-col justify-between space-y-2">
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border-2 border-[#a7e26e]/80 shadow-xs flex flex-col justify-between space-y-2">
           <div className="flex items-center justify-between gap-1">
-            <span className="text-xs font-mono font-bold text-[#bef264] flex items-center gap-1">
-              <DollarSign className="w-3.5 h-3.5" /> الدولار / $100
+            <span className="text-xs font-mono font-bold text-[#222f30] flex items-center gap-1">
+              <DollarSign className="w-3.5 h-3.5 text-[#728825]" /> الدولار / $100
             </span>
             <button
               onClick={handleCopyRate}
-              className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#bef264]/10 text-[#bef264] border border-[#bef264]/20 hover:bg-[#bef264]/20 cursor-pointer flex items-center gap-1"
+              className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#cef79e] text-[#222f30] border border-[#a7e26e] hover:bg-[#a7e26e] transition-colors cursor-pointer flex items-center gap-1 font-bold"
             >
               {copied ? <Check className="w-2.5 h-2.5" /> : <Copy className="w-2.5 h-2.5" />}
               <span>{copied ? "تم" : "+750"}</span>
@@ -175,58 +172,58 @@ export default function MarketTicker() {
           </div>
 
           <div>
-            <div className="text-xl sm:text-2xl font-mono font-black text-white tracking-tight">
+            <div className="text-xl sm:text-2xl font-mono font-black text-[#222f30] tracking-tight">
               {currentSell.toLocaleString()}
             </div>
-            <div className="text-[11px] font-mono text-emerald-300 font-medium pt-0.5">
+            <div className="text-[11px] font-mono text-[#55696a] font-medium pt-0.5">
               شراء: {currentBuy.toLocaleString()}
             </div>
           </div>
         </div>
 
         {/* 2. Gold */}
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md flex flex-col justify-between space-y-2">
-          <span className="text-xs font-mono font-bold text-amber-300 flex items-center gap-1">
-            <Coins className="w-3.5 h-3.5" /> الذهب (مثقال 21)
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs flex flex-col justify-between space-y-2">
+          <span className="text-xs font-mono font-bold text-[#222f30] flex items-center gap-1">
+            <Coins className="w-3.5 h-3.5 text-amber-600" /> الذهب (مثقال 21)
           </span>
 
           <div>
-            <div className="text-xl sm:text-2xl font-mono font-black text-amber-300 tracking-tight">
+            <div className="text-xl sm:text-2xl font-mono font-black text-amber-700 tracking-tight">
               575,000
             </div>
-            <div className="text-[11px] font-mono text-white/60 pt-0.5">
+            <div className="text-[11px] font-mono text-[#55696a] pt-0.5">
               عيار 18: 492,000 · فضة: 2,150
             </div>
           </div>
         </div>
 
         {/* 3. Ampere */}
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md flex flex-col justify-between space-y-2">
-          <span className="text-xs font-mono font-bold text-cyan-300 flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5" /> أمبير المولد ({baseProvinceData.name})
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs flex flex-col justify-between space-y-2">
+          <span className="text-xs font-mono font-bold text-[#222f30] flex items-center gap-1">
+            <Zap className="w-3.5 h-3.5 text-sky-600" /> أمبير المولد ({baseProvinceData.name})
           </span>
 
           <div>
-            <div className="text-xl sm:text-2xl font-mono font-black text-cyan-300 tracking-tight">
+            <div className="text-xl sm:text-2xl font-mono font-black text-sky-800 tracking-tight">
               {baseProvinceData.ampereAvg.toLocaleString()}
             </div>
-            <div className="text-[11px] font-mono text-white/60 pt-0.5">
+            <div className="text-[11px] font-mono text-[#55696a] pt-0.5">
               تشغيل 24 ساعة (خط ذهبي)
             </div>
           </div>
         </div>
 
         {/* 4. Gas */}
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0e1618] border border-white/10 shadow-md flex flex-col justify-between space-y-2">
-          <span className="text-xs font-mono font-bold text-orange-300 flex items-center gap-1">
-            <Flame className="w-3.5 h-3.5" /> أسطوانة الغاز
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs flex flex-col justify-between space-y-2">
+          <span className="text-xs font-mono font-bold text-[#222f30] flex items-center gap-1">
+            <Flame className="w-3.5 h-3.5 text-orange-600" /> أسطوانة الغاز
           </span>
 
           <div>
-            <div className="text-xl sm:text-2xl font-mono font-black text-orange-300 tracking-tight">
+            <div className="text-xl sm:text-2xl font-mono font-black text-orange-700 tracking-tight">
               {baseProvinceData.gasStreet.toLocaleString()}
             </div>
-            <div className="text-[11px] font-mono text-white/60 pt-0.5">
+            <div className="text-[11px] font-mono text-[#55696a] pt-0.5">
               الساحة الرسمية: {baseProvinceData.gasOfficial.toLocaleString()}
             </div>
           </div>
@@ -234,39 +231,26 @@ export default function MarketTicker() {
 
       </div>
 
-      {/* Slim 1-Line Status & Source Banner (Replacing the big card) */}
-      <div className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#14261d] to-[#0c1611] border border-emerald-500/25 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+      {/* Slim 1-Line Status Banner */}
+      <div className="px-3.5 py-2 rounded-xl bg-white border border-[#e4e3e3] shadow-xs flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-bold text-white">حالة السوق:</span>
-          <span className="text-emerald-400 font-bold">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-bold text-[#222f30]">حالة السوق:</span>
+          <span className="px-2 py-0.5 rounded bg-[#cef79e] text-[#222f30] font-bold text-[10px]">
             {liveDollar?.status ?? "مرتفع — أعلى من متوسط الأسبوع"}
           </span>
-          <span className="text-white/30">·</span>
-          <span className="text-white/70">
-            متوسط 7 أيام: {(liveDollar?.avg7Days ?? 155290).toLocaleString()}
+          <span className="text-[#e4e3e3]">·</span>
+          <span className="text-[#55696a]">
+            متوسط 7 أيام: <strong className="text-[#222f30]">{(liveDollar?.avg7Days ?? 155290).toLocaleString()}</strong>
           </span>
-          <span className="text-white/30 hidden sm:inline">·</span>
-          <span className="text-white/70 hidden sm:inline">
-            الأعلى: {(liveDollar?.high7Days ?? 156000).toLocaleString()}
+          <span className="text-[#e4e3e3] hidden sm:inline">·</span>
+          <span className="text-[#55696a] hidden sm:inline">
+            الأعلى: <strong className="text-[#222f30]">{(liveDollar?.high7Days ?? 156000).toLocaleString()}</strong>
           </span>
-          <span className="text-white/30 hidden sm:inline">·</span>
-          <span className="text-white/70 hidden sm:inline">
-            الأدنى: {(liveDollar?.low7Days ?? 154900).toLocaleString()}
+          <span className="text-[#e4e3e3] hidden sm:inline">·</span>
+          <span className="text-[#55696a] hidden sm:inline">
+            الأدنى: <strong className="text-[#222f30]">{(liveDollar?.low7Days ?? 154900).toLocaleString()}</strong>
           </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <a
-            href={liveDollar?.sourceUrl ?? "https://t.me/dollariraqi"}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#bef264] hover:underline font-bold inline-flex items-center gap-1 text-[11px]"
-          >
-            <ShieldCheck className="w-3 h-3 text-emerald-400" />
-            <span>المصدر: @dollariraqi</span>
-            <ArrowUpRight className="w-3 h-3" />
-          </a>
         </div>
       </div>
     </section>

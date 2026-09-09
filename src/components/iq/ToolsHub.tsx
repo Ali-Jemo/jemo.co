@@ -81,23 +81,23 @@ const TOOLS: ToolCard[] = [
 
 export default function ToolsHub() {
   return (
-    <div className="p-4 sm:p-5 rounded-2xl bg-[var(--surface)] border border-white/10 shadow-md space-y-4">
-      <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10">
+    <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-4">
+      <div className="flex items-center justify-between gap-2 pb-3 border-b border-[#e4e3e3]">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-[var(--gold)]/10 border border-[var(--gold)]/30 flex items-center justify-center text-[var(--gold)]">
-            <Wrench className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-lg bg-[#cef79e] text-[#222f30] border border-[#a7e26e] flex items-center justify-center">
+            <Wrench className="w-4 h-4 text-[#222f30]" />
           </div>
           <div>
-            <h3 className="font-kufi font-bold text-sm text-white">
+            <h3 className="font-kufi font-bold text-sm text-[#222f30]">
               دليل الأدوات والمنصات العراقية
             </h3>
-            <p className="text-[10px] font-mono text-white/50">
+            <p className="text-[10px] font-mono text-[#55696a]">
               بوابة تجمع المنصات المفيدة في مكان واحد — موجه للكل وجزء من الكل
             </p>
           </div>
         </div>
 
-        <span className="text-[10px] font-mono text-white/40 hidden sm:inline">
+        <span className="text-[10px] font-mono text-[#55696a] hidden sm:inline">
           6 أدوات مختارة
         </span>
       </div>
@@ -109,10 +109,10 @@ export default function ToolsHub() {
           const isLinkExternal = tool.isExternal;
 
           const CardContent = (
-            <div className="h-full p-4 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 hover:border-[var(--gold)]/40 transition-all flex flex-col justify-between space-y-3 group cursor-pointer">
+            <div className="h-full p-4 rounded-xl bg-[#f7f7f5] hover:bg-white border border-[#e4e3e3] hover:border-[#a7e26e] hover:shadow-sm transition-all flex flex-col justify-between space-y-3 group cursor-pointer">
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center text-[var(--gold)] group-hover:border-[var(--gold)]/50 transition-colors">
+                  <div className="w-7 h-7 rounded-lg bg-white border border-[#e4e3e3] flex items-center justify-center text-[#222f30] group-hover:border-[#a7e26e] transition-colors">
                     <Icon className="w-3.5 h-3.5" />
                   </div>
                   <span
@@ -122,25 +122,25 @@ export default function ToolsHub() {
                   </span>
                 </div>
 
-                <h4 className="font-kufi font-bold text-sm text-white group-hover:text-[var(--gold)] transition-colors flex items-center gap-1.5">
+                <h4 className="font-kufi font-bold text-sm text-[#222f30] group-hover:text-[#162021] transition-colors flex items-center gap-1.5">
                   <span>{tool.title}</span>
                   {isLinkExternal && (
-                    <ExternalLink className="w-3 h-3 text-white/40 group-hover:text-[var(--gold)] transition-colors shrink-0" />
+                    <ExternalLink className="w-3 h-3 text-[#55696a] group-hover:text-[#222f30] transition-colors shrink-0" />
                   )}
                 </h4>
 
-                <p className="text-xs text-white/70 leading-relaxed font-sans">
+                <p className="text-xs text-[#55696a] leading-relaxed font-sans">
                   {tool.desc}
                 </p>
               </div>
 
               {tool.partnerNote ? (
-                <div className="text-[10px] font-mono text-[var(--gold)]/80 pt-2 border-t border-white/10 flex items-center gap-1">
+                <div className="text-[10px] font-mono text-[#728825] font-bold pt-2 border-t border-[#e4e3e3] flex items-center gap-1">
                   <span>↳</span>
                   <span>{tool.partnerNote}</span>
                 </div>
               ) : (
-                <div className="text-[10px] font-mono text-white/40 group-hover:text-white/70 pt-2 border-t border-white/5 flex items-center justify-between">
+                <div className="text-[10px] font-mono text-[#55696a] group-hover:text-[#222f30] pt-2 border-t border-[#e4e3e3] flex items-center justify-between">
                   <span>انتقل للأداة</span>
                   <span className="group-hover:-translate-x-1 transition-transform">←</span>
                 </div>
