@@ -26,16 +26,22 @@ export default function ResearchNewsletter() {
     <div className="bg-white border border-[#e4e3e3] rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-10 md:p-14 relative overflow-hidden shadow-xs" dir="rtl">
       <div className="max-w-2xl mx-auto text-center space-y-4 sm:space-y-6 relative z-10">
         
-        {/* Header Tag */}
-        <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-[#f5f8f7] text-[#222f30] text-[11px] sm:text-xs font-mono uppercase tracking-widest shadow-xs">
-          <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-          <span>التنبيهات العلمية · SCIENTIFIC ALERTS</span>
+        {/* Academic Header Tag */}
+        <div className="flex items-center justify-center gap-2.5 text-xs font-mono text-[#55696a]">
+          <span className="font-bold text-[#222f30] text-sm tracking-normal">10</span>
+          <span className="w-5 h-px bg-[#c9cbbe]" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+          <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
+            النشرة العلمية والتبليغات · SCIENTIFIC DISPATCH
+          </span>
         </div>
 
-        <h3 className="text-xl sm:text-3xl lg:text-4xl font-black text-[#222f30] tracking-tight font-kufi">
-          اشترك في جديد جميع العلوم.
+        <h3 className="text-xl sm:text-3xl lg:text-4xl font-bold text-[#222f30] tracking-tight font-kufi">
+          اشترك في جديد جميع العلوم،{" "}
+          <span className="text-[#738284] font-normal">
+            أوراقٌ محققة تصل بريدك أولاً بأول.
+          </span>
         </h3>
-
         <p className="text-xs sm:text-base text-[#445e5f] leading-relaxed">
           احصل على الدروس والكتب والأوراق العلمية في الشرعية والذكاء الاصطناعي والطب والطبيعة والإنسانية فور صدورها. بدون إعلانات وبخصوصية مطلقة.
         </p>

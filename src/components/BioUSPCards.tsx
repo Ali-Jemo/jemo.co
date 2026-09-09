@@ -50,6 +50,31 @@ export default function BioUSPCards() {
       className="w-full bg-[#f7f7f5] py-8 sm:py-16 px-4 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
     >
       <div className="max-w-7xl mx-auto">
+        {/* Academic Section Header */}
+        <div className="mb-8 sm:mb-14 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 lg:gap-12">
+            <div className="space-y-3 max-w-3xl">
+              <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
+                <span className="font-bold text-[#222f30] text-sm tracking-normal">02</span>
+                <span className="w-5 h-px bg-[#c9cbbe]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+                <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
+                  الركائز الهندسية · CORE PILLARS
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] text-[#222f30] font-kufi">
+                بنية تحتية ثلاثية{" "}
+                <span className="text-[#738284] font-normal">
+                  لنقل البحث من المحادثة إلى البرهنة الهندسية.
+                </span>
+              </h2>
+            </div>
+            <p className="text-sm sm:text-base text-[#55696a] max-w-md leading-relaxed lg:pb-1">
+              ثلاثة مسارات متكاملة: هندسة أنوية التشغيل والعتاد، تفكيك واختبار نماذج الذكاء، وبروتوكول التحقق البشري الصارم.
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
           {CARDS.map((card) => (
             <Link

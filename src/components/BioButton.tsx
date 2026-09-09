@@ -98,9 +98,10 @@ export default function BioButton({
             paddingRight: isRtl ? "22px" : (hovered ? "13px" : "16px"),
             marginRight: isRtl ? "0px" : (hovered ? "12px" : "16px"),
             marginLeft: isRtl ? (hovered ? "12px" : "16px") : "0px",
-            border: labelBorder !== "transparent" ? `1px solid ${labelBorder}` : "none",
-            borderRight: !isRtl && labelBorder !== "transparent" ? "none" : undefined,
-            borderLeft: isRtl && labelBorder !== "transparent" ? "none" : undefined,
+            borderTop: labelBorder !== "transparent" ? `1px solid ${labelBorder}` : "none",
+            borderBottom: labelBorder !== "transparent" ? `1px solid ${labelBorder}` : "none",
+            borderLeft: !isRtl && labelBorder !== "transparent" ? `1px solid ${labelBorder}` : "none",
+            borderRight: isRtl && labelBorder !== "transparent" ? `1px solid ${labelBorder}` : "none",
             boxShadow: hovered && (variant === "primary" || variant === "dark-glass")
               ? "0 10px 28px -4px rgba(206, 247, 158, 0.45)"
               : "0 2px 10px rgba(0, 0, 0, 0.08)",

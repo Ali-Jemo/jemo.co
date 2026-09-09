@@ -1,131 +1,181 @@
+"use client";
+
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { GithubIcon, TelegramIcon, XIcon } from "@/components/Icons";
 
-const FOOTER_LINKS = [
+const FOOTER_COLUMNS = [
   {
-    title: "الأبحاث والنتائج",
-    items: [
-      { label: "انشر بحثك واكتشافك", href: "/publish" },
-      { label: "سجلات الاكتشاف المنشورة", href: "/research" },
-      { label: "التسلسل الزمني", href: "/timeline" },
-      { label: "المعرض", href: "/gallery" },
+    title: "الأبحاث",
+    links: [
+      { label: "السجلات", href: "/research" },
+      { label: "التسلسل", href: "/timeline" },
+      { label: "المختبرات", href: "/labs" },
+      { label: "انشر بحثك", href: "/publish" },
     ],
   },
   {
-    title: "المؤسسة والمجتمع",
-    items: [
+    title: "المؤسسة",
+    links: [
       { label: "من نحن", href: "/about" },
+      { label: "المبادرات", href: "/initiatives" },
       { label: "تواصل معنا", href: "/contact" },
       { label: "الأسئلة الشائعة", href: "/faq" },
     ],
   },
   {
-    title: "النشر والتواصل",
-    items: [
+    title: "التوثيق",
+    links: [
+      { label: "المعايير", href: "/benchmarks" },
       { label: "نشرة الشركة", href: "/newsletter" },
-      { label: "المبادرات", href: "/initiatives" },
-      { label: "التقديم", href: "/apply" },
+      { label: "الشروط", href: "/terms" },
+      { label: "الخصوصية", href: "/privacy" },
     ],
   },
 ];
 
 const SOCIAL_LINKS = [
-  { href: "https://t.me/jemolabs", label: "Telegram", icon: "TelegramIcon" },
-  { href: "https://x.com/jemolabs", label: "X", icon: "XIcon" },
-  { href: "https://github.com/jemo-labs", label: "GitHub", icon: "GithubIcon" },
-] as const;
-
-const ICONS_MAP = {
-  TelegramIcon,
-  XIcon,
-  GithubIcon,
-};
-
-const FOOTER_STATS = [
-  { label: "2024", value: "1,243" },
-  { label: "2023", value: "987" },
-  { label: "2022", value: "765" },
+  { href: "https://t.me/jemolabs", label: "Telegram", Icon: TelegramIcon },
+  { href: "https://x.com/jemolabs", label: "X", Icon: XIcon },
+  { href: "https://github.com/jemo-labs", label: "GitHub", Icon: GithubIcon },
 ];
 
 export default function Footer() {
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const wordmarkRef = useRef<HTMLDivElement>(null);
+
+  // ponytail: lightweight mouse spotlight without canvas/rAF loop; add rAF when high-framerate pointer lag occurs
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!wordmarkRef.current) return;
+    const rect = wordmarkRef.current.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
   return (
-    <footer className="border-t border-[var(--line)] pt-8 sm:pt-16 pb-6 sm:pb-10 mt-auto relative overflow-hidden atmo">
-      <div className="container relative z-10 px-4 sm:px-6">
-        <nav aria-label="روابط التذييل" className="grid grid-cols-2 md:grid-cols-5 gap-6 sm:gap-10 mb-6 sm:mb-14">
-          <div className="col-span-2 md:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-2 font-mono font-bold text-xl mb-4">
+    <footer className="relative w-full border-t border-[var(--line)] bg-[var(--bg)] pt-12 sm:pt-16 pb-20 md:pb-8 mt-auto overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Top Section: Brand Statement & Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 pb-12 sm:pb-16">
+          <div className="md:col-span-6 space-y-4">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
               <Image
                 src="/jemo-logo.svg"
                 alt="JEMO LABS"
-                className="h-8 w-auto"
-                width={40}
-                height={40}
+                className="h-8 w-auto transition-transform duration-300 group-hover:scale-105"
+                width={36}
+                height={36}
               />
+              <div className="flex items-baseline gap-1 font-mono">
+                <span className="font-black text-xl tracking-tight text-[var(--ink)]">jemo</span>
+                <span className="font-bold text-xl tracking-tight text-[var(--ink-2)]">labs</span>
+                <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse ms-1" />
+              </div>
             </Link>
 
-            <p className="text-sm text-[var(--ink-2)] leading-relaxed mb-4 max-w-md font-sans">
-              سجل مفتوح لتوثيق ومشاركة أبحاث واكتشافات عصر الذكاء الاصطناعي — لا تضيع معرفتك بعد انتهاء المحادثة. كل سؤال يمكن أن يصبح بحثًا، وكل بحث يمكن أن يصبح معرفة.
+            <p className="text-xs sm:text-sm text-[var(--ink-2)] max-w-md leading-relaxed">
+              سجل مفتوح لتوثيق وتدقيق أبحاث واكتشافات الذكاء الاصطناعي — نحو بنية معرفية سيادية قابلة للتكرار والتحقق.
             </p>
 
-            <div className="flex items-center gap-3">
-              {SOCIAL_LINKS.map((social) => {
-                const Icon = ICONS_MAP[social.icon];
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="text-[var(--ink-2)] hover:text-[var(--gold)] transition-colors"
-                  >
-                    <Icon className="w-4 h-4" />
-                  </a>
-                );
-              })}
+            <div className="flex items-center gap-2 pt-1">
+              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="p-2 rounded-lg text-[var(--ink-2)]/70 hover:text-[var(--ink)] hover:bg-black/[0.04] transition-colors"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
             </div>
           </div>
 
-          {FOOTER_LINKS.map((col) => (
-            <div key={col.title}>
-              <h4 className="font-bold text-sm text-[var(--ink-1)] mb-4 font-mono uppercase tracking-wider">
-                {col.title}
-              </h4>
-              <ul className="flex flex-col gap-2.5 text-xs text-[var(--ink-2)]">
-                {col.items.map((item) => (
-                  <li key={item.label}>
-                    <Link href={item.href} className="text-[var(--ink-2)] hover:text-[var(--gold)] transition-colors">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
-
-        {/* Status Strip */}
-        <div className="flex flex-wrap items-center justify-center gap-3 py-5 mb-6 border-y border-[var(--line)]/50">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-600">
-            <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse" />
-            التشغيل ممتاز
+          <div className="md:col-span-6 grid grid-cols-3 gap-6 text-sm">
+            {FOOTER_COLUMNS.map((col) => (
+              <div key={col.title} className="flex flex-col gap-3">
+                <span className="font-bold text-xs sm:text-sm text-[var(--ink)] font-mono">
+                  {col.title}
+                </span>
+                <ul className="flex flex-col gap-2.5 text-xs">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors inline-block"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          {FOOTER_STATS.map((s) => (
-            <div key={s.label} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--surface-2)] border border-[var(--line)] text-[10px] font-mono text-[var(--ink-2)]">
-              {s.label}: {s.value}
-            </div>
-          ))}
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-[var(--line)] pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--ink-2)]">
-          <div className="flex items-center gap-2">
-            © {new Date().getFullYear()} JEMO LABS — بيت الحكمة الرقمي
-          </div>
-          <div className="font-mono text-xs flex items-center gap-3">
-            <Link href="/privacy" className="text-[var(--ink-2)] hover:text-[var(--gold)] transition-colors">سياسة الخصوصية</Link>
-            <Link href="/terms" className="text-[var(--ink-2)] hover:text-[var(--gold)] transition-colors">الشروط والأحكام</Link>
+        {/* Monumental Wordmark with Curtain Reveal & Interactive Neon Spotlight */}
+        <div className="relative border-t border-[var(--line)]/70 pt-4 sm:pt-6 overflow-hidden select-none">
+          <motion.div
+            ref={wordmarkRef}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => {
+              setIsHovered(false);
+              setMousePos(null);
+            }}
+            initial={{ y: "100%", opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full text-center overflow-hidden cursor-default group"
+          >
+            {/* Subtle glow backdrop tracking cursor on hover */}
+            {isHovered && mousePos && (
+              <div
+                className="pointer-events-none absolute -inset-px transition-opacity duration-300 opacity-100"
+                style={{
+                  background: `radial-gradient(circle 380px at ${mousePos.x}px ${mousePos.y}px, rgba(167, 226, 110, 0.15), transparent 70%)`,
+                }}
+              />
+            )}
+
+            <h2
+              className="text-[17vw] leading-[0.82] font-black tracking-[-0.05em] group-hover:tracking-[-0.02em] transition-[letter-spacing,background] duration-500 select-none text-transparent bg-clip-text py-2"
+              style={{
+                backgroundImage:
+                  isHovered && mousePos
+                    ? `radial-gradient(circle 320px at ${mousePos.x}px ${mousePos.y}px, #a7e26e 0%, rgba(68, 94, 95, 0.45) 50%, rgba(34, 47, 48, 0.14) 100%)`
+                    : "linear-gradient(180deg, rgba(34, 47, 48, 0.20) 0%, rgba(34, 47, 48, 0.06) 100%)",
+              }}
+            >
+              jemo.co
+            </h2>
+          </motion.div>
+        </div>
+
+        {/* Bottom Bar: Monospace Status, Copyright & Legal Links */}
+        <div className="flex flex-col md:flex-row justify-between items-center pt-6 text-[11px] sm:text-xs text-[var(--ink-2)]/80 font-mono border-t border-[var(--line)]/50 gap-4">
+          <p>© 2026 JEMO LABS — BEYT AL-HIKMA</p>
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
+            <Link href="/privacy" className="hover:text-[var(--ink)] transition-colors">
+              سياسة الخصوصية
+            </Link>
+            <span className="opacity-30">·</span>
+            <Link href="/terms" className="hover:text-[var(--ink)] transition-colors">
+              الشروط والأحكام
+            </Link>
+            <span className="opacity-30">·</span>
+            <span className="text-emerald-600/90">[LATENCY: OPTIMAL]</span>
+            <span className="opacity-30">·</span>
+            <span className="text-emerald-600/90">[NODES: ONLINE]</span>
           </div>
         </div>
       </div>

@@ -13,11 +13,28 @@ export default function BioMediaMultiCol() {
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
         
-        {/* Top Header Tag */}
-        <div className="mb-4 sm:mb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-            <span>منصة تدقيق الاكتشافات · VERIFIED DISCOVERY REGISTRY</span>
+        {/* Academic Section Header */}
+        <div className="mb-8 sm:mb-14 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 lg:gap-12">
+            <div className="space-y-3 max-w-3xl">
+              <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
+                <span className="font-bold text-[#222f30] text-sm tracking-normal">03</span>
+                <span className="w-5 h-px bg-[#c9cbbe]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+                <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
+                  معمارية التحقق · VERIFICATION ARCHITECTURE
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] text-[#222f30] font-kufi">
+                منظومة توثيق وتدقيق رصينة —{" "}
+                <span className="text-[#738284] font-normal">
+                  لحماية المحتوى من الهلوسات والادعاءات.
+                </span>
+              </h2>
+            </div>
+            <p className="text-sm sm:text-base text-[#55696a] max-w-md leading-relaxed lg:pb-1">
+              معيار هندسي صارم يفرض تقديم الكود، والاختبارات القياسية، وخطوات التدقيق البشري كشرط أساسي للأرشفة والاعتراف.
+            </p>
           </div>
         </div>
 

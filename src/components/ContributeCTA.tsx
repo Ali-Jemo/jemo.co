@@ -18,20 +18,27 @@ export default function ContributeCTA() {
             
             {/* Copy */}
             <div className="lg:col-span-8 space-y-5">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/10 font-mono text-xs uppercase tracking-widest text-white shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-                <span>مختبر الشخص الواحد · THE HYPER-INDIVIDUAL ERA</span>
+              <div className="flex items-center gap-2.5 text-xs font-mono text-white/70">
+                <span className="font-bold text-[#a7e26e] text-sm tracking-normal">09</span>
+                <span className="w-5 h-px bg-white/30" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+                <span className="tracking-widest uppercase text-[11px] font-semibold text-white/80">
+                  مختبر الشخص الواحد · THE HYPER-INDIVIDUAL ERA
+                </span>
               </div>
 
               <h2
                 style={{ color: "#ffffff" }}
-                className="text-2xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight font-kufi !text-white"
+                className="text-2xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight font-kufi !text-white"
               >
-                حاسوبك مع واجهة AI يصنع مختبراً لشخص واحد.
+                حاسوبك مع واجهة AI{" "}
+                <span className="text-white/70 font-normal">
+                  يصنع مختبراً لشخص واحد.
+                </span>
               </h2>
               <p
-                style={{ color: "rgba(255, 255, 255, 0.9)" }}
-                className="text-sm sm:text-lg !text-white/90 leading-relaxed max-w-2xl font-normal"
+                style={{ color: "rgba(255, 255, 255, 0.85)" }}
+                className="text-sm sm:text-lg !text-white/85 leading-relaxed max-w-2xl font-normal"
               >
                 لا تدع مجهود 8 ساعات في تفكيك خوارزمية، حل علة في نواة نظام، أو تقييم نموذج ذكي يتبخر في شاشة المحادثة. وثّق مسارك عبر قالب التحقق البشري الصارم (Proof of Work) وانشره كمرجع تقني نخبوي يحفظ سبقك الفكري.
               </p>

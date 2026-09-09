@@ -35,27 +35,40 @@ export default function Home() {
         {/* 7. DISCOVERIES FEED — AI-Assisted Research & Citizen Investigations */}
         <section className="py-8 sm:py-16 bg-[#f7f7f5] border-b border-[#e4e3e3]" dir="rtl" id="discoveries">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-10 gap-4 sm:gap-6">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-[11px] sm:text-xs uppercase tracking-widest text-[#445e5f] mb-3 sm:mb-4 shadow-xs">
-                  <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-                  <span>أرشيف الاكتشافات المحققة · VERIFIED DISCOVERY LOGS</span>
+            {/* Academic Section Header */}
+            <div className="mb-8 sm:mb-10 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="space-y-3 max-w-3xl">
+                  <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
+                    <span className="font-bold text-[#222f30] text-sm tracking-normal">05</span>
+                    <span className="w-5 h-px bg-[#c9cbbe]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+                    <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
+                      أرشيف الاكتشافات المحققة · VERIFIED DISCOVERY LOGS
+                    </span>
+                  </div>
+                  <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] text-[#222f30] font-kufi">
+                    سجلات الاكتشافات والتحقيقات التقنية{" "}
+                    <span className="text-[#738284] font-normal">
+                      المحققة بشرياً ببرهان العمل.
+                    </span>
+                  </h2>
+                  <p className="text-sm sm:text-base text-[#55696a] leading-relaxed">
+                    أوراق ومذكرات وتجارب هندسية في النظم، والبرمجة، ونماذج الذكاء الاصطناعي خضعت لمعيار التحقق البشري الصارم{" "}
+                    <bdi dir="ltr" className="inline-block whitespace-nowrap font-mono font-semibold text-[#222f30]">
+                      (Proof of Work)
+                    </bdi>.
+                  </p>
                 </div>
-                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-[#222f30] font-kufi">
-                  سجلات الاكتشافات والتحقيقات التقنية المحققة بشرياً.
-                </h2>
-                <p className="mt-3 text-sm sm:text-base text-[#55696a] max-w-2xl leading-relaxed">
-                  أوراق ومذكرات وتجارب هندسية في النظم، والبرمجة، ونماذج الذكاء الاصطناعي خضعت لمعيار التحقق البشري الصارم (Proof of Work).
-                </p>
-              </div>
-              <div className="shrink-0 hidden sm:block">
-                <BioButton
-                  href="/publish"
-                  label="SUBMIT DISCOVERY"
-                  secondaryLabel="وثّق اكتشافك الآن"
-                  variant="primary"
-                  dir="ltr"
-                />
+                <div className="shrink-0">
+                  <BioButton
+                    href="/publish"
+                    label="SUBMIT DISCOVERY"
+                    secondaryLabel="وثّق اكتشافك الآن"
+                    variant="primary"
+                    dir="ltr"
+                  />
+                </div>
               </div>
             </div>
             <FeaturedResearch />
@@ -65,18 +78,28 @@ export default function Home() {
         {/* 8. FIELDS SHOWCASE — All sciences */}
         <section className="py-8 sm:py-16 bg-[#f7f7f5] border-b border-[#e4e3e3]" dir="rtl">
           <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-10 gap-4 sm:gap-6">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-[11px] sm:text-xs uppercase tracking-widest text-[#445e5f] mb-3 sm:mb-4 shadow-xs">
-                  <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-                  <span>ركائز التركيز الهندسي · CORE LAB SANDBOXES</span>
+            {/* Academic Section Header */}
+            <div className="mb-8 sm:mb-10 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="space-y-3 max-w-3xl">
+                  <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
+                    <span className="font-bold text-[#222f30] text-sm tracking-normal">06</span>
+                    <span className="w-5 h-px bg-[#c9cbbe]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+                    <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
+                      ركائز التركيز الهندسي · CORE LAB SANDBOXES
+                    </span>
+                  </div>
+                  <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] text-[#222f30] font-kufi">
+                    تركيز نخبوي: النظم، والبرمجيات،{" "}
+                    <span className="text-[#738284] font-normal">
+                      وهندسة نماذج الذكاء الاصطناعي.
+                    </span>
+                  </h2>
+                  <p className="text-sm sm:text-base text-[#55696a] leading-relaxed">
+                    بداية مركزة في القطاع الأعلى قيمة: أنوية التشغيل المدمجة (نواة Ziqa)، تقييم النماذج الاستدلالية، وهندسة البرمجيات المتقدمة.
+                  </p>
                 </div>
-                <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-[#222f30] font-kufi">
-                  تركيز نخبوي: النظم، والبرمجيات، والذكاء الاصطناعي.
-                </h2>
-                <p className="mt-3 text-sm sm:text-base text-[#55696a] max-w-2xl leading-relaxed">
-                  بداية مركزة في القطاع الأعلى قيمة: أنوية التشغيل المدمجة (نواة Ziqa)، تقييم النماذج الاستدلالية، وهندسة البرمجيات المتقدمة.
-                </p>
               </div>
             </div>
             <FeaturedScenes />

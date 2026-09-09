@@ -18,20 +18,27 @@ export default function BioLeadershipGrid() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
           
           {/* Left Sidebar (Col 1 to 4): Leadership Statement */}
+          {/* Left Sidebar (Col 1 to 4): Academic Folio & Leadership Statement */}
           <div className="lg:col-span-4 lg:sticky lg:top-28 space-y-5">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-              <span>فريق التنسيق والمبادرة · CORE STEWARDS</span>
+            <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
+              <span className="font-bold text-[#222f30] text-sm tracking-normal">07</span>
+              <span className="w-5 h-px bg-[#c9cbbe]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+              <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
+                فريق التنسيق والمبادرة · CORE STEWARDS
+              </span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight text-[#222f30] font-kufi">
-              فريق المبادرة وبناء المنصة.
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight leading-[1.22] text-[#222f30] font-kufi">
+              فريق المبادرة وبناء المنصة،{" "}
+              <span className="text-[#738284] font-normal block sm:inline mt-1 sm:mt-0">
+                بينما المعرفة يصنعها الباحثون.
+              </span>
             </h2>
 
-            <p className="text-sm sm:text-base text-[#445e5f] leading-relaxed">
+            <p className="text-sm sm:text-base text-[#55696a] leading-relaxed">
               فريقٌ تقني ومعرفي مستقل ييسّر المنصة، يطوّر أدوات النشر المفتوح، ويدير البنية التجريبية — بينما المعرفة الحقيقية يصنعها آلاف الباحثين والمساهمين المستقلين عبر أبحاثهم اليومية.
             </p>
-
             <div className="pt-2">
               <Link
                 href="/researchers"

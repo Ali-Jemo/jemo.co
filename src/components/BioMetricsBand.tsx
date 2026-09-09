@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Users, Building2, Layers, ShieldCheck } from "lucide-react";
 
@@ -18,7 +19,7 @@ const STATS = [
     labelEn: "OPEN DISCOVERY LOGS",
     desc: "لا رسوم على النشر ولا قيود تجارية، وتوثيق شفاف للأدوات والتحقق البشري من الهلوسة.",
     icon: ShieldCheck,
-    highlight: false,
+    highlight: true,
   },
   {
     num: "0 دقيقة",
@@ -26,7 +27,7 @@ const STATS = [
     labelEn: "PRESERVED KNOWLEDGE",
     desc: "حفظ جلسات المحادثة العميقة وتحويلها إلى سجلات دائمة قابلة للمشاركة والاستشهاد والتحدي.",
     icon: Layers,
-    highlight: true,
+    highlight: false,
   },
   {
     num: "كل العلوم",
@@ -45,20 +46,29 @@ export default function BioMetricsBand() {
       className="py-12 sm:py-24 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4 sm:gap-6">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] mb-3 shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-              <span>هوية المؤسسة · ABOUT JEMO LABS</span>
+        {/* Academic Section Header */}
+        <div className="mb-8 sm:mb-14 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 lg:gap-12">
+            <div className="space-y-3 max-w-3xl">
+              <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
+                <span className="font-bold text-[#222f30] text-sm tracking-normal">04</span>
+                <span className="w-5 h-px bg-[#c9cbbe]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+                <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
+                  هوية المؤسسة · INSTITUTIONAL BENCHMARKS
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] text-[#222f30] font-kufi">
+                بيت حكمةٍ لجميع العلوم،{" "}
+                <span className="text-[#738284] font-normal">
+                  يُبنى بسواعد باحثيه ومساهميه.
+                </span>
+              </h2>
             </div>
-            <h2 className="text-xl sm:text-4xl font-black text-[#222f30] font-kufi">
-              بيت حكمةٍ لجميع العلوم، يُبنى بسواعد علمائه.
-            </h2>
+            <p className="text-sm sm:text-base text-[#55696a] max-w-md leading-relaxed lg:pb-1">
+              من العلوم الشرعية إلى الذكاء الاصطناعي إلى الطب والفلك — منظومة معرفية موحدة ومفتوحة للجميع دون احتكار.
+            </p>
           </div>
-          <p className="text-xs sm:text-sm font-mono text-[#445e5f] max-w-md leading-relaxed">
-            من العلوم الشرعية إلى الذكاء الاصطناعي إلى الطب والفلك — منظومة معرفية واحدة مفتوحة للجميع.
-          </p>
         </div>
 
         {/* 4-Column Grid */}
@@ -89,7 +99,7 @@ export default function BioMetricsBand() {
 
                 <div>
                   <div className="text-3xl sm:text-4xl font-black font-mono tracking-tight text-[#222f30] mb-2 dir-ltr text-right">
-                    {s.num}
+                    <bdi dir="rtl">{s.num}</bdi>
                   </div>
                   <h3 className="text-base font-bold text-[#222f30] mb-1 font-kufi">
                     {s.label}
@@ -101,6 +111,23 @@ export default function BioMetricsBand() {
               </motion.div>
             );
           })}
+        </div>
+
+        {/* Section Framing Footer — Anchors the 4 cards and frames the section closure */}
+        <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-[#e4e3e3] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-[#55696a]">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
+            <span className="font-bold text-[#222f30]">سجل الاكتشاف المفتوح (OPEN DISCOVERY ARCHIVE)</span>
+            <span className="text-[#848c8e]">·</span>
+            <span>توثيق فوري ومحمي بالتحقق البشري الصارم</span>
+          </div>
+          <Link
+            href="/research"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#222f30] hover:text-[#728825] transition-colors group"
+          >
+            <span>استعراض أرشيف الأبحاث والاكتشافات</span>
+            <span className="transition-transform duration-200 group-hover:-translate-x-1">←</span>
+          </Link>
         </div>
       </div>
     </section>

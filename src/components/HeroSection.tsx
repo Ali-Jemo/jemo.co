@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import BioButton from "@/components/BioButton";
+import { useAuth } from "@/lib/auth-context";
 
 const PILLARS_PREVIEW = [
   { 
@@ -37,11 +38,12 @@ const PILLARS_PREVIEW = [
 ];
 
 export default function HeroSection() {
+  const { profile } = useAuth();
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [activePillar, setActivePillar] = useState<number | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const oscNodesRef = useRef<{ osc1: OscillatorNode; osc2: OscillatorNode; gain: GainNode } | null>(null);
+
+  const isCoarsePointer = () =>
+    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
 
   // Mouse Parallax for subtle 3D cinematic depth
   const mouseX = useMotionValue(0);
@@ -50,7 +52,7 @@ export default function HeroSection() {
   const springY = useSpring(mouseY, { stiffness: 40, damping: 25 });
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return;
+    if (isCoarsePointer()) return;
     const { innerWidth, innerHeight } = window;
     const x = (e.clientX / innerWidth - 0.5) * 16;
     const y = (e.clientY / innerHeight - 0.5) * 16;
@@ -65,57 +67,6 @@ export default function HeroSection() {
     }
   }, []);
 
-  // Ambient Web Audio Synthesizer (harmonic ambient chime)
-  const toggleAudio = () => {
-    if (isPlayingAudio) {
-      if (oscNodesRef.current) {
-        oscNodesRef.current.gain.gain.setTargetAtTime(0, audioCtxRef.current!.currentTime, 0.3);
-        setTimeout(() => {
-          oscNodesRef.current?.osc1.stop();
-          oscNodesRef.current?.osc2.stop();
-          oscNodesRef.current = null;
-        }, 400);
-      }
-      setIsPlayingAudio(false);
-    } else {
-      try {
-        const ctx = audioCtxRef.current ?? new window.AudioContext();
-        audioCtxRef.current = ctx;
-
-        if (ctx.state === "suspended") ctx.resume();
-
-        const osc1 = ctx.createOscillator();
-        const osc2 = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const filter = ctx.createBiquadFilter();
-
-        osc1.type = "sine";
-        osc1.frequency.setValueAtTime(108, ctx.currentTime); // Deep A2 harmonic
-
-        osc2.type = "sine";
-        osc2.frequency.setValueAtTime(216, ctx.currentTime); // Octave overtone
-
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(450, ctx.currentTime);
-
-        gain.gain.setValueAtTime(0.001, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.04, ctx.currentTime + 1.2);
-
-        osc1.connect(filter);
-        osc2.connect(filter);
-        filter.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc1.start();
-        osc2.start();
-
-        oscNodesRef.current = { osc1, osc2, gain };
-        setIsPlayingAudio(true);
-      } catch {
-        setIsPlayingAudio(false);
-      }
-    }
-  };
 
   const scrollToContent = () => {
     const el = document.querySelector("main")?.children[1];
@@ -181,35 +132,6 @@ export default function HeroSection() {
           <span className="text-[10px] sm:text-[11px] text-white/90 font-medium truncate">
             سجل أبحاث النظم والبرمجة والـ AI
           </span>
-        </motion.div>
-
-        {/* Live Audio Stream Micro-Indicator with Web Audio Synthesizer */}
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="hidden sm:flex items-center gap-3 px-3.5 py-1.5 rounded-full border border-white/15 bg-black/35 backdrop-blur-md text-[11px] font-mono text-zinc-300"
-        >
-          <div className="flex items-center gap-1 h-3.5">
-            {[0.35, 0.85, 0.5, 0.95, 0.6].map((h, i) => (
-              <span
-                key={i}
-                style={{ height: `${h * 14}px` }}
-                className={`w-0.5 rounded-full transition-all duration-300 ${
-                  isPlayingAudio ? "bg-[#bef264] animate-pulse" : "bg-zinc-500"
-                }`}
-              />
-            ))}
-          </div>
-          <span>Baghdad-Voice STT · 24kHz</span>
-          <button
-            onClick={toggleAudio}
-            className="hover:text-white transition-colors p-0.5"
-            aria-label={isPlayingAudio ? "كتم الصوت التوليدي" : "تشغيل الصوت التوليدي"}
-            title={isPlayingAudio ? "إيقاف الصوت التوليدي" : "تشغيل التردد الصوتي السيادي"}
-          >
-            {isPlayingAudio ? <Volume2 className="w-3.5 h-3.5 text-[#bef264]" /> : <VolumeX className="w-3.5 h-3.5 text-zinc-400" />}
-          </button>
         </motion.div>
 
       </div>
@@ -280,7 +202,7 @@ export default function HeroSection() {
             style={{ color: "rgba(255, 255, 255, 0.95)" }}
             className="text-sm sm:text-lg leading-relaxed font-normal [text-shadow:0_2px_12px_rgba(0,0,0,0.6)]"
           >
-            نحن نبحث، نكتشف، ونصل لنتائج غير مسبوقة يومياً داخل شاشات المحادثة. <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">JEMO هي المنصة التي تذهب إليها بعد أن بحثت</strong> — لتحويل رحلتك من حوار عابر إلى مرجع تقني نخبوي محمي بمعيار التحقق البشري الصارم (Proof of Work).
+            نحن نبحث، نكتشف، ونصل لنتائج غير مسبوقة يومياً داخل شاشات المحادثة. <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">JEMO هي المنصة التي تذهب إليها بعد أن بحثت</strong> — لتحويل رحلتك من حوار عابر إلى مرجع تقني نخبوي محمي بمعيار التحقق البشري الصارم <bdi dir="ltr" className="inline-block whitespace-nowrap">(Proof of Work)</bdi>.
           </p>
 
           {/* 3 Quick Research Pillars Switchers */}
@@ -289,8 +211,8 @@ export default function HeroSection() {
               <Link
                 key={p.id}
                 href={p.href}
-                onMouseEnter={() => setActivePillar(idx)}
-                onMouseLeave={() => setActivePillar(null)}
+                onMouseEnter={() => { if (isCoarsePointer()) return; setActivePillar(idx) }}
+                onMouseLeave={() => { if (isCoarsePointer()) return; setActivePillar(null) }}
                 className={`group px-3.5 py-2 rounded-full border text-xs font-mono transition-all duration-200 flex items-center gap-2.5 backdrop-blur-md shadow-xs ${
                   activePillar === idx
                     ? "bg-black/75 border-[#bef264] text-white shadow-lg shadow-[#bef264]/15 -translate-y-0.5 scale-[1.02]"
@@ -308,21 +230,13 @@ export default function HeroSection() {
             ))}
           </div>
         </div>
-        {/* Left side (end in RTL): The Iconic IntegratedBio Chamfered BioButtons (Image #2) */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full sm:w-auto">
+        {/* Left side (end in RTL): Single Unified Action Button */}
+        <div className="flex items-center shrink-0 w-full sm:w-auto">
           <BioButton
-            href="/publish"
-            label="SHARE DISCOVERY"
-            secondaryLabel="وثّق اكتشافك الآن"
+            href={profile ? "/publish" : "/login?redirect=/publish"}
+            label={profile ? "SHARE DISCOVERY" : "SIGN IN & PUBLISH"}
+            secondaryLabel={profile ? "وثّق اكتشافك الآن" : "تسجيل الدخول والنشر"}
             variant="primary"
-            dir="ltr"
-          />
-          <BioButton
-            href="/research"
-            label="EXPLORE LOGS"
-            secondaryLabel="سجلات الاكتشافات المحققة"
-            variant="secondary"
-            iconType="arrow-up-right"
             dir="ltr"
           />
         </div>
