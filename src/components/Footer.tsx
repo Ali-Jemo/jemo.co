@@ -42,15 +42,6 @@ const SOCIAL_LINKS = [
   { href: "https://github.com/jemo-labs", label: "GitHub", Icon: GithubIcon },
 ];
 
-const curtainVariants = {
-  hidden: { y: "100%", opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { duration: 0.85, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
-
 export default function Footer() {
   const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -131,21 +122,19 @@ export default function Footer() {
         </div>
 
         {/* Monumental Wordmark with Curtain Reveal & Interactive Neon Spotlight */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ amount: 0.1, once: false }}
-          className="relative border-t border-[var(--line)]/70 pt-4 sm:pt-6 overflow-hidden select-none"
-        >
+        <div className="relative border-t border-[var(--line)]/70 pt-4 sm:pt-6 overflow-hidden select-none">
           <motion.div
             ref={wordmarkRef}
-            variants={curtainVariants}
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => {
               setIsHovered(false);
               setMousePos(null);
             }}
+            initial={{ y: "100%", opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="relative w-full text-center overflow-hidden cursor-default group"
           >
             {/* Subtle glow backdrop tracking cursor on hover */}
@@ -170,7 +159,7 @@ export default function Footer() {
               jemo.co
             </h2>
           </motion.div>
-        </motion.div>
+        </div>
 
         {/* Bottom Bar: Monospace Status, Copyright & Legal Links */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-6 text-[11px] sm:text-xs text-[var(--ink-2)]/80 font-mono border-t border-[var(--line)]/50 gap-4">
