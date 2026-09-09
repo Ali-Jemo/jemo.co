@@ -3,47 +3,11 @@ import CurrencyConverter from "@/components/iq/CurrencyConverter";
 import NewsDigest from "@/components/iq/NewsDigest";
 import ToolsHub from "@/components/iq/ToolsHub";
 import Link from "next/link";
-import { Sparkles, MapPin, ArrowLeft, ShieldCheck, HeartHandshake } from "lucide-react";
+import { HeartHandshake } from "lucide-react";
 
 export default function IqPage() {
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* 1. Header Welcome & Mission Strip */}
-      <section className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-[#121c1e] via-[#0d1618] to-[#0a1012] border border-white/10 shadow-lg relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-          <div className="space-y-1.5 max-w-2xl">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#bef264]">
-              <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse" />
-              <span>نبض اليوم في العراق · DAILY IRAQI PULSE</span>
-              <span className="text-white/30 hidden sm:inline">·</span>
-              <span className="text-white/60 hidden sm:inline">تحديثات حية ومجتمعية</span>
-            </div>
-
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-kufi font-black text-white tracking-tight leading-tight">
-              كل صباح: الأرقام الحقيقية، الأخبار الموثوقة، وأدلة محلتك.
-            </h1>
-
-            <p className="text-xs sm:text-sm text-white/70 leading-relaxed font-sans">
-              منصة عراقيّة صُممت لتختصر عليك 5 تطبيقات وقنوات تليغرام مشتتة. سعر البورصة الفعلي، الذهب، أمبير المولد، وأماكن محلتك التي يتجاهلها غوغل ماب.
-            </p>
-          </div>
-
-          <div className="shrink-0 flex items-center gap-2.5">
-            <Link
-              href="/iq/map"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#bef264] hover:bg-[#a3e635] text-[#0c1415] font-kufi font-bold text-xs shadow-md transition-all active:scale-95"
-            >
-              <MapPin className="w-4 h-4" />
-              <span>استكشف خريطة محلتك</span>
-              <ArrowLeft className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Ambient subtle glow */}
-        <div className="absolute -left-20 -bottom-20 w-60 h-60 bg-[#bef264]/5 rounded-full blur-3xl pointer-events-none" />
-      </section>
-
       {/* 2. Live Economic Rates Ticker (Dollar, Gold, Ampere, Gas) */}
       <MarketTicker />
 
