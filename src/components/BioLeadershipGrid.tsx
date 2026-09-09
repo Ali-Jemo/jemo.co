@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpLeft, Cpu, Activity, Sparkles, Database, Check } from "lucide-react";
+import { ArrowUpLeft, Cpu } from "lucide-react";
 
 export default function BioLeadershipGrid() {
   const [activeNode, setActiveNode] = useState<string | null>(null);
@@ -12,11 +12,11 @@ export default function BioLeadershipGrid() {
   return (
     <section
       dir="rtl"
-      className="c-topology-canvas py-12 sm:py-20 lg:py-28 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
+      className="c-topology-canvas py-12 sm:py-20 lg:py-28 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden select-none"
       aria-label="المخطط العُقدي التفاعلي لفريق المبادرة"
     >
       {/* 0. Ambient Topographic Wave Field & Subtle Circuit Grid Canvas */}
-      <div className="absolute inset-0 pointer-events-none opacity-40 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none opacity-35 overflow-hidden">
         <svg
           className="w-full h-full"
           xmlns="http://www.w3.org/2000/svg"
@@ -24,30 +24,30 @@ export default function BioLeadershipGrid() {
           preserveAspectRatio="none"
         >
           <defs>
-            <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#cbd5e1" stopOpacity="0.4" />
-              <stop offset="50%" stopColor="#a7e26e" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.2" />
+            <linearGradient id="waveGradBio" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#c9cbbe" stopOpacity="0.35" />
+              <stop offset="50%" stopColor="#a7e26e" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#222f30" stopOpacity="0.1" />
             </linearGradient>
           </defs>
           <path
             d="M -100 200 C 300 120, 600 320, 1100 180 C 1300 120, 1500 240, 1600 200"
             fill="none"
-            stroke="url(#waveGrad)"
+            stroke="url(#waveGradBio)"
             strokeWidth="1.2"
             strokeDasharray="4 6"
           />
           <path
             d="M -100 280 C 250 200, 700 420, 1150 260 C 1350 200, 1500 320, 1600 280"
             fill="none"
-            stroke="url(#waveGrad)"
+            stroke="url(#waveGradBio)"
             strokeWidth="1"
             strokeDasharray="3 5"
           />
           <path
             d="M -100 380 C 350 300, 800 500, 1200 340 C 1400 280, 1550 400, 1650 360"
             fill="none"
-            stroke="url(#waveGrad)"
+            stroke="url(#waveGradBio)"
             strokeWidth="0.8"
             strokeDasharray="2 4"
           />
@@ -64,7 +64,7 @@ export default function BioLeadershipGrid() {
              ========================================================= */}
           <div className="lg:col-span-8 flex flex-col gap-6 relative">
             
-            {/* SVG Connecting Bézier Overlay for Desktop Canvas */}
+            {/* SVG Connecting Bézier Overlay for Desktop Canvas (Jemo Theme: Slate to Bio-Lime) */}
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none hidden lg:block z-0"
               xmlns="http://www.w3.org/2000/svg"
@@ -73,45 +73,45 @@ export default function BioLeadershipGrid() {
               <path
                 d="M 98% 180 C 85% 180, 75% 90, 60% 90"
                 fill="none"
-                stroke={activeNode === "ali" ? "#38bdf8" : "#cbd5e1"}
-                strokeWidth={activeNode === "ali" ? "2" : "1.2"}
+                stroke={activeNode === "ali" ? "#a7e26e" : "#c9cbbe"}
+                strokeWidth={activeNode === "ali" ? "2.2" : "1.2"}
                 strokeDasharray={activeNode === "ali" ? "none" : "3 4"}
-                className="transition-colors duration-300"
+                className="transition-all duration-300"
               />
               {/* Circuit from Hub to Node 2 (Ahmed Furati) */}
               <path
                 d="M 98% 280 C 70% 280, 50% 290, 38% 300"
                 fill="none"
-                stroke={activeNode === "ahmed" ? "#a7e26e" : "#cbd5e1"}
-                strokeWidth={activeNode === "ahmed" ? "2" : "1.2"}
+                stroke={activeNode === "ahmed" ? "#a7e26e" : "#c9cbbe"}
+                strokeWidth={activeNode === "ahmed" ? "2.2" : "1.2"}
                 strokeDasharray={activeNode === "ahmed" ? "none" : "3 4"}
-                className="transition-colors duration-300"
+                className="transition-all duration-300"
               />
               {/* Circuit from Hub to Node 3 (Haider Baghdadi) */}
               <path
                 d="M 98% 360 C 80% 360, 65% 520, 55% 540"
                 fill="none"
-                stroke={activeNode === "haider" ? "#38bdf8" : "#cbd5e1"}
-                strokeWidth={activeNode === "haider" ? "2" : "1.2"}
+                stroke={activeNode === "haider" ? "#a7e26e" : "#c9cbbe"}
+                strokeWidth={activeNode === "haider" ? "2.2" : "1.2"}
                 strokeDasharray={activeNode === "haider" ? "none" : "3 4"}
-                className="transition-colors duration-300"
+                className="transition-all duration-300"
               />
               {/* Circuit from Node 3 to Node 4 (Sara Hussaini) */}
               <path
                 d="M 45% 620 C 35% 620, 25% 680, 15% 680"
                 fill="none"
-                stroke={activeNode === "sara" ? "#a7e26e" : "#cbd5e1"}
-                strokeWidth={activeNode === "sara" ? "2" : "1.2"}
+                stroke={activeNode === "sara" ? "#a7e26e" : "#c9cbbe"}
+                strokeWidth={activeNode === "sara" ? "2.2" : "1.2"}
                 strokeDasharray={activeNode === "sara" ? "none" : "3 4"}
-                className="transition-colors duration-300"
+                className="transition-all duration-300"
               />
 
-              {/* Glowing Interconnection Junction Dots */}
-              <circle cx="98%" cy="180" r="4.5" fill="#38bdf8" className="animate-pulse" />
-              <circle cx="98%" cy="280" r="4.5" fill="#a7e26e" />
-              <circle cx="98%" cy="360" r="4.5" fill="#38bdf8" />
+              {/* Glowing Interconnection Junction Nodes in Jemo Lime */}
+              <circle cx="98%" cy="180" r="4.5" fill="#a7e26e" className="animate-pulse" />
+              <circle cx="98%" cy="280" r="4.5" fill="#cef79e" />
+              <circle cx="98%" cy="360" r="4.5" fill="#a7e26e" />
               <circle cx="55%" cy="540" r="4" fill="#a7e26e" />
-              <circle cx="38%" cy="300" r="4" fill="#38bdf8" />
+              <circle cx="38%" cy="300" r="4" fill="#cef79e" />
             </svg>
 
             {/* -------------------------------------------------------------
@@ -125,7 +125,7 @@ export default function BioLeadershipGrid() {
               onMouseEnter={() => setActiveNode("ali")}
               onMouseLeave={() => setActiveNode(null)}
               className={`relative z-10 p-5 sm:p-7 rounded-3xl bg-white border transition-all duration-300 shadow-sm hover:shadow-xl ${
-                activeNode === "ali" ? "border-[#38bdf8] ring-2 ring-[#38bdf8]/20" : "border-[#e4e3e3]"
+                activeNode === "ali" ? "border-[#a7e26e] ring-2 ring-[#a7e26e]/25" : "border-[#e4e3e3]"
               }`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
@@ -148,10 +148,10 @@ export default function BioLeadershipGrid() {
 
                 {/* Center / Left: Avatar with Circular HUD Telemetry Radar */}
                 <div className="flex items-center gap-4 shrink-0">
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl p-1 bg-[#0c1415] border border-white/20 shadow-md flex items-center justify-center overflow-hidden group/hud">
-                    {/* Rotating HUD Radar Ring */}
-                    <div className="absolute inset-0.5 rounded-xl border border-dashed border-[#38bdf8]/40 animate-[spin_16s_linear_infinite]" />
-                    <div className="absolute inset-2 rounded-lg border border-[#a7e26e]/30" />
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl p-1 bg-[#162021] border border-[#e4e3e3] shadow-md flex items-center justify-center overflow-hidden group/hud">
+                    {/* Rotating HUD Radar Ring in Jemo Lime */}
+                    <div className="absolute inset-0.5 rounded-xl border border-dashed border-[#a7e26e]/45 animate-[spin_20s_linear_infinite]" />
+                    <div className="absolute inset-2 rounded-lg border border-[#cef79e]/20" />
                     
                     <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden">
                       <Image
@@ -164,10 +164,11 @@ export default function BioLeadershipGrid() {
                     </div>
                   </div>
 
-                  {/* ORCID Verified + Metrics */}
-                  <div className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3] font-mono text-center min-w-[80px]">
-                    <span className="px-2 py-0.5 rounded-full bg-white border border-[#e4e3e3] text-[9px] font-bold text-[#38bdf8] uppercase tracking-wider">
-                      ORCID VERIFIED
+                  {/* ORCID Verified + Metrics in Site Theme */}
+                  <div className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] font-mono text-center min-w-[84px]">
+                    <span className="px-2 py-0.5 rounded-full bg-white border border-[#e4e3e3] text-[9px] font-bold text-[#222f30] uppercase tracking-wider flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
+                      <span>ORCID</span>
                     </span>
                     <div className="flex items-center justify-center gap-3 pt-1 text-xs">
                       <div>
@@ -200,7 +201,7 @@ export default function BioLeadershipGrid() {
                 onMouseEnter={() => setActiveNode("ahmed")}
                 onMouseLeave={() => setActiveNode(null)}
                 className={`relative z-10 p-5 sm:p-6 rounded-3xl bg-white border transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between ${
-                  activeNode === "ahmed" ? "border-[#a7e26e] ring-2 ring-[#a7e26e]/20" : "border-[#e4e3e3]"
+                  activeNode === "ahmed" ? "border-[#a7e26e] ring-2 ring-[#a7e26e]/25" : "border-[#e4e3e3]"
                 }`}
               >
                 <div className="space-y-3">
@@ -237,17 +238,17 @@ export default function BioLeadershipGrid() {
                         <Cpu className="w-3.5 h-3.5 text-[#a7e26e]" />
                         <span className="text-[#a7e26e] font-bold">SYSTEMS CONSOLE</span>
                       </span>
-                      <span>CORE KERNEL</span>
+                      <span className="text-zinc-500">CORE KERNEL</span>
                     </div>
 
                     {/* Stylized Chip Pinout Schematic */}
-                    <div className="py-1.5 px-2 rounded-xl bg-black/40 border border-white/10 flex items-center justify-between text-[9px]">
-                      <span className="text-zinc-500">BUS: 128-BIT</span>
+                    <div className="py-1.5 px-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-[9px]">
+                      <span className="text-zinc-400">BUS: 128-BIT</span>
                       <div className="flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e] animate-pulse" />
-                        <span className="text-emerald-400">ZIQA_v0.9 // ONLINE</span>
+                        <span className="text-[#bef264] font-bold">ZIQA_v0.9 // ONLINE</span>
                       </div>
-                      <span className="text-zinc-500">RUST // NO_STD</span>
+                      <span className="text-zinc-400">RUST // NO_STD</span>
                     </div>
                   </div>
                 </div>
@@ -277,7 +278,7 @@ export default function BioLeadershipGrid() {
                 onMouseEnter={() => setActiveNode("haider")}
                 onMouseLeave={() => setActiveNode(null)}
                 className={`relative z-10 p-5 sm:p-6 rounded-3xl bg-white border transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col justify-between ${
-                  activeNode === "haider" ? "border-[#38bdf8] ring-2 ring-[#38bdf8]/20" : "border-[#e4e3e3]"
+                  activeNode === "haider" ? "border-[#a7e26e] ring-2 ring-[#a7e26e]/25" : "border-[#e4e3e3]"
                 }`}
               >
                 <div className="space-y-3">
@@ -302,8 +303,8 @@ export default function BioLeadershipGrid() {
                       </div>
                     </div>
 
-                    <span className="px-2 py-0.5 rounded bg-[#f0f9ff] text-[#0284c7] border border-[#bae6fd] text-[9px] font-mono font-bold uppercase">
-                      INTERACTIVE ROBOT
+                    <span className="px-2 py-0.5 rounded bg-[#f5f8f7] text-[#222f30] border border-[#e4e3e3] text-[9px] font-mono font-bold uppercase">
+                      ROBOTICS LAB
                     </span>
                   </div>
 
@@ -311,25 +312,25 @@ export default function BioLeadershipGrid() {
                     متخصص في الأنظمة الميكاترونيكية ودمج المستشعرات ذاتية الحركة في البيئات الميدانية الصعبة.
                   </p>
 
-                  {/* Micro-Widget: Kinematic Robotic Arm & Wave Sensor Graphic */}
-                  <div className="p-3 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] flex items-center justify-between gap-3">
-                    {/* Mechatronic Pulse Sensor Graphic */}
-                    <div className="flex items-center gap-1.5 font-mono text-xs text-[#0284c7]">
-                      <span className="text-slate-400 text-sm">((</span>
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#38bdf8] animate-ping" />
-                      <span className="text-slate-400 text-sm">))</span>
-                      <span className="text-[10px] text-slate-600 font-bold mr-1">SENSOR ACTUATOR</span>
+                  {/* Micro-Widget: Kinematic Robotic Arm & Mechatronics Sensor */}
+                  <div className="p-3 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] flex items-center justify-between gap-3">
+                    {/* Mechatronic Pulse Sensor Graphic in Jemo Theme */}
+                    <div className="flex items-center gap-1.5 font-mono text-xs text-[#222f30]">
+                      <span className="text-[#848c8e] text-sm">((</span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#a7e26e] animate-ping" />
+                      <span className="text-[#848c8e] text-sm">))</span>
+                      <span className="text-[10px] text-[#55696a] font-bold mr-1">SENSOR ACTUATOR</span>
                     </div>
 
-                    {/* Robotic Arm Vector Illustration */}
+                    {/* Robotic Arm Vector Illustration with Jemo Accents */}
                     <div className="relative w-12 h-10 shrink-0 flex items-center justify-center">
-                      <svg viewBox="0 0 64 48" className="w-full h-full stroke-[#0f172a] fill-none stroke-[2.2]">
-                        <path d="M 8 42 L 56 42" stroke="#94a3b8" strokeWidth="2.5" />
-                        <circle cx="20" cy="40" r="4" fill="#38bdf8" stroke="#0f172a" />
+                      <svg viewBox="0 0 64 48" className="w-full h-full stroke-[#222f30] fill-none stroke-[2.2]">
+                        <path d="M 8 42 L 56 42" stroke="#c9cbbe" strokeWidth="2.5" />
+                        <circle cx="20" cy="40" r="4" fill="#a7e26e" stroke="#222f30" />
                         <path d="M 20 36 L 28 20" />
-                        <circle cx="28" cy="20" r="3.5" fill="#a7e26e" stroke="#0f172a" />
+                        <circle cx="28" cy="20" r="3.5" fill="#cef79e" stroke="#222f30" />
                         <path d="M 28 20 L 44 14" />
-                        <circle cx="44" cy="14" r="3" fill="#38bdf8" stroke="#0f172a" />
+                        <circle cx="44" cy="14" r="3" fill="#a7e26e" stroke="#222f30" />
                         <path d="M 44 14 L 50 18 M 44 14 L 50 10" />
                       </svg>
                     </div>
@@ -365,7 +366,7 @@ export default function BioLeadershipGrid() {
               onMouseEnter={() => setActiveNode("sara")}
               onMouseLeave={() => setActiveNode(null)}
               className={`relative z-10 p-5 sm:p-7 rounded-3xl bg-white border transition-all duration-300 shadow-sm hover:shadow-xl ${
-                activeNode === "sara" ? "border-[#a7e26e] ring-2 ring-[#a7e26e]/20" : "border-[#e4e3e3]"
+                activeNode === "sara" ? "border-[#a7e26e] ring-2 ring-[#a7e26e]/25" : "border-[#e4e3e3]"
               }`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
@@ -410,31 +411,31 @@ export default function BioLeadershipGrid() {
                 </div>
 
                 {/* Left side: Micro-Widget — Artifact Scanner Scroll Hologram */}
-                <div className="p-3 sm:p-4 rounded-2xl bg-[#fafafa] border border-[#e4e3e3] flex items-center gap-4 shrink-0 shadow-2xs">
+                <div className="p-3 sm:p-4 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] flex items-center gap-4 shrink-0 shadow-2xs">
                   
-                  {/* Ancient Manuscript Wireframe Scroll Diagram with Laser Scanner */}
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-20 bg-white rounded-xl border border-[#cbd5e1] p-1.5 overflow-hidden flex flex-col justify-between">
+                  {/* Ancient Manuscript Wireframe Scroll Diagram with Jemo Lime Laser Scanner */}
+                  <div className="relative w-20 h-20 sm:w-24 sm:h-20 bg-white rounded-xl border border-[#e4e3e3] p-1.5 overflow-hidden flex flex-col justify-between shadow-2xs">
                     {/* Simulated Text Lines */}
-                    <div className="space-y-1 opacity-40">
+                    <div className="space-y-1 opacity-35">
                       <div className="h-1 bg-[#222f30] rounded-full w-3/4" />
                       <div className="h-1 bg-[#222f30] rounded-full w-full" />
                       <div className="h-1 bg-[#222f30] rounded-full w-5/6" />
                       <div className="h-1 bg-[#222f30] rounded-full w-2/3" />
                     </div>
 
-                    {/* Animated Laser Scan Beam */}
+                    {/* Animated Laser Scan Beam in Bio-Lime */}
                     <div className="absolute inset-x-0 h-0.5 bg-[#a7e26e] shadow-[0_0_8px_#a7e26e] animate-[bounce_2.4s_infinite]" />
 
-                    <div className="flex items-center justify-between text-[8px] font-mono text-zinc-400">
+                    <div className="flex items-center justify-between text-[8px] font-mono text-[#738284]">
                       <span>DOC-OCR</span>
-                      <span className="text-[#a7e26e] font-bold">99.4%</span>
+                      <span className="text-[#728825] font-bold">99.4%</span>
                     </div>
                   </div>
 
-                  {/* Transcription Status & Ring */}
+                  {/* Transcription Status in Jemo Palette */}
                   <div className="space-y-1 font-mono text-[11px]">
-                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-white text-[#222f30] border border-[#e4e3e3] text-[10px] font-bold shadow-2xs">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e] animate-pulse" />
                       <span>ARTIFACT SCANNER</span>
                     </div>
                     <p className="text-[10px] text-[#738284]">transcription status</p>
@@ -462,7 +463,7 @@ export default function BioLeadershipGrid() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="relative p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-md hover:shadow-xl transition-all duration-300 space-y-6"
+              className="relative p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-sm hover:shadow-xl transition-all duration-300 space-y-6"
             >
               {/* Header Track Tag */}
               <div className="flex items-center justify-between text-xs font-mono">
@@ -471,8 +472,8 @@ export default function BioLeadershipGrid() {
                   <span>[INITIATIVE_HUB // CONTRIBUTORS]</span>
                 </div>
                 
-                {/* Anchor Port Dot on Left Border (Connecting out to nodes) */}
-                <span className="hidden lg:block w-3 h-3 rounded-full bg-[#38bdf8] border-2 border-white ring-2 ring-[#38bdf8]/30 animate-ping" />
+                {/* Anchor Port Dot on Left Border (Connecting out to nodes in Jemo Lime) */}
+                <span className="hidden lg:block w-3 h-3 rounded-full bg-[#a7e26e] border-2 border-white ring-2 ring-[#a7e26e]/30 animate-pulse" />
               </div>
 
               {/* Title & Mission Statement */}
@@ -496,48 +497,48 @@ export default function BioLeadershipGrid() {
                 </Link>
               </div>
 
-              {/* Two Integrated Telemetry Micro-Widgets */}
+              {/* Two Integrated Telemetry Micro-Widgets in Jemo Theme */}
               <div className="pt-4 border-t border-[#e4e3e3] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3.5 font-mono">
                 
                 {/* Telemetry 1: Research Activity Sparkline Curve */}
-                <div className="p-3.5 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] space-y-2">
+                <div className="p-3.5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] space-y-2">
                   <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-[#64748b] font-bold uppercase">RESEARCH ACTIVITY</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#ecfdf5] text-[#059669] font-bold text-[9px] border border-[#a7f3d0]">
+                    <span className="text-[#55696a] font-bold uppercase">RESEARCH ACTIVITY</span>
+                    <span className="px-2 py-0.5 rounded-full bg-[#cef79e] text-[#162021] font-bold text-[9px] border border-[#a7e26e]">
                       +18.4%
                     </span>
                   </div>
 
-                  {/* SVG Smooth Sine/Bézier Sparkline Curve */}
+                  {/* SVG Smooth Sine/Bézier Sparkline Curve in Jemo Pine + Lime */}
                   <div className="h-10 w-full">
                     <svg viewBox="0 0 160 40" className="w-full h-full overflow-visible">
                       <defs>
-                        <linearGradient id="curveFill" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.0" />
+                        <linearGradient id="curveFillBio" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#a7e26e" stopOpacity="0.3" />
+                          <stop offset="100%" stopColor="#a7e26e" stopOpacity="0.0" />
                         </linearGradient>
                       </defs>
                       <path
                         d="M 0 35 C 30 35, 45 10, 80 14 C 115 18, 130 5, 160 8 L 160 40 L 0 40 Z"
-                        fill="url(#curveFill)"
+                        fill="url(#curveFillBio)"
                       />
                       <path
                         d="M 0 35 C 30 35, 45 10, 80 14 C 115 18, 130 5, 160 8"
                         fill="none"
-                        stroke="#0284c7"
-                        strokeWidth="2.2"
+                        stroke="#222f30"
+                        strokeWidth="2"
                       />
-                      <circle cx="80" cy="14" r="3" fill="#a7e26e" stroke="#0284c7" strokeWidth="1.5" />
-                      <circle cx="160" cy="8" r="3.5" fill="#38bdf8" stroke="#0284c7" strokeWidth="1.5" />
+                      <circle cx="80" cy="14" r="3" fill="#a7e26e" stroke="#222f30" strokeWidth="1.5" />
+                      <circle cx="160" cy="8" r="3.5" fill="#cef79e" stroke="#222f30" strokeWidth="1.5" />
                     </svg>
                   </div>
                 </div>
 
-                {/* Telemetry 2: Daily Commits Dynamic Bar Chart */}
-                <div className="p-3.5 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] space-y-2">
+                {/* Telemetry 2: Daily Commits Dynamic Bar Chart in Jemo Theme */}
+                <div className="p-3.5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] space-y-2">
                   <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-[#64748b] font-bold uppercase">DAILY COMMITS</span>
-                    <span className="text-[#0f172a] font-bold">42/DAY</span>
+                    <span className="text-[#55696a] font-bold uppercase">DAILY COMMITS</span>
+                    <span className="text-[#222f30] font-bold">42/DAY</span>
                   </div>
 
                   {/* Dynamic Vertical Commits Bar Chart */}
@@ -548,10 +549,10 @@ export default function BioLeadershipGrid() {
                         style={{ height: `${h}%` }}
                         className={`w-full rounded-sm transition-all duration-300 ${
                           i === 9
-                            ? "bg-[#38bdf8] shadow-xs"
+                            ? "bg-[#222f30] shadow-xs"
                             : i === 5 || i === 11
                             ? "bg-[#a7e26e]"
-                            : "bg-[#cbd5e1]"
+                            : "bg-[#c9cbbe]"
                         }`}
                       />
                     ))}
