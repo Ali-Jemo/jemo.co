@@ -11,6 +11,7 @@ import { useAuth } from "@/lib/auth-context";
 
 const NAV_ITEMS = [
   { href: "/", label: "الرئيسية" },
+  { href: "/iq", label: "نبض العراق (هسه)" },
   { href: "/research", label: "سجلات الاكتشاف" },
   { href: "/questions", label: "الأسئلة المفتوحة" },
   { href: "/projects", label: "المشاريع" },
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
 
 const MOBILE_NAV_ITEMS = [
   { href: "/", label: "الرئيسية" },
+  { href: "/iq", label: "نبض العراق (هسه)" },
   { href: "/research", label: "سجلات الاكتشاف" },
   { href: "/questions", label: "الأسئلة المفتوحة" },
   { href: "/projects", label: "المشاريع" },

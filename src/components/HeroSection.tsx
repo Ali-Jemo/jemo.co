@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ArrowUpLeft } from "lucide-react";
 import BioButton from "@/components/BioButton";
 import { useAuth } from "@/lib/auth-context";
 
@@ -158,6 +158,16 @@ export default function HeroSection() {
             سجل أبحاث النظم والبرمجة والـ AI
           </span>
         </motion.div>
+
+        {/* Iraqi Daily Pulse Platform Bridge Link */}
+        <Link
+          href="/iq"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#bef264]/40 bg-[#bef264]/10 hover:bg-[#bef264]/20 text-[#bef264] text-xs font-mono transition-all group shadow-sm"
+        >
+          <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse shrink-0" />
+          <span className="font-bold text-[11px]">منصة هسه العراقية (النبض والخريطة)</span>
+          <ArrowUpLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
+        </Link>
 
       </div>
 
