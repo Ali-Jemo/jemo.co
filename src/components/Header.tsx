@@ -3,8 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowUpLeft, Search, LayoutDashboard, LogOut } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { Menu, X, ArrowUpLeft, Search } from "lucide-react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CommandPalette from "@/components/CommandPalette";
 import { useAuth } from "@/lib/auth-context";
@@ -35,54 +35,60 @@ export default function Header() {
   const [hidden, setHidden] = useState(false);
 
   const { profile, logout } = useAuth();
-  const lastScroll = useRef(0);
-  const lastTime = useRef(0);
-  const currentHidden = useRef(false);
-  const ticking = useRef(false);
-
-  // Velocity-based hide-on-down / reveal-on-up with hysteresis + top override
+  // ponytail: two-state directional accumulator — hides after 30px down, reveals after 25px up
   useEffect(() => {
-    const THRESHOLD = 400;   // px of deliberate scroll before toggling
-    const VELOCITY = 1800;   // px/s minimum scroll speed to count as intentional
-    const TOP_MARGIN = 80;   // always reveal near the top
+    let lastY = Math.max(0, window.scrollY);
+    let isHidden = false;
+    let downAccum = 0;
+    let upAccum = 0;
 
     const onScroll = () => {
-      const now = Date.now();
-      const y = window.scrollY;
-      const deltaY = y - lastScroll.current;
-      const deltaTime = (now - lastTime.current) / 1000 || (1 / 60);
-      const velocity = Math.abs(deltaY / deltaTime);
+      const y = Math.max(0, window.scrollY);
+      const diff = y - lastY;
+      lastY = y;
 
-      // Always show near the top
-      if (y <= TOP_MARGIN) {
-        if (currentHidden.current) { currentHidden.current = false; setHidden(false); }
-      } else if (!ticking.current) {
-        ticking.current = true;
-        requestAnimationFrame(() => {
-          // Reveal on deliberate upward scroll
-          if (deltaY < -THRESHOLD && velocity > VELOCITY) {
-            if (currentHidden.current) { currentHidden.current = false; setHidden(false); }
-          }
-          // Hide on deliberate downward scroll
-          else if (deltaY > THRESHOLD && velocity > VELOCITY) {
-            if (!currentHidden.current) { currentHidden.current = true; setHidden(true); }
-          }
-          ticking.current = false;
-          // Track accumulated distance for hysteresis reset
-          lastScroll.current = y;
-          lastTime.current = now;
-        });
+      setScrolled(y > 20);
+
+      // Always show near top or when mobile menu is open
+      if (isOpen || y <= 64) {
+        if (isHidden) {
+          isHidden = false;
+          setHidden(false);
+        }
+        downAccum = 0;
+        upAccum = 0;
+        return;
       }
 
-      lastScroll.current = y;
-      lastTime.current = now;
-      setScrolled(y > 20);
+      if (diff > 0) {
+        // Scrolling down
+        upAccum = 0;
+        if (!isHidden) {
+          downAccum += diff;
+          if (downAccum >= 30) {
+            isHidden = true;
+            setHidden(true);
+            downAccum = 0;
+          }
+        }
+      } else if (diff < 0) {
+        // Scrolling up
+        downAccum = 0;
+        if (isHidden) {
+          upAccum += Math.abs(diff);
+          if (upAccum >= 25) {
+            isHidden = false;
+            setHidden(false);
+            upAccum = 0;
+          }
+        }
+      }
     };
 
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
     setIsOpen(false);
@@ -95,16 +101,17 @@ export default function Header() {
       <CommandPalette />
       
       <motion.header
-        initial={{ y: -60, opacity: 0 }}
-        animate={{ y: hidden ? -80 : 0, opacity: hidden ? 0 : 1 }}
-        transition={{ type: "spring", stiffness: 320, damping: 26, opacity: { duration: 0.2 } }}
-        className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+        initial={{ y: "-100%", opacity: 0 }}
+        animate={{ y: hidden ? "-100%" : "0%", opacity: hidden ? 0 : 1 }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className={`fixed top-0 z-50 w-full transition-colors duration-300 ${
           scrolled
             ? "border-b border-[var(--line)] bg-[var(--bg)]/95 backdrop-blur-xl shadow-xs text-[var(--ink)]"
             : isTransparent
             ? "border-b border-white/10 bg-black/25 backdrop-blur-md text-white"
             : "border-b border-[var(--line)]/60 bg-[var(--bg)]/90 backdrop-blur-md text-[var(--ink)]"
         }`}
+        style={{ pointerEvents: hidden ? "none" : "auto" }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
           

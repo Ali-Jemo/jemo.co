@@ -42,6 +42,34 @@ const SOCIAL_LINKS = [
   { href: "https://github.com/jemo-labs", label: "GitHub", Icon: GithubIcon },
 ];
 
+// ponytail: staggered per-letter slide-up reveal with snappy bezier; no heavy animation library needed
+const WORDMARK_LETTERS = "jemo.co".split("");
+
+const wordmarkContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.04,
+    },
+  },
+};
+
+const wordmarkLetterVariants = {
+  hidden: {
+    y: "110%",
+    opacity: 0,
+    transition: { duration: 0.15 },
+  },
+  visible: {
+    y: "0%",
+    opacity: 1,
+    transition: {
+      duration: 0.38,
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+    },
+  },
+};
+
 export default function Footer() {
   const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -133,10 +161,10 @@ export default function Footer() {
             }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             title="اضغط للعودة إلى أعلى الصفحة ↑"
-            initial={{ y: "100%" }}
-            whileInView={{ y: "0%" }}
-            viewport={{ once: true, margin: "120px" }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
+            variants={wordmarkContainerVariants}
             className="relative w-full text-center overflow-hidden cursor-pointer group py-2"
           >
             {/* Subtle glow backdrop tracking cursor on hover */}
@@ -149,16 +177,16 @@ export default function Footer() {
               />
             )}
 
-            <h2
-              className="text-[16vw] xl:text-[17vw] leading-[0.82] font-black font-mono tracking-[-0.04em] group-hover:tracking-[-0.02em] transition-[letter-spacing,background] duration-300 select-none text-transparent bg-clip-text py-2"
-              style={{
-                backgroundImage:
-                  isHovered && mousePos
-                    ? `radial-gradient(circle 340px at ${mousePos.x}px ${mousePos.y}px, #a7e26e 0%, #222f30 55%, rgba(34, 47, 48, 0.25) 100%)`
-                    : "linear-gradient(180deg, rgba(34, 47, 48, 0.30) 0%, rgba(34, 47, 48, 0.18) 100%)",
-              }}
-            >
-              jemo.co
+            <h2 className="text-[16vw] xl:text-[17vw] leading-[0.82] font-black font-mono tracking-[-0.04em] group-hover:tracking-[-0.02em] transition-[letter-spacing,color] duration-300 select-none text-[var(--ink)]/25 group-hover:text-[var(--ink)]/45 py-2 inline-flex justify-center mix-blend-multiply">
+              {WORDMARK_LETTERS.map((char, idx) => (
+                <motion.span
+                  key={idx}
+                  variants={wordmarkLetterVariants}
+                  className="inline-block"
+                >
+                  {char}
+                </motion.span>
+              ))}
             </h2>
           </motion.div>
         </div>

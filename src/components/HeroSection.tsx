@@ -230,8 +230,15 @@ export default function HeroSection() {
             ))}
           </div>
         </div>
-        {/* Left side (end in RTL): Single Unified Action Button */}
-        <div className="flex items-center shrink-0 w-full sm:w-auto">
+        {/* Left side (end in RTL): Action Buttons Stack */}
+        <div dir="ltr" className="flex flex-col items-start gap-3 shrink-0 w-full sm:w-auto">
+          <BioButton
+            href="/explain"
+            label="لخصلي الموقع"
+            secondaryLabel="شني السالفة؟"
+            variant="dark-glass"
+            dir="ltr"
+          />
           <BioButton
             href={profile ? "/publish" : "/login?redirect=/publish"}
             label={profile ? "SHARE DISCOVERY" : "SIGN IN & PUBLISH"}

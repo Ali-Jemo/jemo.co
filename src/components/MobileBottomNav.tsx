@@ -1,32 +1,79 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, Plus, HelpCircle, Search } from "lucide-react";
+import { Home, Compass, Plus, HelpCircle, Search, ArrowUp } from "lucide-react";
 
 export default function MobileBottomNav() {
   const pathname = usePathname() ?? "/";
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // ponytail: native smooth scroll to main section / page top; no heavy scroll lib needed
+  const scrollToTop = () => {
+    const main = document.querySelector("main");
+    if (main && typeof main.scrollIntoView === "function") {
+      main.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const triggerSearch = () => {
     window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
   };
 
+  if (pathname === "/explain" || pathname === "/summary") {
+    return null;
+  }
+
   const isPublishActive = pathname === "/publish";
 
   return (
-    <nav
-      aria-label="التنقل السريع على الهاتف"
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0c1415]/95 backdrop-blur-2xl border-t border-white/10 text-white shadow-2xl pb-[env(safe-area-inset-bottom,0px)]"
-      dir="rtl"
-    >
-      <div className="grid grid-cols-5 h-14 items-center px-1">
-        {/* 1. Home */}
-        <Link
-          href="/"
-          className={`flex flex-col items-center justify-center h-full transition-all active:scale-90 ${
-            pathname === "/" ? "text-[#bef264]" : "text-white/70 hover:text-white"
-          }`}
-        >
+    <>
+      {/* Floating Back to Main Section Button */}
+      <button
+        type="button"
+        onClick={scrollToTop}
+        aria-label="العودة إلى القسم الرئيسي في الأعلى"
+        className={`md:hidden fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px)+12px)] left-4 z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0c1415]/95 border border-[#bef264]/30 hover:border-[#bef264] text-[#bef264] shadow-xl shadow-black/50 backdrop-blur-xl active:scale-90 transition-all duration-300 cursor-pointer ${
+          showScrollTop
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+      >
+        <ArrowUp className="w-4 h-4 stroke-[2.5]" />
+        <span className="text-[11px] font-mono font-bold tracking-tight">القسم الرئيسي</span>
+      </button>
+
+      <nav
+        aria-label="التنقل السريع على الهاتف"
+        className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0c1415]/95 backdrop-blur-2xl border-t border-white/10 text-white shadow-2xl pb-[env(safe-area-inset-bottom,0px)]"
+        dir="rtl"
+      >
+        <div className="grid grid-cols-5 h-14 items-center px-1">
+          {/* 1. Home */}
+          <Link
+            href="/"
+            onClick={(e) => {
+              if (pathname === "/") {
+                e.preventDefault();
+                scrollToTop();
+              }
+            }}
+            className={`flex flex-col items-center justify-center h-full transition-all active:scale-90 ${
+              pathname === "/" ? "text-[#bef264]" : "text-white/70 hover:text-white"
+            }`}
+          >
           <Home className="w-5 h-5 mb-0.5" />
           <span className="text-[9px] font-mono tracking-tight font-medium">الرئيسية</span>
         </Link>
@@ -81,6 +128,7 @@ export default function MobileBottomNav() {
           <span className="text-[9px] font-mono tracking-tight font-medium">بحث</span>
         </button>
       </div>
-    </nav>
+      </nav>
+    </>
   );
 }

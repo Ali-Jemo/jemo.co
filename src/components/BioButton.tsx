@@ -38,6 +38,7 @@ export default function BioButton({
   const [hovered, setHovered] = useState(false);
 
   const isRtl = dir === "rtl";
+  const isArabic = /[\u0600-\u06FF]/.test(label);
 
   // Palette definitions based on variant and hover state
   let labelBg = "#222F30";
@@ -107,9 +108,11 @@ export default function BioButton({
               : "0 2px 10px rgba(0, 0, 0, 0.08)",
           }}
         >
-          <span className="whitespace-nowrap select-none">{label}</span>
+          <span className={`whitespace-nowrap select-none ${isArabic ? "font-kufi tracking-normal font-semibold text-sm" : ""}`}>
+            {label}
+          </span>
           {secondaryLabel && (
-            <span className="opacity-60 text-[10px] ml-1.5 font-normal hidden md:inline">
+            <span className="opacity-75 text-[10px] ml-1.5 font-normal font-kufi hidden md:inline">
               ({secondaryLabel})
             </span>
           )}
