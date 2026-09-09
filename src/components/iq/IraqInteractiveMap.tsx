@@ -13,11 +13,14 @@ import {
   Layers,
   Plus,
   LocateFixed,
+  Trash2,
+  Check,
 } from "lucide-react";
 
 interface IraqInteractiveMapProps {
   spots: LocalSpot[];
   onAddSpot?: (spot: LocalSpot) => void;
+  onDeleteSpot?: (spotId: string) => void;
   selectedGovernorate?: string | null;
   onSelectGovernorate?: (govNameAr: string | null) => void;
 }
@@ -34,6 +37,13 @@ const TILE_PROVIDERS = {
   googleRoad: {
     name: "شوارع Google Maps",
     url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+    subdomains: "",
+    attribution: "&copy; Google Maps",
+    maxZoom: 20,
+  },
+  googleClean: {
+    name: "شوارع Google نظيفة (بدون محلات قديمة)",
+    url: "https://mt1.google.com/vt/lyrs=m&apistyle=s.t:33|s.e:l|p.v:off&x={x}&y={y}&z={z}",
     subdomains: "",
     attribution: "&copy; Google Maps",
     maxZoom: 20,
@@ -68,6 +78,7 @@ const CATEGORIES = [
 export default function IraqInteractiveMap({
   spots,
   onAddSpot,
+  onDeleteSpot,
   selectedGovernorate,
   onSelectGovernorate,
 }: IraqInteractiveMapProps) {
@@ -93,6 +104,7 @@ export default function IraqInteractiveMap({
   const [selectedSpot, setSelectedSpot] = useState<LocalSpot | null>(null);
   const [clickedLocation, setClickedLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [searchRadiusKm, setSearchRadiusKm] = useState<number>(5);
+  const [deleteNotice, setDeleteNotice] = useState<string | null>(null);
   // Add Place Modal
   const [showAddModal, setShowAddModal] = useState(false);
   const [newPlaceName, setNewPlaceName] = useState("");
@@ -453,7 +465,6 @@ export default function IraqInteractiveMap({
               </button>
             )}
           </div>
-
           {/* Quick GPS "Locate Me" Button */}
           <button
             onClick={handleLocateMe}
@@ -512,6 +523,12 @@ export default function IraqInteractiveMap({
             {gpsError}
           </div>
         )}
+        {deleteNotice && (
+          <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-mono flex items-center gap-2 animate-fadeIn">
+            <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{deleteNotice}</span>
+          </div>
+        )}
       </div>
 
       {/* 2. Full Interactive Map Canvas (Leaflet + Dark/Google Tiles) */}
@@ -559,15 +576,33 @@ export default function IraqInteractiveMap({
             </div>
           )}
 
-          {/* Active Spot Float Card */}
+          {/* Active Spot Float Card with Delete/Mark Closed Button */}
           {selectedSpot && (
-            <div className="bg-[#0c1415]/95 backdrop-blur-md p-3 rounded-2xl border border-white/15 text-xs font-mono text-white shadow-2xl space-y-1 max-w-[260px] animate-fadeIn">
+            <div className="bg-[#0c1415]/95 backdrop-blur-md p-3 rounded-2xl border border-white/15 text-xs font-mono text-white shadow-2xl space-y-2 max-w-[280px] animate-fadeIn">
               <div className="flex items-start justify-between gap-1">
                 <span className="font-bold text-[#bef264] leading-snug">{selectedSpot.name}</span>
                 <button onClick={() => setSelectedSpot(null)} className="text-white/40 hover:text-white text-xs">✕</button>
               </div>
               <div className="text-[10px] text-white/60">{selectedSpot.district}</div>
-              <div className="text-amber-300 font-bold text-[11px] pt-1">⭐ {selectedSpot.rating} ({selectedSpot.reviewsCount} تقييم)</div>
+              <div className="text-amber-300 font-bold text-[11px]">⭐ {selectedSpot.rating} ({selectedSpot.reviewsCount} تقييم)</div>
+
+              <div className="pt-2 border-t border-white/10">
+                <button
+                  onClick={() => {
+                    if (onDeleteSpot) {
+                      onDeleteSpot(selectedSpot.id);
+                      setDeleteNotice(`تم حذف "${selectedSpot.name}" وإزالته من الخريطة.`);
+                      setSelectedSpot(null);
+                      setTimeout(() => setDeleteNotice(null), 4000);
+                    }
+                  }}
+                  className="w-full py-1.5 px-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  title="إزالة هذا المحل من الخريطة لأنه مغلق أو تم نقله"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>حذف المحل (مغلق نهائياً)</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
