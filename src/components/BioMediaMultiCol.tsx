@@ -9,12 +9,12 @@ export default function BioMediaMultiCol() {
   return (
     <section
       dir="rtl"
-      className="c-media-wi-multicol py-20 sm:py-28 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
+      className="c-media-wi-multicol py-8 sm:py-16 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
     >
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
         
         {/* Top Header Tag */}
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-xs uppercase tracking-widest text-[#445e5f] shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
             <span>منصة تدقيق الاكتشافات · VERIFIED DISCOVERY REGISTRY</span>
@@ -22,7 +22,7 @@ export default function BioMediaMultiCol() {
         </div>
 
         {/* Split Media + Multi-Column Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-center">
           
           {/* Left Media (Col 1 to 5): High-res Research Hardware / Lab Visual */}
           <motion.div
@@ -30,7 +30,7 @@ export default function BioMediaMultiCol() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 relative rounded-3xl overflow-hidden border border-[#e4e3e3] shadow-lg min-h-[380px] sm:min-h-[480px] bg-[#0c1415] group"
+            className="lg:col-span-5 relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#e4e3e3] shadow-md min-h-[220px] sm:min-h-[440px] bg-[#0c1415] group"
           >
             <Image
               src="/departments-bg.png"
@@ -53,23 +53,23 @@ export default function BioMediaMultiCol() {
           </motion.div>
 
           {/* Right Content (Col 6 to 12): Bold Statement + 2-Column Technical Columns */}
-          <div className="lg:col-span-7 space-y-8">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] text-[#222f30] font-kufi">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-8">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.2] sm:leading-[1.15] text-[#222f30] font-kufi">
               منصة توثيق وتدقيق للاكتشافات المتقدمة — لا مجرد منتدى مفتوح.
             </h2>
 
-            <p className="text-base sm:text-lg text-[#445e5f] leading-relaxed">
+            <p className="text-sm sm:text-lg text-[#445e5f] leading-relaxed">
               إذا أردت منصة ذات قيمة حقيقية، فالمعركة اليومية هي تصفية الهلوسة والغثاء (AI Slop). وضعنا معياراً هندسياً يركز على أبحاث النظم، البرمجة، والذكاء الاصطناعي — كل نتيجة منشورة مدعومة بكود، واختبارات قياسية، وتدقيق بشري موثق.
             </p>
 
             {/* 2-Column Comparative Technical Breakdown */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-[#e4e3e3]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-6 pt-3 sm:pt-4 border-t border-[#e4e3e3]">
               {/* Column 1: Operating Systems & Microkernel */}
-              <div className="space-y-3 p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] transition-colors">
-                <div className="w-10 h-10 rounded-xl bg-[#cef79e] text-[#222f30] flex items-center justify-center font-bold">
+              <div className="space-y-2 sm:space-y-3 p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] transition-colors">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#cef79e] text-[#222f30] flex items-center justify-center font-bold">
                   <Cpu className="w-5 h-5" />
                 </div>
-                <h4 className="text-lg font-bold text-[#222f30]">
+                <h4 className="text-base sm:text-lg font-bold text-[#222f30]">
                   قالب التحقق البشري (Proof of Work)
                 </h4>
                 <p className="text-xs sm:text-sm text-[#445e5f] leading-relaxed">
@@ -78,11 +78,11 @@ export default function BioMediaMultiCol() {
               </div>
 
               {/* Column 2: Foundational AI & Datasets */}
-              <div className="space-y-3 p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] transition-colors">
-                <div className="w-10 h-10 rounded-xl bg-[#c9cbbe] text-[#222f30] flex items-center justify-center font-bold">
-                  <Database className="w-5 h-5" />
+              <div className="space-y-2 sm:space-y-3 p-4 sm:p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] transition-colors">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#c9cbbe] text-[#222f30] flex items-center justify-center font-bold">
+                  <Database className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <h4 className="text-lg font-bold text-[#222f30]">
+                <h4 className="text-base sm:text-lg font-bold text-[#222f30]">
                   فهرسة تقنية نخبوية وسبق فكري
                 </h4>
                 <p className="text-xs sm:text-sm text-[#445e5f] leading-relaxed">
@@ -92,7 +92,7 @@ export default function BioMediaMultiCol() {
             </div>
 
             {/* Action Button using BioButton */}
-            <div className="pt-4 flex items-center gap-4">
+            <div className="pt-2 sm:pt-4 flex items-center gap-4">
               <BioButton
                 href="/publish"
                 label="START PUBLISHING"

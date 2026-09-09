@@ -180,10 +180,10 @@ export default function Header() {
               </Link>
             )}
 
-            {/* Primary CTA: Publish / Share Discovery */}
+            {/* Primary CTA: Publish / Share Discovery (Desktop & Tablet; Mobile uses BottomNav) */}
             <Link
               href="/publish"
-              className={`group inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold rounded-full transition-all duration-200 shrink-0 shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
+              className={`group hidden sm:inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold rounded-full transition-all duration-200 shrink-0 shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ${
                 isTransparent
                   ? "bg-gradient-to-r from-[#bef264] to-[#a3e635] text-[#162224] hover:from-[#d9f99d] hover:to-[#bef264] shadow-[#bef264]/20 border border-white/30"
                   : "bg-[var(--brand)] hover:bg-[var(--brand-700)] text-white shadow-[var(--brand)]/20"

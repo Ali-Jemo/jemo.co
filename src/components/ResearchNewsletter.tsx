@@ -23,16 +23,16 @@ export default function ResearchNewsletter() {
   };
 
   return (
-    <div className="bg-white border border-[#e4e3e3] rounded-[2.5rem] p-8 sm:p-12 md:p-16 relative overflow-hidden shadow-xs" dir="rtl">
-      <div className="max-w-2xl mx-auto text-center space-y-6 relative z-10">
+    <div className="bg-white border border-[#e4e3e3] rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-10 md:p-14 relative overflow-hidden shadow-xs" dir="rtl">
+      <div className="max-w-2xl mx-auto text-center space-y-4 sm:space-y-6 relative z-10">
         
         {/* Header Tag */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-[#f5f8f7] text-[#222f30] text-xs font-mono uppercase tracking-widest shadow-xs">
+        <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-[#f5f8f7] text-[#222f30] text-[11px] sm:text-xs font-mono uppercase tracking-widest shadow-xs">
           <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
           <span>التنبيهات العلمية · SCIENTIFIC ALERTS</span>
         </div>
 
-        <h3 className="text-2xl sm:text-4xl font-black text-[#222f30] tracking-tight font-kufi">
+        <h3 className="text-xl sm:text-3xl lg:text-4xl font-black text-[#222f30] tracking-tight font-kufi">
           اشترك في جديد جميع العلوم.
         </h3>
 
@@ -48,13 +48,13 @@ export default function ResearchNewsletter() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             {/* Topic Filter Pills */}
-            <div className="flex flex-wrap justify-center gap-2 text-xs font-mono">
+            <div className="flex items-center sm:flex-wrap justify-start sm:justify-center gap-2 text-xs font-mono overflow-x-auto no-scrollbar pb-1 px-1">
               {["العلوم الشرعية", "الذكاء الاصطناعي", "الطب وعلوم الحياة", "الفيزياء والفلك", "العلوم الإنسانية", "التراث والمخطوطات"].map((t) => (
                 <button
                   type="button"
                   key={t}
                   onClick={() => toggleTopic(t)}
-                  className={`px-3.5 py-1.5 rounded-full border text-xs transition-all duration-200 cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-full border text-xs transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 ${
                     topics.includes(t)
                       ? "bg-[#cef79e] text-[#222f30] border-[#a7e26e] font-bold shadow-xs"
                       : "bg-[#f5f8f7] text-[#445e5f] border-[#e4e3e3] hover:border-[#a7e26e]"
@@ -73,7 +73,7 @@ export default function ResearchNewsletter() {
             </div>
 
             {/* IntegratedBio Pill Input Box + Embedded Submit Button */}
-            <div className="flex flex-col sm:flex-row items-center gap-2 max-w-md mx-auto p-1.5 bg-[#f5f8f7] border border-[#e4e3e3] rounded-full shadow-xs focus-within:border-[#a7e26e] transition-colors">
+            <div className="flex flex-col sm:flex-row items-center gap-2 max-w-md mx-auto p-1.5 bg-[#f5f8f7] border border-[#e4e3e3] rounded-2xl sm:rounded-full shadow-xs focus-within:border-[#a7e26e] transition-colors">
               <div className="relative w-full flex items-center">
                 <Mail className="w-4 h-4 text-[#445e5f] absolute right-4 pointer-events-none" />
                 <input
@@ -82,16 +82,15 @@ export default function ResearchNewsletter() {
                   placeholder="أدخل بريدك الأكاديمي..."
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pr-11 pl-4 py-2.5 bg-transparent text-xs sm:text-sm text-[#222f30] placeholder-[#738284] outline-none font-mono"
+                  className="w-full pr-11 pl-4 py-2.5 sm:py-2 text-base sm:text-xs text-[#222f30] placeholder:text-[#848c8e] focus:outline-none bg-transparent font-sans"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-[#222f30] hover:bg-[#162021] text-white font-bold font-mono text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-300 shadow-xs cursor-pointer active:scale-95"
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl sm:rounded-full bg-[#222f30] text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#162224] transition-all shrink-0 cursor-pointer shadow-xs active:scale-95"
               >
-                <span>اشترك</span>
-                <ArrowLeft className="w-3.5 h-3.5" />
+                انضمام
               </button>
             </div>
 

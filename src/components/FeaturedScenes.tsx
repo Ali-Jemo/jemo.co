@@ -76,12 +76,12 @@ export default function FeaturedScenes() {
       }}
     >
       {/* control strip */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-xs text-[var(--ink-2)] dir-ltr">
+      <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4">
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-xs text-[var(--ink-2)] dir-ltr shrink-0">
             {String(active + 1).padStart(2, "0")} <span className="text-[var(--j-line-2)]">/</span> {String(scenes.length).padStart(2, "0")}
           </span>
-          <div className="flex items-center gap-1" aria-hidden>
+          <div className="hidden sm:flex items-center gap-1" aria-hidden>
             {scenes.map((s, i) => (
               <span key={s.id} className="relative h-[2px] w-10 overflow-hidden bg-[var(--j-line-2)]">
                 {i === active && (
@@ -97,25 +97,25 @@ export default function FeaturedScenes() {
               </span>
             ))}
           </div>
-          <span className="text-[11px] font-mono text-[var(--ink-2)]">{LAYER_AR[active] ?? ""}</span>
+          <span className="text-[10px] sm:text-[11px] font-mono text-[var(--ink-2)] truncate max-w-[80px] sm:max-w-none">{LAYER_AR[active] ?? ""}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Link href="/projects" className="j-link text-xs ml-2">
-            عرض كل المشاريع <ArrowUpLeft className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <Link href="/projects" className="j-link text-xs ml-1 hidden xs:inline-flex">
+            المشاريع <ArrowUpLeft className="w-3.5 h-3.5" />
           </Link>
           <button
             onClick={() => go(-1)}
             aria-label="المشروع السابق"
-            className="w-9 h-9 grid place-items-center border border-[var(--j-line)] bg-[var(--j-cream)] text-[var(--ink-2)] hover:text-[var(--ink)] hover:border-[var(--ink)] transition-colors cursor-pointer"
+            className="w-8 h-8 sm:w-9 sm:h-9 grid place-items-center border border-[var(--j-line)] bg-[var(--j-cream)] text-[var(--ink-2)] hover:text-[var(--ink)] hover:border-[var(--ink)] transition-colors cursor-pointer"
           >
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <button
             onClick={() => go(1)}
             aria-label="المشروع التالي"
-            className="w-9 h-9 grid place-items-center border border-[var(--j-line)] bg-[var(--j-cream)] text-[var(--ink-2)] hover:text-[var(--ink)] hover:border-[var(--ink)] transition-colors cursor-pointer"
+            className="w-8 h-8 sm:w-9 sm:h-9 grid place-items-center border border-[var(--j-line)] bg-[var(--j-cream)] text-[var(--ink-2)] hover:text-[var(--ink)] hover:border-[var(--ink)] transition-colors cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>

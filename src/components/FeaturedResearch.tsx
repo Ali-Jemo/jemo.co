@@ -28,15 +28,15 @@ export default function FeaturedResearch() {
   return (
     <div className="space-y-6">
       {/* Category filter pills */}
-      <div className="flex flex-wrap items-center gap-2 pb-2">
-        <span className="text-xs font-mono text-[var(--ink-2)] inline-flex items-center gap-1 ml-2">
-          <Filter className="w-3.5 h-3.5 text-[#a7e26e]" /> تصفية المجال:
+      <div className="flex items-center gap-2 pb-2 overflow-x-auto no-scrollbar flex-nowrap sm:flex-wrap">
+        <span className="text-xs font-mono text-[var(--ink-2)] inline-flex items-center gap-1 ml-2 shrink-0">
+          <Filter className="w-3.5 h-3.5 text-[#a7e26e]" /> تصفية:
         </span>
         {fields.map((f) => (
           <button
             key={f}
             onClick={() => setField(f)}
-            className={`j-tag cursor-pointer transition-all ${
+            className={`j-tag cursor-pointer transition-all shrink-0 whitespace-nowrap text-xs ${
               field === f
                 ? "!bg-[#a7e26e] !text-[#222f30] !border-[#a7e26e] font-bold"
                 : "hover:border-[#a7e26e]"

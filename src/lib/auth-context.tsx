@@ -101,66 +101,85 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // ignore
     }
 
-    // 2. Check Supabase session
-    const supabase = getSupabaseBrowserClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        const meta = session.user.user_metadata || {};
-        setProfile({
-          id: session.user.id,
-          email: session.user.email || "",
-          name: meta.name || meta.full_name || session.user.email?.split("@")[0] || "باحث مستقل",
-          handle: meta.handle || `@${session.user.email?.split("@")[0] || "researcher"}`,
-          role: meta.role || "باحث مستقل • Independent Researcher",
-          domain: meta.domain || "أبحاث النظم والذكاء الاصطناعي",
-          avatar: meta.avatar || "/jemo-logo.svg",
-          researchId: `JEMO-RES-${session.user.id.slice(0, 4).toUpperCase()}`,
-          isDemo: false,
-          stats: {
-            publishedCount: 1,
-            replicationsCount: 4,
-            contributionsCount: 3,
-            evidenceScore: 88,
-          },
+    // 2. Check Supabase session safely
+    try {
+      const supabase = getSupabaseBrowserClient();
+      supabase.auth
+        .getSession()
+        .then(({ data: { session } }) => {
+          if (session?.user) {
+            const meta = session.user.user_metadata || {};
+            setUser(session.user);
+            setProfile({
+              id: session.user.id,
+              email: session.user.email || "",
+              name: meta.name || meta.full_name || session.user.email?.split("@")[0] || "باحث مستقل",
+              handle: meta.handle || `@${session.user.email?.split("@")[0] || "researcher"}`,
+              role: meta.role || "باحث مستقل • Independent Researcher",
+              domain: meta.domain || "أبحاث النظم والذكاء الاصطناعي",
+              avatar: meta.avatar || "/jemo-logo.svg",
+              researchId: `JEMO-RES-${session.user.id.slice(0, 4).toUpperCase()}`,
+              isDemo: false,
+              stats: {
+                publishedCount: 1,
+                replicationsCount: 4,
+                contributionsCount: 3,
+                evidenceScore: 88,
+              },
+            });
+          }
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.warn("Session retrieval bypassed gracefully:", err);
+          setLoading(false);
         });
-      }
-      setLoading(false);
-    });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-        const meta = session.user.user_metadata || {};
-        setProfile((prev) => prev?.isDemo ? prev : {
-          id: session.user.id,
-          email: session.user.email || "",
-          name: meta.name || meta.full_name || session.user.email?.split("@")[0] || "باحث مستقل",
-          handle: meta.handle || `@${session.user.email?.split("@")[0] || "researcher"}`,
-          role: meta.role || "باحث مستقل • Independent Researcher",
-          domain: meta.domain || "أبحاث النظم والذكاء الاصطناعي",
-          avatar: meta.avatar || "/jemo-logo.svg",
-          researchId: `JEMO-RES-${session.user.id.slice(0, 4).toUpperCase()}`,
-          isDemo: false,
-          stats: {
-            publishedCount: 1,
-            replicationsCount: 4,
-            contributionsCount: 3,
-            evidenceScore: 88,
-          },
-        });
-      } else {
-        const storedDemo = localStorage.getItem(DEMO_STORAGE_KEY);
-        if (!storedDemo) {
-          setUser(null);
-          setProfile(null);
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        try {
+          if (session?.user) {
+            const meta = session.user.user_metadata || {};
+            setUser(session.user);
+            setProfile((prev) => (prev?.isDemo ? prev : {
+              id: session.user.id,
+              email: session.user.email || "",
+              name: meta.name || meta.full_name || session.user.email?.split("@")[0] || "باحث مستقل",
+              handle: meta.handle || `@${session.user.email?.split("@")[0] || "researcher"}`,
+              role: meta.role || "باحث مستقل • Independent Researcher",
+              domain: meta.domain || "أبحاث النظم والذكاء الاصطناعي",
+              avatar: meta.avatar || "/jemo-logo.svg",
+              researchId: `JEMO-RES-${session.user.id.slice(0, 4).toUpperCase()}`,
+              isDemo: false,
+              stats: {
+                publishedCount: 1,
+                replicationsCount: 4,
+                contributionsCount: 3,
+                evidenceScore: 88,
+              },
+            }));
+          } else {
+            const storedDemo = localStorage.getItem(DEMO_STORAGE_KEY);
+            if (!storedDemo) {
+              setUser(null);
+              setProfile(null);
+            }
+          }
+        } catch {
+          // ignore
         }
-      }
-    });
+      });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+      return () => {
+        try {
+          subscription.unsubscribe();
+        } catch {
+          // ignore
+        }
+      };
+    } catch (err) {
+      console.warn("Supabase client initialization bypassed:", err);
+      setLoading(false);
+    }
   }, []);
 
   const loginWithEmail = async (email: string, pass: string): Promise<AuthResult> => {
