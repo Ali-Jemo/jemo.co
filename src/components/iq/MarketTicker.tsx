@@ -13,6 +13,7 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
+  MessageCircle,
 } from "lucide-react";
 
 interface ProvinceData {
@@ -145,6 +146,20 @@ export default function MarketTicker() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleShareMorningCard = () => {
+    const text = `📅 أسعار الصباح في العراق (${baseProvinceData.name}) — منصة هسه:
+💵 الدولار: بيع ${currentSell.toLocaleString("ar-IQ")} — شراء ${currentBuy.toLocaleString("ar-IQ")} د.ع / 100$
+🪙 مثقال الذهب (21): 575,000 د.ع
+⚡ أمبير المولد: ${baseProvinceData.ampereAvg.toLocaleString("ar-IQ")} د.ع (تشغيل 24 ساعة)
+🔥 أسطوانة الغاز: ${baseProvinceData.gasStreet.toLocaleString("ar-IQ")} د.ع
+📌 الرابط: ${typeof window !== "undefined" ? window.location.href : "https://lab.jemo.dev/iq"}`;
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      navigator.share({ title: "أسعار الصباح في العراق", text }).catch(() => {});
+    } else {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    }
+  };
   return (
     <section className="space-y-3" aria-label="شريط الأسعار الحية والمؤشرات الاقتصادية">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -173,13 +188,24 @@ export default function MarketTicker() {
           ))}
         </div>
 
-        <div className="inline-flex shrink-0 items-center gap-1.5 self-end text-[11px] text-[#55696a] sm:self-auto">
-          <Clock className="h-3 w-3 text-[#222f30]" aria-hidden="true" />
-          <span>{isLive ? "مباشر — بورصة بغداد" : "أسعار استرشادية"}</span>
-          <span
-            className={`h-1.5 w-1.5 rounded-full ${isLive ? "animate-pulse bg-emerald-500" : "bg-amber-400"}`}
-            aria-hidden="true"
-          />
+        <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+          <button
+            onClick={handleShareMorningCard}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-[11px] font-mono font-bold transition-all cursor-pointer shadow-xs active:scale-95"
+            title="مشاركة موجز أسعار الصباح عبر واتساب"
+          >
+            <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+            <span>مشاركة الصباح (واتساب)</span>
+          </button>
+
+          <div className="inline-flex shrink-0 items-center gap-1.5 text-[11px] text-[#55696a]">
+            <Clock className="h-3 w-3 text-[#222f30]" aria-hidden="true" />
+            <span>{isLive ? "مباشر" : "استرشادي"}</span>
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${isLive ? "animate-pulse bg-emerald-500" : "bg-amber-400"}`}
+              aria-hidden="true"
+            />
+          </div>
         </div>
       </div>
 

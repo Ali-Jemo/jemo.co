@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import IqBottomNav from "@/components/iq/IqBottomNav";
+import EmergencyHotlines from "@/components/iq/EmergencyHotlines";
 import { ArrowUpLeft, Building2 } from "lucide-react";
-
 export const metadata: Metadata = {
   title: "هسه — نبض العراق ودليل الخدمات اليومية",
   description: "المنصة اليومية للمواطن العراقي: سعر صرف الدولار، الذهب، أمبير المولد، الغاز، خريطة المحلات الشعبية، ودليل المعاملات الحي.",
@@ -80,8 +80,9 @@ export default function IqLayout({
             </nav>
           </div>
 
-          {/* Left: Bridge back to Jemo Labs Institutional Home */}
+          {/* Left: Emergency Hotlines & Jemo Labs Bridge */}
           <div className="flex items-center gap-2">
+            <EmergencyHotlines />
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#e4e3e3] bg-white hover:bg-[#f0f2f0] text-[#55696a] hover:text-[#222f30] text-[11px] font-mono transition-all group shadow-xs"

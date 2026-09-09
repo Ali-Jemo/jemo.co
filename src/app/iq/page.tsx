@@ -1,6 +1,9 @@
+import AmpereTracker from "@/components/iq/AmpereTracker";
 import MarketTicker from "@/components/iq/MarketTicker";
 import CurrencyConverter from "@/components/iq/CurrencyConverter";
+import GoldCalculator from "@/components/iq/GoldCalculator";
 import NewsDigest from "@/components/iq/NewsDigest";
+import PaydayTracker from "@/components/iq/PaydayTracker";
 import ToolsHub from "@/components/iq/ToolsHub";
 import IqHero from "@/components/iq/IqHero";
 import Link from "next/link";
@@ -14,21 +17,26 @@ export default function IqPage() {
       {/* 2. Live Economic Rates Ticker (Dollar, Gold, Ampere, Gas) */}
       <MarketTicker />
 
-      {/* 3. Middle Two-Column Grid: Converter + News Digest */}
+      {/* 3. Middle Two-Column Grid: Calculators + News & Paydays */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
-        {/* Left column in RTL: Currency Calculator (5 cols) */}
-        <div className="lg:col-span-5 scroll-mt-20" id="calculator">
+        {/* Left column in RTL: Currency & Gold Calculators (5 cols) */}
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5 scroll-mt-20" id="calculator">
           <CurrencyConverter />
+          <GoldCalculator />
         </div>
 
-        {/* Right column in RTL: 5 Sourced News Digest (7 cols) */}
-        <div className="lg:col-span-7">
+        {/* Right column in RTL: News Digest & Payday Tracker (7 cols) */}
+        <div className="lg:col-span-7 space-y-4 sm:space-y-5">
           <NewsDigest />
+          <PaydayTracker />
         </div>
       </div>
 
       {/* 4. Iraqi Tools Hub (6 Curated Gateways & Services) */}
       <ToolsHub />
+
+      {/* 5. Ampere Index & Tracker */}
+      <AmpereTracker />
 
       {/* 5. Institutional Footer Bridge to Jemo Labs */}
       <footer className="flex flex-col items-center justify-between gap-2 rounded-2xl border border-[#e4e3e3] bg-white p-4 text-[11px] text-[#55696a] shadow-xs sm:flex-row sm:p-5 sm:text-xs">
