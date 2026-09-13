@@ -63,9 +63,9 @@ const PEER_INSTITUTIONS: PeerInstitution[] = [
   },
   {
     id: "altuff",
-    name: "طلاب جامعة الطريف",
+    name: "طلاب جامعة الطف",
     code: "INT-ALTUFF",
-    field: "طالب ضمن منظومة جامعة الطريف",
+    field: "طالب ضمن منظومة جامعة الطف",
     type: "تحالفات دولية",
     website: "https://www.altuff.edu.iq/",
     metrics: "عضو في سجل الثقة · ALTUFF-STUDENT",
