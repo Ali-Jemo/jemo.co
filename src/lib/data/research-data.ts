@@ -161,6 +161,7 @@ export interface NewsItem {
   summary: string;
   content: string;
   image?: string;
+  labSlug?: string;
 }
 
 export interface TimelineEvent {
@@ -1355,7 +1356,8 @@ export const NEWS_ITEMS: NewsItem[] = [
     category: "أخبار المشاريع",
     date: "2026-05-18",
     summary: "حققت نواة Ziqa أداءً استثنائياً في اختبارات الكفاءة وعزل أخطاء الذاكرة مقارنة بالنوى التقليدية.",
-    content: "نجح الفريق في إثبات قدرة النواة على العمل تحت أقصى حظر تشغيلي وبأقل استهلاك للموارد."
+    content: "نجح الفريق في إثبات قدرة النواة على العمل تحت أقصى حظر تشغيلي وبأقل استهلاك للموارد.",
+    labSlug: "os-lab",
   },
   {
     id: "news-3",
