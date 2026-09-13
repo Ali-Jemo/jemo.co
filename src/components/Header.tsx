@@ -15,18 +15,23 @@ const NAV_ITEMS = [
   { href: "/research", label: "سجلات الاكتشاف" },
   { href: "/questions", label: "الأسئلة المفتوحة" },
   { href: "/projects", label: "المشاريع" },
-  { href: "/newsletter", label: "النشرة الإخبارية" },
-  { href: "/about", label: "عن المنصة" },
-];
-const MOBILE_NAV_ITEMS = [
-  { href: "/", label: "الرئيسية" },
-  { href: "/research", label: "سجلات الاكتشاف" },
-  { href: "/questions", label: "الأسئلة المفتوحة" },
-  { href: "/projects", label: "المشاريع" },
   { href: "/labs", label: "المختبرات" },
   { href: "/researchers", label: "الباحثون" },
   { href: "/newsletter", label: "النشرة الإخبارية" },
   { href: "/about", label: "عن المنصة" },
+];
+
+const MOBILE_NAV_ITEMS = NAV_ITEMS;
+
+const ALL_PAGES = [
+  ...NAV_ITEMS,
+  { href: "/publications", label: "المنشورات" },
+  { href: "/events", label: "الفعاليات" },
+  { href: "/partners", label: "الشركاء" },
+  { href: "/timeline", label: "الخط الزمني" },
+  { href: "/open-source", label: "المصدر المفتوح" },
+  { href: "/support", label: "الدعم" },
+  { href: "/contact", label: "تواصل معنا" },
 ];
 
 export default function Header() {
@@ -135,14 +140,10 @@ export default function Header() {
               </div>
               
               <div className="flex items-baseline gap-1 font-mono">
-                <span className={`text-base font-black tracking-tight transition-colors ${
-                  isTransparent ? "text-white" : "text-[#222f30]"
-                } group-hover:underline`}>
+                <span className={`text-base font-black tracking-tight transition-colors ${isTransparent ? "text-white" : "text-[#222f30]"} group-hover:underline`}>
                   jemo
                 </span>
-                <span className={`text-base font-bold tracking-tight transition-colors ${
-                  isTransparent ? "text-white/90" : "text-[#445e5f]"
-                }`}>
+                <span className={`text-base font-bold tracking-tight transition-colors ${isTransparent ? "text-white/90" : "text-[#445e5f]"}`}>
                   labs
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e] animate-pulse ms-0.5" title="الشبكة السيادية نشطة" />
@@ -150,40 +151,31 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Zone 2: Center — 5 Focused Primary Nav Links */}
           <nav className="hidden lg:flex items-center justify-center gap-1">
-            {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 ${
-                    isActive
-                      ? isTransparent
-                        ? "text-white font-bold"
-                        : "text-[#222f30] font-bold"
-                      : isTransparent
-                      ? "text-white/80 hover:text-white hover:bg-white/10"
-                      : "text-[#55696a] hover:text-[#222f30] hover:bg-black/[0.04]"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="activeHeaderPill"
-                      className={`absolute inset-0 rounded-full -z-10 ${
-                        isTransparent
-                          ? "bg-white/15 border border-white/25 shadow-xs"
-                          : "bg-black/[0.06] border border-black/10"
-                      }`}
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
+            {NAV_ITEMS.map((item) => (
+              <Link key={item.href} href={item.href} className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${pathname === item.href ? "text-[#222f30] bg-black/[0.06] font-bold" : isTransparent ? "text-white/80 hover:text-white hover:bg-white/10" : "text-[#55696a] hover:text-[#222f30] hover:bg-black/[0.04]"}`}>
+                {item.label}
+              </Link>
+            ))}
+            <button
+              type="button"
+              aria-expanded={isOpen}
+              aria-controls="header-all-pages"
+              onClick={() => setIsOpen((open) => !open)}
+              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${isTransparent ? "border-white/20 text-white hover:bg-white/10" : "border-[var(--line)] text-[var(--ink-1)] hover:border-[var(--brand)]"}`}
+            >
+              <span>كل الصفحات</span><span aria-hidden>{isOpen ? "−" : "+"}</span>
+            </button>
+          </nav>
+          <div id="header-all-pages" className={`${isOpen ? "block" : "hidden"} absolute top-full inset-x-0 border-b border-[var(--line)] bg-[var(--bg)]/98 backdrop-blur-xl shadow-lg`}>
+            <nav aria-label="كل صفحات JEMO LABS" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+              {ALL_PAGES.map((item) => (
+                <Link key={item.href} href={item.href} onClick={() => setIsOpen(false)} className="px-3 py-2 rounded-lg text-xs font-bold text-[var(--ink-2)] hover:text-[var(--ink-1)] hover:bg-[var(--surface)] transition-colors">
                   {item.label}
                 </Link>
-              );
-            })}
-          </nav>
+              ))}
+            </nav>
+          </div>
 
           {/* Zone 3: Left — Search & Primary Action CTA (RTL End) */}
           <div className="flex items-center gap-3 shrink-0">

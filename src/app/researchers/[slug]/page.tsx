@@ -16,7 +16,7 @@ interface ResearcherPageProps {
 
 export async function generateMetadata({ params }: ResearcherPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const researcher = RESEARCHERS.find((r) => r.slug === slug);
+  const researcher = RESEARCHERS.find((r) => r.slug === slug || (slug === "ali-hussein-hadi" && r.slug === "ali-jemo"));
   if (!researcher) return { title: "الباحث غير موجود | JEMO LABS" };
 
   return {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: ResearcherPageProps): Promise
 
 export default async function ResearcherDetailPage({ params }: ResearcherPageProps) {
   const { slug } = await params;
-  const researcher = RESEARCHERS.find((r) => r.slug === slug);
+  const researcher = RESEARCHERS.find((r) => r.slug === slug || (slug === "ali-hussein-hadi" && r.slug === "ali-jemo"));
   if (!researcher) notFound();
 
   const lab = RESEARCH_LABS.find((l) => l.slug === researcher.labSlug);

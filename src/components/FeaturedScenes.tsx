@@ -103,6 +103,12 @@ export default function FeaturedScenes() {
           <Link href="/projects" className="j-link text-xs ml-1 hidden xs:inline-flex">
             المشاريع <ArrowUpLeft className="w-3.5 h-3.5" />
           </Link>
+          <Link href="/labs" className="j-link text-xs ml-1 hidden xs:inline-flex">
+            المختبرات <ArrowUpLeft className="w-3.5 h-3.5" />
+          </Link>
+          <Link href="/researchers" className="j-link text-xs ml-1 hidden sm:inline-flex">
+            الباحثون <ArrowUpLeft className="w-3.5 h-3.5" />
+          </Link>
           <button
             onClick={() => go(-1)}
             aria-label="المشروع السابق"
