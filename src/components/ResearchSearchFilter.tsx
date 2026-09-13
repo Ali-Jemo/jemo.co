@@ -158,12 +158,15 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
         continue;
       }
 
-      const titleLower = paper.title.toLowerCase();
-      const titleEnLower = paper.titleEn.toLowerCase();
-      const abstractLower = paper.abstract.toLowerCase();
-      const authorsLower = paper.authors.map((a) => a.name.toLowerCase()).join(" ");
+      const titleLower = (paper.title || "").toLowerCase();
+      const titleEnLower = (paper.titleEn || "").toLowerCase();
+      const abstractLower = (paper.abstract || "").toLowerCase();
+      const authorsLower = (paper.authors ?? [])
+        .map((a: unknown) => (typeof a === "string" ? a : (a as { name?: string })?.name || ""))
+        .join(" ")
+        .toLowerCase();
       const keywordsLower = (paper.keywords ?? []).join(" ").toLowerCase();
-      const fieldLower = paper.field.toLowerCase();
+      const fieldLower = (paper.field || "").toLowerCase();
       const questionLower = (paper.question ?? "").toLowerCase();
 
       let score = 0;
@@ -670,7 +673,12 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
                         )}
                         <div className="flex items-center gap-2 text-xs text-[#55696a] font-mono mt-2">
                           <Users className="w-3.5 h-3.5 opacity-60" />
-                          <span>{paper.authors.map((a) => a.name).join(" • ")}</span>
+                          <span>
+                            {(paper.authors ?? [])
+                              .map((a: unknown) => (typeof a === "string" ? a : (a as { name?: string })?.name || ""))
+                              .filter(Boolean)
+                              .join(" • ")}
+                          </span>
                         </div>
                       </div>
 

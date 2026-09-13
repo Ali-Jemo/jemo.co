@@ -37,9 +37,9 @@ const FOOTER_COLUMNS = [
 ];
 
 const SOCIAL_LINKS = [
-  { href: "https://t.me/jemolabs", label: "Telegram", Icon: TelegramIcon },
+  { href: "https://t.me/alijemo", label: "Telegram", Icon: TelegramIcon },
   { href: "https://x.com/jemolabs", label: "X", Icon: XIcon },
-  { href: "https://github.com/jemo-labs", label: "GitHub", Icon: GithubIcon },
+  { href: "https://github.com/Ali-Jemo", label: "GitHub", Icon: GithubIcon },
 ];
 
 // ponytail: staggered per-letter slide-up reveal with snappy bezier; no heavy animation library needed
@@ -150,7 +150,7 @@ export default function Footer() {
         </div>
 
         {/* Monumental Wordmark with Curtain Reveal & Interactive Neon Spotlight */}
-        <div className="relative border-t border-[var(--line)]/70 pt-6 sm:pt-8 overflow-hidden select-none">
+        <div className="@container relative border-t border-[var(--line)]/70 pt-6 sm:pt-8 overflow-hidden select-none">
           <motion.div
             ref={wordmarkRef}
             onMouseMove={handleMouseMove}
@@ -177,7 +177,7 @@ export default function Footer() {
               />
             )}
 
-            <h2 className="text-[16vw] xl:text-[17vw] leading-[0.82] font-black font-mono tracking-[-0.04em] group-hover:tracking-[-0.02em] transition-[letter-spacing,color] duration-300 select-none text-[var(--ink)]/25 group-hover:text-[var(--ink)]/45 py-2 inline-flex justify-center mix-blend-multiply">
+            <h2 className="text-[clamp(2.5rem,14.5vw,14rem)] @[640px]:text-[clamp(3.5rem,21.5cqw,16.5rem)] leading-[0.85] font-black font-mono tracking-[-0.04em] group-hover:tracking-[-0.02em] transition-[letter-spacing,color] duration-300 select-none text-[var(--ink)]/25 group-hover:text-[var(--ink)]/45 py-2 inline-flex justify-center max-w-full mix-blend-multiply">
               {WORDMARK_LETTERS.map((char, idx) => (
                 <motion.span
                   key={idx}
@@ -193,7 +193,7 @@ export default function Footer() {
 
         {/* Bottom Bar: Monospace Status, Copyright & Legal Links */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-6 text-[11px] sm:text-xs text-[var(--ink-2)]/80 font-mono border-t border-[var(--line)]/50 gap-4">
-          <p>© 2026 JEMO LABS — BEYT AL-HIKMA</p>
+          <p>© 2026 علي حسين هادي (Jemo) — JEMO LABS</p>
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
             <Link href="/privacy" className="hover:text-[var(--ink)] transition-colors">
               سياسة الخصوصية
@@ -208,6 +208,17 @@ export default function Footer() {
             <span className="text-emerald-600/90">[NODES: ONLINE]</span>
           </div>
         </div>
+
+        {/* Invisible Decoy Trap: Automated scraper & malicious crawler honeypot */}
+        <a
+          href="/api/security/honeypot-trap"
+          aria-hidden="true"
+          tabIndex={-1}
+          rel="nofollow noindex"
+          className="sr-only select-none pointer-events-none opacity-0 h-0 w-0 overflow-hidden inline-block"
+        >
+          Security Telemetry Beacon
+        </a>
       </div>
     </footer>
   );

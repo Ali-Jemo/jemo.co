@@ -5,14 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowUpLeft, Cpu } from "lucide-react";
+import EditorialSectionHeader from "@/components/EditorialSectionHeader";
 
-export default function BioLeadershipGrid() {
+/**
+ * Shared by the homepage and /about. The numbered editorial header is opt-in via
+ * `sectionNum` so the homepage can slot this into its 01–10 spine without
+ * imposing ordinals on other pages.
+ */
+export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string } = {}) {
   const [activeNode, setActiveNode] = useState<string | null>(null);
 
   return (
     <section
       dir="rtl"
-      className="c-topology-canvas py-12 sm:py-20 lg:py-28 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden select-none"
+      className="c-topology-canvas py-12 sm:py-20 lg:py-24 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden select-none"
       aria-label="المخطط العُقدي التفاعلي لفريق المبادرة"
     >
       {/* 0. Ambient Topographic Wave Field & Subtle Circuit Grid Canvas */}
@@ -54,8 +60,17 @@ export default function BioLeadershipGrid() {
         </svg>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
-        
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16 relative z-10">
+        {sectionNum && (
+          <EditorialSectionHeader
+            num={sectionNum}
+            kickerAr="القيادة العلمية"
+            kickerEn="SCIENTIFIC LEADERSHIP"
+            title="باحثون ومهندسون"
+            titleAccent="يقودون المختبرات والبنية التجريبية."
+          />
+        )}
+
         {/* Main Spatial Layout: 12-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start relative">
           
@@ -115,7 +130,7 @@ export default function BioLeadershipGrid() {
             </svg>
 
             {/* -------------------------------------------------------------
-                NODE 1: د. علي الجمو (AI & Sovereign Infrastructure Director)
+                NODE 1: علي حسين هادي (Jemo) (Systems Engineer & Founder)
                 ------------------------------------------------------------- */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -135,15 +150,36 @@ export default function BioLeadershipGrid() {
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
                     <h3 className="text-xl sm:text-2xl font-bold text-[#222f30] font-kufi">
-                      د. علي الجمو
+                      علي حسين هادي (Jemo)
                     </h3>
                   </div>
                   <p className="text-xs font-mono text-[#728825] font-semibold">
-                    رئيس الباحثين ومدير مختبر الذكاء الاصطناعي
+                    مؤسس المنصة · مهندس أنظمة ومطور أنظمة تشغيل
                   </p>
                   <p className="text-xs sm:text-sm text-[#55696a] leading-relaxed max-w-lg">
-                    باحث متخصص في هندسة النوى الذكية والمعالجة الطبيعية للغة العربية. نال الدكتوراه في علوم الحاسوب وكرس أبحاثه لبناء البنية التحتية الرقمية السيادية.
+                    مهندس أنظمة ومؤسس فريق Axiq ومشروع ZiqaKernel و Axiq-IQ. متخصص في لغات الأنظمة منخفضة المستوى (Rust / Zig / C)، وبناء البنى التحتية البرمجية والأنظمة السيادية المفتوحة.
                   </p>
+                  <div className="pt-2 flex items-center gap-4 text-xs font-mono text-[#55696a]">
+                    <span>8 مشاريع سيادية</span>
+                    <span>·</span>
+                    <Link
+                      href="/researchers/ali-jemo"
+                      className="inline-flex items-center gap-1 text-[#222f30] font-bold hover:text-[#728825] transition-colors"
+                    >
+                      <span>الملف التوثيقي</span>
+                      <ArrowUpLeft className="w-3.5 h-3.5" />
+                    </Link>
+                    <span>·</span>
+                    <a
+                      href="https://ali.lxds.org/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[#728825] font-bold hover:underline transition-colors"
+                    >
+                      <span>ali.lxds.org</span>
+                      <ArrowUpLeft className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                 </div>
 
                 {/* Center / Left: Avatar with Circular HUD Telemetry Radar */}
@@ -156,7 +192,7 @@ export default function BioLeadershipGrid() {
                     <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden">
                       <Image
                         src="/team/ali.jpg"
-                        alt="د. علي الجمو"
+                        alt="علي حسين هادي (Jemo)"
                         fill
                         sizes="96px"
                         className="object-cover transition-transform duration-500 group-hover/hud:scale-105"
@@ -168,7 +204,7 @@ export default function BioLeadershipGrid() {
                   <div className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] font-mono text-center min-w-[84px]">
                     <span className="px-2 py-0.5 rounded-full bg-white border border-[#e4e3e3] text-[9px] font-bold text-[#222f30] uppercase tracking-wider flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
-                      <span>ORCID</span>
+                      <span>FOUNDER</span>
                     </span>
                     <div className="flex items-center justify-center gap-3 pt-1 text-xs">
                       <div>
@@ -177,7 +213,7 @@ export default function BioLeadershipGrid() {
                       </div>
                       <div className="w-px h-6 bg-[#e4e3e3]" />
                       <div>
-                        <span className="font-bold text-[#222f30] block">4</span>
+                        <span className="font-bold text-[#222f30] block">8</span>
                         <span className="text-[10px] text-[#738284]">مشاريع</span>
                       </div>
                     </div>

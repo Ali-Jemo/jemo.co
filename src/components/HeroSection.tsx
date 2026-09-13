@@ -41,7 +41,17 @@ export default function HeroSection() {
   const { profile } = useAuth();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activePillar, setActivePillar] = useState<number | null>(null);
+  const [canUseHeroVideo, setCanUseHeroVideo] = useState(false);
 
+  // Keep the decorative video on fine-pointer devices; the poster is the
+  // complete mobile fallback and avoids unnecessary transfer/decode work.
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+    const updateHeroVideoCapability = () => setCanUseHeroVideo(mediaQuery.matches);
+    updateHeroVideoCapability();
+    mediaQuery.addEventListener("change", updateHeroVideoCapability);
+    return () => mediaQuery.removeEventListener("change", updateHeroVideoCapability);
+  }, []);
 
   // Mouse Parallax for subtle 3D cinematic depth
   const mouseX = useMotionValue(0);
@@ -52,7 +62,7 @@ export default function HeroSection() {
   const mouseRafRef = useRef<number | null>(null);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return;
+    if (!canUseHeroVideo) return;
     const clientX = e.clientX;
     const clientY = e.clientY;
     if (mouseRafRef.current !== null) return;
@@ -65,7 +75,7 @@ export default function HeroSection() {
       mouseY.set(y);
       mouseRafRef.current = null;
     });
-  }, [mouseX, mouseY]);
+  }, [canUseHeroVideo, mouseX, mouseY]);
 
   useEffect(() => {
     return () => {
@@ -75,6 +85,7 @@ export default function HeroSection() {
 
   // ponytail: pause video when scrolled out of viewport to eliminate background GPU drain
   useEffect(() => {
+    if (!canUseHeroVideo) return;
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
@@ -91,7 +102,7 @@ export default function HeroSection() {
     );
     observer.observe(video);
     return () => observer.disconnect();
-  }, []);
+  }, [canUseHeroVideo]);
 
   const scrollToContent = () => {
     const el = document.querySelector("main")?.children[1];
@@ -116,15 +127,16 @@ export default function HeroSection() {
         >
           <video
             ref={videoRef}
-            autoPlay
+            autoPlay={canUseHeroVideo}
             loop
             muted
             playsInline
+            preload={canUseHeroVideo ? "metadata" : "none"}
             poster="/hero-bg.png"
             className="w-full h-full object-cover object-center transition-opacity duration-1000 transform-gpu"
           >
-            <source src="/hero-loop.webm" type="video/webm" />
-            <source src="/hero-loop.mp4" type="video/mp4" />
+            {canUseHeroVideo && <source src="/hero-loop.webm" type="video/webm" />}
+            {canUseHeroVideo && <source src="/hero-loop.mp4" type="video/mp4" />}
           </video>
         </motion.div>
 
@@ -158,16 +170,17 @@ export default function HeroSection() {
             سجل أبحاث النظم والبرمجة والـ AI
           </span>
         </motion.div>
-
         {/* Iraqi Daily Pulse Platform Bridge Link */}
         <Link
           href="/iq"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#bef264]/40 bg-[#bef264]/10 hover:bg-[#bef264]/20 text-[#bef264] text-xs font-mono transition-all group shadow-sm"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#bef264]/40 bg-[#bef264]/10 hover:bg-[#bef264]/20 text-[#bef264] transition-colors"
         >
           <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse shrink-0" />
-          <span className="font-bold text-[11px]">منصة هسه العراقية (النبض والخريطة)</span>
-          <ArrowUpLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
+          <span className="text-[10px] sm:text-xs font-mono font-bold tracking-wide">IQ DAILY PULSE</span>
+          <span className="text-[10px] sm:text-xs text-white/80">نبض العراق اليومي — الدولار، الطقس، الأخبار</span>
+          <ArrowUpLeft className="w-3.5 h-3.5" />
         </Link>
+
 
       </div>
 
@@ -275,7 +288,7 @@ export default function HeroSection() {
             dir="ltr"
           />
           <BioButton
-            href={profile ? "/publish" : "/login?redirect=/publish"}
+            href={profile ? "/publish" : "/sign-in?redirect_url=/publish"}
             label={profile ? "SHARE DISCOVERY" : "SIGN IN & PUBLISH"}
             secondaryLabel={profile ? "وثّق اكتشافك الآن" : "تسجيل الدخول والنشر"}
             variant="primary"

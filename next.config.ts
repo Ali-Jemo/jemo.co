@@ -1,26 +1,40 @@
 import type { NextConfig } from "next";
 
+const cspHeader = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://challenges.cloudflare.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https:",
+  "connect-src 'self' https://*.clerk.accounts.dev https://okekfsfyydajyfarnzra.supabase.co https://api.telegram.org https://ayanadollar-dhkgohtw.manus.space https://*.supabase.co",
+  "frame-src 'self' https://challenges.cloudflare.com https://*.clerk.accounts.dev",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "upgrade-insecure-requests",
+].join("; ");
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  env: {
-    NEXT_PUBLIC_SUPABASE_URL:
-      process.env.NEXT_PUBLIC_SUPABASE_URL || "https://okekfsfyydajyfarnzra.supabase.co",
-    NEXT_PUBLIC_SUPABASE_ANON_KEY:
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9rZWtmc2Z5eWRhanlmYXJuenJhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Njg1MTk1OSwiZXhwIjoyMDcyNDI3OTU5fQ.5RRxb3dLOyq9C1OwB88Sh4qNDJzk2SxD5ZTRGsQUm9U",
-  },
+  productionBrowserSourceMaps: false,
   async headers() {
     return [
       {
         source: "/((?!_next/static|_next/image).*)",
         headers: [
+          { key: "Content-Security-Policy", value: cspHeader },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
           { key: "Cache-Control", value: "no-transform" },
+          { key: "X-Robots-Tag", value: "noai, noimageai" },
+          { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
         ],
       },
     ];
@@ -30,6 +44,16 @@ const nextConfig: NextConfig = {
       {
         source: "/transparency",
         destination: "/newsletter",
+        permanent: true,
+      },
+      {
+        source: "/login",
+        destination: "/sign-in",
+        permanent: true,
+      },
+      {
+        source: "/signup",
+        destination: "/sign-up",
         permanent: true,
       },
     ];

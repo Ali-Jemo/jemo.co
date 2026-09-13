@@ -20,8 +20,8 @@ import Accordion from "../src/components/ui/Accordion";
 import TermsPage from "../src/app/terms/page";
 import PrivacyPage from "../src/app/privacy/page";
 import NewsletterPage from "../src/app/newsletter/page";
-import LoginPage from "../src/app/login/page";
-import SignupPage from "../src/app/signup/page";
+import SignInPage from "../src/app/sign-in/[[...sign-in]]/page";
+import SignUpPage from "../src/app/sign-up/[[...sign-up]]/page";
 import DashboardPage from "../src/app/dashboard/page";
 describe("Institutional UI Components", () => {
   it("renders Button variants with correct css classes", () => {
@@ -94,16 +94,14 @@ describe("Institutional UI Components", () => {
     expect(html).toContain("اشترك");
   });
 
-  it("renders LoginPage with email input and demo researcher access", () => {
-    const html = renderToStaticMarkup(React.createElement(LoginPage));
-    expect(html).toContain("تسجيل الدخول للمنصة");
-    expect(html).toContain("دخول تجريبي كباحث: عمر الكرخي");
+  it("renders SignInPage with Clerk sign in component", () => {
+    const html = renderToStaticMarkup(React.createElement(SignInPage));
+    expect(html).toContain("تسجيل الدخول عبر Clerk");
   });
 
-  it("renders SignupPage with researcher profile fields", () => {
-    const html = renderToStaticMarkup(React.createElement(SignupPage));
-    expect(html).toContain("أنشئ ملفك البحثي المستقل");
-    expect(html).toContain("المعرف (@handle)");
+  it("renders SignUpPage with Clerk sign up component", () => {
+    const html = renderToStaticMarkup(React.createElement(SignUpPage));
+    expect(html).toContain("إنشاء حساب عبر Clerk");
   });
 
   it("renders DashboardPage with researcher portal", () => {

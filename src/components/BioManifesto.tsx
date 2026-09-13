@@ -1,22 +1,17 @@
 "use client";
 
+import { EditorialEyebrow } from "@/components/EditorialSectionHeader";
+
 export default function BioManifesto() {
   return (
     <section 
       dir="rtl"
-      className="w-full bg-[#f7f7f5] text-[#222f30] py-14 sm:py-28 px-4 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
+      className="w-full bg-[#f7f7f5] text-[#222f30] py-12 sm:py-20 lg:py-24 px-4 sm:px-10 lg:px-16 border-b border-[#e4e3e3]"
     >
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-[280px_1fr] gap-6 lg:gap-16 items-start">
+      <div className="max-w-[1440px] mx-auto grid lg:grid-cols-[280px_1fr] gap-6 lg:gap-16 items-start">
         {/* ponytail: sticky sidebar folio mark during section scroll */}
         <div className="lg:sticky lg:top-24 space-y-2.5 self-start">
-          <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
-            <span className="font-bold text-[#222f30] text-sm tracking-normal">01</span>
-            <span className="w-5 h-px bg-[#c9cbbe]" />
-            <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
-            <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
-              البيان العلمي
-            </span>
-          </div>
+          <EditorialEyebrow num="01" kickerAr="البيان العلمي" />
           <p className="text-xs font-mono tracking-wider uppercase text-[#738284]">
             عصر التوليد الفردي الفائق · HYPER-INDIVIDUAL RESEARCH
           </p>

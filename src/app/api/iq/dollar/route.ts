@@ -10,6 +10,7 @@ export async function GET() {
         {
           headers: { "User-Agent": "JemoHassaApp/1.0" },
           next: { revalidate: 60 },
+          signal: AbortSignal.timeout(8000),
         }
       ),
       fetch(
@@ -17,6 +18,7 @@ export async function GET() {
         {
           headers: { "User-Agent": "JemoHassaApp/1.0" },
           next: { revalidate: 60 },
+          signal: AbortSignal.timeout(8000),
         }
       ),
     ]);

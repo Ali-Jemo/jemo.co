@@ -100,14 +100,16 @@ export default function DashboardPage() {
 
               <div className="space-y-2 pt-2">
                 <Link
-                  href="/login?redirect=/dashboard"
+                  href="/sign-in?redirect_url=/dashboard"
+                  prefetch={true}
                   className="block w-full py-3 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all shadow-xs"
                 >
                   تسجيل الدخول كباحث
                 </Link>
 
                 <Link
-                  href="/signup?redirect=/dashboard"
+                  href="/sign-up?redirect_url=/dashboard"
+                  prefetch={true}
                   className="block w-full py-3 rounded-xl border border-[#e4e3e3] bg-white text-[#222f30] text-xs font-bold hover:bg-[#f5f8f7] transition-all shadow-xs"
                 >
                   إنشاء حساب باحث جديد
@@ -139,7 +141,10 @@ export default function DashboardPage() {
 
   // ponytail: merge user-published papers with default demo authored papers
   const authoredDemoPapers = RESEARCH_PAPERS.filter((p) => 
-    p.authors.some((a) => a.name.includes("عمر الكرخي") || a.name.includes(profile.name))
+    (p.authors ?? []).some((a: unknown) => {
+      const name = typeof a === "string" ? a : (a as { name?: string })?.name || "";
+      return name.includes("عمر الكرخي") || (profile.name && name.includes(profile.name));
+    })
   );
   const seenIds = new Set<string>();
   const myPapers = [...publishedPapers, ...authoredDemoPapers].filter((p) => {

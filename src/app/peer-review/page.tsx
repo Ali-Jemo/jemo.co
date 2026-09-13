@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { PEER_REVIEW_POLICY } from "@/lib/data/research-data";
+import { getLivePeerReviewPolicy } from "@/lib/live-content";
 import { ShieldCheck, CheckCircle2, FileCheck, Lock, Globe, Scale } from "lucide-react";
 import Link from "next/link";
 
@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   description: "معايير التحكيم الأكاديمي المزدوج، النشر المباشر للنسخ المسبقة، وأخلاقيات البحث.",
 };
 
-export default function PeerReviewPage() {
+export default async function PeerReviewPage() {
+  const policy = await getLivePeerReviewPolicy();
+
   return (
     <>
       <Header />
@@ -23,9 +25,9 @@ export default function PeerReviewPage() {
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>الصرامة الأكاديمية</span>
             </div>
-            <h1 className="text-4xl font-extrabold text-[var(--ink-1)]">{PEER_REVIEW_POLICY.title}</h1>
+            <h1 className="text-4xl font-extrabold text-[var(--ink-1)]">{policy.title}</h1>
             <p className="text-[var(--ink-2)] text-base leading-relaxed">
-              {PEER_REVIEW_POLICY.summary}
+              {policy.summary}
             </p>
           </div>
 
@@ -36,7 +38,7 @@ export default function PeerReviewPage() {
             </h2>
 
             <div className="space-y-4">
-              {PEER_REVIEW_POLICY.guidelines.map((guide, idx) => (
+              {policy.guidelines.map((guide, idx) => (
                 <div key={idx} className="p-5 rounded-xl bg-[var(--surface)] border border-[var(--line)] flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[var(--brand)] mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-[var(--ink-1)] leading-relaxed">{guide}</p>

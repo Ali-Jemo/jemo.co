@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, CheckCircle2, ShieldCheck, ArrowLeft, Check } from "lucide-react";
+import { Mail, CheckCircle2, ShieldCheck, Check } from "lucide-react";
+import { EditorialEyebrow } from "@/components/EditorialSectionHeader";
 
 export default function ResearchNewsletter() {
   const [email, setEmail] = useState("");
@@ -26,15 +27,12 @@ export default function ResearchNewsletter() {
     <div className="bg-white border border-[#e4e3e3] rounded-2xl sm:rounded-[2.5rem] p-5 sm:p-10 md:p-14 relative overflow-hidden shadow-xs" dir="rtl">
       <div className="max-w-2xl mx-auto text-center space-y-4 sm:space-y-6 relative z-10">
         
-        {/* Academic Header Tag */}
-        <div className="flex items-center justify-center gap-2.5 text-xs font-mono text-[#55696a]">
-          <span className="font-bold text-[#222f30] text-sm tracking-normal">10</span>
-          <span className="w-5 h-px bg-[#c9cbbe]" />
-          <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
-          <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
-            النشرة العلمية والتبليغات · SCIENTIFIC DISPATCH
-          </span>
-        </div>
+        <EditorialEyebrow
+          num="10"
+          kickerAr="النشرة العلمية والتبليغات"
+          kickerEn="SCIENTIFIC DISPATCH"
+          className="justify-center"
+        />
 
         <h3 className="text-xl sm:text-3xl lg:text-4xl font-bold text-[#222f30] tracking-tight font-kufi">
           اشترك في جديد جميع العلوم،{" "}

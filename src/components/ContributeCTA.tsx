@@ -1,10 +1,11 @@
 "use client";
 
 import BioButton from "@/components/BioButton";
+import { EditorialEyebrow } from "@/components/EditorialSectionHeader";
 
 export default function ContributeCTA() {
   return (
-    <section className="py-12 sm:py-28 bg-[#f7f7f5] border-b border-[#e4e3e3]" dir="rtl">
+    <section className="py-12 sm:py-20 lg:py-24 bg-[#f7f7f5] border-b border-[#e4e3e3]" dir="rtl">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
         <div className="relative rounded-2xl sm:rounded-[2.5rem] bg-[#222f30] text-white p-6 sm:p-14 lg:p-20 overflow-hidden shadow-2xl">
           
@@ -18,14 +19,12 @@ export default function ContributeCTA() {
             
             {/* Copy */}
             <div className="lg:col-span-8 space-y-5">
-              <div className="flex items-center gap-2.5 text-xs font-mono text-white/70">
-                <span className="font-bold text-[#a7e26e] text-sm tracking-normal">09</span>
-                <span className="w-5 h-px bg-white/30" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
-                <span className="tracking-widest uppercase text-[11px] font-semibold text-white/80">
-                  مختبر الشخص الواحد · THE HYPER-INDIVIDUAL ERA
-                </span>
-              </div>
+              <EditorialEyebrow
+                num="09"
+                kickerAr="مختبر الشخص الواحد"
+                kickerEn="THE HYPER-INDIVIDUAL ERA"
+                tone="dark"
+              />
 
               <h2
                 style={{ color: "#ffffff" }}

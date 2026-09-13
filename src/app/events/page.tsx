@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
-import { EVENTS } from "@/lib/data/research-data";
+import { getLiveEvents } from "@/lib/live-content";
 import { Calendar, MapPin, Users, ArrowUpLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -11,7 +11,9 @@ export const metadata: Metadata = {
   description: "الورش العلمية، الندوات، والهاكاثونات المفتوحة في JEMO LABS.",
 };
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const events = await getLiveEvents();
+
   return (
     <>
       <Header />
@@ -29,7 +31,7 @@ export default function EventsPage() {
           </div>
 
           <div className="space-y-6 mb-16">
-            {EVENTS.map((evt) => (
+            {events.map((evt) => (
               <Card key={evt.id} hover className="p-8">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-4 font-mono text-xs">
                   <span className="px-3 py-1 rounded-full bg-[var(--brand)]/10 text-[var(--brand)] font-bold">

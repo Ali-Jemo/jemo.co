@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { FINANCIAL_SUPPORTS } from "@/lib/data/research-data";
+import { getLiveFinancialSupports } from "@/lib/live-content";
 import { HeartHandshake, ShieldCheck, Cpu, BookOpen, Server, DollarSign, CheckCircle2, ArrowUpLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   description: "شفافية الدعم والتمويل للبحث العلمي والسيادة التقنية في JEMO LABS.",
 };
 
-export default function SupportPage() {
+export default async function SupportPage() {
+  const supports = await getLiveFinancialSupports();
+
   return (
     <>
       <Header />
@@ -25,7 +27,7 @@ export default function SupportPage() {
             </div>
             <h1 className="text-4xl font-extrabold text-[var(--ink-1)]">Support Iraqi Research</h1>
             <p className="text-[var(--ink-2)] text-base leading-relaxed">
-              {FINANCIAL_SUPPORTS.quote}
+              {supports.quote}
             </p>
           </div>
 
@@ -38,7 +40,7 @@ export default function SupportPage() {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-              {FINANCIAL_SUPPORTS.breakdown.map((item) => (
+              {supports.breakdown.map((item) => (
                 <Card key={item.title} hover className="p-6 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-3xl font-extrabold text-[var(--brand)]">
@@ -61,7 +63,7 @@ export default function SupportPage() {
             </h2>
 
             <div className="space-y-4">
-              {FINANCIAL_SUPPORTS.commitments.map((c) => (
+              {supports.commitments.map((c) => (
                 <div key={c} className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--line)] flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[var(--brand)] mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-[var(--ink-1)] leading-relaxed">{c}</p>

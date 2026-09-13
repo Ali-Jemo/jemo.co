@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { BENCHMARKS } from "@/lib/data/research-data";
+import { getLiveBenchmarks } from "@/lib/live-content";
 import { Trophy, ArrowUpLeft, Cpu, Database, CheckCircle2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   description: "لوحة نتائج أداء النماذج اللغوية، النوى التشغيلية، وخوارزميات الرؤية الحاسوبية.",
 };
 
-export default function BenchmarksPage() {
+export default async function BenchmarksPage() {
+  const benchmarks = await getLiveBenchmarks();
+
   return (
     <>
       <Header />
@@ -30,7 +32,7 @@ export default function BenchmarksPage() {
           </div>
 
           <div className="space-y-8 mb-16">
-            {BENCHMARKS.map((bench) => (
+            {benchmarks.map((bench) => (
               <Card key={bench.id} hover className="p-8 space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)] pb-4">
                   <div>

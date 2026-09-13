@@ -7,7 +7,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RESEARCHERS, RESEARCH_PAPERS, RESEARCH_PROJECTS, RESEARCH_LABS } from "@/lib/data/research-data";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
-import { ArrowRight, Mail, FileText, FolderGit2, BookOpen } from "lucide-react";
+import { ArrowRight, Mail, FileText, FolderGit2, BookOpen, Globe, Send } from "lucide-react";
 
 interface ResearcherPageProps {
   params: Promise<{ slug: string }>;
@@ -31,7 +31,14 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
 
   const lab = RESEARCH_LABS.find((l) => l.slug === researcher.labSlug);
 
-  const authoredPapers = RESEARCH_PAPERS.filter((p) => p.authors.some((a) => a.slug === researcher.slug));
+  const authoredPapers = RESEARCH_PAPERS.filter((p) =>
+    (p.authors ?? []).some((a: unknown) =>
+      typeof a === "string"
+        ? a.includes(researcher.name)
+        : (a as { slug?: string; name?: string })?.slug === researcher.slug ||
+          (a as { slug?: string; name?: string })?.name === researcher.name
+    )
+  );
   const ledProjects = RESEARCH_PROJECTS.filter((p) => p.team.some((t) => t.slug === researcher.slug));
 
   return (
@@ -83,6 +90,17 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
 
               {/* Scholar Social Links */}
               <div className="flex flex-wrap gap-3 pt-2">
+                {researcher.website && (
+                  <a
+                    href={researcher.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)] text-xs font-mono text-[var(--ink-1)] hover:border-[var(--brand)] transition-colors"
+                  >
+                    <Globe className="w-3.5 h-3.5 text-violet-500" />
+                    <span>الموقع الشخصي</span>
+                  </a>
+                )}
                 {researcher.github && (
                   <a
                     href={researcher.github}
@@ -92,6 +110,17 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
                   >
                     <GithubIcon className="w-3.5 h-3.5" />
                     <span>GitHub</span>
+                  </a>
+                )}
+                {researcher.telegram && (
+                  <a
+                    href={researcher.telegram}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)] text-xs font-mono text-[var(--ink-1)] hover:border-[var(--brand)] transition-colors"
+                  >
+                    <Send className="w-3.5 h-3.5 text-sky-500" />
+                    <span>Telegram</span>
                   </a>
                 )}
                 {researcher.linkedin && (

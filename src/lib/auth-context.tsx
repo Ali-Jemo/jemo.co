@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { getSupabaseBrowserClient } from "@/lib/supabase-client";
 import type { User } from "@supabase/supabase-js";
 import type { Paper } from "@/lib/data/research-data";
+import { useUser, useClerk } from "@clerk/nextjs";
+
 export interface ResearcherProfile {
   id: string;
   email: string;
@@ -14,6 +16,7 @@ export interface ResearcherProfile {
   avatar: string;
   researchId: string;
   isDemo?: boolean;
+  isAdmin?: boolean;
   stats: {
     publishedCount: number;
     replicationsCount: number;
@@ -86,13 +89,92 @@ const DEMO_STORAGE_KEY = "jemo_demo_researcher_profile";
 const PAPERS_STORAGE_KEY = "jemo_user_published_papers";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const clerk = useUser();
+  const { signOut: clerkSignOut } = useClerk();
+
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<ResearcherProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [publishedPapers, setPublishedPapers] = useState<Paper[]>([]);
 
+  // Load published papers from localStorage
   useEffect(() => {
-    // 1. Check local demo session first
+    try {
+      const storedPapers = localStorage.getItem(PAPERS_STORAGE_KEY);
+      if (storedPapers) {
+        setPublishedPapers(JSON.parse(storedPapers) as Paper[]);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  // Sync session state from Clerk, demo session, or Supabase
+  useEffect(() => {
+    if (!clerk.isLoaded) {
+      setLoading(true);
+      return;
+    }
+
+    // 1. Clerk Authenticated User (Highest Priority)
+    if (clerk.isSignedIn && clerk.user) {
+      const u = clerk.user;
+      const email = u.primaryEmailAddress?.emailAddress || u.emailAddresses?.[0]?.emailAddress || "";
+      const isSuperAdmin =
+        email === "ali.jemo1.9@gmail.com" ||
+        u.username === "jemo" ||
+        u.publicMetadata?.role === "admin";
+
+      const name =
+        u.fullName ||
+        [u.firstName, u.lastName].filter(Boolean).join(" ") ||
+        (isSuperAdmin ? "م. علي حسين هادي" : (u.username ? `@${u.username}` : (email ? email.split("@")[0] : "باحث مستقل")));
+
+      const handle = u.username
+        ? (u.username.startsWith("@") ? u.username : `@${u.username}`)
+        : (email ? `@${email.split("@")[0]}` : "@researcher");
+
+      const role =
+        (u.publicMetadata?.role as string) ||
+        (isSuperAdmin
+          ? "المؤسس والمهندس الرئيسي • Founder & Lead Engineer"
+          : "باحث مستقل • Independent Researcher");
+
+      const domain =
+        (u.publicMetadata?.domain as string) ||
+        (isSuperAdmin
+          ? "الأنظمة المضمنة وهندسة الاستدلال والبرمجيات السيادية"
+          : "أبحاث النظم والذكاء الاصطناعي");
+
+      const avatar = u.imageUrl || "/jemo-logo.svg";
+
+      const researchId =
+        (u.publicMetadata?.researchId as string) ||
+        (isSuperAdmin ? "JEMO-CORE-0001" : `JEMO-RES-${u.id.replace(/^user_/, "").slice(0, 4).toUpperCase()}`);
+
+      setProfile({
+        id: u.id,
+        email,
+        name,
+        handle,
+        role,
+        domain,
+        avatar,
+        researchId,
+        isDemo: false,
+        isAdmin: isSuperAdmin,
+        stats: {
+          publishedCount: isSuperAdmin ? 3 : 1,
+          replicationsCount: isSuperAdmin ? 18 : 4,
+          contributionsCount: isSuperAdmin ? 14 : 3,
+          evidenceScore: isSuperAdmin ? 99 : 92,
+        },
+      });
+      setLoading(false);
+      return;
+    }
+
+    // 2. Local Demo Profile
     try {
       const storedDemo = localStorage.getItem(DEMO_STORAGE_KEY);
       if (storedDemo) {
@@ -104,18 +186,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       // ignore
     }
-    // 1b. Check local published papers
-    try {
-      const storedPapers = localStorage.getItem(PAPERS_STORAGE_KEY);
-      if (storedPapers) {
-        setPublishedPapers(JSON.parse(storedPapers) as Paper[]);
-      }
-    } catch {
-      // ignore
-    }
 
-
-    // 2. Check Supabase session safely
+    // 3. Fallback: Supabase Session
     try {
       const supabase = getSupabaseBrowserClient();
       supabase.auth
@@ -141,16 +213,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 evidenceScore: 88,
               },
             });
+          } else {
+            setProfile(null);
+            setUser(null);
           }
           setLoading(false);
         })
-        .catch((err) => {
-          console.warn("Session retrieval bypassed gracefully:", err);
+        .catch(() => {
+          setProfile(null);
           setLoading(false);
         });
 
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         try {
+          if (clerk.isSignedIn) return;
           if (session?.user) {
             const meta = session.user.user_metadata || {};
             setUser(session.user);
@@ -173,7 +249,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }));
           } else {
             const storedDemo = localStorage.getItem(DEMO_STORAGE_KEY);
-            if (!storedDemo) {
+            if (!storedDemo && !clerk.isSignedIn) {
               setUser(null);
               setProfile(null);
             }
@@ -190,11 +266,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // ignore
         }
       };
-    } catch (err) {
-      console.warn("Supabase client initialization bypassed:", err);
+    } catch {
+      setProfile(null);
       setLoading(false);
     }
-  }, []);
+  }, [clerk.isLoaded, clerk.isSignedIn, clerk.user]);
 
   const loginWithEmail = async (email: string, pass: string): Promise<AuthResult> => {
     try {
@@ -252,6 +328,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             handle: meta.handle.startsWith("@") ? meta.handle : `@${meta.handle}`,
             domain: meta.domain || "أبحاث النظم والذكاء الاصطناعي",
             role: "باحث مستقل • Independent Researcher",
+            jemo_opencode_zen_sync: true,
           },
         },
       });
@@ -298,6 +375,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       localStorage.removeItem(DEMO_STORAGE_KEY);
+      if (clerk.isSignedIn) {
+        await clerkSignOut();
+      }
       const supabase = getSupabaseBrowserClient();
       await supabase.auth.signOut();
     } catch {
@@ -323,7 +403,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
   // ponytail: localStorage-backed paper publication, sync to database when multi-user table ready
   const publishPaper = (data: Partial<Paper>): Paper => {
-    const authorName = profile?.name || data.authors?.[0]?.name || "باحث مستقل";
+    const firstAuthor = data.authors?.[0] as unknown;
+    const authorName = profile?.name || (typeof firstAuthor === "string" ? firstAuthor : (firstAuthor as { name?: string })?.name) || "باحث مستقل";
     const authorHandle = profile?.handle || (profile ? `@${profile.email.split("@")[0]}` : "@guest_researcher");
     const authorSlug = authorHandle.replace(/^@/, "");
     const id = data.id || `JEMO-OBJ-${Date.now().toString().slice(-6)}`;

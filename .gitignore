@@ -48,3 +48,9 @@ dev.log
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# agent symlinks
+.hermes/
+.kiro/
+.pi/
+/skills/

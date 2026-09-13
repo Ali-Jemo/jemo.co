@@ -61,7 +61,7 @@ export default function PaperReaderModal({ paper }: PaperReaderModalProps) {
                 <h2 className="text-2xl font-extrabold text-[var(--ink-1)] mb-2">{paper.title}</h2>
                 <p className="text-xs font-mono text-[var(--brand)] dir-ltr text-right mb-4">{paper.titleEn}</p>
                 <div className="text-xs text-[var(--ink-2)] font-mono border-y border-[var(--line)] py-3">
-                  المؤلفون: <span className="text-[var(--ink-1)] font-bold">{paper.authors.map((a) => a.name).join(" ، ")}</span> • تاريخ النشر: {paper.publishDate}
+                  المؤلفون: <span className="text-[var(--ink-1)] font-bold">{(paper.authors ?? []).map((a: unknown) => typeof a === "string" ? a : (a as { name?: string })?.name || "").filter(Boolean).join(" ، ")}</span> • تاريخ النشر: {paper.publishDate}
                 </div>
               </div>
 

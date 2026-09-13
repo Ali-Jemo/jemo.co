@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { PARTNERS } from "@/lib/data/research-data";
+import { getLivePartners } from "@/lib/live-content";
 import { Building2, Globe, GraduationCap, Handshake, ArrowUpLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   description: "الشركاء الأكاديميون، الجامعات، ومؤسسات الأبحاث التعاونية.",
 };
 
-export default function PartnersPage() {
+export default async function PartnersPage() {
+  const partners = await getLivePartners();
+
   return (
     <>
       <Header />
@@ -30,8 +32,8 @@ export default function PartnersPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-            {PARTNERS.map((partner) => (
-              <Card key={partner.name} hover className="p-6 flex items-center justify-between">
+            {partners.map((partner, index) => (
+              <Card key={`${partner.name}-${index}`} hover className="p-6 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center text-[var(--brand)] font-bold">
                     <GraduationCap className="w-6 h-6" />

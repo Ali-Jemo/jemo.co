@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
-import { OPEN_SOURCE_REPOS } from "@/lib/data/research-data";
+import { getLiveOpenSourceRepos } from "@/lib/live-content";
 import { GithubIcon } from "@/components/Icons";
 import { FolderGit2, Star, GitFork, Shield, Heart } from "lucide-react";
 
@@ -11,7 +11,9 @@ export const metadata: Metadata = {
   description: "مستودعات JEMO LABS مفتوحة المصدر، الرخص، والمساهمين.",
 };
 
-export default function OpenSourcePage() {
+export default async function OpenSourcePage() {
+  const repos = await getLiveOpenSourceRepos();
+
   return (
     <>
       <Header />
@@ -29,7 +31,7 @@ export default function OpenSourcePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            {OPEN_SOURCE_REPOS.map((repo) => (
+            {repos.map((repo) => (
               <Card key={repo.name} hover className="p-8 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">

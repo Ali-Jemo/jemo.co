@@ -1,26 +1,14 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
-import { Noto_Kufi_Arabic, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/lib/lenis-provider";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ScrollProgress from "@/components/ScrollProgress";
 import { AuthProvider } from "@/lib/auth-context";
-import MobileBottomNav from "@/components/MobileBottomNav";
+import { clerkGlobalAppearance } from "@/lib/clerk-appearance";
 
-const noto = Noto_Kufi_Arabic({
-  subsets: ["arabic"],
-  variable: "--font-kufi",
-  display: "swap",
-  preload: false,
-});
-
-const mono = IBM_Plex_Mono({
-  weight: ["400", "500"],
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-  preload: false,
-});
+const noto = { variable: "font-kufi" };
+const mono = { variable: "font-mono" };
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -92,26 +80,32 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${noto.variable} ${mono.variable}`}>
       <head>
+        <link rel="preconnect" href="https://balanced-cub-4691.clerk.accounts.dev" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://balanced-cub-4691.clerk.accounts.dev" />
+        <link rel="preconnect" href="https://img.clerk.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://img.clerk.com" />
+        <link rel="preconnect" href="https://clerk.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)]" suppressHydrationWarning>
-        {/* Background Assets */}
-        <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden" style={{ contain: 'strict' }}>
+        <ClerkProvider appearance={clerkGlobalAppearance}>
+          {/* Background Assets */}
+          <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden" style={{ contain: 'strict' }}>
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-        </div>
-        <ScrollProgress />
-        <AnalyticsTracker />
-        <LenisProvider>
+          </div>
+          <ScrollProgress />
+          <AnalyticsTracker />
+          <LenisProvider>
           <AuthProvider>
-            <div className="flex-1 flex flex-col pb-16 md:pb-0">
-              {children}
-            </div>
-            <MobileBottomNav />
+          <div className="flex-1 flex flex-col pb-16 md:pb-0">
+          {children}
+          </div>
           </AuthProvider>
-        </LenisProvider>
+          </LenisProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

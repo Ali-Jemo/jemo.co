@@ -86,7 +86,7 @@ export default async function PublicationsPage() {
                 <div className="pt-4 border-t border-[var(--line)] flex flex-wrap items-center justify-between gap-4 text-xs">
                   <div className="flex items-center gap-2 text-[var(--ink-2)]">
                     <Users className="w-4 h-4 text-[var(--brand)]" />
-                    <span>المؤلفون: {paper.authors.map((a) => a.name).join(" ، ")}</span>
+                    <span>المؤلفون: {(paper.authors ?? []).map((a: unknown) => typeof a === "string" ? a : (a as { name?: string })?.name || "").filter(Boolean).join(" ، ")}</span>
                   </div>
                   <Link
                     href={`/research/${paper.slug}`}

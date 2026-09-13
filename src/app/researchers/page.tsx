@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Link from "next/link";
-import { RESEARCHERS, RESEARCH_LABS } from "@/lib/data/research-data";
+import { getLiveLabs, getLiveResearchers } from "@/lib/live-content";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { Users, ArrowUpLeft, BookOpen } from "lucide-react";
 
@@ -13,7 +13,9 @@ export const metadata: Metadata = {
   description: "العلماء والمهندسون في مختبرات JEMO LABS للأبحاث الرقمية والسيادية.",
 };
 
-export default function ResearchersIndexPage() {
+export default async function ResearchersIndexPage() {
+  const [researchers, labs] = await Promise.all([getLiveResearchers(), getLiveLabs()]);
+
   return (
     <>
       <Header />
@@ -31,8 +33,8 @@ export default function ResearchersIndexPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {RESEARCHERS.map((r) => {
-              const lab = RESEARCH_LABS.find((l) => l.slug === r.labSlug);
+            {researchers.map((r) => {
+              const lab = labs.find((l) => l.slug === r.labSlug);
               return (
                 <Card key={r.id} hover className="p-8 flex flex-col justify-between">
                   <div>

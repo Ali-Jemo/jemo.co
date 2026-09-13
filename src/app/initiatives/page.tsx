@@ -2,22 +2,34 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import InitiativeSearchFilter from "@/components/InitiativeSearchFilter";
-import { INITIATIVES } from "@/lib/data/research-data";
-import { Sparkles, ArrowUpLeft, Users, Target, BookOpen, Rocket } from "lucide-react";
+import { getLiveInitiatives } from "@/lib/live-content";
+import { Sparkles, Users, Target, BookOpen, Rocket } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "المبادرات الوطنية | JEMO LABS",
   description: "مبادرات JEMO LABS لبناء البنية التحتية العلمية والتعليمية المفتوحة المصدر.",
 };
 
-const STATS = [
-  { icon: Users, label: "باحث مشارك", value: "53" },
-  { icon: Target, label: "مبادرة نشطة", value: String(INITIATIVES.length) },
-  { icon: BookOpen, label: "مخرجات مستهدفة", value: String(INITIATIVES.reduce((a, i) => a + i.deliverables.length, 0)) },
-  { icon: Rocket, label: "متوسط التقدم", value: `${Math.round(INITIATIVES.reduce((a, i) => a + i.progress, 0) / INITIATIVES.length)}%` },
-];
+export default async function InitiativesIndexPage() {
+  const initiatives = await getLiveInitiatives();
 
-export default function InitiativesIndexPage() {
+  const stats = [
+    { icon: Users, label: "باحث مشارك", value: "53" },
+    { icon: Target, label: "مبادرة نشطة", value: String(initiatives.length) },
+    {
+      icon: BookOpen,
+      label: "مخرجات مستهدفة",
+      value: String(initiatives.reduce((a, i) => a + (i.deliverables?.length ?? 0), 0)),
+    },
+    {
+      icon: Rocket,
+      label: "متوسط التقدم",
+      value: initiatives.length
+        ? `${Math.round(initiatives.reduce((a, i) => a + i.progress, 0) / initiatives.length)}%`
+        : "0%",
+    },
+  ];
+
   return (
     <>
       <Header />
@@ -37,7 +49,7 @@ export default function InitiativesIndexPage() {
 
           {/* Stats band */}
           <div className="init-stats mb-12">
-            {STATS.map((s) => (
+            {stats.map((s) => (
               <div key={s.label} className="init-stat">
                 <s.icon className="w-5 h-5 text-[var(--brand)] mx-auto mb-2" />
                 <div className="init-stat__number">{s.value}</div>
@@ -47,7 +59,7 @@ export default function InitiativesIndexPage() {
           </div>
 
           {/* Search & Filter + Grid */}
-          <InitiativeSearchFilter initiatives={INITIATIVES} />
+          <InitiativeSearchFilter initiatives={initiatives} />
         </div>
       </main>
       <Footer />

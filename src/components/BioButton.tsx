@@ -13,6 +13,7 @@ interface BioButtonProps {
   dir?: "ltr" | "rtl";
   target?: string;
   onClick?: () => void;
+  prefetch?: boolean;
 }
 
 /**
@@ -34,6 +35,7 @@ export default function BioButton({
   dir = "ltr",
   target,
   onClick,
+  prefetch,
 }: BioButtonProps) {
   const [hovered, setHovered] = useState(false);
 
@@ -77,6 +79,7 @@ export default function BioButton({
       href={href}
       target={target}
       onClick={onClick}
+      prefetch={prefetch ?? true}
       dir={dir}
       onMouseEnter={() => { if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) setHovered(true); }}
       onMouseLeave={() => { if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) setHovered(false); }}

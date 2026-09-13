@@ -28,7 +28,14 @@ export interface Paper {
   };
   featured?: boolean;
   // Research Object Structured Extensions
-  researchType?: "Experiment" | "Quick Investigation" | "Full Research" | "Research Note" | "Discovery" | "Replication";
+  researchType?: "Experiment" | "Quick Investigation" | "Full Research" | "Research Note" | "Discovery" | "Replication" | "Book" | "Novel";
+  publicationType?: "research" | "book" | "novel";
+  subtitle?: string;
+  synopsis?: string;
+  language?: string;
+  manuscriptUrl?: string;
+  tableOfContents?: string;
+  rightsConfirmed?: boolean;
   evidenceStatus?: "Evidence-backed" | "Reproduced" | "Under Review" | "Disputed" | "Expert Reviewed";
   question?: string;
   toolsUsed?: string[];
@@ -117,6 +124,8 @@ export interface Researcher {
   github?: string;
   linkedin?: string;
   scholar?: string;
+  website?: string;
+  telegram?: string;
   email: string;
   papersCount: number;
   projectsCount: number;
@@ -197,26 +206,26 @@ export interface EventItem {
 }
 
 export const INSTITUTION_STATS = {
-  papers: 27,
-  projects: 14,
-  researchers: 53,
-  fields: 12,
-  founded: 2026,
+  papers: 15,
+  projects: 8,
+  researchers: 12,
+  fields: 8,
+  founded: 2024,
 };
 
 export const ABOUT_INFO = {
-  nameMeaning: "JEMO هي الطبقة التشاركية بين السؤال والمعرفة، وبين العقل البشري والذكاء الاصطناعي — المكان الذي يذهب إليه الناس بعد أن بحثوا لتوثيق ومشاركة ما اكتشفوه.",
-  whyCreated: "تأسست JEMO لتكون سجلاً مفتوحاً لاكتشافات وأبحاث عصر الذكاء الاصطناعي: منصة لحفظ الأبحاث والاستقصاءات التي يجريها الناس يومياً بمساعدة نماذج AI، وتحويل محادثات البحث العميقة التي تضيع في الحسابات الشخصية إلى رصيد معرفي عام ومفتوح للجميع.",
-  coreQuote: "كل سؤال يمكن أن يصبح بحثًا، وكل بحث يمكن أن يصبح معرفة.",
-  mission: "حفظ وتوثيق نتائج البحث البشري المدعوم بالذكاء الاصطناعي في سجل عام مفتوح، وتمكين أي شخص — أكاديمياً كان أو مطوراً أو باحثاً هاوياً — من توثيق مسار بحثه ومشاركة اكتشافاته وحمايتها من الضياع.",
-  vision: "أن تصبح JEMO المنصة المفتوحة الأولى لاكتشافات العقل البشري في عصر الذكاء الاصطناعي: ذاكرة جماعية حية للمعرفة المتطورة، التحدي المجتمعي للنتائج، وحفظ التجارب من النسيان.",
+  nameMeaning: "JEMO (علي حسين هادي) هي الطبقة الهندسية التشاركية بين السؤال والمعرفة، وبين العقل البشري والأنظمة الذكية — مساحة توثيق وحفظ الاكتشافات البرمجية وهندسة النظم.",
+  whyCreated: "تأسست المنصة ومبادرات JEMO لتكون سجلاً مفتوحاً لاكتشافات وأبحاث عصر النظم والذكاء الاصطناعي: منصة لحفظ الأبحاث والاستقصاءات الهندسية، وتطوير أنظمة تشغيل سيادية ونوى مدمجة (مثل ZiqaKernel وAxiq-IQ) مع إتاحة المعرفة المفتوحة للجميع في العراق والعالم.",
+  coreQuote: "السيادة التقنية هي امتلاك صلاحيات الأدمن على مستقبلنا — من النواة إلى واجهات الذكاء الاصطناعي.",
+  mission: "بناء وتوثيق النظم البرمجية من طبقاتها الدنيا، ودعم البحث الهندسي الرصين، وتمكين الشباب العراقي والعربي من امتلاك زمام التكنولوجيا عبر الأنوية المفتوحة ومبادرات الذكاء الاصطناعي التطوعية.",
+  vision: "أن تكون JEMO المنصة والمرجع العربي الأول في هندسة النظم، نوى التشغيل، والذكاء الاصطناعي السيادي: رصيد معرفي حي مبني على التحقق البشري الصارم وبرهان العمل (Proof of Work).",
   values: [
-    { title: "توثيق مسار البحث (Full Trail)", desc: "لا نكتفي بالنتيجة النهائية، بل نوثق السؤال، النماذج المستخدمة، ومسار التفاعل لنبني معرفة قابلة للفحص." },
-    { title: "التحقق البشري الشفاف", desc: "تمييز واضح بين ما أنتجه الذكاء الاصطناعي وما تحقّق منه الباحث بشرياً لتصحيح الهلوسة وحماية المصداقية." },
-    { title: "بحث المواطن للجميع", desc: "فتح باب التوثيق والنشر لكل من أجرى بحثاً جاداً، دون اشتراط ألقاب أكاديمية أو انتماءات مؤسسية." },
-    { title: "المعرفة الحية المتطورة", desc: "إتاحة التحدي المجتمعي للنتائج، تقديم الأدلة المضادة، وتحديث الاكتشافات بنسخ تراكمية (v1 → v2)." }
+    { title: "هندسة النظم أولاً (Low-level First)", desc: "الانطلاق من العتاد، النوى، وإدارة الذاكرة الآمنة لبناء أنظمة راسخة ومستقلة." },
+    { title: "التحقق البشري الصارم (Proof of Work)", desc: "تمييز واضح بين مخرجات النماذج التوليدية وبين الفحص والتصحيح البشري العملي على أرض الواقع." },
+    { title: "السيادة والمعرفة المفتوحة", desc: "إتاحة الشيفرات والمصادر مجاناً للعموم لبناء مجتمع تقني عربي يصنع العلم ولا يستهلكه فقط." },
+    { title: "الريادة المجتمعية والتطوعية", desc: "قيادة فرق شبابية ومبادرات مثل فريق Axiq وحركة ++IRAQ لنشر المهارات التقنية المتقدمة." }
   ],
-  researchPhilosophy: "منهجية البحث في عصر الذكاء الاصطناعي: سؤال محدد ← أدوات ونماذج مستخدمة ← مسار التفاعل والافتراضات ← نتيجة وخلاصة ← تحقق بشري وتصحيح للهلوثة ← نشر مفتوح قابل للتكرار والتطوير المجتمعي."
+  researchPhilosophy: "منهجية البناء والبحث: فهم العتاد والنواة ← استكشاف النماذج والأدوات ← الفحص والتصحيح البشري ← قياس الأداء وتوثيق البرهان ← النشر المفتوح للمجتمع."
 };
 
 export const OPEN_QUESTIONS: OpenQuestion[] = [
@@ -280,42 +289,31 @@ export const OPEN_QUESTIONS: OpenQuestion[] = [
 
 export const TIMELINE_EVENTS: TimelineEvent[] = [
   {
-    year: "762",
-    title: "بيت الحكمة في بغداد",
-    subtitle: "عصر التنوير العلمي العربي",
-    description: "تأسيس بيت الحكمة في بغداد كأكبر مركز ترجمة وبحث علمي في العالم، ومنارة شع منها العلم للإنسانية.",
+    year: "2024",
+    title: "معالجة الإشارات الرقمية (DSP)",
+    subtitle: "منظومات الزمن الحقيقي",
+    description: "بناء وتطوير مشروع رياضي برمجي لمعالجة الإشارات الرقمية، التحليل الطيفي، وتنقية الضجيج بالاعتماد على خوارزميات فورية.",
+    highlight: false,
+  },
+  {
+    year: "2025",
+    title: "تأسيس فريق Axiq التطوعي",
+    subtitle: "نشر ثقافة الذكاء الاصطناعي",
+    description: "تأسيس وقيادة فريق تطوعي شبابي في العراق لتعلم ونشر تقنيات الذكاء الاصطناعي عملياً وبناء مشاريع تقنية سيادية مثل العملة الأكاديمية ASHURIX (ARI) لمنصة LabPoint.",
     highlight: true,
   },
   {
     year: "2026",
-    title: "تأسيس JEMO LABS",
-    subtitle: "إحياء الإرث المعرفي الرقمي",
-    description: "انطلاق المؤسسة كمختبر أبحاث سيادي يهدف إلى بناء البنية التحتية العلمية والتقنية المفتوحة في العراق.",
+    title: "إطلاق نواة ZiqaKernel ونظام Axiq-IQ",
+    subtitle: "أنظمة تشغيل ونوى سيادية",
+    description: "تطوير نواة دقيقة تجريبية بلغة Rust/Zig مع واجهة YOU OS GUI، وتصميم معمارية نظام التشغيل الثلاثي الطبقات Axiq-IQ، وإطلاق حركة ++IRAQ للسيادة الوطنية التقنية.",
     highlight: true,
   },
   {
-    year: "2027",
-    title: "أول ورقة علمية مرجعية",
-    subtitle: "النشر الأكاديمي الدولي",
-    description: "نشر أول ورقة أبحاث محكمة في مؤتمرات الذكاء الاصطناعي وأنظمة التشغيل العالمية مع إتاحة البيانات مجاناً.",
-  },
-  {
-    year: "2028",
-    title: "أول تمويل بحثي مستقل",
-    subtitle: "الاستدلال المالي والبحثي",
-    description: "إطلاق صندوق دعم البحث العلمي العراقي لتوفير منح الباحثين وتوفير الخوادم فائقة الأداء.",
-  },
-  {
-    year: "2030",
-    title: "شبكة 100 باحث عراقي",
-    subtitle: "التوسع الأكاديمي",
-    description: "وصول عدد الباحثين الدائمين والزملاء إلى 100 عالم ومهندس يقودون أبحاثاً متقدمة.",
-  },
-  {
-    year: "2032",
-    title: "افتتاح أول مجمع مختبرات ميداني",
-    subtitle: "البنية التحتية الفيزياء-رقمية",
-    description: "تدشين المقر الرئيسي الميداني لمختبرات JEMO LABS للأبحاث التطبيقية والروبوتات في بغداد.",
+    year: "2026",
+    title: "إطلاق منصة JEMO",
+    subtitle: "سجل الأبحاث والاكتشافات المحققة",
+    description: "تدشين المنصة كأرشيف تقني وبحثي نخبوي يوثق الاكتشافات البرمجية وهندسة النظم بمعيار إثبات العمل البشري الصارم (Proof of Work).",
     highlight: true,
   },
 ];
@@ -327,7 +325,7 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر الذكاء الاصطناعي",
     nameEn: "AI Lab",
     description: "يركز على تطوير النماذج اللغوية الكبيرة باللغة العربية، خوارزميات الاستدلال، وتصميم شبكات عصبية كفؤة.",
-    leadName: "د. علي الجمو",
+    leadName: "علي حسين هادي (Jemo)",
     leadSlug: "ali-jemo",
     researchersCount: 18,
     activeProjectsCount: 5,
@@ -411,18 +409,18 @@ export const RESEARCHERS: Researcher[] = [
   {
     id: "ali-jemo",
     slug: "ali-jemo",
-    name: "د. علي الجمو",
-    role: "رئيس الباحثين ومدير مختبر الذكاء الاصطناعي",
-    bio: "باحث متخصص في هندسة النوى الذكية والمعالجة الطبيعية للغة العربية. نال الدكتوراه في علوم الحاسوب وكرس أبحاثه لبناء البنية التحتية الرقمية السيادية.",
-    avatar: "/jemo-logo.svg",
+    name: "علي حسين هادي (Jemo)",
+    role: "مهندس أنظمة ومطور أنظمة تشغيل · مؤسس المنصة وفريق Axiq",
+    bio: "مهندس أنظمة عراقي ومؤسس فريق Axiq ومطور نواة ZiqaKernel ونظام Axiq-IQ. طالب هندسة تقنيات الحاسوب، يركز على الأنظمة منخفضة المستوى (Rust، C، Linux Kernel)، معمارية أنظمة التشغيل، ومبادرات الذكاء الاصطناعي والسيادة التقنية في العراق.",
+    avatar: "/team/ali.jpg",
     labSlug: "ai-lab",
     orcid: "0000-0002-1825-0001",
     github: "https://github.com/Ali-Jemo",
-    linkedin: "https://linkedin.com/in/alijemo",
-    scholar: "https://scholar.google.com",
-    email: "ali@jemo.co",
+    website: "https://ali.lxds.org/",
+    telegram: "https://t.me/alijemo",
+    email: "ali.jemo1.9@gmail.com",
     papersCount: 8,
-    projectsCount: 4
+    projectsCount: 8
   },
   {
     id: "ahmed-al-furati",
@@ -735,7 +733,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     abstract: "نستعرض في هذه الورقة والمستودع المفتوح معمارية تجريبية (Experimental Sandbox) لنواة دقيقة مكتوبة بلغة Rust لاستكشاف عزل الأخطاء وإدارة الذاكرة الآمنة بدون كود غير آمن. المشروع تجربة استكشافية مفتوحة لدراسة جدوى البنى المصغرة وتطوير أنظمة تشغيل تعلمية خفيفة.",
     authors: [
       { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "مطور النواة" },
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "مستشار التجربة" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "مطور النواة والمصمم المعماري" }
     ],
     publishDate: "2026-05-14",
     doi: "10.1016/j.jemo.2026.05.001",
@@ -802,7 +800,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Adapting Open-Weights LLMs for Iraqi Dialects and Domain Terminology",
     abstract: "تستعرض هذه الورقة والمبادرة تجربة ضبط وتكييف دقيق (Fine-tuning & Quantization) لنماذج لغوية مفتوحة المصدر لخدمة اللهجات العراقية والمصطلحات العلمية والتقنية، مع تقييم كفاءة الاستدلال على العتاد المتاح وإتاحة مجموعات الاختبار للباحثين مجاناً.",
     authors: [
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "المؤلف الرئيسي" },
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المشرف الهندسي" },
       { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "باحث مشارك" }
     ],
     publishDate: "2026-03-20",
@@ -858,7 +856,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     abstract: "نقدم تقنية تكميم وإسقاط انتقائي تقلل حجم نماذج اللغة العربية بنسبة 60% مع الحفاظ على 97% من دقة الاستدلال، مما يجعل النشر على الأجهزة محدودة الموارد ممكناً.",
     authors: [
       { name: "م. نور الكندي", slug: "noor-al-kindif", role: "المؤلف الرئيسي" },
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "المؤلف المشارك" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المؤلف المشارك" }
     ],
     publishDate: "2026-06-22",
     doi: "10.1016/j.jemo.2026.06.002",
@@ -1022,7 +1020,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     abstract: "نقدم مجموعة معايير تقييم مفتوحة تقيس الاستدلال المنطقي والفهم الثقافي للنماذج اللغوية، وتكشف فجوات الأداء في اللهجات والمصطلحات الإقليمية.",
     authors: [
       { name: "م. نور الكندي", slug: "noor-al-kindif", role: "المؤلف الرئيسي" },
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "المؤلف المشارك" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المؤلف المشارك" }
     ],
     publishDate: "2026-07-18",
     doi: "10.1016/j.jemo.2026.07.004",
@@ -1048,143 +1046,184 @@ export const RESEARCH_PROJECTS: Project[] = [
   {
     id: "ziqa-os-project",
     slug: "ziqa-kernel",
-    title: "مختبر نواة Ziqa (Experimental Sandbox)",
-    titleEn: "Ziqa Kernel Sandbox",
-    description: "مختبر تجريبي استكشافي لنواة دقيقة آمنة الذاكرة مكتوبة بلغة Rust/Zig لاستكشاف معمارية الأنظمة خفيفة الوزن.",
-    fullDescription: "مشروع استكشافي تعليمي مفتوح المصدر (Experimental Sandbox) طُوّر لدراسة آليات أمان الذاكرة وعزل المعالجات في النوى المصغرة، متاح بالكامل على GitHub للمطورين والمهتمين.",
+    title: "ZiqaKernel / YOU OS GUI",
+    titleEn: "Bare-metal Rust/Zig Kernel + Desktop Compositor",
+    description: "نواة بحثية تجريبية تجمع أمان الذاكرة في Rust مع مسارات Zig السريعة، وتصل إلى الصدفة التفاعلية داخل QEMU عادةً خلال 40–60ms مع واجهة مكتبية تفاعلية.",
+    fullDescription: "نواة مستقلة بذاتها ومفتوحة المصدر (Freestanding Rust/Zig OS kernel) مزودة بوضع واجهة مكتبية (GUI Compositor)، مراقب نظام (System Monitor)، نموذج تطبيق مستخدم (Tetris Demo)، ونظام ملفات FAT32 وجدولة MLFQ ودعم محاكاة QEMU.",
     status: "Active",
     team: [
-      { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "مطور النواة" },
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "مستشار المعمارية" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المطور المعماري للنواة" }
     ],
-    techStack: ["Rust", "Zig", "Assembly", "QEMU", "RISC-V"],
+    techStack: ["Rust", "Zig", "Assembly", "QEMU", "FAT32", "MLFQ", "GUI"],
     labSlug: "os-lab",
     githubUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
     image: "/departments-bg.png",
     featured: true
   },
   {
-    id: "baghdad-ai-project",
-    slug: "baghdad-ai",
-    title: "مبادرة تكييف النماذج اللغوية (Baghdad LLM)",
-    titleEn: "Baghdad LLM Adaptation Initiative",
-    description: "مبادرة مفتوحة لتكييف وتخصيص النماذج اللغوية مفتوحة المصدر لدعم اللهجات العراقية والمصطلحات المحلية بكفاءة استدلال عالية.",
-    fullDescription: "بدلاً من تدريب نماذج ضخمة من الصفر، تركز المبادرة على الاستفادة من النماذج المفتوحة وتخصيصها عبر التكميم (Quantization) وتدريب محولات LoRA لتوفير استدلال سريع ومجاني على العتاد المتاح.",
-    status: "Research",
+    id: "axiq-os-project",
+    slug: "axiq-os",
+    title: "Axiq-IQ: Three-Floor OS",
+    titleEn: "Three-Floor Sovereign Operating System",
+    description: "مخطط نظام تشغيل سيادي بثلاث طبقات: عتاد النواة، خدمات النظام، وواجهات التطبيقات والمستخدم.",
+    fullDescription: "معمارية نظام تشغيل متقدمة بثلاث طبقات: طبقة العتاد (SMP، Paging، وCOW fork)، طبقة خدمات النظام (VFS، FAT32، وcapability revocation)، وطبقة التطبيقات (GUI، ABI، WebAssembly، وeBPF)، مبنية بالاعتماد على Gentoo وLinux وRust وWayland.",
+    status: "Active",
     team: [
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "قائد المبادرة" },
-      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "باحثة بيانات" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المطور الرئيسي ومصمم المعمارية" }
     ],
-    techStack: ["Python", "PyTorch", "HuggingFace", "LoRA", "Quantization"],
-    labSlug: "ai-lab",
-    githubUrl: "https://github.com/jemo-labs/baghdad-ai",
+    techStack: ["Gentoo", "Linux", "Rust", "C", "Wayland", "WASM", "eBPF"],
+    labSlug: "os-lab",
+    githubUrl: "https://github.com/Ali-Jemo/axiq-os",
     image: "/wisdom-bg-new.png",
     featured: true
   },
   {
-    id: "arabic-manuscript-ocr",
-    slug: "digital-house-of-wisdom-ocr",
-    title: "منظومة بيت الحكمة الرقمية",
-    titleEn: "Digital House of Wisdom OCR",
-    description: "منصة ذكية لأرشفة وترميم التراث العلمي الأكاديمي وتحويله إلى بيانات مفتوحة.",
-    fullDescription: "تحويل الآلاف من المخطوطات والكتب العلمية النادرة إلى صيغة نصية رقمية مفسرة باستخدام أحدث نماذج الرؤية الحاسوبية.",
-    status: "Prototype",
+    id: "axiq-team-project",
+    slug: "axiq-team",
+    title: "فريق Axiq للذكاء الاصطناعي التطوعي",
+    titleEn: "Axiq AI Voluntary Team",
+    description: "تأسيس وقيادة فريق تطوعي شبابي في العراق لتعلم وتطبيق ونشر تقنيات الذكاء الاصطناعي عملياً وبناء المبادرات التقنية.",
+    fullDescription: "مبادرة تطوعية رائدة يقودها المهندس علي حسين هادي لتدريب الكفاءات الشابة في العراق، نشر المعرفة العملية بأدوات الذكاء الاصطناعي ووكلاء البرمجة (Agentic Coding)، وبناء مجتمع تقني عراقي متماسك.",
+    status: "Active",
     team: [
-      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "قائد المشروع" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المؤسس والقائد التقني" }
     ],
-    techStack: ["OpenCV", "PyTorch", "Next.js", "TailwindCSS"],
-    labSlug: "cv-lab",
-    githubUrl: "https://github.com/jemo-labs/heritage-ocr",
-    image: "/diwan-bg-astrolabe.png",
+    techStack: ["AI/ML", "Agentic Workflows", "Community", "Leadership", "Open Source"],
+    labSlug: "ai-lab",
+    githubUrl: "https://github.com/Ali-Jemo",
+    image: "/covenant-bg.png",
     featured: true
   },
   {
-    id: "iraq-open-datasets",
-    slug: "iraq-open-datasets",
-    title: "مستودع بيانات العراق المفتوحة",
-    titleEn: "Iraq Open Datasets",
-    description: "بنية تحتية لمشاركة وحفظ البيانات الأكاديمية والبيئية والمناخية للباحثين العراقيين.",
-    fullDescription: "مستودع موحد يضمن بقاء البيانات العلمية العراقية متاحة مجاناً للباحثين مع دعم معايير النشر والأرشفة الأكاديمية.",
-    status: "Completed",
-    team: [
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "المنسق العام" }
-    ],
-    techStack: ["PostgreSQL", "Python", "FastAPI", "Docker"],
-    labSlug: "ai-lab",
-    githubUrl: "https://github.com/jemo-labs/open-datasets",
-    image: "/road-bg.png"
-  },
-  {
-    id: "baghdad-llm-infra",
-    slug: "baghdad-llm-training-infra",
-    title: "بنية تدريب نموذج بغداد",
-    titleEn: "Baghdad LLM Training Infrastructure",
-    description: "منصة تدريب موزعة لتدريب نموذج اللغة العربية على عناقات الحوسبة السيادية مع جدولة فعالة لوحدات المعالجة الرسومية.",
-    fullDescription: "بنية تحتية مفتوحة المصدر لإدارة تدريب النماذج الكبيرة على عناقات GPU محلية، تتضمن جدولة المهام، نقاط الحفظ، وتتبع التجارب العلمية.",
+    id: "iraq-plus-plus-project",
+    slug: "iraq-plus-plus",
+    title: "حركة ++IRAQ (السيادة الرقمية)",
+    titleEn: "IRAQ++ National Tech Movement",
+    description: "رؤية شبابية وطنية تعامل الدولة كنظام تقني متكامل وتدفع نحو الكفاءة والسيادة التكنولوجية الكاملة.",
+    fullDescription: "أيديولوجية وطنية ورؤية استراتيجية تؤمن بأن 'السيادة هي امتلاك صلاحيات الأدمن على مستقبلنا'، مع التركيز على بناء البنية التحتية الرقمية السيادية في العراق، ودعم الإنتاج المحلي للتقنية بدلاً من استهلاكها فقط.",
     status: "Active",
     team: [
-      { name: "د. علي الجمو", slug: "ali-jemo", role: "قائد البنية" },
-      { name: "م. نور الكندي", slug: "noor-al-kindif", role: "مهندسة التقييم" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "مؤسس الرؤية" }
     ],
-    techStack: ["Python", "PyTorch", "CUDA", "Kubernetes", "Weights & Biases"],
+    techStack: ["National Sovereignty", "Systems Strategy", "Open Infrastructure"],
     labSlug: "ai-lab",
-    githubUrl: "https://github.com/jemo-labs/baghdad-ai",
-    image: "/wisdom-bg-new.png"
+    githubUrl: "https://github.com/Ali-Jemo",
+    demoUrl: "https://iraqpss.lxds.org/",
+    image: "/road-bg.png",
+    featured: true
   },
   {
-    id: "heritage-ocr-platform",
-    slug: "heritage-ocr-platform",
-    title: "منصة بيت الحكمة لترقيم المخطوطات",
-    titleEn: "House of Wisdom Manuscript Digitization Platform",
-    description: "منصة ويب تفاعلية لرفع وفك رموز المخطوطات التاريخية وتحويلها لنصوص قابلة للبحث والتحليل.",
-    fullDescription: "أداة كاملة تتيح للباحثين والمؤسسات التراثية رفع صور المخطوطات ومعالجتها آلياً باستخدام نماذج الرؤية الحاسوبية ثم تصدير النصوص المنظمة.",
-    status: "Prototype",
+    id: "labpoint-ashurix-project",
+    slug: "labpoint-ashurix",
+    title: "ASHURIX (ARI) — العملة الرقمية الجامعية",
+    titleEn: "ASHURIX University Digital Currency",
+    description: "نظام عملة رقمية داخلية لمنصة LabPoint الأكاديمية مبني حول اقتصاد المهارات والخدمات الجامعية.",
+    fullDescription: "مشروع متكامل لتصميم عملة رقمية داخلية مبنية على التشفير وأنظمة التبادل، تتيح للطلاب والباحثين تبادل الخدمات الأكاديمية والمهارات البرمجية بنزاهة وشفافية.",
+    status: "Active",
     team: [
-      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "قائدة المشروع" },
-      { name: "د. لينا التكريتي", slug: "lina-al-tikriti", role: "مهندسة النماذج" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المطور الرئيسي" }
     ],
-    techStack: ["Next.js", "Python", "OpenCV", "PostgreSQL"],
-    labSlug: "cv-lab",
-    githubUrl: "https://github.com/jemo-labs/heritage-ocr",
+    techStack: ["Cryptography", "System Design", "JavaScript", "Tokenomics"],
+    labSlug: "os-lab",
+    githubUrl: "https://github.com/Ali-Jemo/labpoint-ashurix",
     image: "/diwan-bg-astrolabe.png"
   },
   {
-    id: "autonomous-rover",
-    slug: "mesopotamia-rover",
-    title: "منصة الروفر المتنقل بلاد ما بين النهرين",
-    titleEn: "Mesopotamia Autonomous Rover Platform",
-    description: "منصة روبوت ميدانية مفتوحة للاختبار في البيئات الصحراوية مع ملاحة ذاتية ودمج مستشعرات.",
-    fullDescription: "قاعدة روبوتية قابلة للتكرار تجمع بين الملاحة الذاتية وإدراك البيئة، مصممة للبحث الميداني في الظروف القاسية.",
-    status: "Research",
+    id: "interact-control-ai-project",
+    slug: "interact-control-ai",
+    title: "نظام التحكم الذكي بالهاردوير (interact-control-ai)",
+    titleEn: "Hardware-AI Interaction & Control System",
+    description: "دمج الهاردوير والمتحكمات الدقيقة مع الذكاء الاصطناعي لبناء واجهات تحكم مادية وذكية.",
+    fullDescription: "نظام يربط بين العتاد المادي والمستشعرات والمتحكمات عبر جسور برمجية متصلة بنماذج الذكاء الاصطناعي للتحكم الآلي والتفاعل الذكي في الزمن الحقيقي.",
+    status: "Active",
     team: [
-      { name: "م. مصطفى الموصللي", slug: "mustafa-al-mosuli", role: "قائد المنصة" },
-      { name: "م. حيدر البغدادي", slug: "haider-al-baghdadi", role: "مهندس الأنظمة" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "مطور النظم المدمجة" }
     ],
-    techStack: ["ROS2", "C++", "Python", "LiDAR", "Raspberry Pi"],
+    techStack: ["Embedded Systems", "AI/ML", "IoT", "C++", "Python"],
     labSlug: "robotics-lab",
-    githubUrl: "https://github.com/jemo-labs",
+    githubUrl: "https://github.com/Ali-Jemo",
+    image: "/departments-bg.png"
+  },
+  {
+    id: "dsp-project",
+    slug: "dsp-realtime",
+    title: "معالجة الإشارات الرقمية (Digital Signal Processing)",
+    titleEn: "Real-Time Digital Signal Processing",
+    description: "مشروع رياضي برمجي لمعالجة الإشارات والتحليل الطيفي والتنقية من الضجيج في منظومات الزمن الحقيقي.",
+    fullDescription: "تطوير خوارزميات فورية لتحليل الإشارات ومعالجة البيانات الطيفية والفلاتر الرقمية لتقليل التشويش ودعم الأنظمة الزمنية الحساسة.",
+    status: "Completed",
+    team: [
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المطور الهندسي" }
+    ],
+    techStack: ["DSP", "TypeScript", "Python", "Mathematics", "Real-Time"],
+    labSlug: "os-lab",
+    githubUrl: "https://github.com/Ali-Jemo/DSP",
     image: "/road-bg.png"
   },
   {
-    id: "clinical-decision-support",
-    slug: "clinical-decision-support",
-    title: "نظام مساعدة القرارات السريرية",
-    titleEn: "Clinical Decision Support System",
-    description: "نظام يحلل السجلات الصحية ويقترح تشخيصات محتملة بناء على معالجة لغوية طبية عربية.",
-    fullDescription: "أداة مساعدة للأطباء تستخرج المؤشرات السريرية من السجلات وتقدم تنبيهات وتوصيات مبنية على الأدلة، مع احترام تام لخصوصية البيانات.",
-    status: "Prototype",
+    id: "moeasy-project",
+    slug: "moeasy",
+    title: "مكتبة MoEasy للغة Mojo",
+    titleEn: "MoEasy Experimental Library for Mojo",
+    description: "مكتبة برمجية تجريبية للغة Mojo مخصصة لتسهيل عمليات الحوسبة عالية الأداء والذكاء الاصطناعي.",
+    fullDescription: "مكتبة تسهل العمل مع لغة البرمجة الحديثة Mojo، مستفيدة من التوازي المباشر للعتاد وتسريع حسابات النماذج العصبية.",
+    status: "Active",
     team: [
-      { name: "د. زينب القادسية", slug: "zainab-al-qadisiyya", role: "قائدة المشروع" },
-      { name: "د. مريم البابلية", slug: "maryam-al-babili", role: "مستشارة سريرية" }
+      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المطور" }
     ],
-    techStack: ["Python", "FastAPI", "Transformers", "FHIR"],
-    labSlug: "healthcare-ai",
-    githubUrl: "https://github.com/jemo-labs",
-    image: "/covenant-bg.png"
+    techStack: ["Mojo", "High Performance Computing", "AI Systems"],
+    labSlug: "ai-lab",
+    githubUrl: "https://github.com/Ali-Jemo/MoEasy",
+    image: "/wisdom-bg-new.png"
   }
 ];
 
 export const INITIATIVES: Initiative[] = [
+  {
+    id: "axiq-team",
+    image: "/initiatives/open-ai.jpg",
+    slug: "axiq-team",
+    title: "فريق Axiq للذكاء الاصطناعي التطوعي",
+    description: "تأسيس وقيادة فريق تطوعي شبابي في العراق لتعلم وتطبيق ونشر تقنيات الذكاء الاصطناعي عملياً.",
+    fullDescription: "مبادرة تطوعية رائدة يقودها المهندس علي حسين هادي، تهدف إلى نشر ثقافة الذكاء الاصطناعي وأدوات وكلاء البرمجة (Agentic Coding)، وتدريب الكوادر العراقية الشابة على بناء مشاريع تقنية متقدمة تخدم المجتمع والسيادة المعرفية.",
+    vision: "تحويل العراق من مستهلك للحلول الذكية إلى صانع ومطور لنماذج وأدوات الذكاء الاصطناعي المتقدمة.",
+    progress: 85,
+    status: "Active",
+    lead: "علي حسين هادي (Jemo)",
+    leadSlug: "ali-jemo",
+    team: ["علي حسين هادي (Jemo)", "فريق Axiq التطوعي"],
+    deliverables: ["ورش تدريبية عملية", "مشاريع مفتوحة المصدر", "مجتمع تقني شبابي"],
+    milestones: [
+      { title: "تأسيس الفريق وإطلاق الأنشطة", date: "2025", done: true },
+      { title: "إطلاق ورش الذكاء الاصطناعي", date: "أكتوبر 2025", done: true },
+      { title: "بناء مشاريع الذكاء الاصطناعي السيادية", date: "2026", done: true },
+      { title: "توسيع شبكة المتطوعين عبر المحافظات", date: "2026", done: false },
+    ],
+    link: "https://github.com/Ali-Jemo",
+    tags: ["Axiq", "AI", "Volunteer", "Community", "Iraq"],
+  },
+  {
+    id: "iraq-plus-plus",
+    image: "/road-bg.png",
+    slug: "iraq-plus-plus",
+    title: "حركة ++IRAQ (السيادة الرقمية)",
+    description: "رؤية شبابية وطنية تعامل الدولة كنظام تقني متكامل وتدفع نحو الكفاءة والسيادة التكنولوجية.",
+    fullDescription: "حركة وطنية تقنية تؤمن بأن 'السيادة هي امتلاك صلاحيات الأدمن على مستقبلنا'. تركز على مواءمة البنى التحتية، الأنوية، والبرمجيات لتكون مستقلة ومملوكة وطنياً بعيداً عن التبعية التقنية.",
+    vision: "سيادة تقنية وطنية كاملة عبر إنتاج النظم والبرمجيات محلياً بسواعد عراقية.",
+    progress: 70,
+    status: "Active",
+    lead: "علي حسين هادي (Jemo)",
+    leadSlug: "ali-jemo",
+    team: ["علي حسين هادي (Jemo)", "شباب حركة ++IRAQ"],
+    deliverables: ["الوثيقة الفكرية للسيادة التقنية", "منصة ++IRAQ الرقمية", "أدلة البنية التحتية المفتوحة"],
+    milestones: [
+      { title: "إطلاق الموقع الرسمي والمبادرة", date: "2026", done: true },
+      { title: "نشر الرؤية الهندسية للدولة", date: "2026", done: true },
+      { title: "ملتقيات السيادة التقنية", date: "2026", done: false },
+    ],
+    link: "https://iraqpss.lxds.org/",
+    tags: ["Sovereignty", "National", "Iraq++", "Strategy"],
+  },
   {
     id: "open-iraq-ai",
     image: "/initiatives/open-ai.jpg",
@@ -1195,9 +1234,9 @@ export const INITIATIVES: Initiative[] = [
     vision: "ضمان عدم احتكار التكنولوجيا وتمكين أي باحث عراقي من بناء وتطوير نماذج ذكاء اصطناعي سيادية ذات جودة عالمية.",
     progress: 75,
     status: "Active",
-    lead: "د. علي الجمو",
+    lead: "علي حسين هادي (Jemo)",
     leadSlug: "ali-jemo",
-    team: ["د. علي الجمو", "م. حيدر البغدادي", "م. أحمد الفراتي"],
+    team: ["علي حسين هادي (Jemo)", "م. حيدر البغدادي", "م. أحمد الفراتي"],
     deliverables: ["مجموعة بيانات شاملة", "نماذج أوزان مفتوحة", "دليل الباحث العربي"],
     milestones: [
       { title: "إطلاق المجموعة التدريبية", date: "يناير 2026", done: true },
@@ -1205,7 +1244,7 @@ export const INITIATIVES: Initiative[] = [
       { title: "دليل الباحث العربي", date: "سبتمبر 2026", done: false },
       { title: "نشر النماذج المتقدمة", date: "ديسمبر 2026", done: false },
     ],
-    link: "https://github.com/jemo-labs/open-iraq-ai",
+    link: "https://github.com/Ali-Jemo",
     tags: ["AI", "Arabic LLMs", "Open Data"],
   },
   {
@@ -1240,16 +1279,16 @@ export const INITIATIVES: Initiative[] = [
     vision: "سد الفجوة المعرفية بين المحتوى الأكاديمي العالمي والمحتوى المتاح باللغة العربية.",
     progress: 60,
     status: "Research",
-    lead: "د. علي الجمو",
+    lead: "علي حسين هادي (Jemo)",
     leadSlug: "ali-jemo",
-    team: ["د. علي الجمو", "د. مريم البابلية"],
+    team: ["علي حسين هادي (Jemo)", "د. مريم البابلية"],
     deliverables: ["مكتبة تقطيع النصوص", "معجم المصطلحات التقنية", "مقيم الاستدلال العربي"],
     milestones: [
       { title: "مكتبة تقطيع النصوص", date: "فبراير 2026", done: true },
       { title: "معجم المصطلحات", date: "أغسطس 2026", done: false },
       { title: "مقيم الاستدلال العربي", date: "نوفمبر 2026", done: false },
     ],
-    link: "https://github.com/jemo-labs/arabic-nlp",
+    link: "https://github.com/Ali-Jemo",
     tags: ["NLP", "Arabic", "Medical"],
   },
   {
@@ -1259,7 +1298,7 @@ export const INITIATIVES: Initiative[] = [
     title: "مبادرة بيت الحكمة الرقمي",
     description: "إعادة بناء التراث العلمي لبغداد برؤية رقمية حديثة تدمج الأبحاث، المخطوطات، والتعليم المفتوح.",
     fullDescription: "إعادة بناء التراث العلمي لبغداد الرقمي باستخدام تقنيات حديثة تدمج الأبحاث والمخطوطات التاريخية والتعليم المفتوح في منصة واحدة شاملة، مستوحاة من روح بيت الحكمة العريق كرمز للمعرفة المفتوحة.",
-    vision: "جعل JEMO LABS المنارة الرقمية الحديثة لبيت الحكمة العريق.",
+    vision: "جعل JEMO المنارة الرقمية الحديثة لبيت الحكمة العريق.",
     progress: 85,
     status: "Scaling",
     lead: "م. أحمد الفراتي",
@@ -1271,7 +1310,7 @@ export const INITIATIVES: Initiative[] = [
       { title: "أرشيف الأوراق", date: "يوليو 2026", done: true },
       { title: "دليل الباحث المستقل", date: "سبتمبر 2026", done: false },
     ],
-    link: "https://github.com/jemo-labs/digital-house-of-wisdom",
+    link: "https://github.com/Ali-Jemo",
     tags: ["Heritage", "Digital", "Education"],
   },
   {
@@ -1286,7 +1325,7 @@ export const INITIATIVES: Initiative[] = [
     status: "Research",
     lead: "د. مريم البابلية",
     leadSlug: "maryam-al-babili",
-    team: ["د. مريم البابلية", "د. علي الجمو", "د. سارة الحسيني"],
+    team: ["د. مريم البابلية", "علي حسين هادي (Jemo)", "د. سارة الحسيني"],
     deliverables: ["برنامج توجيه أكاديمي", "تمويل نشر الأوراق", "توفير الموارد الحاسوبية"],
     milestones: [
       { title: "بدء التوظيف", date: "يناير 2026", done: true },
@@ -1294,7 +1333,7 @@ export const INITIATIVES: Initiative[] = [
       { title: "50 باحث مؤهل", date: "ديسمبر 2026", done: false },
       { title: "الهدف الكامل 100", date: "2028", done: false },
     ],
-    link: "https://github.com/jemo-labs/100-iraqi-researchers",
+    link: "https://github.com/Ali-Jemo",
     tags: ["Fellowship", "Talent", "Mentorship"],
   }
 ];
@@ -1377,39 +1416,75 @@ export const NEWS_ITEMS: NewsItem[] = [
 export const OPEN_SOURCE_REPOS: OpenSourceRepo[] = [
   {
     name: "ziqa-kernal",
-    description: "Safe and Lightweight Microkernel written in Rust for Critical & Embedded Systems.",
+    description: "Freestanding Rust/Zig OS kernel with GUI compositor mode, System Monitor, and QEMU build flow.",
     url: "https://github.com/Ali-Jemo/ziqa-kernal",
     license: "MIT / Apache-2.0",
-    stars: 342,
-    forks: 58,
+    stars: 45,
+    forks: 12,
     language: "Rust"
   },
   {
-    name: "baghdad-llm",
-    description: "Open weights and fine-tuning suite for Arabic Reasoning and Dialect understanding.",
-    url: "https://github.com/jemo-labs/baghdad-llm",
+    name: "axiq-os",
+    description: "Three-Floor Sovereign Operating System architecture & services: hardware core, OS services, and userspace ABI.",
+    url: "https://github.com/Ali-Jemo/axiq-os",
+    license: "GPL-3.0 / MIT",
+    stars: 32,
+    forks: 8,
+    language: "C"
+  },
+  {
+    name: "MoEasy",
+    description: "Experimental library for the Mojo programming language accelerating AI workflows.",
+    url: "https://github.com/Ali-Jemo/MoEasy",
     license: "Apache-2.0",
-    stars: 512,
-    forks: 89,
-    language: "Python"
+    stars: 28,
+    forks: 5,
+    language: "Mojo"
   },
   {
-    name: "open-iraq-datasets",
-    description: "Open access datasets for Iraqi environmental, historical, and linguistic research.",
-    url: "https://github.com/jemo-labs/open-datasets",
-    license: "CC-BY-4.0",
-    stars: 189,
-    forks: 34,
-    language: "Python"
-  },
-  {
-    name: "arabic-manuscript-ocr",
-    description: "Convolutional Neural Network tools for restoration and digitizing rare Arabic manuscripts.",
-    url: "https://github.com/jemo-labs/manuscript-ocr",
+    name: "waybar-config",
+    description: "Complete Waybar configuration for Hyprland/Sway with multi-theme support, custom scripts, and agent workflow.",
+    url: "https://github.com/Ali-Jemo/waybar-config",
     license: "MIT",
-    stars: 230,
-    forks: 41,
-    language: "Python / C++"
+    stars: 22,
+    forks: 4,
+    language: "Shell"
+  },
+  {
+    name: "DSP",
+    description: "Real-time digital signal processing, spectral analysis, and noise reduction algorithms.",
+    url: "https://github.com/Ali-Jemo/DSP",
+    license: "MIT",
+    stars: 19,
+    forks: 3,
+    language: "TypeScript"
+  },
+  {
+    name: "zk-skill-package",
+    description: "Agentic workflow and terminal automation skill package for systems engineering.",
+    url: "https://github.com/Ali-Jemo/zk-skill-package",
+    license: "MIT",
+    stars: 16,
+    forks: 2,
+    language: "Shell"
+  },
+  {
+    name: "ziqa-setting_app",
+    description: "Desktop settings and control panel application for Ziqa OS.",
+    url: "https://github.com/Ali-Jemo/ziqa-setting_app",
+    license: "MIT",
+    stars: 14,
+    forks: 2,
+    language: "Rust"
+  },
+  {
+    name: "labpoint-ashurix",
+    description: "Internal digital currency and tokenomics system for the LabPoint academic platform.",
+    url: "https://github.com/Ali-Jemo/labpoint-ashurix",
+    license: "MIT",
+    stars: 18,
+    forks: 4,
+    language: "JavaScript"
   }
 ];
 
@@ -1444,7 +1519,7 @@ export const EVENTS: EventItem[] = [
     location: "بغداد / عبر الإنترنت",
     type: "ندوة علمية",
     description: "ورشة مكثفة تجمع مهندسي النوى لاستعراض معمارية Rust في الأنظمة الحرجة.",
-    speakers: ["م. أحمد الفراتي", "د. علي الجمو"]
+    speakers: ["م. أحمد الفراتي", "علي حسين هادي (Jemo)"]
   },
   {
     id: "event-2",

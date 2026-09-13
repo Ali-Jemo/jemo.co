@@ -1,179 +1,138 @@
-import { 
-  RESEARCH_PAPERS, 
-  RESEARCH_PROJECTS, 
-  NEWS_ITEMS, 
-  Paper, 
-  Project, 
-  NewsItem 
+import { liveDocument, liveItems } from "@/lib/content/server";
+import type {
+  ABOUT_INFO,
+  Benchmark,
+  EventItem,
+  FAQItem,
+  FINANCIAL_SUPPORTS,
+  InfrastructureItem,
+  Initiative,
+  INSTITUTION_STATS,
+  Lab,
+  NewsItem,
+  OpenQuestion,
+  OpenSourceRepo,
+  Paper,
+  Partner,
+  PEER_REVIEW_POLICY,
+  Project,
+  Researcher,
+  TimelineEvent,
 } from "@/lib/data/research-data";
 
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "https://okekfsfyydajyfarnzra.supabase.co";
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9rZWtmc2Z5eWRhanlmYXJuenJhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Njg1MTk1OSwiZXhwIjoyMDcyNDI3OTU5fQ.5RRxb3dLOyq9C1OwB88Sh4qNDJzk2SxD5ZTRGsQUm9U";
+/** The `research-data` singletons, typed off their committed defaults. */
+export type AboutInfo = typeof ABOUT_INFO;
+export type InstitutionStats = typeof INSTITUTION_STATS;
+export type FinancialSupports = typeof FINANCIAL_SUPPORTS;
+export type PeerReviewPolicy = typeof PEER_REVIEW_POLICY;
 
-interface TemplateRow {
-  key: string;
-  responses: unknown[];
+/**
+ * Site-side readers for content edited in the JEMO dashboard.
+ *
+ * Each one returns the committed defaults merged with whatever the dashboard has
+ * published, so the site keeps working (with the shipped content) if Supabase is
+ * unreachable or unconfigured. The merge, the identity rules and the
+ * deleted-default handling all live in `@/lib/content/server`.
+ */
+
+export function normalizePaper(paper: Paper): Paper {
+  if (!paper) return paper;
+  const rawAuthors = Array.isArray(paper.authors) ? (paper.authors as unknown[]) : [];
+  const normalizedAuthors = rawAuthors.map((a, idx) => {
+    if (typeof a === "string") {
+      const trimmed = a.trim();
+      const slug = trimmed.toLowerCase().replace(/[^\w\u0621-\u064A]+/g, "-") || `author-${idx}`;
+      return { name: trimmed, slug, role: "مؤلف" };
+    }
+    if (a && typeof a === "object") {
+      const obj = a as { name?: string; slug?: string; role?: string; title?: string };
+      const name = obj.name || obj.title || "باحث";
+      const slug = obj.slug || name.trim().toLowerCase().replace(/[^\w\u0621-\u064A]+/g, "-") || `author-${idx}`;
+      return { ...obj, name, slug };
+    }
+    return { name: "باحث", slug: `author-${idx}` };
+  });
+
+  return {
+    ...paper,
+    title: paper.title || "",
+    titleEn: paper.titleEn || "",
+    abstract: paper.abstract || "",
+    field: paper.field || "هندسة النظم",
+    keywords: Array.isArray(paper.keywords) ? paper.keywords : [],
+    authors: normalizedAuthors,
+  };
 }
 
 export async function getLiveResearchPapers(): Promise<Paper[]> {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
-
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/templates?key=in.(published_papers,deleted_paper_ids)&select=key,responses`,
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-        },
-        cache: "no-store",
-        signal: controller.signal,
-      }
-    );
-    clearTimeout(timeoutId);
-
-    if (!res.ok) return RESEARCH_PAPERS;
-
-    const rows = (await res.json()) as TemplateRow[];
-    const papersRow = rows.find((r) => r.key === "published_papers");
-    const deletedRow = rows.find((r) => r.key === "deleted_paper_ids");
-
-    const customPapers = (papersRow && Array.isArray(papersRow.responses))
-      ? (papersRow.responses as Paper[])
-      : [];
-
-    const deletedIds = new Set<string>(
-      deletedRow && Array.isArray(deletedRow.responses)
-        ? (deletedRow.responses as string[])
-        : []
-    );
-
-    // Merge: custom papers first, then default papers
-    const combined = [...customPapers, ...RESEARCH_PAPERS];
-    
-    // De-duplicate by ID / slug and filter out deleted
-    const seen = new Set<string>();
-    const result: Paper[] = [];
-
-    for (const p of combined) {
-      if (!p || !p.id) continue;
-      if (deletedIds.has(p.id) || (p.slug && deletedIds.has(p.slug))) continue;
-      if (!seen.has(p.id)) {
-        seen.add(p.id);
-        result.push(p);
-      }
-    }
-
-    return result;
-  } catch (err) {
-    console.error("Live papers fetch error, falling back to static:", err);
-    return RESEARCH_PAPERS;
-  }
+  const papers = await liveItems<Paper>("published_papers");
+  return papers.map(normalizePaper);
 }
 
-export async function getLiveProjects(): Promise<Project[]> {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
-
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/templates?key=in.(research_projects,deleted_project_ids)&select=key,responses`,
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-        },
-        cache: "no-store",
-        signal: controller.signal,
-      }
-    );
-    clearTimeout(timeoutId);
-
-    if (!res.ok) return RESEARCH_PROJECTS;
-
-    const rows = (await res.json()) as TemplateRow[];
-    const projRow = rows.find((r) => r.key === "research_projects");
-    const deletedRow = rows.find((r) => r.key === "deleted_project_ids");
-
-    const customProjects = (projRow && Array.isArray(projRow.responses))
-      ? (projRow.responses as Project[])
-      : [];
-
-    const deletedIds = new Set<string>(
-      deletedRow && Array.isArray(deletedRow.responses)
-        ? (deletedRow.responses as string[])
-        : []
-    );
-
-    const combined = [...customProjects, ...RESEARCH_PROJECTS];
-    const seen = new Set<string>();
-    const result: Project[] = [];
-
-    for (const p of combined) {
-      if (!p || !p.id) continue;
-      if (deletedIds.has(p.id)) continue;
-      if (!seen.has(p.id)) {
-        seen.add(p.id);
-        result.push(p);
-      }
-    }
-
-    return result;
-  } catch (err) {
-    return RESEARCH_PROJECTS;
-  }
+export function getLiveProjects(): Promise<Project[]> {
+  return liveItems<Project>("research_projects");
 }
 
-export async function getLiveNews(): Promise<NewsItem[]> {
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
+export function getLiveNews(): Promise<NewsItem[]> {
+  return liveItems<NewsItem>("news_items");
+}
 
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/templates?key=in.(news_items,deleted_news_ids)&select=key,responses`,
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-        },
-        cache: "no-store",
-        signal: controller.signal,
-      }
-    );
-    clearTimeout(timeoutId);
+export function getLiveLabs(): Promise<Lab[]> {
+  return liveItems<Lab>("research_labs");
+}
 
-    if (!res.ok) return NEWS_ITEMS;
+export function getLiveResearchers(): Promise<Researcher[]> {
+  return liveItems<Researcher>("researchers");
+}
 
-    const rows = (await res.json()) as TemplateRow[];
-    const newsRow = rows.find((r) => r.key === "news_items");
-    const deletedRow = rows.find((r) => r.key === "deleted_news_ids");
+export function getLiveInitiatives(): Promise<Initiative[]> {
+  return liveItems<Initiative>("initiatives");
+}
 
-    const customNews = (newsRow && Array.isArray(newsRow.responses))
-      ? (newsRow.responses as NewsItem[])
-      : [];
+export function getLiveBenchmarks(): Promise<Benchmark[]> {
+  return liveItems<Benchmark>("benchmarks");
+}
 
-    const deletedIds = new Set<string>(
-      deletedRow && Array.isArray(deletedRow.responses)
-        ? (deletedRow.responses as string[])
-        : []
-    );
+export function getLiveOpenQuestions(): Promise<OpenQuestion[]> {
+  return liveItems<OpenQuestion>("open_questions");
+}
 
-    const combined = [...customNews, ...NEWS_ITEMS];
-    const seen = new Set<string>();
-    const result: NewsItem[] = [];
+export function getLiveOpenSourceRepos(): Promise<OpenSourceRepo[]> {
+  return liveItems<OpenSourceRepo>("open_source_repos");
+}
 
-    for (const n of combined) {
-      if (!n || !n.id) continue;
-      if (deletedIds.has(n.id)) continue;
-      if (!seen.has(n.id)) {
-        seen.add(n.id);
-        result.push(n);
-      }
-    }
+export function getLivePartners(): Promise<Partner[]> {
+  return liveItems<Partner>("partners");
+}
 
-    return result;
-  } catch (err) {
-    return NEWS_ITEMS;
-  }
+export function getLiveEvents(): Promise<EventItem[]> {
+  return liveItems<EventItem>("events");
+}
+
+export function getLiveTimeline(): Promise<TimelineEvent[]> {
+  return liveItems<TimelineEvent>("timeline_events");
+}
+
+export function getLiveFaq(): Promise<FAQItem[]> {
+  return liveItems<FAQItem>("faq_items");
+}
+
+export function getLiveInfrastructure(): Promise<InfrastructureItem[]> {
+  return liveItems<InfrastructureItem>("infrastructure");
+}
+
+export function getLiveAboutInfo(): Promise<AboutInfo> {
+  return liveDocument<AboutInfo>("about_info");
+}
+
+export function getLiveInstitutionStats(): Promise<InstitutionStats> {
+  return liveDocument<InstitutionStats>("institution_stats");
+}
+
+export function getLiveFinancialSupports(): Promise<FinancialSupports> {
+  return liveDocument<FinancialSupports>("financial_supports");
+}
+
+export function getLivePeerReviewPolicy(): Promise<PeerReviewPolicy> {
+  return liveDocument<PeerReviewPolicy>("peer_review_policy");
 }

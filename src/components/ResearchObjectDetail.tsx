@@ -238,20 +238,25 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
           {/* Authors list */}
           <div className="flex flex-wrap gap-3 pt-4 border-t border-[#e4e3e3]">
-            {paper.authors.map((author) => (
-              <div
-                key={author.slug}
-                className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#f7f7f5] border border-[#e4e3e3]"
-              >
-                <div className="w-7 h-7 rounded-lg bg-[#cef79e] text-[#222f30] flex items-center justify-center font-bold text-xs">
-                  <UserCheck className="w-4 h-4" />
+            {(paper.authors ?? []).map((author, idx) => {
+              const name = typeof author === "string" ? author : author?.name || "باحث";
+              const slug = typeof author === "string" ? `author-${idx}` : author?.slug || `author-${idx}`;
+              const role = typeof author === "object" ? author?.role : undefined;
+              return (
+                <div
+                  key={slug}
+                  className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#f7f7f5] border border-[#e4e3e3]"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-[#cef79e] text-[#222f30] flex items-center justify-center font-bold text-xs">
+                    <UserCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#222f30]">{name}</div>
+                    {role && <div className="text-[10px] text-[#55696a] font-mono">{role}</div>}
+                  </div>
                 </div>
-                <div>
-                  <div className="text-xs font-bold text-[#222f30]">{author.name}</div>
-                  {author.role && <div className="text-[10px] text-[#55696a] font-mono">{author.role}</div>}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Cognitive Curation Bar (Reputation & Verifications over Likes) */}

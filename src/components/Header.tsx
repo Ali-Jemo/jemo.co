@@ -8,10 +8,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CommandPalette from "@/components/CommandPalette";
 import { useAuth } from "@/lib/auth-context";
+import { Show, UserButton } from "@clerk/nextjs";
 
 const NAV_ITEMS = [
   { href: "/", label: "الرئيسية" },
-  { href: "/iq", label: "نبض العراق (هسه)" },
   { href: "/research", label: "سجلات الاكتشاف" },
   { href: "/questions", label: "الأسئلة المفتوحة" },
   { href: "/projects", label: "المشاريع" },
@@ -20,7 +20,6 @@ const NAV_ITEMS = [
 
 const MOBILE_NAV_ITEMS = [
   { href: "/", label: "الرئيسية" },
-  { href: "/iq", label: "نبض العراق (هسه)" },
   { href: "/research", label: "سجلات الاكتشاف" },
   { href: "/questions", label: "الأسئلة المفتوحة" },
   { href: "/projects", label: "المشاريع" },
@@ -115,7 +114,7 @@ export default function Header() {
         }`}
         style={{ pointerEvents: hidden ? "none" : "auto" }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+        <div dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
           
           {/* Zone 1: Right — Logo only (RTL Start) */}
           <div className="flex items-center shrink-0">
@@ -209,17 +208,43 @@ export default function Header() {
               }`}>⌘K</kbd>
             </button>
 
-            {/* Minimal, clean user avatar when logged in (replaces cluttered pill) */}
-            {profile && (
+            {/* Session Indicator & Clerk Auth Controls */}
+            <Show when="signed-out">
+              {profile?.isDemo && (
+                <Link
+                  href="/dashboard"
+                  className="w-8 h-8 rounded-full bg-[#cef79e] text-[#222f30] font-bold text-xs flex items-center justify-center border border-[#e4e3e3] hover:ring-2 hover:ring-[#a7e26e] transition-all shrink-0"
+                  title={`لوحة التحكم: ${profile.name}`}
+                  aria-label="لوحة التحكم"
+                >
+                  {profile.name.slice(0, 1)}
+                </Link>
+              )}
+              <Link
+                href="/sign-in"
+                prefetch={true}
+                className={`hidden md:inline-flex items-center px-3.5 py-1.5 text-xs font-bold rounded-full transition-colors ${
+                  isTransparent
+                    ? "text-white/90 hover:text-white hover:bg-white/10"
+                    : "text-[#222f30] hover:text-[#728825] hover:bg-black/5"
+                }`}
+              >
+                تسجيل الدخول
+              </Link>
+            </Show>
+            <Show when="signed-in">
               <Link
                 href="/dashboard"
-                className="w-8 h-8 rounded-full bg-[#cef79e] text-[#222f30] font-bold text-xs flex items-center justify-center border border-[#e4e3e3] hover:ring-2 hover:ring-[#a7e26e] transition-all shrink-0"
-                title={`لوحة التحكم: ${profile.name}`}
-                aria-label="لوحة التحكم"
+                className={`hidden sm:inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full transition-colors ${
+                  isTransparent
+                    ? "text-white/90 hover:text-white hover:bg-white/10"
+                    : "text-[#222f30] hover:bg-black/5"
+                }`}
               >
-                {profile.name.slice(0, 1)}
+                لوحة التحكم
               </Link>
-            )}
+              <UserButton />
+            </Show>
 
             {/* Single Unified Primary CTA Button */}
             <Link
@@ -296,13 +321,25 @@ export default function Header() {
               {profile ? (
                 <div className="p-3.5 rounded-2xl bg-white/10 border border-white/15 space-y-2 pt-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-[#bef264] text-[#222f30] font-bold text-xs flex items-center justify-center">
-                        {profile.name.slice(0, 1)}
-                      </span>
-                      <span className="text-xs font-bold text-white">{profile.name}</span>
+                    <div className="flex items-center gap-2.5">
+                      <Show when="signed-in">
+                        <UserButton />
+                      </Show>
+                      <Show when="signed-out">
+                        <span className="w-7 h-7 rounded-full bg-[#bef264] text-[#222f30] font-bold text-xs flex items-center justify-center shrink-0">
+                          {profile.name.slice(0, 1)}
+                        </span>
+                      </Show>
+                      <div>
+                        <span className="text-xs font-bold text-white block">{profile.name}</span>
+                        <span className="text-[10px] font-mono text-zinc-400 block">{profile.handle}</span>
+                      </div>
                     </div>
-                    <span className="text-[10px] font-mono text-zinc-400">{profile.handle}</span>
+                    {profile.researchId && (
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-[#bef264]">
+                        {profile.researchId}
+                      </span>
+                    )}
                   </div>
                   <div className="flex gap-2 pt-2 border-t border-white/10 text-xs">
                     <Link
@@ -324,21 +361,33 @@ export default function Header() {
                   </div>
                 </div>
               ) : (
-                <div className="flex gap-2 pt-4 border-t border-white/10">
-                  <Link
-                    href={pathname && pathname !== "/" && pathname !== "/dashboard" && pathname !== "/login" && pathname !== "/signup" ? `/login?redirect=${encodeURIComponent(pathname)}` : "/login"}
-                    onClick={() => setIsOpen(false)}
-                    className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl border border-white/20 text-white bg-white/5 min-h-[44px] flex items-center justify-center"
-                  >
-                    تسجيل الدخول
-                  </Link>
-                  <Link
-                    href={pathname && pathname !== "/" && pathname !== "/dashboard" && pathname !== "/login" && pathname !== "/signup" ? `/signup?redirect=${encodeURIComponent(pathname)}` : "/signup"}
-                    onClick={() => setIsOpen(false)}
-                    className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl bg-[#bef264] text-[#162224] font-bold min-h-[44px] flex items-center justify-center"
-                  >
-                    تسجيل كباحث
-                  </Link>
+                <div className="pt-4 border-t border-white/10 space-y-3">
+                  <Show when="signed-out">
+                    <div className="flex gap-2">
+                      <Link
+                        href="/sign-in"
+                        prefetch={true}
+                        onClick={() => setIsOpen(false)}
+                        className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl border border-white/20 text-white bg-white/5 min-h-[44px] flex items-center justify-center hover:bg-white/10 transition-colors"
+                      >
+                        تسجيل الدخول
+                      </Link>
+                      <Link
+                        href="/sign-up"
+                        prefetch={true}
+                        onClick={() => setIsOpen(false)}
+                        className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl bg-[#bef264] text-[#162224] font-bold min-h-[44px] flex items-center justify-center hover:bg-[#a7e26e] transition-colors"
+                      >
+                        حساب جديد
+                      </Link>
+                    </div>
+                  </Show>
+                  <Show when="signed-in">
+                    <div className="flex items-center justify-between p-3 rounded-2xl bg-white/10 border border-white/15">
+                      <span className="text-xs font-bold text-white">حساب الباحث</span>
+                      <UserButton />
+                    </div>
+                  </Show>
                 </div>
               )}
             </motion.div>

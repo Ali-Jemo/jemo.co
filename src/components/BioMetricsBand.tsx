@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Users, Building2, Layers, ShieldCheck } from "lucide-react";
+import EditorialSectionHeader from "@/components/EditorialSectionHeader";
 
 const STATS = [
   {
@@ -43,33 +44,17 @@ export default function BioMetricsBand() {
   return (
     <section
       dir="rtl"
-      className="py-12 sm:py-24 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
+      className="py-12 sm:py-20 lg:py-24 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
-        {/* Academic Section Header */}
-        <div className="mb-8 sm:mb-14 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 lg:gap-12">
-            <div className="space-y-3 max-w-3xl">
-              <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
-                <span className="font-bold text-[#222f30] text-sm tracking-normal">04</span>
-                <span className="w-5 h-px bg-[#c9cbbe]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
-                <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
-                  هوية المؤسسة · INSTITUTIONAL BENCHMARKS
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] text-[#222f30] font-kufi">
-                بيت حكمةٍ لجميع العلوم،{" "}
-                <span className="text-[#738284] font-normal">
-                  يُبنى بسواعد باحثيه ومساهميه.
-                </span>
-              </h2>
-            </div>
-            <p className="text-sm sm:text-base text-[#55696a] max-w-md leading-relaxed lg:pb-1">
-              من العلوم الشرعية إلى الذكاء الاصطناعي إلى الطب والفلك — منظومة معرفية موحدة ومفتوحة للجميع دون احتكار.
-            </p>
-          </div>
-        </div>
+        <EditorialSectionHeader
+          num="04"
+          kickerAr="هوية المؤسسة"
+          kickerEn="INSTITUTIONAL BENCHMARKS"
+          title="بيت حكمةٍ لجميع العلوم،"
+          titleAccent="يُبنى بسواعد باحثيه ومساهميه."
+          lede="من العلوم الشرعية إلى الذكاء الاصطناعي إلى الطب والفلك — منظومة معرفية موحدة ومفتوحة للجميع دون احتكار."
+        />
 
         {/* 4-Column Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">

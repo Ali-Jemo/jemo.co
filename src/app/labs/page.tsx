@@ -2,15 +2,16 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LabBentoCard from "@/components/ui/LabBentoCard";
-import { RESEARCH_LABS } from "@/lib/data/research-data";
-import { Cpu } from "lucide-react";
+import { getLiveLabs } from "@/lib/live-content";
 
 export const metadata: Metadata = {
   title: "المختبرات البحثية المتخصصة | JEMO LABS",
   description: "مختبرات JEMO LABS للذكاء الاصطناعي، أنظمة التشغيل، الرؤية الحاسوبية، والروبوتات.",
 };
 
-export default function LabsIndexPage() {
+export default async function LabsIndexPage() {
+  const labs = await getLiveLabs();
+
   return (
     <>
       <Header />
@@ -30,7 +31,7 @@ export default function LabsIndexPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 auto-rows-fr">
-            {RESEARCH_LABS.map((lab, idx) => {
+            {labs.map((lab, idx) => {
               const isFeatured = idx === 0;
               return (
                 <LabBentoCard

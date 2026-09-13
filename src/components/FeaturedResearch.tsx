@@ -85,7 +85,7 @@ export default function FeaturedResearch() {
               <div className="pt-6 mt-8 border-t border-[#e4e3e3] flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-[#55696a]">
                   <Users className="w-4 h-4 text-[#a7e26e]" />
-                  <span>{hero.authors.map((a) => a.name).join(" ، ")}</span>
+                  <span>{(hero.authors ?? []).map((a: any) => (typeof a === "string" ? a : a?.name || "")).filter(Boolean).join(" ، ")}</span>
                 </div>
 
                 <div className="flex items-center gap-3 flex-wrap">
@@ -151,7 +151,7 @@ export default function FeaturedResearch() {
                   <div className="pt-5 mt-6 border-t border-[#e4e3e3] flex items-center justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-2 text-xs text-[#55696a]">
                       <Users className="w-3.5 h-3.5 text-[#a7e26e]" />
-                      <span>{p.authors.map((a) => a.name).join(" ، ")}</span>
+                      <span>{(p.authors ?? []).map((a: any) => (typeof a === "string" ? a : a?.name || "")).filter(Boolean).join(" ، ")}</span>
                     </div>
 
                     <Link
@@ -203,7 +203,7 @@ export default function FeaturedResearch() {
                 <div>
                   <div className="flex items-center gap-2 text-xs text-[#55696a] mb-4">
                     <Users className="w-3.5 h-3.5 text-[#a7e26e]" />
-                    <span>{hero.authors.map((a) => a.name).join(" ، ")}</span>
+                    <span>{(hero.authors ?? []).map((a: any) => (typeof a === "string" ? a : a?.name || "")).filter(Boolean).join(" ، ")}</span>
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#e4e3e3]">

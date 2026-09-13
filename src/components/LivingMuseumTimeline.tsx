@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { TimelineEvent } from "@/lib/data/research-data";
 import { TIMELINE_EVENTS } from "@/lib/data/research-data";
 import { Compass, Sparkles, CheckCircle2, ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -8,10 +9,17 @@ import Link from "next/link";
 interface LivingMuseumTimelineProps {
   showFull?: boolean;
   hideHeader?: boolean;
+  /** Timeline events from the server (dashboard edits merged over defaults). */
+  events?: TimelineEvent[];
 }
 
-export default function LivingMuseumTimeline({ showFull = false, hideHeader = false }: LivingMuseumTimelineProps) {
-  const events = showFull ? TIMELINE_EVENTS : TIMELINE_EVENTS.slice(0, 4);
+export default function LivingMuseumTimeline({
+  showFull = false,
+  hideHeader = false,
+  events: provided,
+}: LivingMuseumTimelineProps) {
+  const all = provided ?? TIMELINE_EVENTS;
+  const events = showFull ? all : all.slice(0, 4);
 
   return (
     <div className="relative">

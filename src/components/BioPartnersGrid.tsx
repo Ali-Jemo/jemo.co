@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpLeft, ShieldCheck } from "lucide-react";
+import EditorialSectionHeader from "@/components/EditorialSectionHeader";
 
 interface PeerInstitution {
   id: string;
@@ -53,12 +54,21 @@ const PEER_INSTITUTIONS: PeerInstitution[] = [
   },
   {
     id: "osn",
-    name: "شبكة العلوم المفتوحة الدولية",
-    code: "INT-OSN",
-    field: "بروتوكولات المراجعة اللامركزية والأرشفة الرقمية المفتوحة للاكتشافات",
+    name: "iraq-network",
+    code: "INT-IRN",
+    field: "سجل ثقة مستقل للشركات العراقية · التحقق من الهوية والمستندات والنشاط الفعلي",
     type: "تحالفات دولية",
-    website: "https://open-science.org",
-    metrics: "بروتوكول التحقق الموزع · PoW-FED",
+    website: "https://iraq-network.tech/",
+    metrics: "سجل الثقة · VER-IR-XXX",
+  },
+  {
+    id: "altuff",
+    name: "طلاب جامعة الطريف",
+    code: "INT-ALTUFF",
+    field: "طالب ضمن منظومة جامعة الطريف",
+    type: "تحالفات دولية",
+    website: "https://www.altuff.edu.iq/",
+    metrics: "عضو في سجل الثقة · ALTUFF-STUDENT",
   },
   {
     id: "uon",
@@ -181,35 +191,18 @@ export default function BioPartnersGrid() {
     <section
       dir="rtl"
       ref={containerRef}
-      className="c-kinetic-typo-wall py-10 sm:py-20 lg:py-28 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden select-none"
+      className="c-kinetic-typo-wall py-12 sm:py-20 lg:py-24 bg-[#f7f7f5] text-[#222f30] border-b border-[#e4e3e3] relative overflow-hidden select-none"
       aria-label="الحائط الطباعي للشركاء والمؤسسات الأكاديمية"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
-        
-        {/* Academic Section Header */}
-        <div className="mb-8 sm:mb-14 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 lg:gap-12">
-            <div className="space-y-3 max-w-3xl">
-              <div className="flex items-center gap-2.5 text-xs font-mono text-[#55696a]">
-                <span className="font-bold text-[#222f30] text-sm tracking-normal">08</span>
-                <span className="w-5 h-px bg-[#c9cbbe]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
-                <span className="tracking-widest uppercase text-[11px] font-semibold text-[#738284]">
-                  التحالف الأكاديمي والبحثي · ACADEMIC ALLIANCE
-                </span>
-              </div>
-              <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] text-[#222f30] font-kufi">
-                شبكة معرفية لكل العلوم،{" "}
-                <span className="text-[#738284] font-normal">
-                  تعاون مفتوح مع الجامعات والمراكز البحثية.
-                </span>
-              </h2>
-            </div>
-            <p className="text-sm sm:text-base text-[#55696a] max-w-md leading-relaxed lg:pb-1">
-              حائط الشراكات الأكاديمية والمؤسسات البحثية المستقلة — تعاون مفتوح في النظم، الخوارزميات، والعتاد.
-            </p>
-          </div>
-        </div>
+        <EditorialSectionHeader
+          num="08"
+          kickerAr="التحالف الأكاديمي والبحثي"
+          kickerEn="ACADEMIC ALLIANCE"
+          title="شبكة معرفية لكل العلوم،"
+          titleAccent="تعاون مفتوح مع الجامعات والمراكز البحثية."
+          lede="حائط الشراكات الأكاديمية والمؤسسات البحثية المستقلة — تعاون مفتوح في النظم، الخوارزميات، والعتاد."
+        />
         {/* 3. The Wall (Interactive Kinetic Typo-Grid with Optical Scroll-Spy) */}
         <div 
           onMouseMove={handleMouseMove}

@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import ComputeRequestModal from "@/components/ComputeRequestModal";
-import { INFRASTRUCTURE } from "@/lib/data/research-data";
+import { getLiveInfrastructure } from "@/lib/live-content";
 import { Cpu, Server, MapPin, Activity } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -11,7 +11,9 @@ export const metadata: Metadata = {
   description: "مجموعات الحوسبة فائقة الأداء، خوادم H100، ومنصات اختبار معالجات RISC-V.",
 };
 
-export default function InfrastructurePage() {
+export default async function InfrastructurePage() {
+  const infrastructure = await getLiveInfrastructure();
+
   return (
     <>
       <Header />
@@ -34,7 +36,7 @@ export default function InfrastructurePage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
-            {INFRASTRUCTURE.map((item) => (
+            {infrastructure.map((item) => (
               <div
                 key={item.id}
                 className="group p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] hover:shadow-xl transition-all duration-500 flex flex-col justify-between"

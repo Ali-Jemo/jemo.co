@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import AnimatedSection from "@/components/AnimatedSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
-import { ABOUT_INFO } from "@/lib/data/research-data";
+import { getLiveAboutInfo } from "@/lib/live-content";
 import { Target, ArrowUpLeft, Compass, Sparkles, BookOpen, ShieldCheck, Cpu, GitBranch, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import BioLeadershipGrid from "@/components/BioLeadershipGrid";
@@ -48,7 +48,9 @@ const METHODOLOGY_STEPS = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const about = await getLiveAboutInfo();
+
   return (
     <>
       <Header />
@@ -65,7 +67,7 @@ export default function AboutPage() {
               <span className="text-gradient">سجل أبحاث واكتشافات عصر الذكاء الاصطناعي</span>
             </h1>
             <blockquote className="text-lg md:text-xl font-bold text-[var(--brand)] border-y border-[var(--line)] py-6 my-6 bg-[var(--bg)]/50 rounded-xl leading-relaxed max-w-3xl mx-auto">
-              "{ABOUT_INFO.coreQuote}"
+              "{about.coreQuote}"
             </blockquote>
           </div>
         </AnimatedSection>
@@ -79,7 +81,7 @@ export default function AboutPage() {
               </div>
               <h2 className="text-2xl font-bold text-[var(--ink-1)]">لماذا أنشئت JEMO LABS؟</h2>
               <p className="text-[var(--ink-2)] leading-relaxed text-sm md:text-base">
-                {ABOUT_INFO.whyCreated}
+                {about.whyCreated}
               </p>
             </Card>
 
@@ -89,7 +91,7 @@ export default function AboutPage() {
               </div>
               <h2 className="text-2xl font-bold text-[var(--ink-1)]">ماذا يعني الاسم؟</h2>
               <p className="text-[var(--ink-2)] leading-relaxed text-sm md:text-base">
-                {ABOUT_INFO.nameMeaning}
+                {about.nameMeaning}
               </p>
             </Card>
           </div>
@@ -104,7 +106,7 @@ export default function AboutPage() {
                 <h3>الرسالة (Mission)</h3>
               </div>
               <p className="text-[var(--ink-2)] leading-relaxed text-base">
-                {ABOUT_INFO.mission}
+                {about.mission}
               </p>
             </div>
 
@@ -114,7 +116,7 @@ export default function AboutPage() {
                 <h3>الرؤية (Vision)</h3>
               </div>
               <p className="text-[var(--ink-2)] leading-relaxed text-base">
-                {ABOUT_INFO.vision}
+                {about.vision}
               </p>
             </div>
           </div>
@@ -169,7 +171,7 @@ export default function AboutPage() {
               </div>
               <h2 className="text-3xl font-bold text-[var(--ink-1)]">البحث العلمي الصافي والسيادة الرقمية</h2>
               <p className="text-[var(--ink-2)] leading-relaxed text-base md:text-lg">
-                {ABOUT_INFO.researchPhilosophy}
+                {about.researchPhilosophy}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono text-[var(--ink-2)] pt-2">
                 <div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--line)] flex items-center gap-2">
@@ -199,7 +201,7 @@ export default function AboutPage() {
               center
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-              {ABOUT_INFO.values.map((v, i) => (
+              {about.values.map((v, i) => (
                 <Card key={v.title} hover className="p-6">
                   <div className="w-8 h-8 rounded-lg bg-[var(--brand)]/10 text-[var(--brand)] font-mono font-bold flex items-center justify-center mb-4">
                     0{i + 1}

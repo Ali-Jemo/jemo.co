@@ -32,9 +32,6 @@ export default function MobileBottomNav() {
     window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
   };
 
-  if (pathname.startsWith("/iq")) {
-    return null;
-  }
 
 
   const isPublishActive = pathname === "/publish";

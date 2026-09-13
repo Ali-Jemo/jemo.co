@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Accordion from "@/components/ui/Accordion";
-import { FAQ_ITEMS } from "@/lib/data/research-data";
+import { getLiveFaq } from "@/lib/live-content";
 import { HelpCircle } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -10,8 +10,9 @@ export const metadata: Metadata = {
   description: "الأسئلة الشائعة حول النشر الأكاديمي، الانضمام، التمويل، والملكية الفكرية.",
 };
 
-export default function FAQPage() {
-  const categories = Array.from(new Set(FAQ_ITEMS.map((item) => item.category)));
+export default async function FAQPage() {
+  const faqItems = await getLiveFaq();
+  const categories = Array.from(new Set(faqItems.map((item) => item.category)));
 
   return (
     <>
@@ -31,7 +32,7 @@ export default function FAQPage() {
 
           <div className="space-y-12">
             {categories.map((cat) => {
-              const catItems = FAQ_ITEMS.filter((item) => item.category === cat).map((item, idx) => ({
+              const catItems = faqItems.filter((item) => item.category === cat).map((item, idx) => ({
                 id: `${cat}-${idx}`,
                 title: item.question,
                 children: item.answer,

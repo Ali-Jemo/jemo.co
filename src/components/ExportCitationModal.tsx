@@ -33,7 +33,7 @@ export default function ExportCitationModal({ paper }: ExportCitationModalProps)
   const handleExportRis = () => {
     const risContent = `TY  - JOUR
 TI  - ${paper.titleEn}
-${paper.authors.map((a) => `AU  - ${a.name}`).join("\n")}
+${(paper.authors ?? []).map((a: unknown) => `AU  - ${typeof a === "string" ? a : (a as { name?: string })?.name || ""}`).join("\n")}
 JO  - JEMO LABS Research Papers
 PY  - ${paper.publishDate.slice(0, 4)}
 DO  - ${paper.doi ?? ""}

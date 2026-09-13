@@ -70,17 +70,78 @@ describe("Connected Auth & Publish Pipeline", () => {
     expect(newPaper.citation.apa).toContain("عمر الكرخي (2026)");
   });
 
-  it("preserves redirect query between login, signup, and publish paths", () => {
+  it("preserves redirect query between sign-in, sign-up, and publish paths", () => {
     const publishPath = "/publish";
-    const loginUrl = `/login?redirect=${encodeURIComponent(publishPath)}`;
-    const signupUrl = `/signup?redirect=${encodeURIComponent(publishPath)}`;
-    expect(new URLSearchParams(signupUrl.split("?")[1]).get("redirect")).toBe("/publish");
+    const loginUrl = `/sign-in?redirect_url=${encodeURIComponent(publishPath)}`;
+    const signupUrl = `/sign-up?redirect_url=${encodeURIComponent(publishPath)}`;
+    expect(new URLSearchParams(signupUrl.split("?")[1]).get("redirect_url")).toBe("/publish");
     const loginParams = new URLSearchParams(loginUrl.split("?")[1]);
-    expect(loginParams.get("redirect")).toBe("/publish");
+    expect(loginParams.get("redirect_url")).toBe("/publish");
 
-    // Seamless handoff from login to signup without dropping the target
-    const forwardedSignupUrl = `/signup?redirect=${encodeURIComponent(loginParams.get("redirect")!)}`;
+    // Seamless handoff from sign-in to sign-up without dropping the target
+    const forwardedSignupUrl = `/sign-up?redirect_url=${encodeURIComponent(loginParams.get("redirect_url")!)}`;
     const signupParams = new URLSearchParams(forwardedSignupUrl.split("?")[1]);
-    expect(signupParams.get("redirect")).toBe("/publish");
+    expect(signupParams.get("redirect_url")).toBe("/publish");
+  });
+
+  it("correctly recognizes Clerk superadmin and standard user identity structures", () => {
+    // Superadmin Clerk user mapping simulation
+    const adminUser = {
+      id: "user_2test12345",
+      fullName: "Ali Hussein Hadi",
+      username: "jemo",
+      primaryEmailAddress: { emailAddress: "ali.jemo1.9@gmail.com" },
+      publicMetadata: { role: "admin" },
+    };
+
+    const isSuperAdmin =
+      adminUser.primaryEmailAddress.emailAddress === "ali.jemo1.9@gmail.com" ||
+      adminUser.username === "jemo" ||
+      adminUser.publicMetadata?.role === "admin";
+
+    const adminProfile = {
+      id: adminUser.id,
+      email: adminUser.primaryEmailAddress.emailAddress,
+      name: isSuperAdmin ? "م. علي حسين هادي" : adminUser.fullName,
+      handle: `@${adminUser.username}`,
+      role: isSuperAdmin ? "المؤسس والمهندس الرئيسي • Founder & Lead Engineer" : "باحث مستقل",
+      domain: isSuperAdmin ? "الأنظمة المضمنة وهندسة الاستدلال والبرمجيات السيادية" : "أبحاث النظم",
+      researchId: isSuperAdmin ? "JEMO-CORE-0001" : `JEMO-RES-${adminUser.id.slice(0, 4)}`,
+      isAdmin: isSuperAdmin,
+    };
+
+    expect(adminProfile.isAdmin).toBe(true);
+    expect(adminProfile.name).toBe("م. علي حسين هادي");
+    expect(adminProfile.researchId).toBe("JEMO-CORE-0001");
+    expect(adminProfile.handle).toBe("@jemo");
+
+    // Standard Clerk researcher mapping simulation
+    const standardUser = {
+      id: "user_9876543210",
+      fullName: "د. سارة البغدادي",
+      username: "sara_baghdadi",
+      primaryEmailAddress: { emailAddress: "sara@baghdadi.iq" },
+      publicMetadata: {},
+    };
+
+    const isStandardSuperAdmin =
+      standardUser.primaryEmailAddress.emailAddress === "ali.jemo1.9@gmail.com" ||
+      standardUser.username === "jemo";
+
+    const standardProfile = {
+      id: standardUser.id,
+      email: standardUser.primaryEmailAddress.emailAddress,
+      name: standardUser.fullName,
+      handle: `@${standardUser.username}`,
+      role: "باحث مستقل • Independent Researcher",
+      domain: "أبحاث النظم والذكاء الاصطناعي",
+      researchId: `JEMO-RES-${standardUser.id.replace(/^user_/, "").slice(0, 4).toUpperCase()}`,
+      isAdmin: isStandardSuperAdmin,
+    };
+
+    expect(standardProfile.isAdmin).toBe(false);
+    expect(standardProfile.name).toBe("د. سارة البغدادي");
+    expect(standardProfile.researchId).toBe("JEMO-RES-9876");
+    expect(standardProfile.handle).toBe("@sara_baghdadi");
   });
 });

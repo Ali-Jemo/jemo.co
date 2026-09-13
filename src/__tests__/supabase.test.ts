@@ -29,7 +29,13 @@ describe('Supabase Clients', () => {
     
     expect(createClient).toHaveBeenCalledWith(
       'https://test.supabase.co',
-      'test-secret'
+      'test-secret',
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
     )
   })
 
@@ -38,5 +44,45 @@ describe('Supabase Clients', () => {
     delete process.env.SUPABASE_SECRET_KEY
     
     expect(() => supabaseAdmin()).toThrow('Missing Supabase URL or Secret Key')
+  })
+})
+
+import { normalizePaper } from '@/lib/live-content'
+
+describe('normalizePaper', () => {
+  it('normalizes string authors into { name, slug, role } objects', () => {
+    const rawPaper = {
+      id: 'test-1',
+      slug: 'test-slug',
+      title: 'اختبار النواة',
+      abstract: 'ملخص',
+      authors: ['م. أحمد الفراتي', 'علي حسين هادي (Jemo)'],
+    } as any
+
+    const normalized = normalizePaper(rawPaper)
+    expect(normalized.authors).toHaveLength(2)
+    expect(normalized.authors[0]).toEqual({
+      name: 'م. أحمد الفراتي',
+      slug: 'م-أحمد-الفراتي',
+      role: 'مؤلف',
+    })
+    expect(normalized.authors[1].name).toBe('علي حسين هادي (Jemo)')
+  })
+
+  it('preserves existing object authors safely', () => {
+    const rawPaper = {
+      id: 'test-2',
+      slug: 'test-slug-2',
+      title: 'بحث ثاني',
+      abstract: 'ملخص',
+      authors: [{ name: 'علي هادي', slug: 'ali-hadi', role: 'رئيس الباحثين' }],
+    } as any
+
+    const normalized = normalizePaper(rawPaper)
+    expect(normalized.authors[0]).toEqual({
+      name: 'علي هادي',
+      slug: 'ali-hadi',
+      role: 'رئيس الباحثين',
+    })
   })
 })

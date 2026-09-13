@@ -14,6 +14,8 @@
   --animate-float-3: float3 18s ease-in-out infinite;
   --animate-glow-pulse: glowPulse 2s ease-in-out infinite;
   --animate-marquee: marquee 30s linear infinite;
+  /* Large-phone breakpoint — several components already use xs: utilities */
+  --breakpoint-xs: 25rem;
 }
 
 @keyframes shimmer {
@@ -1479,4 +1481,86 @@ a:active, button:active, [role="button"]:active {
   .init-detail-header::after {
     animation: none;
   }
+  .animate-clerk-fade-in {
+    animation: none !important;
+  }
 }
+
+/* Clerk Widget Hardware Acceleration, Transitions & Smoothness */
+@keyframes clerkFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-clerk-fade-in {
+  animation: clerkFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+/* Clerk Widget Polish & Modal Fixes */
+.cl-modalBackdrop {
+  z-index: 99999 !important;
+  direction: ltr !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cl-modalBackdrop * {
+  direction: ltr;
+}
+
+.cl-userProfile-root,
+.cl-modalContent {
+  direction: ltr !important;
+  max-width: 920px !important;
+  width: 94vw !important;
+  margin: auto !important;
+  border-radius: 1rem !important;
+}
+
+.cl-userProfile-root .cl-cardBox,
+.cl-userProfile-root .cl-card {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+@media (min-width: 640px) {
+  .cl-userProfile-navbar {
+    min-width: 220px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .cl-userProfile-page {
+    flex: 1 1 auto !important;
+    min-width: 460px !important;
+  }
+}
+
+.cl-userButtonPopoverCard {
+  direction: ltr !important;
+  z-index: 99999 !important;
+  min-width: 280px !important;
+}
+
+.cl-userButtonPopoverCard * {
+  direction: ltr;
+}
+
+.cl-formButtonPrimary,
+.cl-socialButtonsBlockButton {
+  transform: translateZ(0);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.cl-formFieldInput {
+  transform: translateZ(0);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
