@@ -5,7 +5,8 @@ import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RESEARCH_LABS, RESEARCH_PAPERS, RESEARCH_PROJECTS, RESEARCHERS } from "@/lib/data/research-data";
-import { Cpu, ArrowRight, Users, FileText, FolderGit2, ArrowUpLeft, UserCheck } from "lucide-react";
+import { getLabNews } from "@/lib/data/lab-news";
+import { Cpu, ArrowRight, Users, FileText, FolderGit2, ArrowUpLeft, UserCheck, Newspaper, Calendar } from "lucide-react";
 
 interface LabPageProps {
   params: Promise<{ slug: string }>;
@@ -26,10 +27,10 @@ export default async function LabDetailPage({ params }: LabPageProps) {
   const { slug } = await params;
   const lab = RESEARCH_LABS.find((l) => l.slug === slug);
   if (!lab) notFound();
-
   const labPapers = RESEARCH_PAPERS.filter((p) => p.labSlug === lab.slug);
   const labProjects = RESEARCH_PROJECTS.filter((p) => p.labSlug === lab.slug);
   const labResearchers = RESEARCHERS.filter((r) => r.labSlug === lab.slug);
+  const labNews = getLabNews(lab.slug);
 
   return (
     <>
@@ -160,6 +161,36 @@ export default async function LabDetailPage({ params }: LabPageProps) {
                 ))}
               </div>
             </div>
+          )}
+
+          {/* Lab News */}
+          {labNews.length > 0 && (
+            <section className="mb-12" aria-labelledby="lab-news-heading">
+              <div className="flex items-end justify-between gap-4 mb-4">
+                <div>
+                  <h2 id="lab-news-heading" className="text-2xl font-bold text-[var(--ink-1)] flex items-center gap-2">
+                    <Newspaper className="w-5 h-5 text-[var(--brand)]" />
+                    أخبار المختبر
+                  </h2>
+                  <p className="text-sm text-[var(--ink-2)] mt-1">آخر المستجدات والإعلانات الخاصة بهذا المختبر.</p>
+                </div>
+                <Link href="/news" className="text-xs font-bold text-[var(--brand)] hover:underline">كل الأخبار</Link>
+              </div>
+              <div className="space-y-3">
+                {labNews.map((item) => (
+                  <Card key={item.id} hover className="p-5">
+                    <div className="flex items-center gap-2 text-xs font-mono text-[var(--ink-2)] mb-2">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {item.date}
+                    </div>
+                    <Link href={`/news/${item.slug}`} className="font-bold text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">
+                      {item.title}
+                    </Link>
+                    <p className="text-sm text-[var(--ink-2)] mt-2 leading-relaxed">{item.summary}</p>
+                  </Card>
+                ))}
+              </div>
+            </section>
           )}
         </div>
       </main>

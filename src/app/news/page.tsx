@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { NEWS_ITEMS } from "@/lib/data/research-data";
-import { Newspaper, ArrowUpLeft, Calendar, Tag } from "lucide-react";
+import { Newspaper, ArrowUpLeft, Calendar } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "الأخبار والإعلانات | JEMO LABS",
