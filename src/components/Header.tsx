@@ -15,9 +15,9 @@ const NAV_ITEMS = [
   { href: "/research", label: "سجلات الاكتشاف" },
   { href: "/questions", label: "الأسئلة المفتوحة" },
   { href: "/projects", label: "المشاريع" },
+  { href: "/newsletter", label: "النشرة الإخبارية" },
   { href: "/about", label: "عن المنصة" },
 ];
-
 const MOBILE_NAV_ITEMS = [
   { href: "/", label: "الرئيسية" },
   { href: "/research", label: "سجلات الاكتشاف" },
@@ -25,6 +25,7 @@ const MOBILE_NAV_ITEMS = [
   { href: "/projects", label: "المشاريع" },
   { href: "/labs", label: "المختبرات" },
   { href: "/researchers", label: "الباحثون" },
+  { href: "/newsletter", label: "النشرة الإخبارية" },
   { href: "/about", label: "عن المنصة" },
 ];
 

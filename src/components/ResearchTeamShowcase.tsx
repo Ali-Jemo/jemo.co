@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpLeft, BookOpen, FolderGit2, Check } from "lucide-react";
 import { RESEARCHERS } from "@/lib/data/research-data";
 import Card from "@/components/ui/Card";
@@ -33,8 +34,18 @@ export default function ResearchTeamShowcase() {
           <Link key={r.id} href={`/researchers/${r.slug}`}>
             <Card hover className="p-4 sm:p-6 h-full flex flex-col justify-between group">
               <div className="flex items-start gap-3 sm:gap-4 mb-3 sm:mb-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[var(--brand)]/10 border border-[var(--brand)]/20 flex items-center justify-center text-[var(--brand)] font-mono font-bold text-xs sm:text-sm shrink-0 group-hover:bg-[var(--brand)]/20 transition-colors">
-                  {r.name.split(" ").pop()?.charAt(0) ?? "?"}
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden bg-[var(--brand)]/10 border border-[var(--brand)]/20 flex items-center justify-center text-[var(--brand)] font-mono font-bold text-xs sm:text-sm shrink-0 group-hover:bg-[var(--brand)]/20 transition-colors shadow-xs">
+                  {r.avatar && !r.avatar.endsWith(".svg") ? (
+                    <Image
+                      src={r.avatar}
+                      alt={r.name}
+                      fill
+                      sizes="48px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    r.name.split(" ").pop()?.charAt(0) ?? "?"
+                  )}
                 </div>
                 <div className="min-w-0">
                   <h3 className="text-sm font-bold text-[var(--ink-1)] truncate group-hover:text-[var(--brand)] transition-colors">

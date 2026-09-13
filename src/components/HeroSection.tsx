@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
-import { ChevronDown, ArrowUpLeft } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import BioButton from "@/components/BioButton";
 import { useAuth } from "@/lib/auth-context";
 
@@ -170,18 +170,6 @@ export default function HeroSection() {
             سجل أبحاث النظم والبرمجة والـ AI
           </span>
         </motion.div>
-        {/* Iraqi Daily Pulse Platform Bridge Link */}
-        <Link
-          href="/iq"
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#bef264]/40 bg-[#bef264]/10 hover:bg-[#bef264]/20 text-[#bef264] transition-colors"
-        >
-          <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse shrink-0" />
-          <span className="text-[10px] sm:text-xs font-mono font-bold tracking-wide">IQ DAILY PULSE</span>
-          <span className="text-[10px] sm:text-xs text-white/80">نبض العراق اليومي — الدولار، الطقس، الأخبار</span>
-          <ArrowUpLeft className="w-3.5 h-3.5" />
-        </Link>
-
-
       </div>
 
       {/* 3. Center: Massive Monumental Display Headline with Line-Mask Entrance */}
@@ -284,6 +272,13 @@ export default function HeroSection() {
             href="/explain"
             label="لخصلي الموقع"
             secondaryLabel="شني السالفة؟"
+            variant="dark-glass"
+            dir="ltr"
+          />
+          <BioButton
+            href="/newsletter"
+            label="NEWSLETTER"
+            secondaryLabel="النشرة الإخبارية"
             variant="dark-glass"
             dir="ltr"
           />

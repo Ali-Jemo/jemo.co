@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Link from "next/link";
+import Image from "next/image";
 import { getLiveLabs, getLiveResearchers } from "@/lib/live-content";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { Users, ArrowUpLeft, BookOpen } from "lucide-react";
@@ -38,8 +39,18 @@ export default async function ResearchersIndexPage() {
               return (
                 <Card key={r.id} hover className="p-8 flex flex-col justify-between">
                   <div>
-                    <div className="w-16 h-16 rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--brand)] flex items-center justify-center font-bold text-xl font-mono mb-6">
-                      {r.name.slice(0, 2)}
+                    <div className="relative w-16 h-16 rounded-2xl bg-[var(--surface)] border border-[var(--line)] text-[var(--brand)] flex items-center justify-center font-bold text-xl font-mono mb-6 overflow-hidden shrink-0 shadow-xs">
+                      {r.avatar && !r.avatar.endsWith(".svg") ? (
+                        <Image
+                          src={r.avatar}
+                          alt={r.name}
+                          fill
+                          sizes="64px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <span>{r.name.slice(0, 2)}</span>
+                      )}
                     </div>
 
                     <h2 className="text-2xl font-bold mb-1 text-[var(--ink-1)] hover:text-[var(--brand)] transition-colors">

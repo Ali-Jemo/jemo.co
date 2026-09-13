@@ -340,8 +340,8 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر أنظمة التشغيل",
     nameEn: "Operating Systems Lab",
     description: "أبحاث النوى الصغيرة (Microkernels)، الحوسبة الآمنة بلغات مثل Rust، وهندسة المعالجات المعمارية.",
-    leadName: "م. أحمد الفراتي",
-    leadSlug: "ahmed-al-furati",
+    leadName: "فلان الفلاني (John Doe)",
+    leadSlug: "john-doe",
     researchersCount: 12,
     activeProjectsCount: 3,
     publishedPapersCount: 6,
@@ -354,8 +354,8 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر الرؤية الحاسوبية",
     nameEn: "Computer Vision Lab",
     description: "معالجة الصور الطبية، التعرف على المخطوطات التاريخية العربية، وأنظمة الرؤية للمركبات ذاتية القيادة.",
-    leadName: "د. سارة الحسيني",
-    leadSlug: "sara-al-hussaini",
+    leadName: "فلانة الفلانية (Jane Doe)",
+    leadSlug: "jane-doe",
     researchersCount: 9,
     activeProjectsCount: 2,
     publishedPapersCount: 4,
@@ -368,8 +368,8 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر الروبوتات",
     nameEn: "Robotics Lab",
     description: "التحكم الميكاترونيكي، أنظمة الملاحة الذاتية في البيئات القاسية، والروبوتات المساعدة.",
-    leadName: "م. حيدر البغدادي",
-    leadSlug: "haider-al-baghdadi",
+    leadName: "باحث افتراضي (Alex Smith)",
+    leadSlug: "alex-smith",
     researchersCount: 7,
     activeProjectsCount: 2,
     publishedPapersCount: 3,
@@ -382,8 +382,8 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر الذكاء الاصطناعي الصحي",
     nameEn: "Healthcare AI",
     description: "تطبيقات التشخيص المبكر للأمراض وتطوير نماذج المساعدة الطبية بالاعتماد على البيانات الإقليمية.",
-    leadName: "د. مريم البابلية",
-    leadSlug: "maryam-al-babili",
+    leadName: "باحث تجريبي (Max Mustermann)",
+    leadSlug: "max-mustermann",
     researchersCount: 5,
     activeProjectsCount: 1,
     publishedPapersCount: 2,
@@ -396,8 +396,8 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر المعلوماتية الحيوية",
     nameEn: "Bioinformatics Lab",
     description: "تحليل التسلسل الجيني، طي البروتينات، وحوسبة البيولوجيا الجزيئية.",
-    leadName: "د. يوسف النجفي",
-    leadSlug: "youssef-al-najafi",
+    leadName: "مساهم افتراضي (Sample Fellow)",
+    leadSlug: "sample-fellow",
     researchersCount: 4,
     activeProjectsCount: 1,
     publishedPapersCount: 1,
@@ -424,170 +424,68 @@ export const RESEARCHERS: Researcher[] = [
     projectsCount: 8
   },
   {
-    id: "ahmed-al-furati",
-    slug: "ahmed-al-furati",
-    name: "م. أحمد الفراتي",
-    role: "كبير مهندسي النوى ومختبر أنظمة التشغيل",
-    bio: "مهندس نظم متخصص في Rust والتصميم الآمن للمشغلات الميكروية وتطوير نواة Ziqa Kernel.",
+    id: "john-doe",
+    slug: "john-doe",
+    name: "فلان الفلاني (John Doe)",
+    role: "باحث افتراضي · مختبر أنظمة التشغيل (Dummy Researcher)",
+    bio: "ملف افتراضي تجريبي مخصص لاختبار واجهات العرض وهيكلية الملفات الأكاديمية وتوثيق أبحاث النظم في المنصة.",
     avatar: "/jemo-logo.svg",
     labSlug: "os-lab",
-    orcid: "0000-0003-4412-9981",
-    github: "https://github.com/ahmed-furati",
-    linkedin: "https://linkedin.com",
-    scholar: "https://scholar.google.com",
-    email: "ahmed@jemo.co",
-    papersCount: 5,
-    projectsCount: 3
+    github: "https://github.com",
+    email: "dummy.os@jemo.co",
+    papersCount: 3,
+    projectsCount: 2
   },
   {
-    id: "sara-al-hussaini",
-    slug: "sara-al-hussaini",
-    name: "د. سارة الحسيني",
-    role: "رئيسة مختبر الرؤية الحاسوبية",
-    bio: "باحثة في معالجة الصور الرقمية وتطبيق تقنيات التعلم العميق لفك وترميم المخطوطات التاريخية العربية.",
+    id: "jane-doe",
+    slug: "jane-doe",
+    name: "فلانة الفلانية (Jane Doe)",
+    role: "باحثة افتراضية · مختبر الرؤية الحاسوبية (Dummy Researcher)",
+    bio: "ملف افتراضي تجريبي مخصص لاختبار تدفق مراجعة الأقران وتوثيق أبحاث الرؤية الحاسوبية ومعالجة الصور.",
     avatar: "/jemo-logo.svg",
     labSlug: "cv-lab",
-    orcid: "0000-0001-9021-3312",
-    github: "https://github.com/sara-hussaini",
-    linkedin: "https://linkedin.com",
-    scholar: "https://scholar.google.com",
-    email: "sara@jemo.co",
-    papersCount: 6,
-    projectsCount: 2
+    github: "https://github.com",
+    email: "dummy.cv@jemo.co",
+    papersCount: 3,
+    projectsCount: 1
   },
   {
-    id: "haider-al-baghdadi",
-    slug: "haider-al-baghdadi",
-    name: "م. حيدر البغدادي",
-    role: "باحث ورئيس مختبر الروبوتات",
-    bio: "متخصص في الأنظمة الميكاترونيكية ودمج المستشعرات ذاتية الحركة في البيئات الميدانية الصعبة.",
+    id: "alex-smith",
+    slug: "alex-smith",
+    name: "باحث افتراضي (Alex Smith)",
+    role: "باحث افتراضي · مختبر الروبوتات (Dummy Researcher)",
+    bio: "ملف تجريبي مخصص لاختبار نماذج المحاكاة الحركية وتوثيق مشاريع الروبوتات والأنظمة الذاتية المفتوحة.",
     avatar: "/jemo-logo.svg",
     labSlug: "robotics-lab",
-    orcid: "0000-0002-7718-4432",
     github: "https://github.com",
-    linkedin: "https://linkedin.com",
-    email: "haider@jemo.co",
-    papersCount: 3,
-    projectsCount: 2
+    email: "dummy.robotics@jemo.co",
+    papersCount: 2,
+    projectsCount: 1
   },
   {
-    id: "maryam-al-babili",
-    slug: "maryam-al-babili",
-    name: "د. مريم البابلية",
-    role: "باحثة أولى في الذكاء الاصطناعي الصحي",
-    bio: "تركز على بناء خوارزميات مساعدة التشخيص الطبي والتنبؤ المبكر بناء على السجلات الطبية الوطنية.",
+    id: "max-mustermann",
+    slug: "max-mustermann",
+    name: "باحث تجريبي (Max Mustermann)",
+    role: "باحث افتراضي · الذكاء الاصطناعي الصحي (Dummy Researcher)",
+    bio: "ملف تجريبي مخصص لاختبار مجموعات البيانات الطبية ونماذج التقييم السريرية وتجربة واجهات الباحثين.",
     avatar: "/jemo-logo.svg",
     labSlug: "healthcare-ai",
-    orcid: "0000-0002-1189-9900",
     github: "https://github.com",
-    linkedin: "https://linkedin.com",
-    email: "maryam@jemo.co",
-    papersCount: 3,
+    email: "dummy.health@jemo.co",
+    papersCount: 2,
     projectsCount: 1
   },
   {
-    id: "youssef-al-najafi",
-    slug: "youssef-al-najafi",
-    name: "د. يوسف النجفي",
-    role: "باحث المعلوماتية الحيوية",
-    bio: "خبير حوسبة جينية وتطوير نماذج محاكاة البروتينات والتحليل الجينومي.",
+    id: "sample-fellow",
+    slug: "sample-fellow",
+    name: "مساهم افتراضي (Sample Fellow)",
+    role: "باحث افتراضي · مختبر المعلوماتية الحيوية (Dummy Researcher)",
+    bio: "ملف تجريبي مخصص لاختبار خطوط معالجة البيانات الجينومية وتوثيق الأبحاث البيولوجية والحوسبة الجزيئية.",
     avatar: "/jemo-logo.svg",
     labSlug: "bioinformatics",
-    orcid: "0000-0001-4433-2211",
     github: "https://github.com",
-    linkedin: "https://linkedin.com",
-    email: "youssef@jemo.co",
-    papersCount: 2,
-    projectsCount: 1
-  },
-  {
-    id: "noor-al-kindif",
-    slug: "noor-al-kindif",
-    name: "م. نور الكندي",
-    role: "باحثة في تقييم النماذج اللغوية — مختبر الذكاء الاصطناعي",
-    bio: "متخصصة في هندسة مقاييس التقييم للنماذج اللغوية العربية وتحليل التحيز في المخرجات، وتقود بناء معايير القياس العربية المفتوحة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "ai-lab",
-    orcid: "0000-0002-5566-7788",
-    github: "https://github.com/jemo-labs",
-    scholar: "https://scholar.google.com",
-    email: "noor@jemo.co",
-    papersCount: 4,
-    projectsCount: 2
-  },
-  {
-    id: "omar-al-basri",
-    slug: "omar-al-basri",
-    name: "م. عمر البصري",
-    role: "مهندس أمن الأنظمة — مختبر أنظمة التشغيل",
-    bio: "باحث في عزل الأخطاء والتشغيل الآمن للنوى الدقيقة، ويعمل على طبقات الحماية الرسمية لنواة Ziqa.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "os-lab",
-    orcid: "0000-0001-2233-4455",
-    github: "https://github.com/jemo-labs",
-    scholar: "https://scholar.google.com",
-    email: "omar@jemo.co",
-    papersCount: 3,
-    projectsCount: 2
-  },
-  {
-    id: "lina-al-tikriti",
-    slug: "lina-al-tikriti",
-    name: "د. لينا التكريتي",
-    role: "باحثة في التصوير الطبي — مختبر الرؤية الحاسوبية",
-    bio: "تطوّر نماذج الرؤية الحاسوبية للكشف المبكر عن الأورام من الصور الإشعاعية، مع التركيز على تكييف النماذج للبيانات الإقليمية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "cv-lab",
-    orcid: "0000-0003-1122-3344",
-    github: "https://github.com/jemo-labs",
-    scholar: "https://scholar.google.com",
-    email: "lina@jemo.co",
-    papersCount: 4,
-    projectsCount: 1
-  },
-  {
-    id: "mustafa-al-mosuli",
-    slug: "mustafa-al-mosuli",
-    name: "م. مصطفى الموصللي",
-    role: "باحث في الملاحة الذاتية — مختبر الروبوتات",
-    bio: "متخصص في خوارزميات SLAM والملاحة في البيئات غير المهيكلة، ويطوّر أنظمة إدراك للروبوتات الميدانية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "robotics-lab",
-    orcid: "0000-0002-9988-7766",
-    github: "https://github.com/jemo-labs",
-    scholar: "https://scholar.google.com",
-    email: "mustafa@jemo.co",
-    papersCount: 2,
-    projectsCount: 2
-  },
-  {
-    id: "zainab-al-qadisiyya",
-    slug: "zainab-al-qadisiyya",
-    name: "د. زينب القادسية",
-    role: "باحثة في المعالجة اللغوية الطبية — الذكاء الاصطناعي الصحي",
-    bio: "تدمج بين معالجة اللغة الطبية وتحليل السجلات الصحية لبناء أنظمة مساعدة قرارات سريرية دقيقة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "healthcare-ai",
-    orcid: "0000-0001-6655-4433",
-    github: "https://github.com/jemo-labs",
-    scholar: "https://scholar.google.com",
-    email: "zainab@jemo.co",
-    papersCount: 3,
-    projectsCount: 1
-  },
-  {
-    id: "hussain-al-kufi",
-    slug: "hussain-al-kufi",
-    name: "م. حسين الكوفي",
-    role: "باحث في التحليل الجينومي — المعلوماتية الحيوية",
-    bio: "يطوّر أدوات تحليل تسلسل الجينوم وحساب التشابه البروتيني لمساعدة الأبحاث الطبية الإقليمية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "bioinformatics",
-    orcid: "0000-0002-4455-6677",
-    github: "https://github.com/jemo-labs",
-    scholar: "https://scholar.google.com",
-    email: "hussain@jemo.co",
-    papersCount: 2,
+    email: "dummy.bio@jemo.co",
+    papersCount: 1,
     projectsCount: 1
   }
 ];
@@ -733,7 +631,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures in Rust",
     abstract: "نستعرض في هذه الورقة والمستودع المفتوح معمارية تجريبية (Experimental Sandbox) لنواة دقيقة مكتوبة بلغة Rust لاستكشاف عزل الأخطاء وإدارة الذاكرة الآمنة بدون كود غير آمن. المشروع تجربة استكشافية مفتوحة لدراسة جدوى البنى المصغرة وتطوير أنظمة تشغيل تعلمية خفيفة.",
     authors: [
-      { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "مطور النواة" },
+      { name: "فلان الفلاني (John Doe)", slug: "john-doe", role: "مطور النواة (افتراضي)" },
       { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "مطور النواة والمصمم المعماري" }
     ],
     publishDate: "2026-05-14",
@@ -802,7 +700,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     abstract: "تستعرض هذه الورقة والمبادرة تجربة ضبط وتكييف دقيق (Fine-tuning & Quantization) لنماذج لغوية مفتوحة المصدر لخدمة اللهجات العراقية والمصطلحات العلمية والتقنية، مع تقييم كفاءة الاستدلال على العتاد المتاح وإتاحة مجموعات الاختبار للباحثين مجاناً.",
     authors: [
       { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المشرف الهندسي" },
-      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "باحث مشارك" }
+      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "باحث مشارك (افتراضي)" }
     ],
     publishDate: "2026-03-20",
     doi: "10.1016/j.jemo.2026.03.004",
@@ -830,7 +728,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Restoration of Rare Iraqi Manuscripts using Convolutional Vision Networks",
     abstract: "طريقة مبتكرة لقراءة وفك التآكل في المخطوطات التاريخية من مكتبات بغداد والموصل القديمة وتحويلها لبيانات رقمية دقيقة قابلة للبحث.",
     authors: [
-      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "المؤلف الرئيسي" }
+      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "المؤلف الرئيسي (افتراضي)" }
     ],
     publishDate: "2026-01-10",
     doi: "10.1016/j.jemo.2026.01.012",
@@ -856,7 +754,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Efficient Inference for Arabic LLMs via Quantization and Selective Pruning",
     abstract: "نقدم تقنية تكميم وإسقاط انتقائي تقلل حجم نماذج اللغة العربية بنسبة 60% مع الحفاظ على 97% من دقة الاستدلال، مما يجعل النشر على الأجهزة محدودة الموارد ممكناً.",
     authors: [
-      { name: "م. نور الكندي", slug: "noor-al-kindif", role: "المؤلف الرئيسي" },
+      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "المؤلف الرئيسي (افتراضي)" },
       { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المؤلف المشارك" }
     ],
     publishDate: "2026-06-22",
@@ -885,8 +783,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Formal Verification of the Ziqa Kernel Scheduler",
     abstract: "نثبت رسمياً خصائص الإنصاف وتأخر الاستجابة في مجدول Ziqa باستخدام التحقق بالنموذج، مع ضمان غياب حالات الجمود تحت أحمال متفاوتة.",
     authors: [
-      { name: "م. أحمد الفراتي", slug: "ahmed-al-furati", role: "المؤلف الرئيسي" },
-      { name: "م. عمر البصري", slug: "omar-al-basri", role: "المؤلف المشارك" }
+      { name: "فلان الفلاني (John Doe)", slug: "john-doe", role: "المؤلف الرئيسي (افتراضي)" }
     ],
     publishDate: "2026-07-05",
     doi: "10.1016/j.jemo.2026.07.001",
@@ -912,8 +809,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Early Tumor Detection from MRI with Region-Adaptive Model Tuning",
     abstract: "نقترح منهجية لتكييف نماذج التجزئة على البيانات الإشعاعية الإقليمية، محققةً تحسناً بنسبة 18% في الكشف المبكر عن الأورام مقارنة بالنماذج العامة.",
     authors: [
-      { name: "د. لينا التكريتي", slug: "lina-al-tikriti", role: "المؤلف الرئيسي" },
-      { name: "د. سارة الحسيني", slug: "sara-al-hussaini", role: "المؤلف المشارك" }
+      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "المؤلف الرئيسي (افتراضي)" }
     ],
     publishDate: "2026-04-28",
     doi: "10.1016/j.jemo.2026.04.003",
@@ -939,8 +835,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Robust SLAM in Low-Visibility Dusty Environments",
     abstract: "نقدم نهجاً لدمج بيانات الليدار والرؤية لتعويض تشتت الضوء في البيئات المغبرة، مما يحسّن دقة التموضع الذاتي للروبوتات بنسبة 40%.",
     authors: [
-      { name: "م. مصطفى الموصللي", slug: "mustafa-al-mosuli", role: "المؤلف الرئيسي" },
-      { name: "م. حيدر البغدادي", slug: "haider-al-baghdadi", role: "المؤلف المشارك" }
+      { name: "باحث افتراضي (Alex Smith)", slug: "alex-smith", role: "المؤلف الرئيسي (افتراضي)" }
     ],
     publishDate: "2026-05-30",
     doi: "10.1016/j.jemo.2026.05.007",
@@ -966,8 +861,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Clinical NLP for Arabic Health Records and Diagnosis Extraction",
     abstract: "نموذج لاستخراج الكيانات الطبية والتشخيصات من السجلات الصحية العربية غير المنظمة، بدقة 91% في تجارب على بيانات مستشفيات إقليمية.",
     authors: [
-      { name: "د. زينب القادسية", slug: "zainab-al-qadisiyya", role: "المؤلف الرئيسي" },
-      { name: "د. مريم البابلية", slug: "maryam-al-babili", role: "المؤلف المشارك" }
+      { name: "باحث تجريبي (Max Mustermann)", slug: "max-mustermann", role: "المؤلف الرئيسي (افتراضي)" }
     ],
     publishDate: "2026-06-12",
     doi: "10.1016/j.jemo.2026.06.005",
@@ -993,8 +887,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Open-Source Genomic Variant Calling Pipeline for Regional Data",
     abstract: "نبني خط معالجة متوازياً لاستدعاء الطفرات الجينية يدعم البيانات الإقليمية ويقلل زمن التحليل بنسبة 55% عبر الجدولة على وحدات المعالجة الرسومية.",
     authors: [
-      { name: "م. حسين الكوفي", slug: "hussain-al-kufi", role: "المؤلف الرئيسي" },
-      { name: "د. يوسف النجفي", slug: "youssef-al-najafi", role: "المؤلف المشارك" }
+      { name: "مساهم افتراضي (Sample Fellow)", slug: "sample-fellow", role: "المؤلف الرئيسي (افتراضي)" }
     ],
     publishDate: "2026-03-08",
     doi: "10.1016/j.jemo.2026.03.002",
@@ -1020,7 +913,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "An Open Evaluation Benchmark for LLMs in Arabic and Iraqi Contexts",
     abstract: "نقدم مجموعة معايير تقييم مفتوحة تقيس الاستدلال المنطقي والفهم الثقافي للنماذج اللغوية، وتكشف فجوات الأداء في اللهجات والمصطلحات الإقليمية.",
     authors: [
-      { name: "م. نور الكندي", slug: "noor-al-kindif", role: "المؤلف الرئيسي" },
+      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "المؤلف الرئيسي (افتراضي)" },
       { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المؤلف المشارك" }
     ],
     publishDate: "2026-07-18",
@@ -1237,7 +1130,7 @@ export const INITIATIVES: Initiative[] = [
     status: "Active",
     lead: "علي حسين هادي (Jemo)",
     leadSlug: "ali-jemo",
-    team: ["علي حسين هادي (Jemo)", "م. حيدر البغدادي", "م. أحمد الفراتي"],
+    team: ["علي حسين هادي (Jemo)"],
     deliverables: ["مجموعة بيانات شاملة", "نماذج أوزان مفتوحة", "دليل الباحث العربي"],
     milestones: [
       { title: "إطلاق المجموعة التدريبية", date: "يناير 2026", done: true },
@@ -1258,9 +1151,9 @@ export const INITIATIVES: Initiative[] = [
     vision: "توفير أرضية صلبة للأبحاث التطبيقية المبنية على واقع البيئة والمجتمع العراقي.",
     progress: 90,
     status: "Scaling",
-    lead: "د. سارة الحسيني",
-    leadSlug: "sara-al-hussaini",
-    team: ["د. سارة الحسيني", "د. يوسف النجفي"],
+    lead: "علي حسين هادي (Jemo)",
+    leadSlug: "ali-jemo",
+    team: ["علي حسين هادي (Jemo)"],
     deliverables: ["منصة أرشفة مفتوحة", "واجهة برمجية API مجانية", "دليل النشر الرقمي"],
     milestones: [
       { title: "إطلاق المنصة", date: "مارس 2026", done: true },
@@ -1282,7 +1175,7 @@ export const INITIATIVES: Initiative[] = [
     status: "Research",
     lead: "علي حسين هادي (Jemo)",
     leadSlug: "ali-jemo",
-    team: ["علي حسين هادي (Jemo)", "د. مريم البابلية"],
+    team: ["علي حسين هادي (Jemo)"],
     deliverables: ["مكتبة تقطيع النصوص", "معجم المصطلحات التقنية", "مقيم الاستدلال العربي"],
     milestones: [
       { title: "مكتبة تقطيع النصوص", date: "فبراير 2026", done: true },
@@ -1302,9 +1195,9 @@ export const INITIATIVES: Initiative[] = [
     vision: "جعل JEMO المنارة الرقمية الحديثة لبيت الحكمة العريق.",
     progress: 85,
     status: "Scaling",
-    lead: "م. أحمد الفراتي",
-    leadSlug: "ahmed-al-furati",
-    team: ["م. أحمد الفراتي", "د. سارة الحسيني"],
+    lead: "علي حسين هادي (Jemo)",
+    leadSlug: "ali-jemo",
+    team: ["علي حسين هادي (Jemo)"],
     deliverables: ["متحف العلوم الرقمي", "أرشيف الأوراق المفتوحة", "دليل الباحث المستقل"],
     milestones: [
       { title: "المتحف الرقمي", date: "أبريل 2026", done: true },
@@ -1324,9 +1217,9 @@ export const INITIATIVES: Initiative[] = [
     vision: "بناء الرصيد البشري العلمي الذي سيقود التحول التكنولوجي في المنطقة.",
     progress: 50,
     status: "Research",
-    lead: "د. مريم البابلية",
-    leadSlug: "maryam-al-babili",
-    team: ["د. مريم البابلية", "علي حسين هادي (Jemo)", "د. سارة الحسيني"],
+    lead: "علي حسين هادي (Jemo)",
+    leadSlug: "ali-jemo",
+    team: ["علي حسين هادي (Jemo)"],
     deliverables: ["برنامج توجيه أكاديمي", "تمويل نشر الأوراق", "توفير الموارد الحاسوبية"],
     milestones: [
       { title: "بدء التوظيف", date: "يناير 2026", done: true },
@@ -1521,7 +1414,7 @@ export const EVENTS: EventItem[] = [
     location: "بغداد / عبر الإنترنت",
     type: "ندوة علمية",
     description: "ورشة مكثفة تجمع مهندسي النوى لاستعراض معمارية Rust في الأنظمة الحرجة.",
-    speakers: ["م. أحمد الفراتي", "علي حسين هادي (Jemo)"]
+    speakers: ["علي حسين هادي (Jemo)"]
   },
   {
     id: "event-2",
@@ -1530,7 +1423,7 @@ export const EVENTS: EventItem[] = [
     location: "مجمع JEMO LABS الرقمي",
     type: "هاكاثون",
     description: "تحدي 48 ساعة لتطوير تطبيقات وحلول تعتمد على نماذج بغداد اللغوية.",
-    speakers: ["د. سارة الحسيني", "د. مريم البابلية"]
+    speakers: ["علي حسين هادي (Jemo)"]
   },
   {
     id: "event-3",
@@ -1539,7 +1432,7 @@ export const EVENTS: EventItem[] = [
     location: "بغداد / عبر الإنترنت",
     type: "ورشة عمل",
     description: "ورشة عملية مكثفة لتصميم مكونات نواة آمنة الذاكرة باستخدام Rust ونظام Ziqa.",
-    speakers: ["م. أحمد الفراتي", "م. عمر البصري"]
+    speakers: ["علي حسين هادي (Jemo)"]
   },
   {
     id: "event-4",
@@ -1548,7 +1441,7 @@ export const EVENTS: EventItem[] = [
     location: "قاعة المؤتمرات — الجامعة التكنولوجية",
     type: "ندوة علمية",
     description: "استعراض أحدث تطبيقات الرؤية الحاسوبية في التشخيص الطبي المبكر.",
-    speakers: ["د. لينا التكريتي", "د. مريم البابلية"]
+    speakers: ["علي حسين هادي (Jemo)"]
   },
   {
     id: "event-5",
@@ -1557,7 +1450,7 @@ export const EVENTS: EventItem[] = [
     location: "مجمع JEMO LABS الرقمي",
     type: "هاكاثون",
     description: "تحدي 36 ساعة لتطوير أدوات تحليل الجينوم على البيانات الإقليمية المفتوحة.",
-    speakers: ["د. يوسف النجفي", "م. حسين الكوفي"]
+    speakers: ["علي حسين هادي (Jemo)"]
   }
 ];
 

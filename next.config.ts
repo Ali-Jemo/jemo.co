@@ -6,7 +6,7 @@ const cspHeader = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
-  "connect-src 'self' https://*.clerk.accounts.dev https://okekfsfyydajyfarnzra.supabase.co https://api.telegram.org https://ayanadollar-dhkgohtw.manus.space https://*.supabase.co",
+  "connect-src 'self' https://*.clerk.accounts.dev https://okekfsfyydajyfarnzra.supabase.co https://api.telegram.org https://*.supabase.co",
   "frame-src 'self' https://challenges.cloudflare.com https://*.clerk.accounts.dev",
   "object-src 'none'",
   "base-uri 'self'",

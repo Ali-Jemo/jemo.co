@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { RESEARCHERS, RESEARCH_PAPERS, RESEARCH_PROJECTS, RESEARCH_LABS } from "@/lib/data/research-data";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
@@ -56,8 +57,19 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
 
           {/* Scholar Profile Header */}
           <Card className="p-8 md:p-10 mb-12 flex flex-col md:flex-row items-start gap-8">
-            <div className="w-24 h-24 rounded-2xl bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20 flex items-center justify-center font-mono text-3xl font-extrabold flex-shrink-0">
-              {researcher.name.slice(0, 2)}
+            <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20 flex items-center justify-center font-mono text-3xl font-extrabold flex-shrink-0 shadow-sm">
+              {researcher.avatar && !researcher.avatar.endsWith(".svg") ? (
+                <Image
+                  src={researcher.avatar}
+                  alt={researcher.name}
+                  fill
+                  sizes="96px"
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                researcher.name.slice(0, 2)
+              )}
             </div>
 
             <div className="space-y-4 flex-1">
