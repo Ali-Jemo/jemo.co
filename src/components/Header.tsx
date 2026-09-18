@@ -376,6 +376,20 @@ export default function Header() {
 
           {/* 3. Left side (in RTL): Controls, Search & CTA */}
           <div className="flex items-center gap-2.5 shrink-0">
+            {/* Mobile Quick Search Button */}
+            <button
+              onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
+              className={`sm:hidden p-2 rounded-full border text-xs font-mono transition-all duration-150 cursor-pointer ${
+                isTransparent
+                  ? "border-white/15 bg-white/5 text-white/90 hover:bg-white/10"
+                  : "border-[#e4e3e3] bg-[#f0f2f0] text-[#445e5f] hover:text-[#222f30]"
+              }`}
+              aria-label="البحث السريع (⌘K)"
+              title="البحث السريع (⌘K)"
+            >
+              <Search size={15} />
+            </button>
+
             {/* Ergonomic Search Button */}
             <button
               onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
@@ -417,10 +431,10 @@ export default function Header() {
               <Link
                 href="/sign-in"
                 prefetch={true}
-                className={`hidden md:inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full transition-colors ${
+                className={`inline-flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-bold rounded-full transition-colors ${
                   isTransparent
-                    ? "text-white/90 hover:text-white hover:bg-white/10"
-                    : "text-[#222f30] hover:text-[#728825] hover:bg-black/5"
+                    ? "text-white/90 hover:text-white hover:bg-white/10 border border-white/15 sm:border-transparent"
+                    : "text-[#222f30] hover:text-[#728825] hover:bg-black/5 border border-[#e4e3e3] sm:border-transparent"
                 }`}
               >
                 دخول
@@ -466,6 +480,43 @@ export default function Header() {
             </button>
           </div>
         </div>
+        {/* 4. Mobile Quick-Navigation Strip */}
+        <nav aria-label="مسارات التصفح السريع" className={`lg:hidden px-3 sm:px-6 py-2 border-t overflow-x-auto scrollbar-none flex items-center gap-1.5 text-xs font-mono transition-colors ${
+          isTransparent ? "border-white/10 bg-[#0c1415]/75 backdrop-blur-md" : "border-[#e4e3e3]/80 bg-[#f7f7f5]/90 backdrop-blur-md"
+        }`}>
+          {NAV_ITEMS.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`px-3 py-1 rounded-full whitespace-nowrap transition-all shrink-0 text-xs font-bold ${
+                  isActive
+                    ? isTransparent
+                      ? "bg-white/25 text-white shadow-xs"
+                      : "bg-[#222f30] text-white shadow-xs"
+                    : isTransparent
+                    ? "text-white/80 hover:text-white hover:bg-white/10"
+                    : "text-[#55696a] hover:text-[#222f30] hover:bg-black/5"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            className={`px-3 py-1 rounded-full whitespace-nowrap transition-all shrink-0 text-xs font-bold flex items-center gap-1 cursor-pointer ${
+              isTransparent
+                ? "bg-[#cef79e]/20 text-[#cef79e] hover:bg-[#cef79e]/30 border border-[#cef79e]/30"
+                : "bg-[#cef79e]/40 text-[#222f30] hover:bg-[#cef79e]/60 border border-[#a7e26e]"
+            }`}
+          >
+            <span>استكشف</span>
+            <ChevronDown size={12} className="shrink-0" />
+          </button>
+        </nav>
 
         {/* Mobile Navigation Drawer */}
         <AnimatePresence>
@@ -493,29 +544,57 @@ export default function Header() {
                 </button>
               </div>
 
-              <div className="text-[10px] font-mono text-[#a7e26e] uppercase tracking-widest mb-2 px-1">
-                مسارات المنظومة (Ecosystem)
+              {/* Rich Categorized Ecosystem Map */}
+              <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10 text-right font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#a7e26e]">
+                    خريطة المنظومة والصفحات
+                  </span>
+                </div>
+                <span className="text-[10px] text-zinc-400">13 مسار بحثي</span>
               </div>
 
-              <nav className="grid grid-cols-2 gap-2 mb-5">
-                {MOBILE_NAV_ITEMS.map((item) => {
-                  const isActive = pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`text-xs font-bold py-2.5 px-3 rounded-xl transition-colors min-h-[44px] flex items-center ${
-                        isActive
-                          ? "bg-[#a7e26e]/15 text-[#a7e26e] font-black border border-[#a7e26e]/30"
-                          : "text-white/80 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </nav>
+              <div className="space-y-4 mb-5 max-h-[60vh] overflow-y-auto pr-0.5 scrollbar-thin">
+                {ECOSYSTEM_CATEGORIES.map((cat) => (
+                  <div key={cat.name} className="space-y-1.5">
+                    <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#a7e26e]/80 px-1">
+                      {cat.name}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                      {cat.items.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = pathname === item.href;
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`p-2.5 rounded-xl transition-all flex items-center gap-3 border ${
+                              isActive
+                                ? "bg-white/15 border-[#a7e26e]/40 text-white font-bold"
+                                : "bg-white/5 border-white/10 text-white/90 hover:bg-white/10 hover:border-white/20"
+                            }`}
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-white/10 text-[#a7e26e] flex items-center justify-center shrink-0">
+                              <Icon className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-xs font-bold leading-tight flex items-center justify-between">
+                                <span>{item.label}</span>
+                                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />}
+                              </div>
+                              <p className="text-[10px] text-zinc-400 truncate font-normal mt-0.5">
+                                {item.desc}
+                              </p>
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
 
               {/* User Drawer Section */}
               {profile ? (
