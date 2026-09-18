@@ -94,6 +94,20 @@ export default function Header() {
   const [hidden, setHidden] = useState(false);
   const exploreRef = useRef<HTMLDivElement>(null);
 
+  const [mobileCategory, setMobileCategory] = useState<string>("all");
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
   const { profile, logout } = useAuth();
 
   // Fast outside click and Escape key listeners
@@ -491,30 +505,36 @@ export default function Header() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="lg:hidden border-t border-white/10 bg-[#0c1415]/98 backdrop-blur-xl px-4 sm:px-6 py-5 overflow-hidden text-white"
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:hidden border-t border-white/10 bg-[#0c1415]/98 backdrop-blur-2xl px-4 sm:px-6 py-5 max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain text-white space-y-5"
             >
-              <div className="mb-4">
+              {/* 1. Global Search Trigger */}
+              <div>
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
                   }}
-                  className="w-full flex items-center justify-between p-3 rounded-xl border border-white/15 bg-white/5 text-xs text-white/80 font-mono min-h-[44px]"
+                  className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 text-xs text-white/90 font-mono min-h-[44px] shadow-inner transition-colors group cursor-pointer"
+                  aria-label="البحث السريع في الأبحاث والأنظمة (⌘K)"
                 >
-                  <span className="flex items-center gap-2">
-                    <Search size={14} className="text-[#a7e26e]" />
-                    <span>البحث في الأبحاث والأنظمة...</span>
+                  <span className="flex items-center gap-2.5">
+                    <Search size={15} className="text-[#bef264] group-hover:scale-110 transition-transform" />
+                    <span className="font-sans text-xs text-white/80">ابحث في الأبحاث، المختبرات، والأنظمة...</span>
                   </span>
-                  <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-white">⌘K</kbd>
+                  <kbd className="px-2 py-0.5 rounded-md bg-white/10 border border-white/15 text-[10px] text-white/90 font-mono">⌘K</kbd>
                 </button>
               </div>
-              {/* Primary Pathways */}
-              <div className="mb-4 space-y-1.5">
-                <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-white/50 px-1">
-                  المسارات الرئيسية
+
+              {/* 2. Primary Navigation Pathways */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[11px] font-mono px-1">
+                  <span className="font-bold text-[#bef264] uppercase tracking-wider">
+                    المسارات الرئيسية
+                  </span>
+                  <span className="text-zinc-500 text-[10px]">5 بوابات أساسية</span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 font-mono">
                   {NAV_ITEMS.map((item) => {
                     const isActive = pathname === item.href;
                     return (
@@ -522,9 +542,9 @@ export default function Header() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`text-xs font-bold py-2 px-3 rounded-xl transition-colors flex items-center justify-between border ${
+                        className={`text-xs font-bold py-2.5 px-3 rounded-xl transition-all flex items-center justify-between border ${
                           isActive
-                            ? "bg-[#cef79e] text-[#162224] border-[#cef79e]"
+                            ? "bg-[#bef264] text-[#162224] border-[#bef264] shadow-xs"
                             : "bg-white/5 border-white/10 text-white/90 hover:bg-white/10"
                         }`}
                       >
@@ -536,58 +556,116 @@ export default function Header() {
                 </div>
               </div>
 
-              {/* Rich Categorized Ecosystem Map */}
-              <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10 text-right font-mono">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#a7e26e]">
-                    خريطة المنظومة والصفحات
-                  </span>
+              {/* 3. Categorized Ecosystem Map with Filter Chips */}
+              <div className="space-y-3 pt-1 border-t border-white/10">
+                <div className="flex items-center justify-between text-right font-mono">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#bef264]">
+                      خريطة المنظومة والصفحات
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-zinc-400">13 مسار بحثي</span>
                 </div>
-                <span className="text-[10px] text-zinc-400">13 مسار بحثي</span>
+
+                {/* Category Chips */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setMobileCategory("all")}
+                    className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-colors cursor-pointer border ${
+                      mobileCategory === "all"
+                        ? "bg-white/25 text-white border-white/30 font-bold"
+                        : "bg-white/5 text-zinc-400 border-white/10 hover:text-white"
+                    }`}
+                  >
+                    الكل (13)
+                  </button>
+                  {ECOSYSTEM_CATEGORIES.map((cat) => {
+                    const isCatActive = mobileCategory === cat.name;
+                    return (
+                      <button
+                        key={cat.name}
+                        type="button"
+                        onClick={() => setMobileCategory(cat.name)}
+                        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-colors cursor-pointer border ${
+                          isCatActive
+                            ? "bg-[#bef264]/20 text-[#bef264] border-[#bef264]/40 font-bold"
+                            : "bg-white/5 text-zinc-400 border-white/10 hover:text-white"
+                        }`}
+                      >
+                        {cat.name}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Filtered Cards */}
+                <div className="space-y-3">
+                  {ECOSYSTEM_CATEGORIES.filter(
+                    (cat) => mobileCategory === "all" || mobileCategory === cat.name
+                  ).map((cat) => (
+                    <div key={cat.name} className="space-y-1.5">
+                      {mobileCategory === "all" && (
+                        <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#bef264]/80 px-1 pt-1">
+                          {cat.name}
+                        </div>
+                      )}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                        {cat.items.map((item) => {
+                          const Icon = item.icon;
+                          const isActive = pathname === item.href;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className={`p-2.5 rounded-xl transition-all flex items-center gap-3 border ${
+                                isActive
+                                  ? "bg-white/15 border-[#bef264]/40 text-white font-bold shadow-xs"
+                                  : "bg-white/5 border-white/10 text-white/90 hover:bg-white/10 hover:border-white/20"
+                              }`}
+                            >
+                              <div className="w-8 h-8 rounded-lg bg-white/10 text-[#bef264] flex items-center justify-center shrink-0">
+                                <Icon className="w-4 h-4" />
+                              </div>
+                              <div className="min-w-0 flex-1 text-right">
+                                <div className="text-xs font-bold leading-tight flex items-center justify-between">
+                                  <span>{item.label}</span>
+                                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#bef264]" />}
+                                </div>
+                                <p className="text-[10px] text-zinc-400 truncate font-normal mt-0.5 font-mono">
+                                  {item.desc}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="space-y-4 mb-5 max-h-[60vh] overflow-y-auto pr-0.5 scrollbar-thin">
-                {ECOSYSTEM_CATEGORIES.map((cat) => (
-                  <div key={cat.name} className="space-y-1.5">
-                    <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#a7e26e]/80 px-1">
-                      {cat.name}
+              {/* 4. Researcher Dashboard & Jev Evaluation Quick Card */}
+              <div className="pt-2 border-t border-white/10">
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-[#0c1415] to-[#0c1415] border border-emerald-500/30 flex items-center justify-between text-xs hover:border-emerald-400/50 transition-all group"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-[#bef264] flex items-center justify-center shrink-0">
+                      <Sparkles size={16} />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                      {cat.items.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = pathname === item.href;
-                        return (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className={`p-2.5 rounded-xl transition-all flex items-center gap-3 border ${
-                              isActive
-                                ? "bg-white/15 border-[#a7e26e]/40 text-white font-bold"
-                                : "bg-white/5 border-white/10 text-white/90 hover:bg-white/10 hover:border-white/20"
-                            }`}
-                          >
-                            <div className="w-7 h-7 rounded-lg bg-white/10 text-[#a7e26e] flex items-center justify-center shrink-0">
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="text-xs font-bold leading-tight flex items-center justify-between">
-                                <span>{item.label}</span>
-                                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />}
-                              </div>
-                              <p className="text-[10px] text-zinc-400 truncate font-normal mt-0.5">
-                                {item.desc}
-                              </p>
-                            </div>
-                          </Link>
-                        );
-                      })}
+                    <div className="text-right">
+                      <span className="font-bold text-white block">لوحة تحكم الباحثين (Jev AI)</span>
+                      <span className="text-[10px] font-mono text-emerald-300/80 block">تدقيق استدلالي معتمد بنموذج Jev</span>
                     </div>
                   </div>
-                ))}
+                  <span className="text-xs font-mono text-[#bef264] group-hover:translate-x-[-2px] transition-transform">➔</span>
+                </Link>
               </div>
-
               {/* User Drawer Section */}
               {profile ? (
                 <div className="p-3.5 rounded-2xl bg-white/10 border border-white/15 space-y-2 pt-3">
