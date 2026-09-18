@@ -254,26 +254,15 @@ export default function HeroSection() {
             ))}
           </div>
         </div>
-        <div dir="ltr" className="flex flex-col items-start gap-3 shrink-0 w-full sm:w-auto">
-          <div className="hidden lg:block w-px h-16 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-          <div className="flex flex-col sm:flex-row gap-3 w-full">
-            <BioButton
-              href="/explain"
-              label="لخصلي الموقع"
-              secondaryLabel="شني السالفة؟"
-              variant="dark-glass"
-              dir="ltr"
-              className="flex-1"
-            />
-            <BioButton
-              href="/newsletter"
-              label="NEWSLETTER"
-              secondaryLabel="النشرة الإخبارية"
-              variant="dark-glass"
-              dir="ltr"
-              className="flex-1"
-            />
-          </div>
+        <div dir="ltr" className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full sm:w-auto">
+          <BioButton
+            href="/explain"
+            label="لخصلي الموقع"
+            secondaryLabel="شني السالفة؟"
+            variant="dark-glass"
+            dir="ltr"
+            className="w-full sm:w-auto"
+          />
           <BioButton
             href={profile ? "/publish" : "/sign-in?redirect_url=/publish"}
             label={profile ? "SHARE DISCOVERY" : "SIGN IN & PUBLISH"}
