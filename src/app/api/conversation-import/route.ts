@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit, getClientIp } from "@/lib/security";
 
 const ALLOWED_HOSTS: Record<string, true> = {
   "share.gemini.google": true,
@@ -34,6 +35,12 @@ function extractText(html: string) {
 }
 
 export async function GET(request: NextRequest) {
+  const ip = getClientIp(request);
+  const rateLimit = checkRateLimit(`conv_import:${ip}`, 15, 60_000);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: "تم تجاوز الحد المسموح من الطلبات" }, { status: 429 });
+  }
+
   const rawUrl = request.nextUrl.searchParams.get("url");
   if (!rawUrl) return NextResponse.json({ error: "رابط المشاركة مفقود." }, { status: 400 });
 
@@ -44,6 +51,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "الرابط غير صالح." }, { status: 400 });
   }
 
+  if (url.protocol !== "https:") {
+    return NextResponse.json({ error: "البروتوكول غير مدعوم. يجب أن يبدأ الرابط بـ https." }, { status: 400 });
+  }
+
+  const host = url.hostname.toLowerCase();
+  if (!ALLOWED_HOSTS[host]) {
+    return NextResponse.json({ error: "نطاق الرابط غير مصرح به." }, { status: 400 });
+  }
   try {
     const response = await fetch(url, {
       headers: {
@@ -57,7 +72,7 @@ export async function GET(request: NextRequest) {
       const location = response.headers.get("location");
       if (!location) return NextResponse.json({ error: "رابط المشاركة أعاد تحويلاً غير صالح." }, { status: 502 });
       const redirected = new URL(location, url);
-      if (redirected.protocol !== "https:" || !ALLOWED_HOSTS[redirected.hostname]) {
+      if (redirected.protocol !== "https:" || !ALLOWED_HOSTS[redirected.hostname.toLowerCase()]) {
         return NextResponse.json({ error: "رفضنا التحويل إلى نطاق غير مسموح." }, { status: 400 });
       }
       return NextResponse.json({ error: "الرابط يحتاج تحويلاً من مزود الخدمة. أعد نسخ رابط المشاركة من جديد." }, { status: 409 });

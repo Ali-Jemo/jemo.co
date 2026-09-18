@@ -1,56 +1,92 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useAuth } from "@/lib/auth-context";
-import { RESEARCH_PAPERS, OPEN_QUESTIONS } from "@/lib/data/research-data";
-import { 
-  User, 
-  BrainCircuit, 
-  CheckCircle2, 
-  Sparkles, 
-  Plus, 
-  LogOut, 
-  ShieldCheck, 
-  GitFork, 
-  Flame, 
-  HelpCircle, 
-  Copy, 
-  Key, 
-  ExternalLink, 
-  Repeat, 
-  FileText, 
-  Scale, 
-  Bookmark, 
-  Settings, 
-  Terminal,
+import { useAuth, type ResearcherProfile } from "@/lib/auth-context";
+import { RESEARCH_PAPERS } from "@/lib/data/research-data";
+import { useReplications, type UserReplication } from "@/lib/replications";
+import {
+  User,
   Zap,
-  ArrowUpLeft
+  FileText,
+  Repeat,
+  Bookmark,
+  Key,
+  Settings,
+  ChevronLeft
 } from "lucide-react";
 
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
+import ResearchObjectsTab from "@/components/dashboard/ResearchObjectsTab";
+import ReplicationsTab from "@/components/dashboard/ReplicationsTab";
+import BookmarksTab from "@/components/dashboard/BookmarksTab";
+import ApiHubTab from "@/components/dashboard/ApiHubTab";
+import ProfileSettingsTab from "@/components/dashboard/ProfileSettingsTab";
+import ProfileEditModal from "@/components/dashboard/ProfileEditModal";
+import ReplicationModal from "@/components/dashboard/ReplicationModal";
+
 export default function DashboardPage() {
-  const { user, profile, loading, loginAsDemo, logout, publishedPapers } = useAuth();
-  const [activeTab, setActiveTab] = useState<"research" | "replications" | "bookmarks" | "settings">("research");
-  const [copiedKey, setCopiedKey] = useState(false);
-  const [apiKey] = useState("jemo_live_res_89fa41c09b2e817d");
+  return (
+    <Suspense
+      fallback={
+        <>
+          <Header />
+          <main className="flex-1 py-24 bg-[#f7f7f5] flex items-center justify-center font-mono text-xs text-[#738284]" dir="rtl">
+            جارٍ فحص جلسة الباحث...
+          </main>
+          <Footer />
+        </>
+      }
+    >
+      <DashboardInner />
+    </Suspense>
+  );
+}
 
-  // Sample bookmarked items
-  const bookmarkedPapers = RESEARCH_PAPERS.slice(1, 3);
-  const bookmarkedQuestions = OPEN_QUESTIONS.slice(0, 2);
+function DashboardInner() {
+  const { profile, loading, loginAsDemo, logout, updateProfile, publishedPapers } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialTabParam = searchParams.get("tab");
+  const initialTab: "research" | "replications" | "bookmarks" | "api" | "settings" =
+    initialTabParam === "replications" ||
+    initialTabParam === "bookmarks" ||
+    initialTabParam === "api" ||
+    initialTabParam === "settings"
+      ? initialTabParam
+      : "research";
+  const initialSectionParam = searchParams.get("section");
+  const initialSection: "academic" | "account" | "tier" =
+    initialSectionParam === "account" || initialSectionParam === "tier"
+      ? initialSectionParam
+      : "academic";
+  const { replications, add: addReplication, remove: removeReplication } = useReplications();
 
-  const handleCopyKey = () => {
-    navigator.clipboard.writeText(apiKey);
-    setCopiedKey(true);
-    setTimeout(() => setCopiedKey(false), 2000);
+  const [activeTab, setActiveTab] = useState<"research" | "replications" | "bookmarks" | "api" | "settings">(initialTab);
+  const [settingsSection, setSettingsSection] = useState<"academic" | "account" | "tier">(initialSection);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isReplicationModalOpen, setIsReplicationModalOpen] = useState(false);
+
+  const handleLogout = () => {
+    void logout().finally(() => {
+      router.push("/");
+    });
+  };
+
+  const handleManageAccount = () => {
+    setSettingsSection("account");
+    setActiveTab("settings");
   };
 
   if (loading) {
     return (
       <>
         <Header />
-        <main className="flex-1 py-24 bg-[#f7f7f5] flex items-center justify-center font-mono text-xs text-[#738284]">
+        <main className="flex-1 py-24 bg-[#f7f7f5] flex items-center justify-center font-mono text-xs text-[#738284]" dir="rtl">
           جارٍ فحص جلسة الباحث...
         </main>
         <Footer />
@@ -58,32 +94,31 @@ export default function DashboardPage() {
     );
   }
 
-  // Not logged in guest banner
+  // Not logged in guest banner (supports testing and guest flow)
   if (!profile) {
     return (
       <>
         <Header />
         <main className="flex-1 py-16 sm:py-24 bg-[#f7f7f5] flex items-center justify-center px-4" dir="rtl">
           <div className="max-w-md w-full space-y-4">
-            {/* Pathway Progress Bar */}
-            <div className="p-3 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs text-xs font-mono">
+            <nav aria-label="خطوات البدء" className="p-3.5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs text-xs font-mono">
               <div className="flex items-center justify-between text-[11px] text-[#55696a]">
                 <span className="font-bold text-[#222f30] flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-[#222f30] text-white flex items-center justify-center text-[10px] font-mono">1</span>
+                  <span className="w-5 h-5 rounded-full bg-[#222f30] text-white flex items-center justify-center text-[10px] font-mono shadow-xs">1</span>
                   <span>الهوية والتسجيل</span>
                 </span>
-                <span className="text-[#a1a1aa]">──▶</span>
-                <Link href="/publish" className="hover:text-[#222f30] flex items-center gap-1">
-                  <span className="w-4 h-4 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">2</span>
+                <ChevronLeft className="w-3.5 h-3.5 text-[#a1a1aa] shrink-0" aria-hidden="true" />
+                <Link href="/publish" className="hover:text-[#222f30] flex items-center gap-1.5 transition-colors">
+                  <span className="w-5 h-5 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">2</span>
                   <span>نشر البحث</span>
                 </Link>
-                <span className="text-[#a1a1aa]">──▶</span>
-                <span className="text-[#738284] flex items-center gap-1">
-                  <span className="w-4 h-4 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">3</span>
+                <ChevronLeft className="w-3.5 h-3.5 text-[#a1a1aa] shrink-0" aria-hidden="true" />
+                <span className="text-[#738284] flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">3</span>
                   <span>لوحة التحكم</span>
                 </span>
               </div>
-            </div>
+            </nav>
 
             <div className="p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-md text-center space-y-5">
               <div className="w-14 h-14 rounded-2xl bg-[#cef79e] text-[#222f30] flex items-center justify-center mx-auto font-bold">
@@ -139,13 +174,14 @@ export default function DashboardPage() {
     );
   }
 
-  // ponytail: merge user-published papers with default demo authored papers
-  const authoredDemoPapers = RESEARCH_PAPERS.filter((p) => 
+  // Merge user-published papers with authored demo papers
+  const authoredDemoPapers = RESEARCH_PAPERS.filter((p) =>
     (p.authors ?? []).some((a: unknown) => {
       const name = typeof a === "string" ? a : (a as { name?: string })?.name || "";
       return name.includes("عمر الكرخي") || (profile.name && name.includes(profile.name));
     })
   );
+
   const seenIds = new Set<string>();
   const myPapers = [...publishedPapers, ...authoredDemoPapers].filter((p) => {
     if (!p || !p.id || seenIds.has(p.id)) return false;
@@ -153,441 +189,170 @@ export default function DashboardPage() {
     return true;
   });
 
+  const handleSaveProfile = (updated: Partial<ResearcherProfile>) => {
+    updateProfile(updated);
+  };
+
+  const handleAddReplication = (repData: Omit<UserReplication, "id" | "date">) => {
+    addReplication(repData);
+    updateProfile({
+      stats: {
+        ...profile.stats,
+        replicationsCount: (profile.stats?.replicationsCount || 0) + 1,
+        contributionsCount: (profile.stats?.contributionsCount || 0) + 1,
+      },
+    });
+  };
 
   return (
     <>
       <Header />
-      <main className="flex-1 py-12 sm:py-16 bg-[#f7f7f5] text-[#222f30]" dir="rtl">
+      <main className="flex-1 py-10 sm:py-14 bg-[#f7f7f5] text-[#222f30]" dir="rtl">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          {/* Connected Pathway Indicator */}
-          <div className="p-3 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs text-xs font-mono">
-            <div className="flex items-center justify-between text-[11px] text-[#55696a]">
-              <span className="text-emerald-700 font-bold flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-mono">✓</span>
-                <span>هوية الباحث: {profile.name}</span>
-              </span>
-              <span className="text-[#a1a1aa]">──▶</span>
-              <Link href="/publish" className="hover:text-[#222f30] flex items-center gap-1">
-                <span className="w-4 h-4 rounded-full bg-[#f0f2f0] text-[#55696a] flex items-center justify-center text-[10px] font-mono">2</span>
-                <span>نشر وتوثيق بحث جديد</span>
-              </Link>
-              <span className="text-[#a1a1aa]">──▶</span>
-              <span className="font-bold text-[#222f30] flex items-center gap-1.5">
-                <span className="w-4 h-4 rounded-full bg-[#222f30] text-white flex items-center justify-center text-[10px] font-mono">3</span>
-                <span>لوحة التحكم والمحفظة</span>
-              </span>
-            </div>
-          </div>
+          {/* Header Banner */}
+          <DashboardHeader
+            profile={profile}
+            onEditProfile={() => setIsEditModalOpen(true)}
+            onLogout={handleLogout}
+            onManageAccount={handleManageAccount}
+          />
 
-          {/* Top Researcher Profile Card */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-sm space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-              
-              {/* Profile Meta */}
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-[#222f30] text-white flex items-center justify-center font-bold font-mono text-xl border-2 border-[#cef79e] shrink-0 shadow-xs">
-                  {profile.name.slice(0, 2)}
-                </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="text-xl sm:text-2xl font-bold font-kufi text-[#222f30]">
-                      {profile.name}
-                    </h1>
-                    <span className="text-xs font-mono text-[#55696a] dir-ltr text-right">
-                      {profile.handle}
-                    </span>
-                    {profile.isDemo && (
-                      <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-mono text-[10px] font-bold">
-                        حساب تجريبي (Demo Mode)
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-[#55696a] mt-0.5 font-medium">
-                    {profile.role} · <span className="text-[#222f30] font-semibold">{profile.domain}</span>
-                  </p>
-                  <div className="flex items-center gap-2 mt-2 font-mono text-[11px] text-[#738284]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#f0f2f0] text-[#222f30] font-bold">
-                      {profile.researchId}
-                    </span>
-                    <span>•</span>
-                    <span className="text-emerald-700 flex items-center gap-1 font-semibold">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      باحث مستقل معتمد (Proof of Work Tier 1)
-                    </span>
-                  </div>
-                </div>
-              </div>
+          {/* Metrics Row */}
+          <DashboardMetrics
+            profile={profile}
+            publishedCount={myPapers.length}
+            replicationsCount={replications.length}
+            onSelectTab={setActiveTab}
+          />
 
-              {/* Actions */}
-              <div className="flex flex-wrap items-center gap-3">
-                <Link
-                  href="/publish"
-                  className="px-4 py-2.5 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all flex items-center gap-1.5 shadow-xs"
-                >
-                  <Plus className="w-4 h-4 text-[#bef264]" />
-                  <span>وثّق كائن بحث جديد</span>
-                </Link>
-
-                <button
-                  onClick={() => logout()}
-                  className="px-3.5 py-2.5 rounded-xl border border-[#e4e3e3] bg-white text-xs font-mono text-[#55696a] hover:text-red-700 hover:border-red-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-                  title="تسجيل الخروج"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">خروج</span>
-                </button>
-              </div>
-
-            </div>
-
-            {/* Cognitive Proof-of-Work Metrics Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-[#e4e3e3]">
-              <div className="p-4 rounded-2xl bg-[#fcfdfc] border border-[#e4e3e3] shadow-xs">
-                <span className="text-[11px] font-mono font-bold text-[#738284] block mb-1">
-                  كائنات البحث المنشورة
-                </span>
-                <div className="text-2xl font-black font-mono text-[#222f30]">
-                  {profile.stats.publishedCount || myPapers.length || 2}
-                </div>
-                <span className="text-[10px] text-emerald-700 font-mono">Research Objects</span>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#fcfdfc] border border-[#e4e3e3] shadow-xs">
-                <span className="text-[11px] font-mono font-bold text-[#738284] block mb-1">
-                  إعادات التجارب المحققة
-                </span>
-                <div className="text-2xl font-black font-mono text-purple-700">
-                  {profile.stats.replicationsCount}×
-                </div>
-                <span className="text-[10px] text-purple-700 font-mono">Replications Verified</span>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#fcfdfc] border border-[#e4e3e3] shadow-xs">
-                <span className="text-[11px] font-mono font-bold text-[#738284] block mb-1">
-                  المراجعات والتحديات
-                </span>
-                <div className="text-2xl font-black font-mono text-[#222f30]">
-                  {profile.stats.contributionsCount}
-                </div>
-                <span className="text-[10px] text-[#55696a] font-mono">Peer Contributions</span>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-[#fcfdfc] border border-[#e4e3e3] shadow-xs">
-                <span className="text-[11px] font-mono font-bold text-[#738284] block mb-1">
-                  درجة الإثبات (Proof Score)
-                </span>
-                <div className="text-2xl font-black font-mono text-emerald-600">
-                  {profile.stats.evidenceScore}%
-                </div>
-                <span className="text-[10px] text-emerald-700 font-mono">Evidence-Backed</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Navigation Tabs */}
-          <div className="flex flex-wrap items-center gap-2 border-b border-[#e4e3e3] pb-3 font-mono">
+          {/* Accessible Segmented Pill Navigation */}
+          <nav aria-label="أقسام لوحة التحكم" className="bg-[#eaece9]/70 p-1.5 rounded-2xl flex items-center gap-1.5 overflow-x-auto border border-[#e4e3e3]/70 scrollbar-none font-mono text-xs">
             <button
+              type="button"
               onClick={() => setActiveTab("research")}
-              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+              className={`px-3.5 py-2 rounded-xl font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === "research"
                   ? "bg-[#222f30] text-white shadow-xs"
-                  : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                  : "text-[#55696a] hover:text-[#222f30] hover:bg-white/60"
               }`}
             >
-              <FileText className="w-3.5 h-3.5 text-[#bef264]" />
-              <span>أبحاثي المسجلة (My Objects)</span>
+              <FileText className={`w-3.5 h-3.5 ${activeTab === "research" ? "text-[#bef264]" : "text-[#738284]"}`} />
+              <span>كائنات البحث</span>
+              <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${
+                activeTab === "research" ? "bg-white/20 text-white" : "bg-[#dedfdc] text-[#55696a]"
+              }`}>
+                {myPapers.length}
+              </span>
             </button>
 
             <button
+              type="button"
               onClick={() => setActiveTab("replications")}
-              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+              className={`px-3.5 py-2 rounded-xl font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === "replications"
                   ? "bg-[#222f30] text-white shadow-xs"
-                  : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                  : "text-[#55696a] hover:text-[#222f30] hover:bg-white/60"
               }`}
             >
-              <Repeat className="w-3.5 h-3.5 text-purple-400" />
-              <span>إعادات التجارب والمراجعات (Peer Reviews)</span>
+              <Repeat className={`w-3.5 h-3.5 ${activeTab === "replications" ? "text-purple-300" : "text-[#738284]"}`} />
+              <span>إعادات التجارب والمراجعات</span>
+              <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono ${
+                activeTab === "replications" ? "bg-white/20 text-white" : "bg-[#dedfdc] text-[#55696a]"
+              }`}>
+                {replications.length}
+              </span>
             </button>
 
             <button
+              type="button"
               onClick={() => setActiveTab("bookmarks")}
-              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+              className={`px-3.5 py-2 rounded-xl font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === "bookmarks"
                   ? "bg-[#222f30] text-white shadow-xs"
-                  : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                  : "text-[#55696a] hover:text-[#222f30] hover:bg-white/60"
               }`}
             >
-              <Bookmark className="w-3.5 h-3.5 text-blue-400" />
-              <span>المحفوظات (Saved Research)</span>
+              <Bookmark className={`w-3.5 h-3.5 ${activeTab === "bookmarks" ? "text-blue-300" : "text-[#738284]"}`} />
+              <span>المحفوظات والمسائل</span>
             </button>
 
             <button
-              onClick={() => setActiveTab("settings")}
-              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
-                activeTab === "settings"
+              type="button"
+              onClick={() => setActiveTab("api")}
+              className={`px-3.5 py-2 rounded-xl font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === "api"
                   ? "bg-[#222f30] text-white shadow-xs"
-                  : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                  : "text-[#55696a] hover:text-[#222f30] hover:bg-white/60"
               }`}
             >
-              <Settings className="w-3.5 h-3.5 text-amber-400" />
-              <span>الإعدادات والـ API</span>
+              <Key className={`w-3.5 h-3.5 ${activeTab === "api" ? "text-[#bef264]" : "text-[#738284]"}`} />
+              <span>واجهة البرمجة (API) والأدوات</span>
             </button>
-          </div>
 
-          {/* Tab 1: My Research Objects */}
+            <button
+              type="button"
+              onClick={() => setActiveTab("settings")}
+              className={`px-3.5 py-2 rounded-xl font-bold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === "settings"
+                  ? "bg-[#222f30] text-white shadow-xs"
+                  : "text-[#55696a] hover:text-[#222f30] hover:bg-white/60"
+              }`}
+            >
+              <Settings className={`w-3.5 h-3.5 ${activeTab === "settings" ? "text-amber-300" : "text-[#738284]"}`} />
+              <span>الملف الشخصي والأمان</span>
+            </button>
+          </nav>
+
+          {/* Active Tab View */}
           {activeTab === "research" && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold font-kufi text-[#222f30]">
-                  كائنات البحث الموثقة باسمك
-                </h2>
-                <Link
-                  href="/publish"
-                  className="text-xs font-mono font-bold text-[#222f30] underline hover:text-[#a7e26e]"
-                >
-                  + إضافة كائن بحث جديد
-                </Link>
-              </div>
-
-              {myPapers.length === 0 ? (
-                <div className="p-8 rounded-3xl bg-white border border-[#e4e3e3] text-center space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#cef79e] text-[#222f30] flex items-center justify-center mx-auto">
-                    <FileText className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold font-kufi text-[#222f30]">
-                      لم توثق أي كائن بحث بعد
-                    </h3>
-                    <p className="text-xs text-[#55696a] mt-1 max-w-sm mx-auto">
-                      كل اكتشاف أو تجربة استدلالية قمت بها يمكن تحويلها لمرجع دائم برقم تعريفي معتمد.
-                    </p>
-                  </div>
-                  <Link
-                    href="/publish"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all"
-                  >
-                    <Plus className="w-4 h-4 text-[#bef264]" />
-                    <span>وثّق أول كائن بحث لك الآن</span>
-                  </Link>
-                </div>
-              ) : (
-                myPapers.map((paper) => {
-                  const isNew = publishedPapers.some((p) => p.id === paper.id);
-                  return (
-                    <div
-                      key={paper.id}
-                      className="p-6 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3 hover:border-[#a7e26e] transition-all"
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 font-mono text-xs">
-                          {isNew && (
-                            <span className="px-2.5 py-0.5 rounded-full bg-[#bef264] text-[#222f30] font-bold">
-                              حديث • نُشر للتو
-                            </span>
-                          )}
-                          <span className="px-2.5 py-0.5 rounded-full bg-[#f0f2f0] text-[#222f30] font-bold">
-                            {paper.researchType || "Experiment"}
-                          </span>
-                          <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-900 font-bold">
-                            تمت إعادة التجربة ({paper.lineage?.replicationsCount || 0}×)
-                          </span>
-                          <span className="text-[11px] text-[#738284]">
-                            {paper.field}
-                          </span>
-                        </div>
-                        <span className="text-xs font-mono text-[#738284]">
-                          {paper.publishDate}
-                        </span>
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-bold font-kufi text-[#222f30]">
-                          <Link href={`/research/${paper.slug}`} className="hover:underline">
-                            {paper.title}
-                          </Link>
-                        </h3>
-                        <p className="text-xs text-[#55696a] mt-1 line-clamp-2">
-                          {paper.findings || paper.abstract}
-                        </p>
-                      </div>
-
-                      {paper.question && (
-                        <div className="p-3 rounded-xl bg-[#f9faf9] border border-[#e4e3e3] text-xs text-[#55696a]">
-                          <strong className="text-[#222f30]">المسألة: </strong>
-                          {paper.question}
-                        </div>
-                      )}
-
-                      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#e4e3e3]">
-                        <div className="flex items-center gap-3 text-xs font-mono text-[#55696a]">
-                          <span>{paper.lineage?.replicationsCount || 0} إعادات</span>
-                          <span>•</span>
-                          <span>{paper.lineage?.challengesCount || 0} مراجعات</span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Link
-                            href={`/research/${paper.slug}`}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all"
-                          >
-                            <span>عرض كائن البحث</span>
-                            <ArrowUpLeft className="w-3.5 h-3.5" />
-                          </Link>
-                          <Link
-                            href={`/publish?fork=${paper.slug}`}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-[#e4e3e3] bg-white text-xs font-mono text-[#55696a] hover:text-[#222f30]"
-                          >
-                            <GitFork className="w-3.5 h-3.5" />
-                            <span>تفريعة (Fork)</span>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+            <ResearchObjectsTab
+              papers={myPapers}
+              publishedPapers={publishedPapers}
+            />
           )}
 
-          {/* Tab 2: Replications & Peer Reviews */}
           {activeTab === "replications" && (
-            <div className="space-y-4">
-              <h2 className="text-lg font-bold font-kufi text-[#222f30]">
-                مساهماتك في مراجعة وتكرار أبحاث الآخرين (Peer Replications)
-              </h2>
-
-              <div className="p-6 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-mono text-xs font-bold">
-                      ✓ إعـادة تـجـربـة مـحـقـقـة (Verified Replication)
-                    </span>
-                    <span className="text-xs font-bold text-[#222f30]">
-                      على بحث: استقصاء ومقارنة 6 نماذج ذكاء اصطناعي
-                    </span>
-                  </div>
-                  <span className="text-xs font-mono text-[#738284]">2026-08-18</span>
-                </div>
-                <p className="text-xs text-[#55696a] leading-relaxed">
-                  "أعدت التجربة على 10 نصوص جديدة من العصر العباسي؛ تكررت نفس نسبة الهلوسة (حوالي 26%) في اختلاق المصادر الفرعية، مما يؤكد صحة استنتاج البحث ودقة المنهجية."
-                </p>
-              </div>
-
-              <div className="p-6 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-mono text-xs font-bold">
-                      ⚖️ تـحـدي وتـقـريـر نـقـد (Peer Challenge)
-                    </span>
-                    <span className="text-xs font-bold text-[#222f30]">
-                      على بحث: عزل تسريب الذاكرة في خدمات Node.js
-                    </span>
-                  </div>
-                  <span className="text-xs font-mono text-[#738284]">2026-08-05</span>
-                </div>
-                <p className="text-xs text-[#55696a] leading-relaxed">
-                  "عند تفعيل نمط التفكير العميق الموصول بقواعد بيانات خارجية، انخفضت نسبة الهلوسة إلى 8%؛ تم إرفاق شفرة الاختبار المعدلة ومقارنة الأداء."
-                </p>
-              </div>
-            </div>
+            <ReplicationsTab
+              replications={replications}
+              onOpenNewReplication={() => setIsReplicationModalOpen(true)}
+              onRemoveReplication={removeReplication}
+            />
           )}
 
-          {/* Tab 3: Bookmarks */}
-          {activeTab === "bookmarks" && (
-            <div className="space-y-6">
-              <h2 className="text-lg font-bold font-kufi text-[#222f30]">
-                المحفوظات والمسائل المفتوحة المتابعة
-              </h2>
+          {activeTab === "bookmarks" && <BookmarksTab />}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {bookmarkedPapers.map((p) => (
-                  <div key={p.id} className="p-5 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs space-y-2">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#f0f2f0] text-[#222f30]">
-                      {p.field}
-                    </span>
-                    <h3 className="text-sm font-bold font-kufi text-[#222f30]">
-                      <Link href={`/research/${p.slug}`} className="hover:underline">
-                        {p.title}
-                      </Link>
-                    </h3>
-                    <p className="text-xs text-[#55696a] line-clamp-2">{p.abstract}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-3 pt-2">
-                <h3 className="text-sm font-bold font-kufi text-[#222f30]">
-                  مسائل مفتوحة تتابعها (Followed Open Problems):
-                </h3>
-                {bookmarkedQuestions.map((q) => (
-                  <div key={q.id} className="p-4 rounded-2xl bg-white border border-[#e4e3e3] flex items-center justify-between gap-4">
-                    <div>
-                      <h4 className="text-xs font-bold text-[#222f30]">{q.title}</h4>
-                      <span className="text-[10px] font-mono text-[#738284]">الحالة: {q.status}</span>
-                    </div>
-                    <Link
-                      href={`/publish?question=${encodeURIComponent(q.title)}`}
-                      className="px-3 py-1.5 rounded-xl bg-[#222f30] text-white text-[11px] font-bold shrink-0"
-                    >
-                      حل المسألة ←
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {activeTab === "api" && (
+            <ApiHubTab
+              profile={profile}
+              onUpdateApiKey={(newKey) => updateProfile({ apiKey: newKey })}
+            />
           )}
 
-          {/* Tab 4: Settings & API Access */}
           {activeTab === "settings" && (
-            <div className="space-y-6">
-              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-6">
-                <h2 className="text-lg font-bold font-kufi text-[#222f30] flex items-center gap-2">
-                  <Key className="w-5 h-5 text-[#a7e26e]" />
-                  <span>مفتاح الـ API لرفع الأبحاث آلياً (CLI & Notebooks)</span>
-                </h2>
-
-                <p className="text-xs text-[#55696a] leading-relaxed max-w-2xl">
-                  يمكنك استخدام هذا المفتاح من خلال مكتبة JEMO Python أو عبر سطر الأوامر (CLI) لتوثيق جلسات المحادثة وتفريغات الاختبارات (Benchmarks) مباشرة داخل أرشيفك الشخصي:
-                </p>
-
-                <div className="p-4 rounded-2xl bg-[#0c1415] text-white font-mono text-xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-zinc-400 text-[11px]">API SECRET KEY:</span>
-                    <button
-                      onClick={handleCopyKey}
-                      className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[#bef264] text-[11px] flex items-center gap-1 cursor-pointer"
-                    >
-                      <Copy className="w-3 h-3" />
-                      <span>{copiedKey ? "تم النسخ!" : "نسخ المفتاح"}</span>
-                    </button>
-                  </div>
-                  <div className="tracking-wider text-[#bef264] overflow-x-auto py-1">
-                    {apiKey}
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3] font-mono text-xs text-[#222f30] space-y-2">
-                  <span className="font-bold block text-xs">مثال الاستخدام في بايثون:</span>
-                  <pre className="text-[11px] text-[#445e5f] overflow-x-auto dir-ltr text-left">
-{`from jemo import ResearchRegistry
-
-client = ResearchRegistry(api_key="${apiKey}")
-client.publish_object(
-    title="My Benchmark Analysis",
-    tools=["Claude 3.7", "DeepSeek-R1"],
-    findings="94% accuracy on dialectal reasoning",
-    evidence="https://github.com/my-repo"
-)`}
-                  </pre>
-                </div>
-              </div>
-            </div>
+            <ProfileSettingsTab
+              key={settingsSection}
+              profile={profile}
+              onUpdateProfile={handleSaveProfile}
+              initialSection={settingsSection}
+            />
           )}
-
         </div>
       </main>
       <Footer />
+
+      {/* Modals */}
+      <ProfileEditModal
+        profile={profile}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSaveProfile}
+      />
+
+      <ReplicationModal
+        isOpen={isReplicationModalOpen}
+        onClose={() => setIsReplicationModalOpen(false)}
+        onSubmit={handleAddReplication}
+      />
     </>
   );
 }

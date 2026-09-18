@@ -3,7 +3,40 @@
 import React, { useRef } from "react";
 import Link from "next/link";
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion";
-import { ArrowUpLeft, Users, FolderGit2, FileText, Cpu, Terminal, Eye, Bot, Activity, Dna } from "lucide-react";
+import {
+  ArrowUpLeft,
+  Users,
+  FolderGit2,
+  FileText,
+  Cpu,
+  Terminal,
+  Eye,
+  Bot,
+  Activity,
+  Dna,
+  Atom,
+  ShieldCheck,
+  Server,
+  CircuitBoard,
+  Rocket,
+  FlaskConical,
+  Brain,
+  Binary,
+  Layers,
+  Zap,
+  TrendingUp,
+  BookOpen,
+  MousePointerClick,
+  UserCheck,
+  Scale,
+  Lightbulb,
+  Languages,
+  FlaskRound,
+  Telescope,
+  Mountain,
+  Sprout,
+  Landmark,
+} from "lucide-react";
 import { Lab } from "@/lib/data/research-data";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -13,6 +46,37 @@ const iconMap: Record<string, React.ElementType> = {
   Bot,
   Activity,
   Dna,
+  Atom,
+  ShieldCheck,
+  Server,
+  CircuitBoard,
+  Rocket,
+  FlaskConical,
+  Brain,
+  Binary,
+  Layers,
+  Zap,
+  TrendingUp,
+  BookOpen,
+  MousePointerClick,
+  Scale,
+  Lightbulb,
+  Languages,
+  FlaskRound,
+  Telescope,
+  Mountain,
+  Sprout,
+  Landmark,
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  "cs-ai": "حاسوب وذكاء اصطناعي",
+  "hardware-quantum": "عتاد وفيزياء كمية",
+  "robotics-aerospace": "روبوتات وفضاء",
+  "bio-health": "علوم حيوية وطبية",
+  "physics-chemistry": "فيزياء وكيمياء وفلك",
+  "islamic-philosophy": "علوم شرعية وفلسفة",
+  "humanities-social": "لسانيات وإنسانيات",
 };
 
 interface LabBentoCardProps {
@@ -32,6 +96,8 @@ export default function LabBentoCard({ lab, featured = false }: LabBentoCardProp
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
   }
+
+  const categoryLabel = lab.category ? CATEGORY_LABELS[lab.category] : null;
 
   return (
     <div
@@ -56,9 +122,16 @@ export default function LabBentoCard({ lab, featured = false }: LabBentoCardProp
       />
 
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-[#222f30] flex items-center justify-center group-hover:bg-[#cef79e] transition-colors duration-300">
-            <Icon className="w-6 h-6 stroke-[1.8]" />
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-[#222f30] flex items-center justify-center group-hover:bg-[#cef79e] transition-colors duration-300">
+              <Icon className="w-6 h-6 stroke-[1.8]" />
+            </div>
+            {categoryLabel && (
+              <span className="text-[11px] font-mono font-medium px-2.5 py-1 rounded-lg bg-[var(--surface)] text-[var(--ink-2)] border border-[var(--line)]">
+                {categoryLabel}
+              </span>
+            )}
           </div>
           {featured && (
             <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[var(--brand)] text-white shadow-sm">
@@ -72,9 +145,17 @@ export default function LabBentoCard({ lab, featured = false }: LabBentoCardProp
         </h2>
         <p className="text-xs font-mono text-[var(--brand)] mb-4 dir-ltr text-right">{lab.nameEn}</p>
 
-        <p className={`text-sm text-[var(--ink-2)] leading-relaxed mb-6 ${featured ? "line-clamp-4" : "line-clamp-3"}`}>
+        <p className={`text-sm text-[var(--ink-2)] leading-relaxed mb-5 ${featured ? "line-clamp-4" : "line-clamp-3"}`}>
           {lab.description}
         </p>
+
+        {lab.leadName && (
+          <div className="flex items-center gap-1.5 text-xs text-[var(--ink-2)] mb-5">
+            <UserCheck className="w-3.5 h-3.5 text-[var(--brand)] shrink-0" />
+            <span className="font-semibold text-[var(--ink-1)]">قيادة المختبر:</span>
+            <span className="truncate">{lab.leadName}</span>
+          </div>
+        )}
 
         <div className="flex flex-wrap gap-1.5 mb-6">
           {lab.focusAreas.map((area) => (

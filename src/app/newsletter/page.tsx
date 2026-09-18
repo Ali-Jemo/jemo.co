@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterClient from "./NewsletterClient";
-import {
-  Sparkles,
-  Calendar,
-  BookOpen,
-  CheckCircle2,
-  Users,
-} from "lucide-react";
+// ponytail: DEV.to-styled newsletter page shell
 
 // ponytail: Server Component shell + rich NewsletterClient with live topic filtering & dispatch archive
 
@@ -61,47 +56,40 @@ export default function NewsletterPage() {
       />
       <Header />
 
-      <main className="min-h-screen bg-[var(--bg)] text-[var(--ink-1)] py-12 md:py-20">
-        <div className="container max-w-5xl px-4 sm:px-6 mx-auto space-y-12 sm:space-y-16">
-          {/* Main Hero Header */}
-          <header className="text-center max-w-3xl mx-auto space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface)] border border-[var(--line)] shadow-xs text-xs font-mono text-[var(--ink-2)]">
-              <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
-              <span>الإصدارات والمعارف الدورية • JEMO DISPATCH</span>
+      <main className="min-h-screen bg-[var(--bg)] text-[var(--ink-1)] py-4 sm:py-6">
+        <div className="max-w-[1380px] px-3 sm:px-4 md:px-6 mx-auto">
+          {/* Compact feed hero — H1 + metrics, dev.to index style */}
+          <header className="mb-5 sm:mb-6 rounded-2xl bg-[var(--surface)] border border-[var(--line)] shadow-xs px-5 py-5 sm:px-7 sm:py-6 flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+            <div className="flex-1 space-y-1.5 text-center md:text-right">
+              <p className="text-[11px] font-mono text-[var(--ink-2)]">
+                الإصدارات والمعارف الدورية • JEMO DISPATCH
+              </p>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--ink-1)] leading-tight">
+                النشرة الإخبارية والعلمية للشركة
+              </h1>
+              <p className="text-xs sm:text-sm text-[var(--ink-2)] leading-relaxed">
+                أوراق بحثية مسبقة النشر، شفرات مصدرية مفتوحة، تحليلات معمارية للنظم ونوى الذكاء
+                الاصطناعي — تصلك دورياً بدون وسطاء أو خوارزميات.
+              </p>
             </div>
-
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--ink-1)] leading-tight">
-              النشرة الإخبارية والعلمية للشركة
-            </h1>
-
-            <p className="text-base sm:text-lg text-[var(--ink-2)] leading-relaxed font-normal">
-              أوراق بحثية مسبقة النشر، شفرات مصدرية مفتوحة، تحليلات معمارية للنظم ونوى الذكاء الاصطناعي،
-              وأخبار المختبرات تصلك دورياً بدون وسطاء أو خوارزميات.
-            </p>
-
-            {/* Quick Metrics Strip */}
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs font-mono text-[var(--ink-2)]">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[var(--surface)] border border-[var(--line)]">
-                <Calendar className="w-3.5 h-3.5 text-[var(--accent)]" />
-                <span>إصدار نصف شهري (كل 15 يوماً)</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[var(--surface)] border border-[var(--line)]">
-                <Users className="w-3.5 h-3.5 text-[var(--accent)]" />
-                <span>+4,850 باحث ومتابع</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[var(--surface)] border border-[var(--line)]">
-                <BookOpen className="w-3.5 h-3.5 text-[var(--accent)]" />
-                <span>14 عدداً منشوراً بالأرشيف</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[var(--surface)] border border-[var(--line)]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span>100% مستقلة وبلا إعلانات</span>
-              </span>
-            </div>
+            <dl className="flex flex-wrap items-center justify-center md:justify-end gap-2 text-[11px] font-mono text-[var(--ink-2)] shrink-0">
+              <div className="px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)]">
+                <dt className="sr-only">وتيرة الصدور</dt>
+                <dd>إصدار نصف شهري</dd>
+              </div>
+              <div className="px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)]">
+                <dt className="sr-only">المشتركون</dt>
+                <dd>+4,850 باحث ومتابع</dd>
+              </div>
+              <div className="px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)]">
+                <dt className="sr-only">الأرشيف</dt>
+                <dd>14 عدداً منشوراً</dd>
+              </div>
+            </dl>
           </header>
-
-          {/* Interactive Client Component */}
-          <NewsletterClient />
+          <Suspense>
+            <NewsletterClient />
+          </Suspense>
         </div>
       </main>
 

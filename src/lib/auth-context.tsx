@@ -17,6 +17,12 @@ export interface ResearcherProfile {
   researchId: string;
   isDemo?: boolean;
   isAdmin?: boolean;
+  institution?: string;
+  bio?: string;
+  githubHandle?: string;
+  orcidId?: string;
+  scholarUrl?: string;
+  apiKey?: string;
   stats: {
     publishedCount: number;
     replicationsCount: number;
@@ -40,6 +46,12 @@ const DEMO_PROFILES: Record<string, ResearcherProfile> = {
     avatar: "/jemo-logo.svg",
     researchId: "JEMO-RES-9102",
     isDemo: true,
+    institution: "مختبر الاستدلال العربي المستقل",
+    bio: "باحث مستقل متخصص في تدقيق هلوسات النماذج التوليدية في السياقات اللغوية العربية القديمة واختبار متانة سلاسل التفكير المنطقي.",
+    githubHandle: "https://github.com/omar-karkhi",
+    orcidId: "0009-0002-8192-4410",
+    scholarUrl: "https://scholar.google.com",
+    apiKey: "jemo_live_res_89fa41c09b2e817d",
     stats: {
       publishedCount: 2,
       replicationsCount: 14,
@@ -57,6 +69,12 @@ const DEMO_PROFILES: Record<string, ResearcherProfile> = {
     avatar: "/jemo-logo.svg",
     researchId: "JEMO-RES-4418",
     isDemo: true,
+    institution: "مجموعة النظم المضمنة وعزل النواة",
+    bio: "مهندس نظم ومطور برمجيات منخفضة المستوى، يركز على تتبع تسريبات الذاكرة في الخدمات الحية وبناء أدوات التحقق من الأداء في بيئات الإنتاج.",
+    githubHandle: "https://github.com/zaid-tamimi",
+    orcidId: "0009-0004-1290-7731",
+    scholarUrl: "https://scholar.google.com",
+    apiKey: "jemo_live_res_44189b2e817d0aa1",
     stats: {
       publishedCount: 1,
       replicationsCount: 8,
@@ -119,6 +137,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // 1. Clerk Authenticated User (Highest Priority)
     if (clerk.isSignedIn && clerk.user) {
       const u = clerk.user;
+      // A real Clerk session supersedes any stale demo session: drop it so
+      // a later Clerk sign-out (via <UserButton/>, which bypasses logout())
+      // lands on a clean logged-out state instead of resurrecting demo.
+      try {
+        localStorage.removeItem(DEMO_STORAGE_KEY);
+      } catch {
+        // ignore
+      }
       const email = u.primaryEmailAddress?.emailAddress || u.emailAddresses?.[0]?.emailAddress || "";
       const isSuperAdmin =
         email === "ali.jemo1.9@gmail.com" ||
@@ -152,22 +178,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         (u.publicMetadata?.researchId as string) ||
         (isSuperAdmin ? "JEMO-CORE-0001" : `JEMO-RES-${u.id.replace(/^user_/, "").slice(0, 4).toUpperCase()}`);
 
+      // Check stored profile extensions
+      let extProfile: Partial<ResearcherProfile> = {};
+      try {
+        const rawExt = localStorage.getItem(`jemo_profile_ext_${u.id}`);
+        if (rawExt) extProfile = JSON.parse(rawExt);
+      } catch {
+        // ignore
+      }
+
       setProfile({
         id: u.id,
         email,
-        name,
-        handle,
-        role,
-        domain,
+        name: extProfile.name || name,
+        handle: extProfile.handle || handle,
+        role: extProfile.role || role,
+        domain: extProfile.domain || domain,
         avatar,
         researchId,
         isDemo: false,
         isAdmin: isSuperAdmin,
+        bio: extProfile.bio || (isSuperAdmin ? "مهندس وباحث مستقل يقود مشاريع السيادة الرقمية والذكاء الاصطناعي وبناء أنظمة التشغيل العربية." : "باحث مستقل يستكشف حدود المعرفة والاستدلال الرياضي والأنظمة."),
+        institution: extProfile.institution || (isSuperAdmin ? "JEMO CORE RESEARCH LABS" : "مستقل / Independent"),
+        githubHandle: extProfile.githubHandle || (u.username ? `https://github.com/${u.username}` : ""),
+        orcidId: extProfile.orcidId || "",
+        scholarUrl: extProfile.scholarUrl || "",
+        apiKey: extProfile.apiKey || `jemo_live_res_${u.id.replace(/^user_/, "").slice(0, 16)}`,
         stats: {
-          publishedCount: isSuperAdmin ? 3 : 1,
-          replicationsCount: isSuperAdmin ? 18 : 4,
-          contributionsCount: isSuperAdmin ? 14 : 3,
-          evidenceScore: isSuperAdmin ? 99 : 92,
+          publishedCount: extProfile.stats?.publishedCount ?? (isSuperAdmin ? 3 : 1),
+          replicationsCount: extProfile.stats?.replicationsCount ?? (isSuperAdmin ? 18 : 4),
+          contributionsCount: extProfile.stats?.contributionsCount ?? (isSuperAdmin ? 14 : 3),
+          evidenceScore: extProfile.stats?.evidenceScore ?? (isSuperAdmin ? 99 : 92),
         },
       });
       setLoading(false);
@@ -391,12 +432,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile((prev) => {
       if (!prev) return null;
       const next = { ...prev, ...updated };
-      if (next.isDemo) {
-        try {
+      try {
+        if (next.isDemo) {
           localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(next));
-        } catch {
-          // ignore
+        } else if (next.id) {
+          localStorage.setItem(`jemo_profile_ext_${next.id}`, JSON.stringify(next));
         }
+      } catch {
+        // ignore
       }
       return next;
     });

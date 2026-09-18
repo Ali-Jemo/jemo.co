@@ -1,0 +1,19 @@
+{
+  "name": "@jemo/sdk",
+  "version": "0.1.0",
+  "description": "Official TypeScript & JavaScript SDK for the JEMO Discovery Registry",
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "types": "./index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "keywords": ["jemo", "research", "ai", "sdk", "discovery-registry"],
+  "author": "JEMO LABS Research Team <research@jemo.co>",
+  "license": "MIT"
+}

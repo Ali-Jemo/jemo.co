@@ -235,17 +235,26 @@ export function isKnownTelegramIp(ip: string): boolean {
   return TELEGRAM_IPV4_RANGES.some((cidr) => ipv4InCidr(ip, cidr));
 }
 
-/** Generates a non-cryptographic contract/claim id (see update-status route). */
-export function generateContractId(): string {
-  // crypto.randomBytes is not available in every runtime, so fall back to a
-  // mixed source but keep it bounded and uppercase-stable for format.
-  const rand =
-    typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"
-      ? crypto.getRandomValues(new Uint32Array(1))[0]
-      : Math.floor(Math.random() * 0x100000000);
-  return `IJL-2026-${String(1000 + (rand % 9000))}`;
+/**
+ * Escapes Telegram Markdown control characters to prevent formatting injection or parse failures.
+ */
+export function escapeMarkdown(text: string): string {
+  if (!text || typeof text !== "string") return "";
+  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, "\\$&");
 }
 
+/** Generates a cryptographically strong contract/claim id. */
+export function generateContractId(): string {
+  let randHex = "";
+  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+    const arr = new Uint8Array(4);
+    crypto.getRandomValues(arr);
+    randHex = Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+  } else {
+    randHex = Math.floor(0x10000000 + Math.random() * 0xefffffff).toString(16).toUpperCase();
+  }
+  return `IJL-2026-${randHex}`;
+}
 /** Telegram chat id must be a non-zero integer (negative ids are valid for groups). */
 export function isValidTelegramChatId(value: unknown): boolean {
   if (typeof value !== "number") return false;

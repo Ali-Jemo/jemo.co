@@ -14,6 +14,7 @@ vi.mock('@clerk/nextjs', () => ({
   ClerkLoaded: ({ children }: { children?: React.ReactNode }) => children ?? null,
   SignIn: () => React.createElement("div", { "data-testid": "clerk-sign-in" }, "تسجيل الدخول عبر Clerk"),
   SignUp: () => React.createElement("div", { "data-testid": "clerk-sign-up" }, "إنشاء حساب عبر Clerk"),
+  UserProfile: () => React.createElement("div", { "data-testid": "clerk-user-profile" }, "إدارة الحساب عبر Clerk"),
   useUser: () => ({ isSignedIn: false, user: null, isLoaded: true }),
   useClerk: () => ({ signOut: () => Promise.resolve() }),
   useAuth: () => ({ isSignedIn: false, userId: null, getToken: () => Promise.resolve(null) }),

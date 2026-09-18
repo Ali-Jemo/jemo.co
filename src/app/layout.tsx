@@ -91,7 +91,12 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)]" suppressHydrationWarning>
-        <ClerkProvider appearance={clerkGlobalAppearance}>
+        <ClerkProvider
+          appearance={clerkGlobalAppearance}
+          afterSignOutUrl="/"
+          signInUrl="/sign-in"
+          signUpUrl="/sign-up"
+        >
           {/* Background Assets */}
           <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden" style={{ contain: 'strict' }}>
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>

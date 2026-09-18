@@ -1,4 +1,4 @@
-import { getClientIp } from "./security";
+import { getClientIp, isKnownTelegramIp, safeCompare } from "./security";
 
 /**
  * High-Performance Edge Firewall & Web Application Firewall (WAF)
@@ -166,8 +166,7 @@ export function isScraperTool(userAgent?: string | null): { scraper: boolean; bo
 // 3. Known Vulnerability / Exploit Probe Paths
 // --------------------------------------------------------------------------
 const EXPLOIT_PROBE_REGEX =
-  /(?:^\/(?:\.env|\.git|\.svn|\.aws|\.ssh|wp-admin|wp-login|wp-content|wp-includes|xmlrpc\.php|phpmyadmin|pma|mysql|myadmin|actuator|eval-stdin\.php|solr|telescope|autodiscover|shell\.php|c99\.php|r57\.php|alfa\.php|dump\.sql|backup\.sql|database\.sql|config\.json|server-status|server-info|cgi-bin))/i;
-
+  /(?:^\/(?:\.env|\.git|\.svn|\.aws|\.ssh|\.ds_store|wp-admin|wp-login|wp-content|wp-includes|xmlrpc\.php|phpmyadmin|pma|mysql|myadmin|actuator|eval-stdin\.php|solr|telescope|autodiscover|shell\.php|c99\.php|r57\.php|alfa\.php|dump\.sql|backup\.sql|database\.sql|config\.json|server-status|server-info|cgi-bin|phpinfo\.php|info\.php|vendor\/phpunit|web\.config))/i;
 export function isExploitProbe(pathname: string): { probe: boolean; target?: string } {
   if (!pathname || typeof pathname !== "string") return { probe: false };
   const match = pathname.match(EXPLOIT_PROBE_REGEX);
@@ -251,9 +250,22 @@ export function validateMutationOrigin(req: Request): { valid: boolean; reason?:
     return { valid: true };
   }
 
-  // Exempt webhooks with cryptographic headers
-  if (req.headers.get("x-telegram-bot-api-secret-token")) {
-    return { valid: true };
+  // Exempt webhooks ONLY on the designated webhook route when properly authenticated
+  try {
+    const reqUrl = new URL(req.url);
+    if (reqUrl.pathname === "/api/telegram/webhook") {
+      const receivedToken = req.headers.get("x-telegram-bot-api-secret-token");
+      const webhookSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+      if (webhookSecret && receivedToken && safeCompare(receivedToken, webhookSecret)) {
+        return { valid: true };
+      }
+      const ip = getClientIp(req);
+      if (!webhookSecret && isKnownTelegramIp(ip)) {
+        return { valid: true };
+      }
+    }
+  } catch {
+    // Ignore URL parse error and proceed to origin validation
   }
 
   const origin = req.headers.get("origin");

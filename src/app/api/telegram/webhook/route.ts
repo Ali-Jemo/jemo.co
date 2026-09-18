@@ -4,6 +4,7 @@ import { DEPT_CHANNELS } from "@/lib/departments";
 import {
   checkRateLimit,
   enforceBodySize,
+  escapeMarkdown,
   getClientIp,
   isKnownTelegramIp,
   safeCompare,
@@ -76,12 +77,18 @@ export async function POST(req: NextRequest) {
           .single();
 
         if (matchedApp) {
+          // Prevent account takeover: never overwrite an already-linked chat ID
+          if (matchedApp.telegram_chat_id && matchedApp.telegram_chat_id !== String(chatId)) {
+            return NextResponse.json({ ok: true });
+          }
+
           await db
             .from("applications")
             .update({ telegram_chat_id: String(chatId), telegram_username: username || matchedApp.telegram_username })
             .eq("id", matchedApp.id);
 
-          const linkedText = `✅ *تم ربط حسابك في التليجرام بنجاح!*\n\nعزيزنا *${matchedApp.name}*، تم تسليم معرف التليجرام الخاص بك لقاعدة البيانات.\n\nستصلك إشعارات حالة طلبك (قبول / رفض) مباشرة هنا عبر البوت! 🤖`;
+          const safeName = escapeMarkdown(matchedApp.name);
+          const linkedText = `✅ *تم ربط حسابك في التليجرام بنجاح!*\n\nعزيزنا *${safeName}*، تم تسليم معرف التليجرام الخاص بك لقاعدة البيانات.\n\nستصلك إشعارات حالة طلبك (قبول / رفض) مباشرة هنا عبر البوت! 🤖`;
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -106,13 +113,22 @@ export async function POST(req: NextRequest) {
           .single();
 
         if (app) {
+          // Prevent hijacking: if already linked to another chat, do not reassign
+          if (app.telegram_chat_id && app.telegram_chat_id !== String(chatId)) {
+            return NextResponse.json({ ok: true });
+          }
+
           await db
             .from("applications")
             .update({ telegram_chat_id: String(chatId) })
             .eq("id", app.id);
 
+          const safeName = escapeMarkdown(app.name || "");
+          const safeSection = escapeMarkdown(app.section || "");
+          const safeContract = escapeMarkdown(app.contract_id || "");
+          const safeHours = escapeMarkdown(app.hours || "");
           const deptChannel = DEPT_CHANNELS[app.section] ?? "https://t.me/iraqjemo";
-          const replyText = `🎉 *مبروك أستاذ/ة ${app.name}!*\n\nتم قبولك رسمياً في قسم *${app.section}* ضمن منظومة iraqjemo labs.\n\n📄 *الرقم المرجعي (العقد):* \`${app.contract_id}\`\n⏳ *ساعات التفرغ:* ${app.hours}\n\n📢 *قناة قسمك الرسمية على التليجرام:*\n${deptChannel}\n\nنرحب بك في المنظومة الرقمية!`;
+          const replyText = `🎉 *مبروك أستاذ/ة ${safeName}!*\n\nتم قبولك رسمياً في قسم *${safeSection}* ضمن منظومة iraqjemo labs.\n\n📄 *الرقم المرجعي (العقد):* \`${safeContract}\`\n⏳ *ساعات التفرغ:* ${safeHours}\n\n📢 *قناة قسمك الرسمية على التليجرام:*\n${deptChannel}\n\nنرحب بك في المنظومة الرقمية!`;
 
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: "POST",
@@ -138,12 +154,18 @@ export async function POST(req: NextRequest) {
           .single();
 
         if (matchedUser) {
+          if (matchedUser.telegram_chat_id && matchedUser.telegram_chat_id !== String(chatId)) {
+            return NextResponse.json({ ok: true });
+          }
+
           await db
             .from("applications")
             .update({ telegram_chat_id: String(chatId) })
             .eq("id", matchedUser.id);
 
-          const autoLinkedText = `✅ *مرحباً ${matchedUser.name}!*\n\nتم التعرف على حسابك وتأكيد ربطه بالطلب المقدم لـ *${matchedUser.section}*.\nستصلك تحديثات الطلب هنا مباشرة.`;
+          const safeName = escapeMarkdown(matchedUser.name || "");
+          const safeSection = escapeMarkdown(matchedUser.section || "");
+          const autoLinkedText = `✅ *مرحباً ${safeName}!*\n\nتم التعرف على حسابك وتأكيد ربطه بالطلب المقدم لـ *${safeSection}*.\nستصلك تحديثات الطلب هنا مباشرة.`;
           await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

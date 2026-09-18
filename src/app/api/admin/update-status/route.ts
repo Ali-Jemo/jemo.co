@@ -2,15 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { Resend } from 'resend';
 import { DEPT_CHANNELS, DEPT_BOT_KEY } from '@/lib/departments';
-import { checkRateLimit, escapeHtml, getClientIp, safeCompare } from '@/lib/security';
+import { checkRateLimit, escapeHtml, escapeMarkdown, generateContractId, getClientIp, safeCompare } from '@/lib/security';
 import { currentUser } from '@clerk/nextjs/server';
 
 const resendKey = process.env.RESEND_API_KEY;
 const resend = resendKey && resendKey !== 're_YOUR_KEY' ? new Resend(resendKey) : null;
 
-function generateContractId() {
-  return `IJL-2026-${String(Math.floor(1000 + Math.random() * 9000))}`;
-}
 
 async function sendAcceptanceEmail(app: {
   name: string; email: string; section: string;
@@ -106,9 +103,6 @@ async function sendRejectionEmail(app: { name: string; email: string; section: s
   });
 }
 
-function escapeMarkdown(text: string) {
-  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
-}
 
 async function notifyTelegramBot(app: {
   name: string; section: string; contractId: string; chatId?: string;

@@ -23,6 +23,15 @@ import NewsletterPage from "../src/app/newsletter/page";
 import SignInPage from "../src/app/sign-in/[[...sign-in]]/page";
 import SignUpPage from "../src/app/sign-up/[[...sign-up]]/page";
 import DashboardPage from "../src/app/dashboard/page";
+import SupportPage from "../src/app/support/page";
+import DashboardHeader from "../src/components/dashboard/DashboardHeader";
+import DashboardMetrics from "../src/components/dashboard/DashboardMetrics";
+import ResearchObjectsTab from "../src/components/dashboard/ResearchObjectsTab";
+import ReplicationsTab from "../src/components/dashboard/ReplicationsTab";
+import BookmarksTab from "../src/components/dashboard/BookmarksTab";
+import ApiHubTab from "../src/components/dashboard/ApiHubTab";
+import ProfileSettingsTab from "../src/components/dashboard/ProfileSettingsTab";
+
 describe("Institutional UI Components", () => {
   it("renders Button variants with correct css classes", () => {
     const html = renderToStaticMarkup(
@@ -107,5 +116,102 @@ describe("Institutional UI Components", () => {
   it("renders DashboardPage with researcher portal", () => {
     const html = renderToStaticMarkup(React.createElement(DashboardPage));
     expect(html).toContain("لوحة تحكم الباحث");
+  });
+
+  it("renders enhanced SupportPage with tiers, payment options, and allocation", async () => {
+    const page = await SupportPage();
+    const html = renderToStaticMarkup(page);
+    expect(html).toContain("استثمر في استقلال العقول وتطوير النظم المفتوحة");
+    expect(html).toContain("برامج الرعاية والمساهمة");
+    expect(html).toContain("طرق ووسائل الدعم المتاحة");
+    expect(html).toContain("العملات المشفرة (Crypto)");
+    expect(html).toContain("طرق أخرى للمساهمة في نهضة البحث");
+    expect(html).toContain("أين يذهب كل دولار يتلقاه المختبر؟");
+    expect(html).toContain("ميثاق الشفافية والاستقلالية العلمية");
+    expect(html).toContain("لوحة الشرف وتقدير المساهمين");
+  });
+
+  it("renders modular Dashboard components for logged in researcher", () => {
+    const mockProfile = {
+      id: "test-researcher",
+      email: "researcher@jemo.co",
+      name: "د. سامي البغدادي",
+      handle: "@sami_ai",
+      role: "باحث ذكاء اصطناعي",
+      domain: "هندسة النظم والاستدلال",
+      avatar: "/jemo-logo.svg",
+      researchId: "JEMO-RES-5001",
+      institution: "مختبر بغداد للأنظمة",
+      bio: "أبحاث متقدمة في الاستدلال الرياضي والسيادة الرقمية.",
+      orcidId: "0000-0001-2345-6789",
+      githubHandle: "https://github.com/sami-baghdadi",
+      apiKey: "jemo_live_res_test12345678",
+      stats: {
+        publishedCount: 4,
+        replicationsCount: 6,
+        contributionsCount: 5,
+        evidenceScore: 95,
+      },
+    };
+
+    console.log("Component Types:", {
+      DashboardHeader: typeof DashboardHeader,
+      DashboardMetrics: typeof DashboardMetrics,
+      ApiHubTab: typeof ApiHubTab,
+      ProfileSettingsTab: typeof ProfileSettingsTab,
+    });
+
+    console.log("Rendering DashboardHeader...");
+    const headerHtml = renderToStaticMarkup(
+      React.createElement(DashboardHeader, {
+        profile: mockProfile,
+        onEditProfile: () => {},
+        onLogout: () => {},
+      })
+    );
+    console.log("DashboardHeader OK");
+    expect(headerHtml).toContain("د. سامي البغدادي");
+    expect(headerHtml).toContain("JEMO-RES-5001");
+    expect(headerHtml).toContain("باحث معتمد (Proof of Work Tier 1)");
+
+    console.log("Rendering DashboardMetrics...");
+    const metricsHtml = renderToStaticMarkup(
+      React.createElement(DashboardMetrics, {
+        profile: mockProfile,
+        publishedCount: 4,
+        replicationsCount: 6,
+        onSelectTab: () => {},
+      })
+    );
+    console.log("DashboardMetrics OK");
+    expect(metricsHtml).toContain("كائنات البحث الموثقة");
+    expect(metricsHtml).toContain("إعادات التجارب المحققة");
+    expect(metricsHtml).toContain("درجة الإثبات (Proof Score)");
+    expect(metricsHtml).toContain("95%");
+
+    console.log("Rendering ApiHubTab...");
+    const apiHtml = renderToStaticMarkup(
+      React.createElement(ApiHubTab, {
+        profile: mockProfile,
+        onUpdateApiKey: () => {},
+      })
+    );
+    console.log("ApiHubTab OK");
+    expect(apiHtml).toContain("jemo_live_res_test12345678");
+    expect(apiHtml).toContain("حزمة بايثون (JEMO Python SDK)");
+    expect(apiHtml).toContain("curl -X POST https://jemo.co/api/content/schema");
+
+    console.log("Rendering ProfileSettingsTab...");
+    const settingsHtml = renderToStaticMarkup(
+      React.createElement(ProfileSettingsTab, {
+        profile: mockProfile,
+        onUpdateProfile: () => {},
+      })
+    );
+    console.log("ProfileSettingsTab OK");
+    expect(settingsHtml).toContain("الملف الأكاديمي والبحثي (Research Profile)");
+    expect(settingsHtml).toContain("إدارة الحساب والأمان (Clerk Account Suite)");
+    expect(settingsHtml).toContain("تعديل الهوية البحثية والأكاديمية");
+    expect(settingsHtml).toContain("مستوى التحقق (Proof of Work Tier 2)");
   });
 });

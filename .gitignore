@@ -54,3 +54,8 @@ dev.log
 .kiro/
 .pi/
 /skills/
+
+# python
+__pycache__/
+*.pyc
+*.pyo

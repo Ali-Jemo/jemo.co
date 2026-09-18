@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { escapeHtml, maskEmail, safeCompare, checkRateLimit, sanitizeInput } from "@/lib/security";
+import { escapeHtml, escapeMarkdown, generateContractId, maskEmail, safeCompare, checkRateLimit, sanitizeInput } from "@/lib/security";
 
 describe("Security Utilities", () => {
   describe("escapeHtml", () => {
@@ -78,6 +78,28 @@ describe("Security Utilities", () => {
       expect(clean).not.toContain("\0");
       expect(clean.length).toBeLessThanOrEqual(10);
       expect(clean).toBe("helloworld");
+    });
+  });
+
+  describe("escapeMarkdown", () => {
+    it("should escape special markdown characters", () => {
+      expect(escapeMarkdown("*bold* and _italic_ `code`")).toBe("\\*bold\\* and \\_italic\\_ \\`code\\`");
+      expect(escapeMarkdown("[link](url)")).toBe("\\[link\\]\\(url\\)");
+    });
+
+    it("should handle empty strings safely", () => {
+      expect(escapeMarkdown("")).toBe("");
+      expect(escapeMarkdown(null as unknown as string)).toBe("");
+    });
+  });
+
+  describe("generateContractId", () => {
+    it("should generate cryptographically strong contract IDs matching expected pattern", () => {
+      const id1 = generateContractId();
+      const id2 = generateContractId();
+      expect(id1).toMatch(/^IJL-2026-[0-9A-F]{8}$/);
+      expect(id2).toMatch(/^IJL-2026-[0-9A-F]{8}$/);
+      expect(id1).not.toBe(id2);
     });
   });
 });

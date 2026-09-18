@@ -255,6 +255,7 @@ const LAB_FIELDS: readonly FieldSpec[] = [
   { key: "slug", label: "الرابط المختصر", type: "text", required: true },
   { key: "name", label: "الاسم", type: "text", required: true },
   { key: "nameEn", label: "الاسم (إنجليزي)", type: "text" },
+  { key: "category", label: "التصنيف العلمي", type: "text" },
   { key: "description", label: "الوصف", type: "textarea", required: true },
   { key: "leadName", label: "اسم القائد", type: "text" },
   { key: "leadSlug", label: "معرّف القائد", type: "text" },

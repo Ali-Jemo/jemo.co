@@ -69,6 +69,9 @@ describe("Edge Firewall & WAF Engine", () => {
       expect(isExploitProbe("/actuator/health").probe).toBe(true);
       expect(isExploitProbe("/dump.sql").probe).toBe(true);
       expect(isExploitProbe("/cgi-bin/test").probe).toBe(true);
+      expect(isExploitProbe("/phpinfo.php").probe).toBe(true);
+      expect(isExploitProbe("/vendor/phpunit").probe).toBe(true);
+      expect(isExploitProbe("/web.config").probe).toBe(true);
     });
 
     it("should allow normal website paths", () => {
@@ -153,6 +156,18 @@ describe("Edge Firewall & WAF Engine", () => {
       const result = validateMutationOrigin(req);
       expect(result.valid).toBe(false);
       expect(result.reason).toContain("attacker-site.com");
+    });
+
+    it("should not allow bypassing CSRF on arbitrary routes using fake webhook headers", () => {
+      const req = new Request("https://jemo.co/api/track", {
+        method: "POST",
+        headers: {
+          origin: "https://attacker-site.com",
+          "x-telegram-bot-api-secret-token": "fake-token-bypass",
+        },
+      });
+      const result = validateMutationOrigin(req);
+      expect(result.valid).toBe(false);
     });
   });
 

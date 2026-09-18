@@ -56,5 +56,26 @@ export const clerkAuthCardAppearance = {
   },
 };
 
+// Dedicated appearance theme for embedded <UserProfile />
+export const clerkUserProfileAppearance = {
+  ...clerkGlobalAppearance,
+  elements: {
+    ...clerkGlobalAppearance.elements,
+    rootBox: "w-full max-w-full",
+    cardBox: "w-full shadow-none border border-[#e4e3e3] rounded-3xl overflow-hidden bg-white",
+    card: "w-full shadow-none border-none p-4 sm:p-6",
+    navbar: "border-l border-[#e4e3e3] bg-[#fcfdfc] p-2",
+    navbarButton: "text-xs font-semibold rounded-xl text-[#55696a] hover:text-[#222f30] hover:bg-[#f0f2f0] transition-colors",
+    navbarButtonActive: "bg-[#222f30] text-white font-bold",
+    headerTitle: "font-kufi text-lg font-bold text-[#222f30]",
+    headerSubtitle: "text-xs text-[#55696a]",
+    profileSection: "border-b border-[#e4e3e3] pb-6",
+    profileSectionTitle: "text-sm font-bold text-[#222f30] font-kufi",
+    profileSectionTitleText: "text-sm font-bold text-[#222f30] font-kufi",
+    formButtonPrimary: "bg-[#222f30] hover:bg-[#162224] text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-xs cursor-pointer",
+  },
+};
+
 // Backwards compatibility alias
 export const clerkAppearance = clerkAuthCardAppearance;
+

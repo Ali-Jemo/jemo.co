@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jemo-sdk"
+version = "0.1.0"
+description = "Official Python SDK for the JEMO Discovery Registry"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "JEMO LABS Research Team", email = "research@jemo.co" }]
+keywords = ["jemo", "research", "ai", "inference", "registry", "proof-of-work"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://jemo.co"
+Documentation = "https://jemo.co/dashboard?tab=api"
