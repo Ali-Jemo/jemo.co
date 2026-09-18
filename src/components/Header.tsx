@@ -181,16 +181,19 @@ export default function Header() {
   }, [pathname]);
 
   const isTransparent = isHome && !scrolled;
+  const isDark = isTransparent || mobileMenuOpen;
 
   return (
     <>
       <CommandPalette />
 
       <header
-        className={`fixed top-0 z-50 w-full transition-transform duration-200 ease-out ${
+        className={`fixed top-0 z-50 w-full transition-colors duration-200 ease-out ${
           hidden ? "-translate-y-full" : "translate-y-0"
         } ${
-          scrolled
+          mobileMenuOpen
+            ? "border-b border-white/10 bg-[#0c1415] text-white shadow-2xl"
+            : scrolled
             ? "border-b border-[#e4e3e3] bg-[#f7f7f5]/96 backdrop-blur-md shadow-xs text-[#222f30]"
             : isTransparent
             ? "border-b border-white/10 bg-[#0c1415]/85 backdrop-blur-md text-white"
@@ -218,10 +221,10 @@ export default function Header() {
               </div>
 
               <div className="flex items-baseline gap-1 font-mono">
-                <span className={`text-base font-black tracking-tight transition-colors ${isTransparent ? "text-white" : "text-[#222f30]"} group-hover:underline`}>
+                <span className={`text-base font-black tracking-tight transition-colors ${isDark ? "text-white" : "text-[#222f30]"} group-hover:underline`}>
                   jemo
                 </span>
-                <span className={`text-base font-bold tracking-tight transition-colors ${isTransparent ? "text-white/90" : "text-[#445e5f]"}`}>
+                <span className={`text-base font-bold tracking-tight transition-colors ${isDark ? "text-white/90" : "text-[#445e5f]"}`}>
                   labs
                 </span>
               </div>
@@ -380,7 +383,7 @@ export default function Header() {
             <button
               onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
               className={`sm:hidden p-2 rounded-full border text-xs font-mono transition-all duration-150 cursor-pointer ${
-                isTransparent
+                isDark
                   ? "border-white/15 bg-white/5 text-white/90 hover:bg-white/10"
                   : "border-[#e4e3e3] bg-[#f0f2f0] text-[#445e5f] hover:text-[#222f30]"
               }`}
@@ -432,7 +435,7 @@ export default function Header() {
                 href="/sign-in"
                 prefetch={true}
                 className={`inline-flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-bold rounded-full transition-colors ${
-                  isTransparent
+                  isDark
                     ? "text-white/90 hover:text-white hover:bg-white/10 border border-white/15 sm:border-transparent"
                     : "text-[#222f30] hover:text-[#728825] hover:bg-black/5 border border-[#e4e3e3] sm:border-transparent"
                 }`}
@@ -459,8 +462,8 @@ export default function Header() {
             <Link
               href="/publish"
               className={`group inline-flex items-center gap-1.5 px-3.5 py-1.5 h-8.5 text-xs font-bold rounded-full transition-all duration-150 shrink-0 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 ${
-                isTransparent
-                  ? "bg-[#cef79e] text-[#162224] hover:bg-[#a7e26e] border border-[#a7e26e]/40"
+                isDark
+                  ? "bg-[#cef79e] text-[#162224] hover:bg-[#a7e26e]"
                   : "bg-[#222f30] hover:bg-[#162224] text-white shadow-[#222f30]/20"
               }`}
             >
@@ -471,7 +474,7 @@ export default function Header() {
             {/* Mobile Menu Hamburger */}
             <button
               className={`lg:hidden p-2 rounded-xl transition-colors cursor-pointer ${
-                isTransparent ? "text-white hover:bg-white/10" : "text-[#222f30] hover:bg-black/5"
+                isDark ? "text-white hover:bg-white/10" : "text-[#222f30] hover:bg-black/5"
               }`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
@@ -480,43 +483,6 @@ export default function Header() {
             </button>
           </div>
         </div>
-        {/* 4. Mobile Quick-Navigation Strip */}
-        <nav aria-label="مسارات التصفح السريع" className={`lg:hidden px-3 sm:px-6 py-2 border-t overflow-x-auto scrollbar-none flex items-center gap-1.5 text-xs font-mono transition-colors ${
-          isTransparent ? "border-white/10 bg-[#0c1415]/75 backdrop-blur-md" : "border-[#e4e3e3]/80 bg-[#f7f7f5]/90 backdrop-blur-md"
-        }`}>
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-3 py-1 rounded-full whitespace-nowrap transition-all shrink-0 text-xs font-bold ${
-                  isActive
-                    ? isTransparent
-                      ? "bg-white/25 text-white shadow-xs"
-                      : "bg-[#222f30] text-white shadow-xs"
-                    : isTransparent
-                    ? "text-white/80 hover:text-white hover:bg-white/10"
-                    : "text-[#55696a] hover:text-[#222f30] hover:bg-black/5"
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className={`px-3 py-1 rounded-full whitespace-nowrap transition-all shrink-0 text-xs font-bold flex items-center gap-1 cursor-pointer ${
-              isTransparent
-                ? "bg-[#cef79e]/20 text-[#cef79e] hover:bg-[#cef79e]/30 border border-[#cef79e]/30"
-                : "bg-[#cef79e]/40 text-[#222f30] hover:bg-[#cef79e]/60 border border-[#a7e26e]"
-            }`}
-          >
-            <span>استكشف</span>
-            <ChevronDown size={12} className="shrink-0" />
-          </button>
-        </nav>
 
         {/* Mobile Navigation Drawer */}
         <AnimatePresence>
@@ -542,6 +508,32 @@ export default function Header() {
                   </span>
                   <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] text-white">⌘K</kbd>
                 </button>
+              </div>
+              {/* Primary Pathways */}
+              <div className="mb-4 space-y-1.5">
+                <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-white/50 px-1">
+                  المسارات الرئيسية
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                  {NAV_ITEMS.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`text-xs font-bold py-2 px-3 rounded-xl transition-colors flex items-center justify-between border ${
+                          isActive
+                            ? "bg-[#cef79e] text-[#162224] border-[#cef79e]"
+                            : "bg-white/5 border-white/10 text-white/90 hover:bg-white/10"
+                        }`}
+                      >
+                        <span>{item.label}</span>
+                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#162224]" />}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Rich Categorized Ecosystem Map */}

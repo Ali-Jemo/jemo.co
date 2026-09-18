@@ -41,17 +41,6 @@ export default function HeroSection() {
   const { profile } = useAuth();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activePillar, setActivePillar] = useState<number | null>(null);
-  const [canUseHeroVideo, setCanUseHeroVideo] = useState(false);
-
-  // Keep the decorative video on fine-pointer devices; the poster is the
-  // complete mobile fallback and avoids unnecessary transfer/decode work.
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(pointer: fine)");
-    const updateHeroVideoCapability = () => setCanUseHeroVideo(mediaQuery.matches);
-    updateHeroVideoCapability();
-    mediaQuery.addEventListener("change", updateHeroVideoCapability);
-    return () => mediaQuery.removeEventListener("change", updateHeroVideoCapability);
-  }, []);
 
   // Mouse Parallax for subtle 3D cinematic depth
   const mouseX = useMotionValue(0);
@@ -62,7 +51,7 @@ export default function HeroSection() {
   const mouseRafRef = useRef<number | null>(null);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!canUseHeroVideo) return;
+    if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return;
     const clientX = e.clientX;
     const clientY = e.clientY;
     if (mouseRafRef.current !== null) return;
@@ -75,7 +64,7 @@ export default function HeroSection() {
       mouseY.set(y);
       mouseRafRef.current = null;
     });
-  }, [canUseHeroVideo, mouseX, mouseY]);
+  }, [mouseX, mouseY]);
 
   useEffect(() => {
     return () => {
@@ -85,10 +74,10 @@ export default function HeroSection() {
 
   // ponytail: pause video when scrolled out of viewport to eliminate background GPU drain
   useEffect(() => {
-    if (!canUseHeroVideo) return;
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
+    video.play().catch(() => {});
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -102,7 +91,7 @@ export default function HeroSection() {
     );
     observer.observe(video);
     return () => observer.disconnect();
-  }, [canUseHeroVideo]);
+  }, []);
 
   const scrollToContent = () => {
     const el = document.querySelector("main")?.children[1];
@@ -127,16 +116,16 @@ export default function HeroSection() {
         >
           <video
             ref={videoRef}
-            autoPlay={canUseHeroVideo}
+            autoPlay
             loop
             muted
             playsInline
-            preload={canUseHeroVideo ? "metadata" : "none"}
+            preload="metadata"
             poster="/hero-bg.png"
             className="w-full h-full object-cover object-center transition-opacity duration-1000 transform-gpu"
           >
-            {canUseHeroVideo && <source src="/hero-loop.webm" type="video/webm" />}
-            {canUseHeroVideo && <source src="/hero-loop.mp4" type="video/mp4" />}
+            <source src="/hero-loop.webm" type="video/webm" />
+            <source src="/hero-loop.mp4" type="video/mp4" />
           </video>
         </motion.div>
 
