@@ -117,7 +117,7 @@ export default function HeroSection() {
     <section
       dir="rtl"
       onMouseMove={handleMouseMove}
-      className="relative w-full min-h-[90svh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-hidden flex flex-col justify-between py-5 lg:py-0 lg:-mt-16 lg:pt-20 lg:pb-5"
+      className="relative w-full min-h-[100svh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-hidden flex flex-col justify-between py-4 lg:py-0 lg:-mt-16 lg:pt-20 lg:pb-4"
     >
       {/* 1. Looping 3D Sculptural Ribbon Video Background directly from IntegratedBio with Parallax */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -169,15 +169,15 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 my-auto py-8 sm:py-12 lg:py-16">
+      <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 my-auto py-2 sm:py-4 lg:py-5">
         <div className="max-w-5xl">
-          <div className="mb-5 flex items-center gap-3 text-[10px] sm:text-xs font-mono uppercase tracking-[0.24em] text-[#bef264]">
+          <div className="mb-3 flex items-center gap-3 text-[10px] sm:text-xs font-mono uppercase tracking-[0.24em] text-[#bef264]">
             <span className="h-px w-10 bg-[#bef264]/70" aria-hidden />
             <span>RESEARCH, VERIFIED</span>
           </div>
           <h1
             style={{ color: "#ffffff" }}
-            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] xl:text-[5.5rem] font-medium leading-[1.18] sm:leading-[1.1] tracking-tight font-kufi text-white select-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
+            className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.18] sm:leading-[1.12] tracking-tight font-kufi text-white select-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
           >
             <span className="block overflow-hidden pb-1 -mb-1">
               <motion.span initial={{ y: "115%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="block">
@@ -192,9 +192,9 @@ export default function HeroSection() {
           </h1>
         </div>
       </div>
-      <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 pb-8 sm:pb-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8">
+      <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 pb-12 sm:pb-14 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
         {/* Right side (start in RTL): Subtitle + 3 Research Pillars Navigation Pills */}
-        <div className="flex flex-col gap-4 max-w-xl relative w-full lg:w-auto">
+        <div className="flex flex-col gap-3 max-w-xl relative w-full lg:w-auto">
           <div className="hidden lg:block w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           <AnimatePresence>
             {activePillar !== null && (
@@ -226,10 +226,10 @@ export default function HeroSection() {
             <span className="h-px w-12 bg-gradient-to-r from-[#bef264] to-transparent" aria-hidden />
             <span>منصة التحقق البشري</span>
           </div>
-          <p className="text-sm sm:text-lg leading-relaxed font-normal text-white/90 [text-shadow:0_1px_4px_rgba(0,0,0,0.8)] sm:[text-shadow:0_2px_12px_rgba(0,0,0,0.6)] max-w-lg">
+          <p className="text-xs sm:text-sm lg:text-base leading-relaxed font-normal text-white/90 [text-shadow:0_1px_4px_rgba(0,0,0,0.8)] sm:[text-shadow:0_2px_12px_rgba(0,0,0,0.6)] max-w-lg">
             نبحث، نكتشف، ونصل لنتائج غير مسبوقة يومياً. <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">JEMO هي المنصة التي تذهب إليها بعد أن بحثت</strong> — لتحويل الحوار العابر إلى مرجع تقني نخبوي محمي بمعيار التحقق البشري <bdi dir="ltr" className="inline-block whitespace-nowrap">(Proof of Work)</bdi>.
           </p>
-          <div className="pt-2 flex flex-wrap items-center gap-2">
+          <div className="pt-1 flex flex-wrap items-center gap-2">
             <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest shrink-0 self-center">استكشف</span>
             {PILLARS_PREVIEW.map((p, idx) => (
               <Link
