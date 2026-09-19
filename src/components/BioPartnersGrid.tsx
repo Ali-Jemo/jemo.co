@@ -84,7 +84,6 @@ const PEER_INSTITUTIONS: PeerInstitution[] = [
 export default function BioPartnersGrid() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
-  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isDesktopMouse, setIsDesktopMouse] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -118,14 +117,15 @@ export default function BioPartnersGrid() {
         return;
       }
 
+      const wallEl = rowsRef.current[0]?.offsetParent as HTMLElement | null;
+      const wallTop = wallEl ? wallEl.getBoundingClientRect().top : sectionRect.top;
       const opticalCenter = viewportHeight * 0.46;
       let closestIdx = 0;
       let minDistance = Infinity;
 
       rowsRef.current.forEach((row, idx) => {
         if (!row) return;
-        const rect = row.getBoundingClientRect();
-        const rowCenter = rect.top + rect.height / 2;
+        const rowCenter = wallTop + row.offsetTop + row.offsetHeight / 2;
         const distance = Math.abs(rowCenter - opticalCenter);
 
         if (distance < minDistance) {
@@ -133,24 +133,40 @@ export default function BioPartnersGrid() {
           closestIdx = idx;
         }
       });
-
       // Only lock focus if the closest row is within reasonable view (not far off)
       if (minDistance < viewportHeight * 0.42) {
         setActiveIdx(closestIdx);
       }
     };
+    let isIntersecting = false;
 
     const onScroll = () => {
-      isHoveringRef.current = false;
+      if (!isIntersecting) return;
+      if (isHoveringRef.current && isDesktopMouse) return;
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       rafIdRef.current = requestAnimationFrame(updateScrollSpotlight);
     };
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (!isIntersecting) {
+          setActiveIdx(null);
+        } else {
+          onScroll();
+        }
+      },
+      { rootMargin: "100px 0px 100px 0px" }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
     window.addEventListener("scroll", onScroll, { passive: true });
-    // Initial check on mount
-    onScroll();
 
     return () => {
+      observer.disconnect();
       window.removeEventListener("scroll", onScroll);
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
     };
@@ -159,12 +175,9 @@ export default function BioPartnersGrid() {
   // 3. Desktop Mouse Movement
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      setMousePos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
+      const rect = e.currentTarget.getBoundingClientRect();
+      e.currentTarget.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+      e.currentTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
     },
     []
   );
@@ -217,7 +230,7 @@ export default function BioPartnersGrid() {
             <div
               className="pointer-events-none absolute -inset-px transition-opacity duration-500 opacity-100 hidden sm:block"
               style={{
-                background: `radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, rgba(167, 226, 110, 0.12), transparent 75%)`,
+                background: `radial-gradient(550px circle at var(--mx, 0px) var(--my, 0px), rgba(167, 226, 110, 0.12), transparent 75%)`,
               }}
             />
           )}

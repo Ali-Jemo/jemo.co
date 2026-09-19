@@ -68,10 +68,20 @@ export function safeCompare(a?: string | null, b?: string | null): boolean {
  * back to x-forwarded-for, which is only acceptable for local dev.
  */
 export function getClientIp(req: Request): string {
+  // Only trust edge-provided IPs when the request provably came through
+  // Cloudflare (cf-ray present). Otherwise headers are attacker-controlled
+  // and must not feed bans, rate-limit keys, or allowlist checks.
+  const viaCloudflare = Boolean(req.headers.get("cf-ray"));
+  if (viaCloudflare) {
+    return (
+      req.headers.get("cf-connecting-ip") ||
+      req.headers.get("x-real-ip") ||
+      "127.0.0.1"
+    );
+  }
   return (
-    req.headers.get("cf-connecting-ip") ||
-    req.headers.get("x-real-ip") ||
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
     "127.0.0.1"
   );
 }

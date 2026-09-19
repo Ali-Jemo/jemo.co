@@ -25,7 +25,7 @@ export default function GlowButton({ children, className = "", href }: GlowButto
       {/* Button Body */}
       <span className="relative flex items-center justify-center gap-3 rounded-full bg-[var(--brand)] text-[var(--brand-ink)] px-10 py-4 text-lg font-bold shadow-lg shadow-[var(--brand)]/20 overflow-hidden transition-all duration-300">
         {/* Shimmer Overlay */}
-        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
+        <span className="absolute inset-0 translate-x-full group-hover:-translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
         <span className="relative z-10 flex items-center gap-3 font-kufi">{children}</span>
       </span>
     </Comp>

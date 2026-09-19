@@ -16,6 +16,9 @@ const cspHeader = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,

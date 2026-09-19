@@ -123,7 +123,7 @@ const dots = Array.from({ length: 28 }, (_, i) => ({
 }));
 
 /* ── Magnetic avatar with hover tilt ── */
-function MagneticAvatar() {
+function MagneticAvatar({ active = true }: { active?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -175,10 +175,14 @@ function MagneticAvatar() {
           background:
             "radial-gradient(circle, rgba(167,226,110,0.08) 0%, transparent 70%)",
         }}
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.5, 0.15, 0.5],
-        }}
+        animate={
+          active
+            ? {
+                scale: [1, 1.2, 1],
+                opacity: [0.5, 0.15, 0.5],
+              }
+            : false
+        }
         transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
       />
       {/* Rotating conic ring */}
@@ -188,7 +192,7 @@ function MagneticAvatar() {
           background:
             "conic-gradient(from 0deg, transparent 0%, rgba(167,226,110,0.3) 12%, transparent 25%, rgba(167,226,110,0.1) 45%, transparent 58%, rgba(167,226,110,0.2) 78%, transparent 100%)",
         }}
-        animate={{ rotate: 360 }}
+        animate={active ? { rotate: 360 } : false}
         transition={{ duration: 8, ease: "linear", repeat: Infinity }}
       />
       {/* Second counter-rotating ring */}
@@ -198,21 +202,25 @@ function MagneticAvatar() {
           background:
             "conic-gradient(from 180deg, transparent 0%, rgba(167,226,110,0.1) 20%, transparent 40%, rgba(167,226,110,0.05) 60%, transparent 80%)",
         }}
-        animate={{ rotate: -360 }}
+        animate={active ? { rotate: -360 } : false}
         transition={{ duration: 15, ease: "linear", repeat: Infinity }}
       />
       {/* Pulsing border ring */}
       <motion.div
         className="absolute -inset-4 rounded-full border border-[var(--accent)]/15 transform-gpu"
-        animate={{
-          scale: [1, 1.12, 1],
-          opacity: [0.4, 0.08, 0.4],
-        }}
+        animate={
+          active
+            ? {
+                scale: [1, 1.12, 1],
+                opacity: [0.4, 0.08, 0.4],
+              }
+            : false
+        }
         transition={{ duration: 3, ease: "easeInOut", repeat: Infinity }}
       />
       {/* Avatar circle */}
       <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-br from-[#131316] to-[#1e1e24] border border-[#2a2a30] flex items-center justify-center text-4xl sm:text-5xl font-bold text-white/90 font-mono shadow-2xl shadow-black/50 overflow-hidden">
-        <Image src="/team/ali.jpg" alt="علي حسين هادي (Jemo)" fill sizes="160px" className="object-cover" priority />
+        <Image src="/team/ali.jpg" alt="علي حسين هادي (Jemo)" fill sizes="160px" className="object-cover" />
         {/* Inner shimmer on hover */}
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.03] to-transparent opacity-0 hover:opacity-100 transition-opacity duration-700" />
       </div>
@@ -257,6 +265,7 @@ function QuoteReveal() {
 
 export default function WeAreSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const sectionInView = useInView(sectionRef, { margin: "200px" });
   const headingRef = useRef<HTMLDivElement>(null);
   const quoteBlockRef = useRef<HTMLDivElement>(null);
   const headingInView = useInView(headingRef, { once: true, margin: "-80px" });
@@ -332,10 +341,14 @@ export default function WeAreSection() {
             width: dot.size,
             height: dot.size,
           }}
-          animate={{
-            opacity: [0, 0.5, 0],
-            scale: [0.5, 1.3, 0.5],
-          }}
+          animate={
+            sectionInView
+              ? {
+                  opacity: [0, 0.5, 0],
+                  scale: [0.5, 1.3, 0.5],
+                }
+              : false
+          }
           transition={{
             duration: dot.duration,
             delay: dot.delay,
@@ -466,7 +479,7 @@ export default function WeAreSection() {
 
         {/* ── Magnetic Avatar ── */}
         <div className="flex justify-center mb-12">
-          <MagneticAvatar />
+          <MagneticAvatar active={sectionInView} />
         </div>
 
         {/* ── "We are" label ── */}
@@ -498,7 +511,7 @@ export default function WeAreSection() {
           </span>
           <span className="block overflow-hidden pb-1">
             <motion.span
-              className="block text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15]"
+              className="block text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.15] animate-gradient"
               style={{
                 background:
                   "linear-gradient(135deg, #52525b 0%, #a1a1aa 40%, #71717a 70%, #a1a1aa 100%)",
@@ -513,20 +526,12 @@ export default function WeAreSection() {
                   ? {
                       y: 0,
                       opacity: 1,
-                      backgroundPosition: ["0% 50%", "100% 50%"],
                     }
                   : { y: "115%", opacity: 0 }
               }
               transition={{
                 y: { duration: 1, delay: 0.12, ease },
                 opacity: { duration: 1, delay: 0.12, ease },
-                backgroundPosition: {
-                  duration: 4,
-                  delay: 1,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  ease: "linear",
-                },
               }}
             >
               مهندس أنظمة ومؤسس المنصة
@@ -591,8 +596,9 @@ export default function WeAreSection() {
             <div className="flex items-center gap-4">
               <motion.div
                 className="h-px bg-gradient-to-r from-[var(--accent)]/50 to-transparent"
-                initial={{ width: 0 }}
-                whileInView={{ width: 80 }}
+                style={{ width: 80, transformOrigin: "right" }}
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1, delay: 0.3, ease }}
               />

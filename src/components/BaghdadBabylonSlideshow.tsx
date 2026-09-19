@@ -149,14 +149,14 @@ export default function BaghdadBabylonSlideshow({
           aria-label="Previous Slide"
           className="w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 grid place-items-center text-white transition-all hover:scale-105 active:scale-95"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronRight className="w-4 h-4" />
         </button>
         <button
           onClick={handleNext}
           aria-label="Next Slide"
           className="w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 border border-white/20 grid place-items-center text-white transition-all hover:scale-105 active:scale-95"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronLeft className="w-4 h-4" />
         </button>
       </div>
     </div>

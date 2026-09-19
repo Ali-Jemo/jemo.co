@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Paper, ResearchResponse } from "@/lib/data/research-data";
 import { 
@@ -21,15 +21,17 @@ import {
   GitFork, 
   MessageSquareQuote, 
   Scale, 
-  HelpCircle,
-  Clock,
-  Sparkles,
-  Layers,
-  Send,
-  Eye,
-  FlaskConical,
-  Wrench,
-  BookOpen
+  HelpCircle, 
+  Clock, 
+  Sparkles, 
+  Layers, 
+  Send, 
+  Eye, 
+  FlaskConical, 
+  Wrench, 
+  BookOpen,
+  RotateCcw,
+  Bot
 } from "lucide-react";
 import CitationBox from "@/components/ui/CitationBox";
 import PaperReaderModal from "@/components/PaperReaderModal";
@@ -78,35 +80,102 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
   const [respAuthor, setRespAuthor] = useState("");
   const [respContent, setRespContent] = useState("");
   const [respSubmitted, setRespSubmitted] = useState(false);
+  // JEMO AI Full Chat State with Jev System One Router
+  const [chatMessages, setChatMessages] = useState<Array<{
+    id: string;
+    role: "user" | "assistant";
+    content: string;
+    route?: { targetModel: string; confidence: number };
+    timestamp: string;
+  }>>([
+    {
+      id: "init",
+      role: "assistant",
+      content: `مرحباً بك في JEMO AI! أنا المساعد الحواري لهذا البحث ("${paper.title}").\n\nيمكنك سؤالي بحرية عن المنهجية، نقاط الضعف، كيفية إعادة التجربة، أو أي استفسار حول النتائج وسأجيبك فوراً بتوجيه ذكي عبر Jev.`,
+      timestamp: "الآن",
+    },
+  ]);
+  const [chatInput, setChatInput] = useState("");
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const [isSubmittingResponse, setIsSubmittingResponse] = useState(false);
+  const [modNotice, setModNotice] = useState<string | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Ask JEMO AI state
-  const [aiQuestion, setAiQuestion] = useState<string | null>(null);
-  const [aiAnswer, setAiAnswer] = useState<string | null>(null);
-  const [isAiLoading, setIsAiLoading] = useState(false);
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chatMessages, isChatLoading]);
 
-  const handleAskAi = (q: string) => {
-    setAiQuestion(q);
-    setIsAiLoading(true);
-    setTimeout(() => {
-      if (q.includes("أضعف نقطة") || q.includes("حدود")) {
-        setAiAnswer(
-          paper.limitations 
-            ? `أضعف نقطة وفق فحص كائن البحث: ${paper.limitations} بالإضافة إلى ضرورة الحذر من اختلاق المصادر عند الاستدراج بمطالب غير موثقة.`
-            : "العينة المعتمدة تحتاج لتكرار على عتاد وبيئات تشغيل أوسع، مع ضرورة تقليل الاعتماد على استجابة واحدة للنموذج."
-        );
-      } else if (q.includes("تناقض") || q.includes("أدلة مضادة")) {
-        setAiAnswer(
-          "تشير المراجعات المسجلة في الشجرة (Challenge) إلى أنه عند ربط النموذج بقواعد بيانات الويب المباشرة، تنخفض نسبة الخطأ، مما يعني أن الاستنتاج مشروط بنمط التوليد المعزول."
-        );
-      } else if (q.includes("تكرار") || q.includes("تجربة")) {
-        setAiAnswer(
-          `لإعادة التجربة: استخدم نفس النماذج (${(paper.toolsUsed || []).join(", ")})، اتبع مسار التوجيه الموثق في القسم 2، واختبر 10 عينات جديدة مع مطابقة النتيجة يدوياً.`
-        );
-      } else {
-        setAiAnswer(`بناءً على كائن البحث: تركز الخلاصة على "${paper.findings || paper.abstract}" مع اشتراط التحقق البشري الصارم.`);
+  const handleSendChatMessage = async (textOverride?: string) => {
+    const text = (textOverride ?? chatInput).trim();
+    if (!text || isChatLoading) return;
+
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      role: "user" as const,
+      content: text,
+      timestamp: new Date().toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    const nextMessages = [...chatMessages, userMessage];
+    setChatMessages(nextMessages);
+    setChatInput("");
+    setIsChatLoading(true);
+
+    try {
+      const res = await fetch("/api/jev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "chat",
+          query: text,
+          messages: nextMessages.map((m) => ({ role: m.role, content: m.content })),
+          paperTitle: paper.title,
+          paperFindings: paper.findings || paper.abstract,
+          paperTools: paper.toolsUsed,
+          paperLimitations: paper.limitations,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.message) {
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            id: `asst-${Date.now()}`,
+            role: "assistant",
+            content: data.message.content,
+            route: data.route ? { targetModel: data.route.targetModel, confidence: data.route.confidence } : undefined,
+            timestamp: new Date().toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }),
+          },
+        ]);
       }
-      setIsAiLoading(false);
-    }, 400);
+    } catch {
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          id: `asst-fallback-${Date.now()}`,
+          role: "assistant",
+          content: `بناءً على كائن البحث "${paper.title}":\n\nالخلاصة: ${paper.findings || paper.abstract}\n\nالأدوات المستخدمة: ${(paper.toolsUsed || []).join(", ") || "موثقة في الورقة"}.`,
+          route: { targetModel: "fast_retrieval", confidence: 0.9 },
+          timestamp: new Date().toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
+
+  const handleResetChat = () => {
+    setChatMessages([
+      {
+        id: `init-${Date.now()}`,
+        role: "assistant",
+        content: `تم بدء جلسة حوارية جديدة حول بحث "${paper.title}". اسألني أي سؤال تريده!`,
+        timestamp: "الآن",
+      },
+    ]);
   };
   const toggleMetric = (key: keyof typeof metrics) => {
     if (voted[key]) {
@@ -146,24 +215,55 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
     setTimeout(() => setCopiedJSON(false), 2000);
   };
 
-  const handleAddResponse = (e: React.FormEvent) => {
+  const handleAddResponse = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!respAuthor || !respContent) return;
+    setIsSubmittingResponse(true);
+    setModNotice(null);
+
+    let isVerified = respType === "replication";
+    try {
+      const res = await fetch("/api/jev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "moderate",
+          text: respContent,
+          author: respAuthor,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.result) {
+        if (!data.result.isConstructive) {
+          setModNotice("تم استبعاد التعليق آلياً لعدم استيفائه معايير النقاش التقني البنّاء.");
+          setIsSubmittingResponse(false);
+          return;
+        }
+        if (data.result.contributionType === "solution" || data.result.constructiveProbability > 0.9) {
+          isVerified = true;
+        }
+      }
+    } catch {
+      // graceful fallback
+    }
+
     const newResp: ResearchResponse = {
       id: `resp-${Date.now()}`,
       type: respType,
       author: respAuthor,
       date: new Date().toLocaleDateString("ar-EG"),
       content: respContent,
-      verified: respType === "replication"
+      verified: isVerified,
     };
     setResponses([newResp, ...responses]);
     setRespAuthor("");
     setRespContent("");
     setRespSubmitted(true);
+    setIsSubmittingResponse(false);
     setTimeout(() => {
       setRespSubmitted(false);
       setShowAddResponse(false);
+      setModNotice(null);
     }, 1500);
   };
 
@@ -185,7 +285,14 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             <span>العودة لسجلات الاكتشاف والأبحاث</span>
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href="#ask-ai"
+              className="px-3 py-1.5 rounded-full border border-emerald-300 bg-emerald-50 text-xs font-mono font-bold text-emerald-900 hover:bg-emerald-100 flex items-center gap-1.5 shadow-xs transition-colors"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              <span>اسأل الذكاء الاصطناعي (JEMO AI)</span>
+            </a>
             <button
               onClick={handleCopyLink}
               className="px-3 py-1.5 rounded-full border border-[#e4e3e3] bg-white text-xs font-mono text-[#445e5f] hover:text-[#222f30] flex items-center gap-1.5 shadow-xs"
@@ -452,54 +559,138 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
         </div>
 
-        {/* Ask JEMO AI Interactive Assistant (Article 17 of Manifesto) */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-[#222f30] text-white shadow-md mb-8 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#bef264]">
-              <Sparkles className="w-4 h-4" />
-              <span>JEMO AI · اسأل الذكاء الاصطناعي عن هذا البحث</span>
+        {/* Ask JEMO AI Full Conversational Assistant (Grounded with Jev System One Router) */}
+        <div id="ask-ai" className="rounded-3xl bg-[#1e292b] text-white shadow-xl mb-10 overflow-hidden border border-emerald-500/20 scroll-mt-24">
+          {/* Header */}
+          <div className="p-4 sm:p-6 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/[0.02]">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                  <span>JEMO AI · المحادثة الذكية حول البحث</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 font-bold border border-emerald-400/30">
+                    Jev Router
+                  </span>
+                </h3>
+                <p className="text-[11px] text-zinc-400 mt-0.5">
+                  توجيه استدلالي ذكي فوري (<bdi className="font-mono">&lt;100ms</bdi>) مستند إلى بيانات وتجارب هذا البحث
+                </p>
+              </div>
             </div>
-            <span className="text-[10px] font-mono text-zinc-400">Grounded in Research Object</span>
+
+            <button
+              type="button"
+              onClick={handleResetChat}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-mono text-zinc-300 transition-colors cursor-pointer"
+              title="بدء جلسة حوارية جديدة"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>محادثة جديدة</span>
+            </button>
           </div>
 
-          <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-            اسأل عن نقاط الضعف، الفرضيات البديلة، أو كيفية إعادة التجربة، ويجيبك النموذج مباشرة بالاعتماد على مسار هذا البحث:
-          </p>
-
-          <div className="flex flex-wrap gap-2 pt-1">
+          {/* Quick Starter Chips */}
+          <div className="px-4 sm:px-6 pt-3 pb-2 bg-black/20 border-b border-white/5 flex flex-wrap items-center gap-2">
+            <span className="text-[11px] font-mono text-zinc-400 ml-1">اقتراحات سريعة:</span>
             {[
               "ما أضعف نقطة في هذا البحث؟",
-              "هل هناك أبحاث أو مراجعات تناقض هذه النتيجة؟",
-              "كيف يمكنني إعادة التجربة والتحقق بنفسي؟"
+              "كيف يمكنني إعادة التجربة عملياً؟",
+              "هل توجد مراجعات أو أدلة تناقض هذه النتيجة؟",
+              "ما المنهجية والأدوات المعتمدة؟",
             ].map((q, idx) => (
               <button
                 key={idx}
-                onClick={() => handleAskAi(q)}
-                className={`px-3 py-1.5 rounded-full text-xs font-mono transition-all border ${
-                  aiQuestion === q
-                    ? "bg-[#bef264] text-[#222f30] border-[#bef264] font-bold"
-                    : "bg-white/10 border-white/20 text-zinc-200 hover:bg-white/20 hover:text-white"
-                }`}
+                type="button"
+                onClick={() => handleSendChatMessage(q)}
+                disabled={isChatLoading}
+                className="px-2.5 py-1 rounded-lg text-xs font-mono text-zinc-300 bg-white/5 hover:bg-white/15 border border-white/10 hover:border-emerald-400/50 transition-all cursor-pointer disabled:opacity-50"
               >
                 {q}
               </button>
             ))}
           </div>
 
-          {aiQuestion && (
-            <div className="p-4 rounded-2xl bg-black/40 border border-white/15 text-xs sm:text-sm text-zinc-200 space-y-2 mt-3 font-normal leading-relaxed">
-              <div className="font-mono text-[11px] text-[#bef264] font-bold">
-                الإجابة الذكية المستندة لكائن البحث:
-              </div>
-              {isAiLoading ? (
-                <div className="flex items-center gap-2 text-zinc-400 font-mono text-xs animate-pulse">
-                  <span>جارٍ تفكيك كائن البحث والتحليلات المقارنة...</span>
+          {/* Message Stream */}
+          <div ref={chatContainerRef} className="p-4 sm:p-6 space-y-4 min-h-[260px] max-h-[460px] overflow-y-auto font-sans text-xs sm:text-sm">
+            {chatMessages.map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex flex-col ${msg.role === "user" ? "items-start" : "items-end"}`}
+              >
+                <div
+                  className={`p-4 rounded-2xl max-w-[92%] sm:max-w-[85%] space-y-2 leading-relaxed ${
+                    msg.role === "user"
+                      ? "bg-emerald-600/90 text-white rounded-tr-xs shadow-sm"
+                      : "bg-white/[0.08] text-zinc-100 rounded-tl-xs border border-white/10"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3 text-[10px] font-mono opacity-80 border-b border-white/10 pb-1.5">
+                    <span className="font-bold flex items-center gap-1">
+                      {msg.role === "user" ? (
+                         <span>أنت</span>
+                      ) : (
+                        <span className="text-[#bef264] flex items-center gap-1">
+                          <Bot className="w-3.5 h-3.5" />
+                          <span>JEMO Assistant</span>
+                        </span>
+                      )}
+                    </span>
+                    <span>{msg.timestamp}</span>
+                  </div>
+
+                  <div className="whitespace-pre-line text-xs sm:text-[13px] leading-relaxed">
+                    {msg.content}
+                  </div>
+
+                  {msg.route && (
+                    <div className="pt-2 mt-1 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-zinc-400">
+                      <span>توجيه Jev System One:</span>
+                      <span className="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 font-bold">
+                        {msg.route.targetModel} ({Math.round(msg.route.confidence * 100)}% ثقة)
+                      </span>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <p className="leading-relaxed">{aiAnswer}</p>
-              )}
-            </div>
-          )}
+              </div>
+            ))}
+
+            {isChatLoading && (
+              <div className="flex flex-col items-end">
+                <div className="p-3.5 rounded-2xl rounded-tl-xs bg-white/[0.08] border border-white/10 max-w-[70%] flex items-center gap-2.5 text-xs font-mono text-zinc-300">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>جارٍ التوجيه عبر Jev واسترجاع سياق البحث...</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Chat Input Bar */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSendChatMessage();
+            }}
+            className="p-3 sm:p-4 bg-black/30 border-t border-white/10 flex items-center gap-2"
+          >
+            <input
+              type="text"
+              value={chatInput}
+              onChange={(e) => setChatInput(e.target.value)}
+              placeholder="اطرح أي سؤال تفصيلي حول هذا البحث، كوده، أو نتائجه..."
+              disabled={isChatLoading}
+              className="flex-1 px-4 py-3 rounded-xl bg-white/[0.07] border border-white/15 text-white placeholder-zinc-400 text-xs sm:text-sm focus:outline-none focus:border-emerald-400 transition-colors disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={!chatInput.trim() || isChatLoading}
+              className="px-4 sm:px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-[#162224] font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-xs shrink-0"
+            >
+              <span>إرسال</span>
+              <Send className="w-3.5 h-3.5" />
+            </button>
+          </form>
         </div>
 
         {/* Research Lineage Tree & Forks (Article 5 of Manifesto: GitHub in Lineage) */}

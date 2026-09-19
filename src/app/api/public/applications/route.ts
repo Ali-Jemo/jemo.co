@@ -42,7 +42,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(sanitized, {
       headers: {
-        "Cache-Control": "public, s-maxage=15, stale-while-revalidate=45",
+        // PII listing: browser-only cache, never shared-edge cache.
+        "Cache-Control": "private, max-age=15",
       },
     });
   } catch (err) {

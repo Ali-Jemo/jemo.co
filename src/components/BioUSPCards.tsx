@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import EditorialSectionHeader from "@/components/EditorialSectionHeader";
+import RevealGroup, { cohereDelay } from "@/components/RevealGroup";
 
 const CARDS = [
   {
@@ -58,17 +59,23 @@ export default function BioUSPCards() {
           title="بنية تحتية ثلاثية"
           titleAccent="لنقل البحث من المحادثة إلى البرهنة الهندسية."
           lede="ثلاثة مسارات متكاملة: هندسة أنوية التشغيل والعتاد، تفكيك واختبار نماذج الذكاء، وبروتوكول التحقق البشري الصارم."
+          animate
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
-          {CARDS.map((card) => (
+        <RevealGroup className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
+          {CARDS.map((card, i) => (
             <Link
               key={card.num}
               href={card.href}
+              data-cohere-card=""
               className={`group ${card.bg} ${card.textColor} border ${card.borderColor} rounded-2xl sm:rounded-[2rem] p-5 sm:p-10 flex flex-col justify-between min-h-0 sm:min-h-[440px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
             >
-              {/* Top Row: Index & Icon */}
-              <div className="flex items-start justify-between">
+              {/* Top Row: Index & Icon — animates with its card */}
+              <div
+                className="flex items-start justify-between"
+                data-cohere-item=""
+                style={cohereDelay(i * 100 + 50)}
+              >
                 <span className="text-sm sm:text-base font-mono font-bold opacity-75">
                   {card.num}
                 </span>
@@ -85,23 +92,35 @@ export default function BioUSPCards() {
 
               {/* Bottom Content: Title & Text */}
               <div className="flex flex-col gap-3 sm:gap-4 mt-auto pt-6 sm:pt-12">
-                <h3 className="text-xl sm:text-3xl font-normal tracking-tight font-kufi leading-snug">
+                <h3
+                  className="text-xl sm:text-3xl font-normal tracking-tight font-kufi leading-snug"
+                  data-cohere-item=""
+                  style={cohereDelay(i * 100 + 100)}
+                >
                   {card.title}
                 </h3>
-                <p className={`text-xs sm:text-base leading-relaxed ${card.subColor} font-normal`}>
+                <p
+                  className={`text-xs sm:text-base leading-relaxed ${card.subColor} font-normal`}
+                  data-cohere-item=""
+                  style={cohereDelay(i * 100 + 150)}
+                >
                   {card.desc}
                 </p>
 
-                <div className="pt-4 border-t border-black/10 flex items-center justify-between text-xs font-bold font-mono">
+                <div
+                  className="pt-4 border-t border-black/10 flex items-center justify-between text-xs font-bold font-mono"
+                  data-cohere-item=""
+                  style={cohereDelay(i * 100 + 200)}
+                >
                   <span>{card.actionText}</span>
-                  <span className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center transition-transform duration-300 group-hover:-translate-x-1">
+                  <span className="cohere-arrow w-8 h-8 rounded-full bg-black/10 flex items-center justify-center transition-transform duration-300 group-hover:-translate-x-1">
                     <ArrowLeft className="w-4 h-4" />
                   </span>
                 </div>
               </div>
             </Link>
           ))}
-        </div>
+        </RevealGroup>
       </div>
     </section>
   );

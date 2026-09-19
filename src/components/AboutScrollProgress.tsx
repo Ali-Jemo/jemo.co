@@ -12,7 +12,7 @@ export default function AboutScrollProgress() {
 
   return (
     <motion.div
-      className="fixed top-16 left-0 right-0 h-[3px] bg-[var(--brand)] origin-left z-50"
+      className="fixed top-16 left-0 right-0 h-[3px] bg-[var(--brand)] origin-right z-50"
       style={{ scaleX }}
     />
   );

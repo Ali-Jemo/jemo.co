@@ -83,6 +83,8 @@ export default function NewsletterClient() {
   ]);
   const [format, setFormat] = useState<"html" | "markdown">("html");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   // Filters initialised from URL so feed state is shareable (?tab=&cat=&q=&saved=1)
   const [activeCategory, setActiveCategory] = useState(() => {
     const c = searchParams.get("cat");
@@ -227,13 +229,39 @@ export default function NewsletterClient() {
   const likeCount = (issue: Issue) =>
     issue.reactions + (likedIds.includes(issue.id) ? 1 : 0);
 
-  const handleSubscribe = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubscribe = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email || !email.includes("@")) return;
-    setSubmitted(true);
+    const clean = email.trim();
+    if (!clean || !clean.includes("@")) {
+      setSubmitError("يرجى إدخال بريد إلكتروني صالح");
+      return;
+    }
+    setIsSubmitting(true);
+    setSubmitError("");
     try {
-      localStorage.setItem("jemo_newsletter_subscribed", email);
-    } catch {}
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: clean,
+          format,
+          topics: selectedTopics,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || "تعذر إتمام الاشتراك، يرجى المحاولة لاحقاً");
+      }
+      setSubmitted(true);
+      try {
+        localStorage.setItem("jemo_newsletter_subscribed", clean);
+      } catch {}
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "حدث خطأ أثناء التسجيل";
+      setSubmitError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopyLink = () => {
@@ -327,7 +355,7 @@ export default function NewsletterClient() {
   journal = {JEMO LABS Research Dispatch},
   volume = {${issue.number}},
   year = {2026},
-  url = {https://jemo.co/transparency#${issue.id}}
+  url = {https://jemo.co/newsletter#${issue.id}}
 }`;
       navigator.clipboard.writeText(citation);
       setCopiedCitation(true);
@@ -363,16 +391,27 @@ export default function NewsletterClient() {
     setModalProgress(max > 0 ? Math.min(100, (el.scrollTop / max) * 100) : 0);
   };
 
+  // ponytail: normalize Arabic diacritics & letter variants for robust search
+  const normalizeArabic = (text: string) =>
+    text
+      .toLowerCase()
+      .replace(/[\u064B-\u065F\u0670]/g, "")
+      .replace(/[إأآا]/g, "ا")
+      .replace(/ة/g, "ه")
+      .replace(/[ىي]/g, "ي")
+      .trim();
+
   const filteredIssues = useMemo(() => {
+    const qNorm = normalizeArabic(searchQuery);
     const filtered = ISSUES.filter((issue) => {
       const matchesCategory =
         activeCategory === "all" || issue.category === activeCategory;
       const matchesSearch =
-        !searchQuery.trim() ||
-        issue.title.includes(searchQuery) ||
-        issue.summary.includes(searchQuery) ||
-        issue.leadAuthor.includes(searchQuery) ||
-        issue.takeaways.some((t) => t.includes(searchQuery));
+        !qNorm ||
+        normalizeArabic(issue.title).includes(qNorm) ||
+        normalizeArabic(issue.summary).includes(qNorm) ||
+        normalizeArabic(issue.leadAuthor).includes(qNorm) ||
+        issue.takeaways.some((t) => normalizeArabic(t).includes(qNorm));
       const matchesSaved = !showSavedOnly || savedIds.includes(issue.id);
       return matchesCategory && matchesSearch && matchesSaved;
     });
@@ -473,7 +512,7 @@ export default function NewsletterClient() {
               <Flame className="w-3.5 h-3.5 text-[var(--accent)]" />
               <span>انضم إلى +4,850 باحثاً ومطوراً في الأكاديميا والمراكز البحثية</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink-1)] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--ink-1)]">
               اشترك في إيداعات الأوراق والشفرات السيادية
             </h2>
             <p className="text-xs sm:text-sm text-[var(--ink-2)] leading-relaxed max-w-xl mx-auto">
@@ -508,6 +547,11 @@ export default function NewsletterClient() {
             </div>
           ) : (
             <form onSubmit={handleSubscribe} className="space-y-5">
+              {submitError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-700 text-xs font-mono text-center">
+                  {submitError}
+                </div>
+              )}
               {/* Topic Selector Pills */}
               <div className="space-y-2.5">
                 <span className="text-[11px] font-mono text-[var(--ink-2)] block">
@@ -591,10 +635,11 @@ export default function NewsletterClient() {
 
                 <button
                   type="submit"
-                  className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-[var(--ink-1)] hover:opacity-90 text-[var(--surface)] font-bold font-mono text-xs uppercase px-6 py-3 rounded-xl transition-all shadow-xs cursor-pointer active:scale-95"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-2 bg-[var(--ink-1)] hover:opacity-90 disabled:opacity-50 text-[var(--surface)] font-bold font-mono text-xs uppercase px-6 py-3 rounded-xl transition-all shadow-xs cursor-pointer active:scale-95"
                 >
-                  <span>اشترك مجاناً</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>{isSubmitting ? "جاري التسجيل..." : "اشترك مجاناً"}</span>
+                  <ArrowLeft className={`w-3.5 h-3.5 ${isSubmitting ? "animate-pulse" : ""}`} />
                 </button>
               </div>
 

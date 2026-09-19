@@ -4,8 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Menu,
-  X,
   ArrowUpLeft,
   Search,
   ChevronDown,
@@ -23,9 +21,11 @@ import {
   Sparkles,
   Info,
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import CommandPalette from "@/components/CommandPalette";
+import { useState, useEffect, useRef, type CSSProperties } from "react";
+import { motion, AnimatePresence, useMotionValue, useMotionTemplate, type Variants } from "framer-motion";
+import dynamic from "next/dynamic";
+
+const CommandPalette = dynamic(() => import("@/components/CommandPalette"), { ssr: false });
 import { useAuth } from "@/lib/auth-context";
 import { Show } from "@clerk/nextjs";
 import JemoUserButton from "@/components/JemoUserButton";
@@ -36,21 +36,6 @@ const NAV_ITEMS = [
   { href: "/questions", label: "الأسئلة المفتوحة" },
   { href: "/projects", label: "المشاريع" },
   { href: "/labs", label: "المختبرات" },
-];
-
-const MOBILE_NAV_ITEMS = [
-  { href: "/", label: "الرئيسية" },
-  { href: "/research", label: "سجلات الاكتشاف" },
-  { href: "/questions", label: "الأسئلة المفتوحة" },
-  { href: "/projects", label: "المشاريع" },
-  { href: "/labs", label: "المختبرات" },
-  { href: "/researchers", label: "الباحثون" },
-  { href: "/publications", label: "المنشورات" },
-  { href: "/infrastructure", label: "البنية التحتية" },
-  { href: "/open-source", label: "المصدر المفتوح" },
-  { href: "/support", label: "الدعم" },
-  { href: "/newsletter", label: "النشرة الإخبارية" },
-  { href: "/about", label: "عن المنصة" },
 ];
 
 export const ALL_PAGES = [
@@ -84,6 +69,37 @@ const ECOSYSTEM_CATEGORIES = [
   },
 ];
 
+const mobileMenuContainerVariants: Variants = {
+  hidden: { opacity: 0, y: -8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.22,
+      ease: [0.16, 1, 0.3, 1],
+      staggerChildren: 0.035,
+      delayChildren: 0.05,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -8,
+    transition: {
+      duration: 0.16,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
+const mobileMenuItemVariants: Variants = {
+  hidden: { opacity: 0, x: 12 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.25, ease: "easeOut" },
+  },
+};
+
 export default function Header() {
   const pathname = usePathname() ?? "/";
   const router = useRouter();
@@ -93,8 +109,20 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const exploreRef = useRef<HTMLDivElement>(null);
+  const exploreTimeout = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (exploreTimeout.current) window.clearTimeout(exploreTimeout.current);
+    };
+  }, []);
 
   const [mobileCategory, setMobileCategory] = useState<string>("all");
+
+  // Magnetic CTA glow: radial highlight that tracks the pointer (Cohere-style)
+  const ctaMx = useMotionValue(50);
+  const ctaMy = useMotionValue(50);
+  const ctaGlow = useMotionTemplate`radial-gradient(110px circle at ${ctaMx}% ${ctaMy}%, rgba(167, 226, 110, 0.30), transparent 75%)`;
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -144,55 +172,71 @@ export default function Header() {
     let downAccum = 0;
     let upAccum = 0;
 
+    let ticking = false;
+    let rafId: number | null = null;
+
     const onScroll = () => {
-      const y = Math.max(0, window.scrollY);
-      const diff = y - lastY;
-      lastY = y;
+      if (ticking) return;
+      ticking = true;
+      rafId = requestAnimationFrame(() => {
+        const y = Math.max(0, window.scrollY);
+        const diff = y - lastY;
+        lastY = y;
 
-      setScrolled(y > 20);
+        setScrolled(y > 20);
 
-      if (mobileMenuOpen || y <= 64) {
-        if (isHidden) {
-          isHidden = false;
-          setHidden(false);
-        }
-        downAccum = 0;
-        upAccum = 0;
-        return;
-      }
-
-      if (diff > 0) {
-        upAccum = 0;
-        if (!isHidden) {
-          downAccum += diff;
-          if (downAccum >= 30) {
-            isHidden = true;
-            setHidden(true);
-            downAccum = 0;
-          }
-        }
-      } else if (diff < 0) {
-        downAccum = 0;
-        if (isHidden) {
-          upAccum += Math.abs(diff);
-          if (upAccum >= 25) {
+        if (mobileMenuOpen || y <= 64) {
+          if (isHidden) {
             isHidden = false;
             setHidden(false);
-            upAccum = 0;
+          }
+          downAccum = 0;
+          upAccum = 0;
+          ticking = false;
+          return;
+        }
+
+        if (diff > 0) {
+          upAccum = 0;
+          if (!isHidden) {
+            downAccum += diff;
+            if (downAccum >= 30) {
+              isHidden = true;
+              setHidden(true);
+              downAccum = 0;
+            }
+          }
+        } else if (diff < 0) {
+          downAccum = 0;
+          if (isHidden) {
+            upAccum += Math.abs(diff);
+            if (upAccum >= 25) {
+              isHidden = false;
+              setHidden(false);
+              upAccum = 0;
+            }
           }
         }
-      }
+        ticking = false;
+      });
     };
 
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [mobileMenuOpen]);
 
-  useEffect(() => {
+  // Close menus whenever the route changes — computed during render
+  // (React's "adjusting state when a variable changes" pattern, no effect needed)
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setMobileMenuOpen(false);
     setExploreOpen(false);
-  }, [pathname]);
+  }
 
   const isTransparent = isHome && !scrolled;
   const isDark = isTransparent || mobileMenuOpen;
@@ -202,7 +246,7 @@ export default function Header() {
       <CommandPalette />
 
       <header
-        className={`fixed top-0 z-50 w-full transition-colors duration-200 ease-out ${
+        className={`fixed top-0 z-50 w-full transition-[transform,background-color,color] duration-300 ease-out ${
           hidden ? "-translate-y-full" : "translate-y-0"
         } ${
           mobileMenuOpen
@@ -215,16 +259,35 @@ export default function Header() {
         }`}
         style={{ pointerEvents: hidden ? "none" : "auto" }}
       >
-        <div dir="rtl" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between gap-4">
+        {/* Cohere-style gradual masked backdrop blur curtain */}
+        <div
+          tabIndex={-1}
+          aria-hidden="true"
+          className={`fixed inset-x-0 top-0 z-40 pointer-events-none min-h-screen w-full bg-black/20 backdrop-blur-lg transition-[opacity,visibility] duration-300 ease-in-out ${
+            exploreOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+          style={{
+            WebkitMaskImage: "linear-gradient(to bottom, black 50%, transparent 100%)",
+            maskImage: "linear-gradient(to bottom, black 50%, transparent 100%)",
+            contain: "strict",
+            willChange: "opacity",
+          }}
+        />
+
+        <div dir="rtl" className="relative z-50 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between gap-4">
           
           {/* 1. Right side (in RTL): Brand Logo */}
           <div className="flex items-center shrink-0">
             <Link
               href="/"
-              className="flex items-center gap-2.5 group"
+              className="flex items-center gap-2 sm:gap-2.5 group"
               aria-label="JEMO LABS الرئيسية"
             >
-              <div className="relative w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+              <motion.div
+                className="relative w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-lg overflow-hidden flex items-center justify-center transition-transform duration-200 ease-out group-hover:scale-105 group-hover:-rotate-1"
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.05 }}
+              >
                 <Image
                   src="/jemo-logo.svg"
                   alt="JEMO LABS"
@@ -232,7 +295,7 @@ export default function Header() {
                   height={32}
                   className="w-full h-full object-contain"
                 />
-              </div>
+              </motion.div>
 
               <div className="flex items-baseline gap-1 font-mono">
                 <span className={`text-base font-black tracking-tight transition-colors ${isDark ? "text-white" : "text-[#222f30]"} group-hover:underline`}>
@@ -253,7 +316,7 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-all duration-150 ${
+                  className={`group/nav relative px-3 py-1.5 text-xs font-semibold rounded-full transition-all duration-150 overflow-hidden ${
                     isActive
                       ? isTransparent
                         ? "bg-white/20 text-white font-bold shadow-xs"
@@ -263,19 +326,56 @@ export default function Header() {
                       : "text-[#445e5f] hover:text-[#222f30] hover:bg-black/[0.04]"
                   }`}
                 >
-                  {item.label}
+                  <span className="relative inline-block overflow-hidden">
+                    <span className="block transition-transform duration-300 ease-out group-hover/nav:-translate-y-full group-focus-visible/nav:-translate-y-full motion-reduce:transform-none">
+                      {item.label}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-x-0 top-0 block transition-transform duration-300 ease-out translate-y-[115%] group-hover/nav:translate-y-0 group-focus-visible/nav:translate-y-0 motion-reduce:translate-y-0 font-bold"
+                    >
+                      {item.label}
+                    </span>
+                  </span>
                 </Link>
               );
             })}
 
             {/* Seamless Explore Trigger */}
-            <div ref={exploreRef} className="relative ms-1">
+            <div
+              ref={exploreRef}
+              className="relative ms-1"
+              onMouseEnter={() => {
+                if (exploreTimeout.current) {
+                  window.clearTimeout(exploreTimeout.current);
+                  exploreTimeout.current = null;
+                }
+                setExploreOpen(true);
+              }}
+              onMouseLeave={() => {
+                if (exploreTimeout.current) window.clearTimeout(exploreTimeout.current);
+                exploreTimeout.current = window.setTimeout(() => setExploreOpen(false), 120);
+              }}
+              onFocus={() => {
+                if (exploreTimeout.current) {
+                  window.clearTimeout(exploreTimeout.current);
+                  exploreTimeout.current = null;
+                }
+                setExploreOpen(true);
+              }}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                  if (exploreTimeout.current) window.clearTimeout(exploreTimeout.current);
+                  exploreTimeout.current = window.setTimeout(() => setExploreOpen(false), 120);
+                }
+              }}
+            >
               <button
                 type="button"
                 aria-expanded={exploreOpen}
                 aria-controls="header-all-pages"
                 onClick={() => setExploreOpen((open) => !open)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-150 cursor-pointer select-none ${
+                className={`group/nav inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-150 cursor-pointer select-none overflow-hidden ${
                   exploreOpen
                     ? isTransparent
                       ? "bg-white/25 text-white font-bold shadow-xs"
@@ -285,9 +385,19 @@ export default function Header() {
                     : "text-[#445e5f] hover:text-[#222f30] hover:bg-black/[0.04]"
                 }`}
               >
-                <span>استكشف</span>
+                <span className="relative inline-block overflow-hidden">
+                  <span className="block transition-transform duration-300 ease-out group-hover/nav:-translate-y-full group-focus-visible/nav:-translate-y-full motion-reduce:transform-none">
+                    استكشف
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 top-0 block transition-transform duration-300 ease-out translate-y-[115%] group-hover/nav:translate-y-0 group-focus-visible/nav:translate-y-0 motion-reduce:translate-y-0 font-bold"
+                  >
+                    استكشف
+                  </span>
+                </span>
                 <ChevronDown
-                  className={`w-3.5 h-3.5 transition-transform duration-150 shrink-0 ${
+                  className={`w-3.5 h-3.5 transition-transform duration-300 shrink-0 ${
                     exploreOpen ? "rotate-180 text-[#a7e26e]" : "opacity-70"
                   }`}
                 />
@@ -299,10 +409,10 @@ export default function Header() {
                   <motion.nav
                     id="header-all-pages"
                     aria-label="كل صفحات JEMO LABS"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 3 }}
-                    transition={{ duration: 0.12, ease: "easeOut" }}
+                    initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     className={`absolute right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 top-[calc(100%+0.5rem)] z-50 w-[92vw] sm:w-[500px] rounded-2xl border p-4 shadow-[0_16px_40px_rgba(0,0,0,0.18)] transition-all ${
                       isTransparent
                         ? "border-white/15 bg-[#0e1617] text-white"
@@ -329,16 +439,18 @@ export default function Header() {
                           <div className="text-[10px] font-mono font-bold uppercase tracking-widest opacity-50 px-1">
                             {cat.name}
                           </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 j-header-dim-group">
                             {cat.items.map((item) => {
                               const Icon = item.icon;
                               const isActive = pathname === item.href;
+                              const idx = ALL_PAGES.findIndex((p) => p.href === item.href);
                               return (
                                 <Link
                                   key={item.href}
                                   href={item.href}
                                   onClick={() => setExploreOpen(false)}
-                                  className={`group px-2.5 py-2 rounded-xl transition-colors flex items-center gap-2.5 ${
+                                  style={{ "--i": idx } as CSSProperties}
+                                  className={`group j-header-dim j-header-drop px-2.5 py-2 rounded-xl transition-colors flex items-center gap-2.5 ${
                                     isActive
                                       ? isTransparent
                                         ? "bg-white/15 text-white font-bold"
@@ -386,17 +498,19 @@ export default function Header() {
                       </Link>
                     </div>
                   </motion.nav>
-                )}
+                    )}
               </AnimatePresence>
             </div>
           </nav>
 
           {/* 3. Left side (in RTL): Controls, Search & CTA */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
             {/* Mobile Quick Search Button */}
             <button
               onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
-              className={`sm:hidden p-2 rounded-full border text-xs font-mono transition-all duration-150 cursor-pointer ${
+              className={`sm:hidden w-9 h-9 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full border text-xs font-mono transition-all duration-150 cursor-pointer ${
+                mobileMenuOpen ? "hidden" : "inline-flex"
+              } ${
                 isDark
                   ? "border-white/15 bg-white/5 text-white/90 hover:bg-white/10"
                   : "border-[#e4e3e3] bg-[#f0f2f0] text-[#445e5f] hover:text-[#222f30]"
@@ -435,7 +549,7 @@ export default function Header() {
 
             {/* Session Indicator & Clerk Auth Controls */}
             <Show when="signed-out">
-              {profile?.isDemo && (
+              {profile?.isDemo && !mobileMenuOpen && (
                 <Link
                   href="/dashboard"
                   className="w-8 h-8 rounded-full bg-[#cef79e] text-[#222f30] font-bold text-xs flex items-center justify-center border border-[#e4e3e3] hover:ring-2 hover:ring-[#a7e26e] transition-all shrink-0"
@@ -448,20 +562,25 @@ export default function Header() {
               <Link
                 href="/sign-in"
                 prefetch={true}
-                className={`inline-flex items-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-bold rounded-full transition-colors ${
+                className={`group/signin relative ${
+                  mobileMenuOpen ? "hidden" : "hidden sm:inline-flex"
+                } flex-col items-center justify-center px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-bold rounded-full transition-colors ${
                   isDark
                     ? "text-white/90 hover:text-white hover:bg-white/10 border border-white/15 sm:border-transparent"
                     : "text-[#222f30] hover:text-[#728825] hover:bg-black/5 border border-[#e4e3e3] sm:border-transparent"
                 }`}
               >
-                دخول
+                <span>دخول</span>
+                <div className="relative w-full h-[1.5px] mt-0.5 overflow-hidden">
+                  <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-r from-[#bef264] via-[#a7e26e] to-[#728825] transition-transform duration-300 ease-out origin-right scale-x-0 group-hover/signin:scale-x-100" />
+                </div>
               </Link>
             </Show>
 
             <Show when="signed-in">
               <Link
                 href="/dashboard"
-                className={`hidden sm:inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full transition-colors ${
+                className={`hidden sm:inline-flex j-header-underline items-center px-3 py-1.5 text-xs font-bold rounded-full transition-colors ${
                   isTransparent
                     ? "text-white/90 hover:text-white hover:bg-white/10"
                     : "text-[#222f30] hover:bg-black/5"
@@ -469,31 +588,62 @@ export default function Header() {
               >
                 لوحة التحكم
               </Link>
-              <JemoUserButton />
+              <div className={mobileMenuOpen ? "hidden" : "block"}>
+                <JemoUserButton />
+              </div>
             </Show>
 
             {/* Single Unified Primary CTA Button */}
             <Link
               href="/publish"
-              className={`group inline-flex items-center gap-1.5 px-3.5 py-1.5 h-8.5 text-xs font-bold rounded-full transition-all duration-150 shrink-0 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 ${
+              onMouseMove={(e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                ctaMx.set(((e.clientX - r.left) / r.width) * 100);
+                ctaMy.set(((e.clientY - r.top) / r.height) * 100);
+              }}
+              className={`group relative ${
+                mobileMenuOpen ? "hidden" : "inline-flex"
+              } items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 h-8 sm:h-8.5 text-[11px] sm:text-xs font-bold rounded-full transition-[background-color,box-shadow,transform] duration-200 shrink-0 shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-[0.98] ${
                 isDark
                   ? "bg-[#cef79e] text-[#162224] hover:bg-[#a7e26e]"
                   : "bg-[#222f30] hover:bg-[#162224] text-white shadow-[#222f30]/20"
               }`}
             >
-              <span>انشر بحثك</span>
-              <ArrowUpLeft size={13} className="transition-transform duration-150 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 shrink-0" />
+              <motion.span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                style={{ backgroundImage: ctaGlow }}
+              />
+              <span className="relative">انشر بحثك</span>
+              <ArrowUpLeft size={13} className="relative transition-transform duration-200 ease-out group-hover:-translate-x-1 group-hover:-translate-y-0.5 shrink-0" />
             </Link>
 
-            {/* Mobile Menu Hamburger */}
+            {/* Mobile Menu Hamburger — animated icon morph */}
             <button
-              className={`lg:hidden p-2 rounded-xl transition-colors cursor-pointer ${
+              className={`lg:hidden w-10 h-10 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl transition-colors cursor-pointer ${
                 isDark ? "text-white hover:bg-white/10" : "text-[#222f30] hover:bg-black/5"
               }`}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              <span className="relative block w-[22px] h-[18px]" aria-hidden="true">
+                <span
+                  className={`absolute left-0 right-0 top-[1px] h-[2px] rounded-full bg-current transition-all duration-300 ease-out ${
+                    mobileMenuOpen ? "top-[8px] rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`absolute left-0 right-0 top-[8px] h-[2px] rounded-full bg-current transition-all duration-200 ease-out ${
+                    mobileMenuOpen ? "opacity-0 scale-x-0" : "opacity-100"
+                  }`}
+                />
+                <span
+                  className={`absolute left-0 right-0 bottom-[1px] h-[2px] rounded-full bg-current transition-all duration-300 ease-out ${
+                    mobileMenuOpen ? "bottom-[8px] -rotate-45" : ""
+                  }`}
+                />
+              </span>
             </button>
           </div>
         </div>
@@ -502,20 +652,20 @@ export default function Header() {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:hidden border-t border-white/10 bg-[#0c1415]/98 backdrop-blur-2xl px-4 sm:px-6 py-5 max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain text-white space-y-5"
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={mobileMenuContainerVariants}
+              className="lg:hidden border-t border-white/10 bg-[#0c1415] px-4 sm:px-6 py-4 pb-[calc(2.5rem+env(safe-area-inset-bottom,20px))] h-[calc(100dvh-4rem)] max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain text-white space-y-4"
             >
               {/* 1. Global Search Trigger */}
-              <div>
+              <motion.div variants={mobileMenuItemVariants}>
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
                   }}
-                  className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 text-xs text-white/90 font-mono min-h-[44px] shadow-inner transition-colors group cursor-pointer"
+                  className="w-full flex items-center justify-between p-3.5 rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 text-xs text-white/90 font-mono min-h-[48px] shadow-inner transition-colors group cursor-pointer"
                   aria-label="البحث السريع في الأبحاث والأنظمة (⌘K)"
                 >
                   <span className="flex items-center gap-2.5">
@@ -524,40 +674,50 @@ export default function Header() {
                   </span>
                   <kbd className="px-2 py-0.5 rounded-md bg-white/10 border border-white/15 text-[10px] text-white/90 font-mono">⌘K</kbd>
                 </button>
-              </div>
+              </motion.div>
 
               {/* 2. Primary Navigation Pathways */}
-              <div className="space-y-2">
+              <motion.div variants={mobileMenuItemVariants} className="space-y-2">
                 <div className="flex items-center justify-between text-[11px] font-mono px-1">
                   <span className="font-bold text-[#bef264] uppercase tracking-wider">
                     المسارات الرئيسية
                   </span>
                   <span className="text-zinc-500 text-[10px]">5 بوابات أساسية</span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 font-mono">
-                  {NAV_ITEMS.map((item) => {
+                <div className="grid grid-cols-2 gap-2 font-mono">
+                  {NAV_ITEMS.map((item, idx) => {
                     const isActive = pathname === item.href;
+                    const isFirst = idx === 0;
                     return (
                       <Link
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
                         className={`text-xs font-bold py-2.5 px-3 rounded-xl transition-all flex items-center justify-between border ${
+                          isFirst ? "col-span-2 shadow-xs" : ""
+                        } ${
                           isActive
                             ? "bg-[#bef264] text-[#162224] border-[#bef264] shadow-xs"
                             : "bg-white/5 border-white/10 text-white/90 hover:bg-white/10"
                         }`}
                       >
-                        <span>{item.label}</span>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#162224]" />}
+                        <span className="flex items-center gap-2">
+                          {isFirst && <span className="w-1.5 h-1.5 rounded-full bg-current" />}
+                          <span>{item.label}</span>
+                        </span>
+                        {isActive ? (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#162224]" />
+                        ) : isFirst ? (
+                          <span className="text-[11px] opacity-60">←</span>
+                        ) : null}
                       </Link>
                     );
                   })}
                 </div>
-              </div>
+              </motion.div>
 
               {/* 3. Categorized Ecosystem Map with Filter Chips */}
-              <div className="space-y-3 pt-1 border-t border-white/10">
+              <motion.div variants={mobileMenuItemVariants} className="space-y-3 pt-1 border-t border-white/10">
                 <div className="flex items-center justify-between text-right font-mono">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse" />
@@ -569,11 +729,11 @@ export default function Header() {
                 </div>
 
                 {/* Category Chips */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none font-mono text-[11px]">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none font-mono text-[11px] snap-x snap-mandatory">
                   <button
                     type="button"
                     onClick={() => setMobileCategory("all")}
-                    className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-colors cursor-pointer border ${
+                    className={`min-h-[34px] px-3.5 py-1.5 rounded-full whitespace-nowrap transition-colors cursor-pointer border shrink-0 snap-start ${
                       mobileCategory === "all"
                         ? "bg-white/25 text-white border-white/30 font-bold"
                         : "bg-white/5 text-zinc-400 border-white/10 hover:text-white"
@@ -588,7 +748,7 @@ export default function Header() {
                         key={cat.name}
                         type="button"
                         onClick={() => setMobileCategory(cat.name)}
-                        className={`px-3 py-1.5 rounded-full whitespace-nowrap transition-colors cursor-pointer border ${
+                        className={`min-h-[34px] px-3.5 py-1.5 rounded-full whitespace-nowrap transition-colors cursor-pointer border shrink-0 snap-start ${
                           isCatActive
                             ? "bg-[#bef264]/20 text-[#bef264] border-[#bef264]/40 font-bold"
                             : "bg-white/5 text-zinc-400 border-white/10 hover:text-white"
@@ -599,7 +759,6 @@ export default function Header() {
                     );
                   })}
                 </div>
-
                 {/* Filtered Cards */}
                 <div className="space-y-3">
                   {ECOSYSTEM_CATEGORIES.filter(
@@ -645,10 +804,10 @@ export default function Header() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
 
               {/* 4. Researcher Dashboard & Jev Evaluation Quick Card */}
-              <div className="pt-2 border-t border-white/10">
+              <motion.div variants={mobileMenuItemVariants} className="pt-2 border-t border-white/10">
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
@@ -665,9 +824,10 @@ export default function Header() {
                   </div>
                   <span className="text-xs font-mono text-[#bef264] group-hover:translate-x-[-2px] transition-transform">➔</span>
                 </Link>
-              </div>
+              </motion.div>
               {/* User Drawer Section */}
-              {profile ? (
+              <motion.div variants={mobileMenuItemVariants}>
+                {profile ? (
                 <div className="p-3.5 rounded-2xl bg-white/10 border border-white/15 space-y-2 pt-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
@@ -714,12 +874,12 @@ export default function Header() {
               ) : (
                 <div className="pt-4 border-t border-white/10 space-y-3">
                   <Show when="signed-out">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2.5">
                       <Link
                         href="/sign-in"
                         prefetch={true}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl border border-white/20 text-white bg-white/5 min-h-[44px] flex items-center justify-center hover:bg-white/10 transition-colors"
+                        className="flex-1 h-11 text-center text-xs font-bold rounded-xl border border-white/20 text-white bg-white/5 min-h-[44px] flex items-center justify-center hover:bg-white/10 active:scale-[0.98] transition-all"
                       >
                         تسجيل الدخول
                       </Link>
@@ -727,7 +887,7 @@ export default function Header() {
                         href="/sign-up"
                         prefetch={true}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex-1 py-2.5 text-center text-xs font-bold rounded-xl bg-[#a7e26e] text-[#162224] font-bold min-h-[44px] flex items-center justify-center hover:bg-[#bef264] transition-colors"
+                        className="flex-1 h-11 text-center text-xs font-bold rounded-xl bg-[#a7e26e] text-[#162224] font-bold min-h-[44px] flex items-center justify-center hover:bg-[#bef264] active:scale-[0.98] transition-all"
                       >
                         حساب جديد
                       </Link>
@@ -741,6 +901,7 @@ export default function Header() {
                   </Show>
                 </div>
               )}
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

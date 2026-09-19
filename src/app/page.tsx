@@ -1,18 +1,20 @@
+import dynamic from "next/dynamic";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import BioManifesto from "@/components/BioManifesto";
 import BioUSPCards from "@/components/BioUSPCards";
 import BioMediaMultiCol from "@/components/BioMediaMultiCol";
-import BioMetricsBand from "@/components/BioMetricsBand";
-import FeaturedResearch from "@/components/FeaturedResearch";
-import FeaturedScenes from "@/components/FeaturedScenes";
-import BioLeadershipGrid from "@/components/BioLeadershipGrid";
-import BioPartnersGrid from "@/components/BioPartnersGrid";
-import ContributeCTA from "@/components/ContributeCTA";
-import ResearchNewsletter from "@/components/ResearchNewsletter";
 import BioButton from "@/components/BioButton";
 import EditorialSectionHeader from "@/components/EditorialSectionHeader";
+
+const BioMetricsBand = dynamic(() => import("@/components/BioMetricsBand"));
+const FeaturedResearch = dynamic(() => import("@/components/FeaturedResearch"));
+const FeaturedScenes = dynamic(() => import("@/components/FeaturedScenes"));
+const BioLeadershipGrid = dynamic(() => import("@/components/BioLeadershipGrid"));
+const BioPartnersGrid = dynamic(() => import("@/components/BioPartnersGrid"));
+const ContributeCTA = dynamic(() => import("@/components/ContributeCTA"));
+const ResearchNewsletter = dynamic(() => import("@/components/ResearchNewsletter"));
 
 // Section rhythm is shared by every section on this page: one container width,
 // one gutter scale, one vertical rhythm. Change it here, not per-section.
@@ -48,6 +50,7 @@ export default function Home() {
               kickerEn="VERIFIED DISCOVERY LOGS"
               title="سجلات الاكتشافات والتحقيقات التقنية"
               titleAccent="المحققة بشرياً ببرهان العمل."
+              animate
               lede={
                 <>
                   أوراق ومذكرات وتجارب هندسية في النظم، والبرمجة، ونماذج الذكاء الاصطناعي خضعت لمعيار التحقق البشري الصارم{" "}

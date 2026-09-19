@@ -95,6 +95,43 @@ export default function PublishResearchPage() {
   const [verification, setVerification] = useState("");
   const [confidence, setConfidence] = useState("مرتفعة - تم التحقق والاختبار");
   const [sources, setSources] = useState("");
+  const [jevValidating, setJevValidating] = useState(false);
+  const [jevResult, setJevResult] = useState<{
+    isRelevant: boolean;
+    suggestedCategory: string;
+    depthScore: number;
+    depthNormalized: number;
+    relevanceProbability: number;
+  } | null>(null);
+
+  const handleJevScreen = async () => {
+    setJevValidating(true);
+    try {
+      const res = await fetch("/api/jev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "validate",
+          title,
+          question,
+          findings,
+          synopsis,
+          content: `${trail}\n${methodology}`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.result) {
+        setJevResult(data.result);
+        if (data.result.suggestedCategory) {
+          setCategory(data.result.suggestedCategory);
+        }
+      }
+    } catch (err) {
+      console.error("Jev screen failed", err);
+    } finally {
+      setJevValidating(false);
+    }
+  };
   const handleCopyJSON = () => {
     const payload = {
       type: publicationType === "research" ? "Research Object" : publicationType,
@@ -449,10 +486,35 @@ export default function PublishResearchPage() {
                       <input type="text" placeholder="@handle أو github.com/..." value={authorHandle} onChange={(e) => setAuthorHandle(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#e4e3e3] bg-[#fcfdfc] text-sm focus:outline-none focus:border-[#a7e26e]" />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-[#222f30] mb-1.5">نوع الاكتشاف والتصنيف</label>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-bold text-[#222f30]">نوع الاكتشاف والتصنيف</label>
+                        <button
+                          type="button"
+                          onClick={handleJevScreen}
+                          disabled={jevValidating}
+                          className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+                          title="فحص جودة المحتوى وتحديد المسار المناسب تلقائياً عبر نموذج Jev (TypeSafe)"
+                        >
+                          <Sparkles className="w-3 h-3 text-emerald-600" />
+                          <span>{jevValidating ? "جارٍ فحص Jev..." : "تدقيق وتصنيف آلي بـ Jev"}</span>
+                        </button>
+                      </div>
                       <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#e4e3e3] bg-[#fcfdfc] text-sm focus:outline-none focus:border-[#a7e26e]">
                         {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
                       </select>
+                      {jevResult && (
+                        <div className="mt-2 p-3 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 flex flex-wrap items-center justify-between gap-2 animate-in fade-in">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span>
+                              {jevResult.isRelevant ? "محتوى بحثي موثق ومطابق" : "محتوى بحاجة لمزيد من الأدلة"} (صلة {Math.round(jevResult.relevanceProbability * 100)}% • عمق {jevResult.depthScore}/3)
+                            </span>
+                          </div>
+                          <span className="font-mono font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px]">
+                            {jevResult.suggestedCategory}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <div className="rounded-2xl border border-[#dce3dc] bg-white p-4">
                       <button type="button" onClick={() => setImportOpen((open) => !open)} className="flex w-full items-center justify-between text-right text-sm font-bold text-[#222f30]">

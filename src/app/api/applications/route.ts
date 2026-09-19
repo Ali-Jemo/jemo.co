@@ -127,6 +127,18 @@ export async function POST(req: NextRequest) {
     const cleanExperience = sanitizeInput(experience, 1500);
     const cleanHours = sanitizeInput(hours, 50);
     const cleanPortfolio = portfolio ? sanitizeInput(portfolio, 200) : null;
+    // Stored-XSS guard: portfolio becomes a clickable href downstream —
+    // reject non-http(s) schemes (javascript:, data:, …) at intake.
+    if (cleanPortfolio) {
+      try {
+        const parsed = new URL(cleanPortfolio);
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+          return NextResponse.json({ error: "رابط الأعمال يجب أن يبدأ بـ http أو https" }, { status: 400 });
+        }
+      } catch {
+        return NextResponse.json({ error: "رابط الأعمال غير صالح" }, { status: 400 });
+      }
+    }
     const cleanMotivation = sanitizeInput(motivation, 3000);
     const cleanTelegram = telegram ? sanitizeInput(telegram, 50) : null;
 

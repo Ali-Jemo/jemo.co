@@ -115,14 +115,17 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
 
   // Sync filters to URL for deep-linking
   useEffect(() => {
-    const sp = new URLSearchParams();
-    if (query.trim()) sp.set("q", query.trim());
-    if (selectedField !== "all") sp.set("field", selectedField);
-    if (selectedYear !== "all") sp.set("year", selectedYear);
-    if (sort !== "newest") sp.set("sort", sort);
-    if (lens !== "trending") sp.set("lens", lens);
-    const url = sp.toString() ? `${window.location.pathname}?${sp}` : window.location.pathname;
-    window.history.replaceState(null, "", url);
+    const timer = setTimeout(() => {
+      const sp = new URLSearchParams();
+      if (query.trim()) sp.set("q", query.trim());
+      if (selectedField !== "all") sp.set("field", selectedField);
+      if (selectedYear !== "all") sp.set("year", selectedYear);
+      if (sort !== "newest") sp.set("sort", sort);
+      if (lens !== "trending") sp.set("lens", lens);
+      const url = sp.toString() ? `${window.location.pathname}?${sp}` : window.location.pathname;
+      window.history.replaceState(null, "", url);
+    }, 300);
+    return () => clearTimeout(timer);
   }, [query, selectedField, selectedYear, sort, lens]);
 
   const fields = useMemo(() => {
@@ -671,14 +674,22 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
                             {paper.titleEn}
                           </p>
                         )}
-                        <div className="flex items-center gap-2 text-xs text-[#55696a] font-mono mt-2">
-                          <Users className="w-3.5 h-3.5 opacity-60" />
-                          <span>
-                            {(paper.authors ?? [])
-                              .map((a: unknown) => (typeof a === "string" ? a : (a as { name?: string })?.name || ""))
-                              .filter(Boolean)
-                              .join(" • ")}
-                          </span>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-[#55696a] font-mono mt-2">
+                          <div className="flex items-center gap-1.5">
+                            <Users className="w-3.5 h-3.5 opacity-60" />
+                            <span>
+                              {(paper.authors ?? [])
+                                .map((a: unknown) => (typeof a === "string" ? a : (a && typeof a === "object" && "name" in a && typeof a.name === "string") ? a.name : ""))
+                                .filter(Boolean)
+                                .join(" • ")}
+                            </span>
+                          </div>
+                          {paper.jevEvaluation && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-bold">
+                              <Sparkles className="w-3 h-3 text-emerald-600" />
+                              <span>تدقيق Jev: {paper.jevEvaluation.rigorNormalized}% دقة</span>
+                            </span>
+                          )}
                         </div>
                       </div>
 

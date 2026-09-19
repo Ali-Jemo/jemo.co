@@ -1,5 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { evaluateFirewall } from "./lib/firewall";
 import { safeCompare } from "./lib/security";
 
@@ -22,7 +22,12 @@ const cspHeader = [
   "frame-ancestors 'none'",
   "upgrade-insecure-requests",
 ].join("; ");
-export default clerkMiddleware(async (auth, req) => {
+const hasClerkKeys = Boolean(
+  (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || process.env.CLERK_PUBLISHABLE_KEY) &&
+  process.env.CLERK_SECRET_KEY
+);
+
+const middlewareHandler = async (auth: { protect: () => Promise<unknown> }, req: NextRequest) => {
   // 1. Edge Firewall & WAF: block malicious attack tools, scrapers, exploit probes, and injections
   const decision = evaluateFirewall(req);
   if (decision.action === "BLOCK") {
@@ -72,7 +77,11 @@ export default clerkMiddleware(async (auth, req) => {
   response.headers.set("X-Robots-Tag", "noai, noimageai");
   response.headers.set("X-Permitted-Cross-Domain-Policies", "none");
   return response;
-});
+};
+
+export default hasClerkKeys
+  ? clerkMiddleware(middlewareHandler)
+  : (req: NextRequest) => middlewareHandler({ protect: async () => {} }, req);
 
 export const config = {
   matcher: [

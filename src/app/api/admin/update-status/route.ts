@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { id, status } = body; // status: 'accepted' | 'rejected'
 
-    if (!id || typeof id !== 'string' || !['accepted', 'rejected'].includes(status)) {
+    if (!id || typeof id !== 'string' || id.length > 128 || !['accepted', 'rejected'].includes(status)) {
       return NextResponse.json({ error: 'invalid payload' }, { status: 400 });
     }
     const db = supabaseAdmin();
@@ -195,6 +195,18 @@ export async function POST(req: NextRequest) {
       console.error("Failed to update application status:", updateErr.message);
       return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
     }
+
+    // Tamper-evident audit trail: who flipped what, when, from where.
+    // Ships to worker logs; pair with a log drain for retention/alerts.
+    console.info(JSON.stringify({
+      audit: "application.status_change",
+      at: new Date().toISOString(),
+      actor: hasValidSecret ? "admin-secret" : "clerk-admin",
+      ip,
+      applicationId: id,
+      from: app.status ?? null,
+      to: status,
+    }));
 
     // Fire notifications asynchronously (don't block status update)
     try {

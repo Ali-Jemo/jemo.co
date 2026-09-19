@@ -4,7 +4,13 @@
 }
 
 @import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
+@import "tw-animate-css";
+
+/* CommandPalette entrance (RTL-safe: vertical + scale only) */
+@keyframes palette-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 @theme {
   --animate-shimmer: shimmer 1.5s infinite;
@@ -16,6 +22,8 @@
   --animate-marquee: marquee 30s linear infinite;
   /* Large-phone breakpoint — several components already use xs: utilities */
   --breakpoint-xs: 25rem;
+  --font-sans: var(--font-kufi), "Noto Kufi Arabic", "Noto Sans Arabic", "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-mono), "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 @keyframes shimmer {
@@ -126,11 +134,11 @@
   --maxw: 1100px;
   --gutter: clamp(16px, 5vw, 48px);
 
-  /* Typography */
-  --font-heading: "Noto Kufi Arabic", var(--font-kufi), sans-serif;
-  --font-body:    "Noto Kufi Arabic", var(--font-kufi), system-ui, sans-serif;
-  --font-mono:    "IBM Plex Mono", var(--font-mono), ui-monospace, monospace;
-
+  /* ponytail: robust font stack with direct family names, no undefined variable references */
+  --font-kufi:    "Noto Kufi Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+  --font-heading: "Noto Kufi Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
+  --font-body:    "Noto Kufi Arabic", "Noto Sans Arabic", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Tahoma, Arial, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   /* Focus */
   --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--brand);
 }
@@ -149,12 +157,25 @@ html {
   text-rendering: optimizeLegibility;
   /* ponytail: removed scroll-behavior:smooth — conflicts with Lenis, causes competing scroll */
 }
+/* ponytail: prevent negative letter-spacing from breaking Arabic cursive joins */
+:lang(ar), [dir="rtl"], [lang="ar"] {
+  letter-spacing: normal;
+}
+:lang(ar) .font-mono, [dir="rtl"] .font-mono {
+  letter-spacing: 0;
+}
 /* Lenis smooth scroll core rules */
 html.lenis, html.lenis body {
   height: auto;
 }
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
+}
+
+/* Content-visibility optimization: skips offscreen layout and paint for homepage sections until scrolled near */
+main.home > section:not(:first-child) {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 750px;
 }
 .lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
@@ -176,7 +197,12 @@ html.lenis, html.lenis body {
     margin: 0;
     background: var(--bg);
     color: var(--ink);
+    font-family: var(--font-body);
     font-weight: 400;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
   }
 
   img, svg, video, canvas, audio, iframe, embed, object {
@@ -364,7 +390,7 @@ html.lenis, html.lenis body {
 .u-btn--1 .btn_label {
   align-items: center;
   background: var(--button-text-background);
-  border-radius: 12px 0 0 12px;
+  border-radius: 0 12px 12px 0;
   color: var(--button-text-color);
   display: inline-flex;
   font-family: var(--font-mono);
@@ -372,22 +398,24 @@ html.lenis, html.lenis body {
   font-weight: 600;
   letter-spacing: 0.05em;
   line-height: 1;
-  margin-right: 16px;
+  /* RTL mirror: label sits on the inline-start (right) side in LTR builds —
+     mirrored for the RTL root so the notch lands on the visual left */
+  margin-left: 16px;
   overflow: visible;
-  padding: 14px 12px 14px 22px;
+  padding: 14px 22px 14px 12px;
   position: relative;
   text-transform: uppercase;
   transition: background-color var(--button-transition-duration) var(--button-transition-timing-function),
               color var(--button-transition-duration) var(--button-transition-timing-function),
-              margin-right var(--button-transition-duration) var(--button-transition-timing-function),
-              padding-right var(--button-transition-duration) var(--button-transition-timing-function);
+              margin-left var(--button-transition-duration) var(--button-transition-timing-function),
+              padding-left var(--button-transition-duration) var(--button-transition-timing-function);
 }
 
 .u-btn--1 .label_corner {
   background: transparent;
   display: block;
   top: 0;
-  right: -16px;
+  left: -16px;
   bottom: 0;
   position: absolute;
   width: 18px;
@@ -409,7 +437,7 @@ html.lenis, html.lenis body {
   width: 51px;
   height: 48px;
   transform: scale(1);
-  transform-origin: center right;
+  transform-origin: center left;
   transition: transform var(--button-transition-duration) var(--button-transition-timing-function);
 }
 
@@ -426,12 +454,12 @@ html.lenis, html.lenis body {
               transform var(--button-transition-duration) var(--button-transition-timing-function);
 }
 
-/* Hover State (Matches IntegratedBio exact inverted color state) */
+/* Hover State (Matches IntegratedBio exact inverted color state) — RTL mirrored */
 .u-btn--1:hover .btn_label {
   background-color: var(--button-text-background-hover);
   color: var(--button-text-color-hover);
-  margin-right: 12px;
-  padding-right: 14px;
+  margin-left: 12px;
+  padding-left: 14px;
 }
 
 .u-btn--1:hover .label_corner svg path {
@@ -448,7 +476,7 @@ html.lenis, html.lenis body {
 
 .u-btn--1:hover .btn_icon .arrow_svg {
   color: #ffffff;
-  transform: translateX(3px);
+  transform: translateX(-3px);
 }
 
 .card {
@@ -482,6 +510,37 @@ html.lenis, html.lenis body {
   transition: transform 0.25s ease-out;
 }
 .link-underline:hover::after {
+  transform: scaleX(1);
+}
+@keyframes j-header-drop {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.j-header-drop {
+  opacity: 0;
+  animation: j-header-drop 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .j-header-drop { animation: none; opacity: 1; transform: none; }
+}
+.j-header-dim { transition: opacity 0.2s ease; }
+.j-header-dim-group:hover .j-header-dim:not(:hover) { opacity: 0.5; }
+.j-header-underline { position: relative; }
+.j-header-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  right: 0;
+  height: 2px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  background: linear-gradient(90deg, #cef79e, #a7e26e);
+  transition: transform 0.3s ease-out;
+}
+.j-header-underline:hover::after,
+.j-header-underline:focus-visible::after {
   transform: scaleX(1);
 }
 
@@ -1486,6 +1545,68 @@ a:active, button:active, [role="button"]:active {
   }
 }
 
+/* ============================================================
+   COHERE-STYLE CARD ANIMATIONS — homepage-scoped (.home)
+   Ported from cohere.com: staggered scroll-reveal (fadeInUp 0.5s
+   ease-in-out with per-card/per-element delays) + arrow wiggle on
+   hover, with a dedicated RTL variant. CSS-driven, no JS animation.
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes cohere-fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    /* transform intentionally omitted: releases it after the animation so
+       hover effects (translateY lift) are not overridden by fill-mode. */
+    100% {
+      opacity: 1;
+    }
+  }
+
+  /* Wiggle on hover — LTR moves right, RTL (our site) moves left.
+     Exact port of Cohere's callout-module arrowWiggle / arrowWiggleRtl. */
+  @keyframes cohere-arrow-wiggle {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes cohere-arrow-wiggle-rtl {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+  }
+
+  /* Reveal targets start hidden only when motion is allowed; JS (Reveal)
+     flips data-revealed=true on the group when it scrolls into view. */
+  .home [data-cohere-reveal] :is([data-cohere-item]) {
+    opacity: 0;
+  }
+
+  .home [data-cohere-reveal][data-revealed="true"] :is([data-cohere-item]) {
+    animation: cohere-fade-in-up 0.5s ease-in-out forwards;
+    animation-delay: var(--cohere-delay, 0ms);
+  }
+}
+
+/* Arrow wiggle runs per-card on hover (still reduced-motion safe: the
+   keyframes above are declared inside the media query). Default is the RTL
+   variant (our site is Arabic); LTR contexts flip to +5px. */
+@media (prefers-reduced-motion: no-preference) {
+  .home [data-cohere-card] .cohere-arrow {
+    transition: color 0.3s ease-in-out;
+  }
+  .home [data-cohere-card]:hover .cohere-arrow,
+  .home [data-cohere-card]:focus-visible .cohere-arrow {
+    animation: cohere-arrow-wiggle-rtl 0.4s ease-in-out;
+  }
+  [dir="ltr"] .home [data-cohere-card]:hover .cohere-arrow,
+  [dir="ltr"] .home [data-cohere-card]:focus-visible .cohere-arrow {
+    animation: cohere-arrow-wiggle 0.4s ease-in-out;
+  }
+}
+
 /* Clerk Widget Hardware Acceleration, Transitions & Smoothness */
 @keyframes clerkFadeIn {
   from {
@@ -1564,3 +1685,18 @@ a:active, button:active, [role="button"]:active {
   transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
+
+/* Smoothness: Marquee reduced motion pause */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  [class*="animate-[marquee"] {
+    animation-play-state: paused !important;
+  }
+}
+
+/* Smoothness: content-visibility on homepage sections to skip off-screen rendering */
+.home > section,
+.home > [class*="py-12"] {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}

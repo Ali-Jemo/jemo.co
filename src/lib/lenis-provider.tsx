@@ -24,31 +24,51 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     });
     lenisRef.current = lenis;
 
-    let rafId: number;
-    let isRunning = true;
+    let rafId: number | null = null;
+    let settlingFrames = 0;
 
+    // ponytail: on-demand rAF loop — stops spinning when idle to eliminate background CPU drain
     function raf(time: number) {
-      if (isRunning && lenisRef.current) {
-        lenisRef.current.raf(time);
+      if (!lenisRef.current) return;
+      lenisRef.current.raf(time);
+      if (lenisRef.current.isScrolling) {
+        settlingFrames = 25;
+        rafId = requestAnimationFrame(raf);
+      } else if (settlingFrames > 0) {
+        settlingFrames--;
+        rafId = requestAnimationFrame(raf);
+      } else {
+        rafId = null;
+      }
+    }
+
+    function wake() {
+      if (!rafId && lenisRef.current) {
+        settlingFrames = 30;
         rafId = requestAnimationFrame(raf);
       }
     }
 
+    window.addEventListener("wheel", wake, { passive: true });
+    window.addEventListener("keydown", wake, { passive: true });
+    wake();
+
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        isRunning = false;
-        if (rafId) cancelAnimationFrame(rafId);
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
       } else {
-        isRunning = true;
-        rafId = requestAnimationFrame(raf);
+        wake();
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    rafId = requestAnimationFrame(raf);
 
     return () => {
-      isRunning = false;
+      window.removeEventListener("wheel", wake);
+      window.removeEventListener("keydown", wake);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (rafId) cancelAnimationFrame(rafId);
       lenis.destroy();

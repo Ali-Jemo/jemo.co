@@ -64,7 +64,7 @@ export default function NewsletterPage() {
               <p className="text-[11px] font-mono text-[var(--ink-2)]">
                 الإصدارات والمعارف الدورية • JEMO DISPATCH
               </p>
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--ink-1)] leading-tight">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-[var(--ink-1)] leading-tight">
                 النشرة الإخبارية والعلمية للشركة
               </h1>
               <p className="text-xs sm:text-sm text-[var(--ink-2)] leading-relaxed">

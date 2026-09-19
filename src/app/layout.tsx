@@ -7,14 +7,28 @@ import ScrollProgress from "@/components/ScrollProgress";
 import { AuthProvider } from "@/lib/auth-context";
 import { clerkGlobalAppearance } from "@/lib/clerk-appearance";
 
-const noto = { variable: "font-kufi" };
-const mono = { variable: "font-mono" };
+import { Noto_Kufi_Arabic, IBM_Plex_Mono } from "next/font/google";
+
+const noto = Noto_Kufi_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-kufi",
+  display: "swap",
+});
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-mono",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
   themeColor: "#08090d",
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
@@ -78,7 +92,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className={`${noto.variable} ${mono.variable}`}>
+    <html lang="ar" dir="rtl" className={`${noto.variable} ${mono.variable} overflow-x-hidden`}>
       <head>
         <link rel="preconnect" href="https://balanced-cub-4691.clerk.accounts.dev" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://balanced-cub-4691.clerk.accounts.dev" />
@@ -90,15 +104,16 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)]" suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)] overflow-x-hidden max-w-full" suppressHydrationWarning>
         <ClerkProvider
+          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_YmFsYW5jZWQtY3ViLTQ2OTEuY2xlcmsuYWNjb3VudHMuZGV2JA"}
           appearance={clerkGlobalAppearance}
           afterSignOutUrl="/"
           signInUrl="/sign-in"
           signUpUrl="/sign-up"
         >
           {/* Background Assets */}
-          <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden" style={{ contain: 'strict' }}>
+          <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden" style={{ contain: 'strict', transform: 'translateZ(0)' }}>
           <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
           </div>
           <ScrollProgress />

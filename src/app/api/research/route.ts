@@ -19,11 +19,13 @@ export async function GET(req: Request) {
   }
 
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q") || undefined;
-  const field = searchParams.get("field") || undefined;
-  const type = searchParams.get("type") || undefined;
-  const limit = parseInt(searchParams.get("limit") || "20", 10);
-  const offset = parseInt(searchParams.get("offset") || "0", 10);
+  const q = (searchParams.get("q") || undefined)?.slice(0, 200);
+  const field = (searchParams.get("field") || undefined)?.slice(0, 100);
+  const type = (searchParams.get("type") || undefined)?.slice(0, 100);
+  const rawLimit = parseInt(searchParams.get("limit") || "20", 10);
+  const rawOffset = parseInt(searchParams.get("offset") || "0", 10);
+  const limit = Number.isFinite(rawLimit) ? Math.min(Math.max(rawLimit, 1), 100) : 20;
+  const offset = Number.isFinite(rawOffset) ? Math.max(rawOffset, 0) : 0;
 
   const result = listResearchObjects({ q, field, type, limit, offset });
 
@@ -73,9 +75,9 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!body.title || typeof body.title !== "string" || !body.title.trim()) {
+    if (!body.title || typeof body.title !== "string" || !body.title.trim() || body.title.length > 500) {
       return NextResponse.json(
-        { error: "Missing required field", message: "Field 'title' must be a non-empty string." },
+        { error: "Missing required field", message: "Field 'title' must be a non-empty string (max 500 chars)." },
         { status: 400 }
       );
     }

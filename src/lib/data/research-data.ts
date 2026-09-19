@@ -62,6 +62,17 @@ export interface Paper {
     forkedFrom?: string;
   };
   responses?: ResearchResponse[];
+  jevEvaluation?: {
+    status: "pending" | "completed" | "failed";
+    rigorScore: number;
+    rigorNormalized: number;
+    reproducibilityProbability: number;
+    reproducibilityPercent: number;
+    contribution: string;
+    isRelevant?: boolean;
+    confidence: Record<string, number>;
+    evaluatedAt: string;
+  };
 };
 
 export type ResearchObject = Paper;

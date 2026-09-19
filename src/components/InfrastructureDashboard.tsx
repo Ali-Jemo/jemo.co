@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Server, ArrowUpLeft, Cpu, HardDrive, Wifi, MapPin } from "lucide-react";
 import { INFRASTRUCTURE } from "@/lib/data/research-data";

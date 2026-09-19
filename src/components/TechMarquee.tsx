@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Code2,
   Database,
@@ -46,7 +44,7 @@ export default function TechMarquee() {
           return (
             <div
               key={i}
-              className="flex items-center gap-2.5 px-4 py-2 bg-white border border-[var(--j-line)] rounded-md shrink-0 select-none grayscale hover:grayscale-0 hover:border-[var(--brand)] transition-all cursor-pointer shadow-2xs"
+              className="flex items-center gap-2.5 px-4 py-2 bg-white border border-[var(--j-line)] rounded-md shrink-0 select-none grayscale hover:grayscale-0 hover:border-[var(--brand)] transition-[filter,border-color] cursor-pointer shadow-2xs"
             >
               <Icon className="w-4 h-4 text-[var(--brand)]" />
               <span className="text-xs font-mono font-bold text-[var(--ink)] tracking-wider uppercase">

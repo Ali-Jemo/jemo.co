@@ -57,6 +57,18 @@ function maskEmail(email: string) {
   return `${masked}@${domain}`;
 }
 
+// Stored-XSS guard: applicant-supplied portfolio must be http(s) before it
+// ever becomes a clickable href. Anything else renders as inert text.
+function isSafeHttpUrl(value: unknown): value is string {
+  if (typeof value !== "string") return false;
+  try {
+    const u = new URL(value.trim());
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export default function ApplicationsClient() {
     const [apps, setApps] = useState<Application[]>([]);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -152,7 +164,7 @@ export default function ApplicationsClient() {
           </div>
           <div className="flex-shrink-0">
             <Link href="/apply" className="group relative inline-flex items-center justify-center px-8 py-4 font-bold !text-white transition-all duration-300 bg-gradient-to-r from-[var(--brand-700)] to-[var(--brand)] rounded-xl overflow-hidden shadow-[0_10px_20px_-10px_var(--brand)] hover:shadow-[0_15px_30px_-10px_var(--brand)] hover:-translate-y-1">
-              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
+              <span className="absolute inset-0 translate-x-full group-hover:-translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
               <span className="relative z-10 flex items-center gap-2 font-kufi">
                 تقديم طلب انضمام
                 <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -360,10 +372,14 @@ export default function ApplicationsClient() {
               {selectedApp.portfolio && (
                 <div className="p-5 rounded-xl bg-[var(--surface-2)] border border-[var(--line)]">
                   <div className="text-xs text-[var(--ink)]/60 mb-2 uppercase tracking-widest font-mono">Portfolio Link</div>
+                  {isSafeHttpUrl(selectedApp.portfolio) ? (
                   <a href={selectedApp.portfolio} target="_blank" rel="noopener noreferrer" className="text-[var(--ink)] hover:text-[var(--ink)]/80 flex items-center gap-2 underline underline-offset-4 decoration-white/20 hover:decoration-white/50 transition-colors break-all">
                     {selectedApp.portfolio}
                     <ExternalLink size={14} />
                   </a>
+                  ) : (
+                    <span className="text-[var(--ink)]/70 break-all">{selectedApp.portfolio}</span>
+                  )}
                 </div>
               )}
 

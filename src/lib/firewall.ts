@@ -191,7 +191,7 @@ export const HONEYPOT_PATHS = new Set([
 const INJECTION_PATTERNS: Array<{ name: string; regex: RegExp }> = [
   // SQL Injection
   { name: "SQLi_UnionSelect", regex: /\bunion\b\s+(?:all\s+)?\bselect\b/i },
-  { name: "SQLi_SelectFrom", regex: /\bselect\b\s+.*\s+\bfrom\b/i },
+  { name: "SQLi_SelectFrom", regex: /\bselect\b\s+[\s\S]{0,512}?\s+\bfrom\b/i },
   { name: "SQLi_DropTable", regex: /\b(?:drop|alter|truncate)\b\s+\btable\b/i },
   { name: "SQLi_BenchmarkOrSleep", regex: /\b(?:benchmark|sleep|waitfor\s+delay)\s*\(/i },
   { name: "SQLi_InfoSchema", regex: /\binformation_schema\b/i },
@@ -232,8 +232,13 @@ export function detectInjection(urlStr: string): { detected: boolean; type?: str
     return { detected: true, type: "Malformed_URI_Encoding" };
   }
 
+  // Bound WAF input: pattern-scan only the first 8KB so a crafted
+  // multi-megabyte URL can't turn regex evaluation into a CPU DoS.
+  const hayRaw = urlStr.length > 8192 ? urlStr.slice(0, 8192) : urlStr;
+  const hayDecoded = decoded.length > 8192 ? decoded.slice(0, 8192) : decoded;
+
   for (const pattern of INJECTION_PATTERNS) {
-    if (pattern.regex.test(urlStr) || pattern.regex.test(decoded)) {
+    if (pattern.regex.test(hayRaw) || pattern.regex.test(hayDecoded)) {
       return { detected: true, type: pattern.name };
     }
   }
@@ -282,11 +287,13 @@ export function validateMutationOrigin(req: Request): { valid: boolean; reason?:
   try {
     const parsed = new URL(target);
     const hostname = parsed.hostname.toLowerCase();
+    // localhost is only a valid mutation origin in dev/test. In production
+    // Origin is attacker-forgeable, so allowing it would neuter CSRF checks.
+    const isDevEnv = process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
     const isAllowed =
       hostname === "jemo.co" ||
       hostname.endsWith(".jemo.co") ||
-      hostname === "localhost" ||
-      hostname === "127.0.0.1";
+      ((hostname === "localhost" || hostname === "127.0.0.1") && isDevEnv);
 
     if (!isAllowed) {
       return { valid: false, reason: `Unauthorized cross-origin request from ${hostname}` };
@@ -378,8 +385,11 @@ export function evaluateFirewall(req: Request): FirewallEvaluation {
     };
   }
 
-  // 2. Honeypot trap check
-  if (HONEYPOT_PATHS.has(url.pathname)) {
+  // 2. Honeypot trap check (trailing-slash normalized so
+  // /api/v1/telemetry-ping/ can't dodge the exact-match Set)
+  const normPath =
+    url.pathname.length > 1 ? url.pathname.replace(/\/+$/, "") : url.pathname;
+  if (HONEYPOT_PATHS.has(normPath)) {
     banIp(ip, "Honeypot trap triggered by automated crawler", 86_400_000); // 24 hour ban
     return {
       action: "BLOCK",

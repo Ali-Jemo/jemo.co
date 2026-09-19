@@ -68,6 +68,13 @@ export async function PUT(req: Request, context: RouteContext) {
     if (items.length > 200) {
       return NextResponse.json({ error: "too many items" }, { status: 400 });
     }
+    let byteSize = 0;
+    for (const item of items) {
+      byteSize += typeof item === "string" ? item.length : JSON.stringify(item)?.length ?? 0;
+      if (byteSize > 512_000) {
+        return NextResponse.json({ error: "payload too large" }, { status: 413 });
+      }
+    }
     if (resolved.spec.kind === "document" && items.length !== 1) {
       return NextResponse.json({ error: "a document takes exactly one item" }, { status: 400 });
     }

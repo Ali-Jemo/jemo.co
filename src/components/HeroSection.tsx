@@ -65,6 +65,14 @@ export default function HeroSection() {
       mouseRafRef.current = null;
     });
   }, [mouseX, mouseY]);
+  const handleMouseLeave = useCallback(() => {
+    if (mouseRafRef.current !== null) {
+      cancelAnimationFrame(mouseRafRef.current);
+      mouseRafRef.current = null;
+    }
+    mouseX.set(0);
+    mouseY.set(0);
+  }, [mouseX, mouseY]);
 
   useEffect(() => {
     return () => {
@@ -106,38 +114,40 @@ export default function HeroSection() {
     <section
       dir="rtl"
       onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className="relative w-full min-h-[100svh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-hidden flex flex-col justify-between py-4 lg:py-0 lg:-mt-16 lg:pt-20 lg:pb-4"
     >
-      {/* 1. Looping 3D Sculptural Ribbon Video Background directly from IntegratedBio with Parallax */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      {/* 1. Looping 3D Sculptural Ribbon Video Background directly from IntegratedBio */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden" style={{ contain: "strict" }}>
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster="/hero-bg.png"
+          className="w-full h-full object-cover object-center"
+        >
+          {/* ponytail: WebM first for optimized 5.7MB bandwidth & smooth looping, MP4 fallback */}
+          <source src="/hero-loop.webm" type="video/webm" />
+          <source src="/hero-loop.mp4" type="video/mp4" />
+        </video>
+
+        {/* Targeted radial & linear gradient overlays with subtle lighting parallax (animating overlays instead of video avoids GPU texture re-copies) */}
         <motion.div 
           style={{ x: springX, y: springY }}
-          className="absolute inset-0 w-full h-full lg:-inset-[6%] lg:w-[112%] lg:h-[112%]"
+          className="absolute inset-0 lg:-inset-[4%] lg:w-[108%] lg:h-[108%]"
         >
-          <video
-            ref={videoRef}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            poster="/hero-bg.png"
-            className="w-full h-full object-cover object-center transition-opacity duration-1000 transform-gpu"
-          >
-            <source src="/hero-loop.webm" type="video/webm" />
-            <source src="/hero-loop.mp4" type="video/mp4" />
-          </video>
+          <div 
+            className="absolute inset-0"
+            style={{
+              background: "radial-gradient(ellipse 950px 600px at 72% 50%, rgba(12,20,21,0.75) 0%, rgba(12,20,21,0.3) 60%, transparent 100%)"
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0c1415]/90 via-transparent to-[#0c1415]/50" />
+          <div className="absolute inset-0 bg-[#0c1415]/15" />
         </motion.div>
-
-        {/* Targeted radial & linear gradient overlays ensuring 100% typography contrast in all frames */}
-        <div 
-          className="absolute inset-0"
-          style={{
-            background: "radial-gradient(ellipse 950px 600px at 72% 50%, rgba(12,20,21,0.75) 0%, rgba(12,20,21,0.3) 60%, transparent 100%)"
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0c1415]/90 via-transparent to-[#0c1415]/50" />
-        <div className="absolute inset-0 bg-[#0c1415]/15" />
       </div>
 
       <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 pt-3 sm:pt-5 flex items-center justify-between flex-wrap gap-3">
@@ -145,7 +155,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-white/15 bg-[#0c1415]/65 backdrop-blur-md text-xs shadow-lg max-w-full overflow-hidden"
+          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/15 bg-[#0c1415]/65 backdrop-blur-md text-xs shadow-lg max-w-[calc(100vw-2rem)] overflow-hidden"
         >
           <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse shrink-0" aria-hidden />
           <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-wider text-white/95 uppercase truncate">OPEN DISCOVERY ARCHIVE</span>
@@ -166,11 +176,11 @@ export default function HeroSection() {
           </div>
           <h1
             style={{ color: "#ffffff" }}
-            className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.18] sm:leading-[1.12] tracking-tight font-kufi text-white select-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
+            className="text-[1.85rem] xs:text-[2.15rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.18] sm:leading-[1.12] tracking-tight font-kufi text-white select-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
           >
             <span className="block overflow-hidden pb-1 -mb-1">
               <motion.span initial={{ y: "115%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="block">
-               معرفتك المتناثرة , خليها يمنا
+               معرفتك المتناثرة، خليها يمنا
               </motion.span>
             </span>
             <span className="block overflow-hidden pb-1 -mb-1">
@@ -266,7 +276,7 @@ export default function HeroSection() {
       {/* 5. Center-Bottom Scroll Cue Button */}
       <button
         onClick={scrollToContent}
-        className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0c1415]/80 border border-white/15 hover:border-[#bef264]/60 hover:bg-black/90 text-[10px] font-mono tracking-wider text-white/80 hover:text-white transition-all shadow-md hover:-translate-y-0.5 cursor-pointer group"
+        className="absolute bottom-4 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-2.5 sm:py-1.5 min-h-[42px] sm:min-h-[32px] rounded-full bg-[#0c1415]/85 border border-white/15 hover:border-[#bef264]/60 hover:bg-black/90 text-xs sm:text-[10px] font-mono tracking-wider text-white/90 hover:text-white transition-all shadow-md hover:-translate-y-0.5 cursor-pointer group"
         aria-label="الانتقال للمنظومة المتكاملة"
       >
         <span>اكتشف المنظومة</span>

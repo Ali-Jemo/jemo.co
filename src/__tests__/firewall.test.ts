@@ -207,7 +207,7 @@ describe("Edge Firewall & WAF Engine", () => {
   describe("Unified Firewall Evaluation", () => {
     it("should block and blacklist IP when hitting honeypot", () => {
       const req = new Request("https://jemo.co/api/security/honeypot-trap", {
-        headers: { "cf-connecting-ip": "198.51.100.99" },
+        headers: { "cf-connecting-ip": "198.51.100.99", "cf-ray": "test-ray-honeypot" },
       });
 
       const evaluation = evaluateFirewall(req);
@@ -218,7 +218,7 @@ describe("Edge Firewall & WAF Engine", () => {
 
     it("should block and blacklist IP when probing exploit paths", () => {
       const req = new Request("https://jemo.co/.env", {
-        headers: { "cf-connecting-ip": "198.51.100.101" },
+        headers: { "cf-connecting-ip": "198.51.100.101", "cf-ray": "test-ray-exploit" },
       });
 
       const evaluation = evaluateFirewall(req);
@@ -232,6 +232,7 @@ describe("Edge Firewall & WAF Engine", () => {
         headers: {
           "user-agent": "sqlmap/1.6#stable",
           "cf-connecting-ip": "198.51.100.102",
+          "cf-ray": "test-ray-tool",
         },
       });
 
@@ -245,6 +246,7 @@ describe("Edge Firewall & WAF Engine", () => {
         headers: {
           "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
           "cf-connecting-ip": "198.51.100.200",
+          "cf-ray": "test-ray-clean",
         },
       });
 

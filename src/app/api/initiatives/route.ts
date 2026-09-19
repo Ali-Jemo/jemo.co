@@ -3,6 +3,12 @@ import { INITIATIVES } from "@/lib/data/research-data";
 import { checkRateLimit, getClientIp, sanitizeInput } from "@/lib/security";
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rateLimit = checkRateLimit(`initiatives_get:${ip}`, 60, 60_000);
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const { searchParams } = new URL(req.url);
   const slug = searchParams.get("slug");
   const status = searchParams.get("status");

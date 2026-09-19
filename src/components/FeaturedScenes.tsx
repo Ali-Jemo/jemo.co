@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
@@ -36,11 +36,25 @@ const AUTOPLAY_MS = 7000;
 // Bento interactive v2: single selector (side list), crossfading hero,
 // autoplay with pause, prev/next + arrow-key navigation.
 export default function FeaturedScenes() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
   const scenes = RESEARCH_PROJECTS.filter((p) => p.featured).slice(0, 3);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [cycle, setCycle] = useState(0); // restarts progress bar each switch
 
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   const go = useCallback(
     (dir: 1 | -1) => {
       setActive((a) => (a + dir + scenes.length) % scenes.length);
@@ -54,18 +68,21 @@ export default function FeaturedScenes() {
     setCycle((c) => c + 1);
   }, []);
 
+  // ponytail: pause autoplay timer when scrolled out of view to eliminate background CPU execution
   useEffect(() => {
-    if (paused || scenes.length < 2) return;
+    if (!isInView || paused || scenes.length < 2) return;
     const t = setTimeout(() => go(1), AUTOPLAY_MS);
     return () => clearTimeout(t);
-  }, [paused, cycle, go, scenes.length]);
+  }, [isInView, paused, cycle, go, scenes.length]);
 
   if (scenes.length === 0) return null;
   const hero = scenes[active] ?? scenes[0];
 
   return (
     <div
+      ref={containerRef}
       dir="rtl"
+      className="w-full max-w-full overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
@@ -76,7 +93,7 @@ export default function FeaturedScenes() {
       }}
     >
       {/* control strip */}
-      <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4">
+      <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4 flex-wrap sm:flex-nowrap">
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs text-[var(--ink-2)] dir-ltr shrink-0">
             {String(active + 1).padStart(2, "0")} <span className="text-[var(--j-line-2)]">/</span> {String(scenes.length).padStart(2, "0")}
@@ -126,7 +143,7 @@ export default function FeaturedScenes() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-5 gap-px bg-[var(--j-line)] border border-[var(--j-line)]">
+      <div className="grid lg:grid-cols-5 gap-px bg-[var(--j-line)] border border-[var(--j-line)] max-w-full overflow-hidden rounded-xl sm:rounded-none">
         {/* Hero — visual first, crossfades on switch */}
         <article className="lg:col-span-3 relative overflow-hidden bg-[#0c0c0f] group min-h-[300px] sm:min-h-[460px] lg:min-h-[560px]">
           <AnimatePresence mode="popLayout">
@@ -142,7 +159,6 @@ export default function FeaturedScenes() {
                 src={hero.image}
                 alt={hero.title}
                 fill
-                priority
                 sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover opacity-90 transition-transform duration-[1.2s] ease-out group-hover:scale-105"
               />
@@ -217,7 +233,7 @@ export default function FeaturedScenes() {
         </article>
 
         {/* Side list — the single selector */}
-        <div className="lg:col-span-2 flex overflow-x-auto sm:grid sm:grid-cols-3 lg:grid-cols-1 lg:grid-rows-3 gap-px bg-[var(--j-line)] no-scrollbar" role="tablist" aria-label="المشاريع التجريبية">
+        <div className="lg:col-span-2 min-w-0 max-w-full flex overflow-x-auto sm:grid sm:grid-cols-3 lg:grid-cols-1 lg:grid-rows-3 gap-px bg-[var(--j-line)] no-scrollbar" role="tablist" aria-label="المشاريع التجريبية">
           {scenes.map((p, i) => {
             const isActive = i === active;
             const Icon = SIDE_ICONS[i % SIDE_ICONS.length];

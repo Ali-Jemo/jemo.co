@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import RevealGroup from "@/components/RevealGroup";
 
 /**
  * Homepage editorial spine primitives.
@@ -68,6 +69,8 @@ interface EditorialSectionHeaderProps {
   lede?: ReactNode;
   /** Optional action (e.g. a BioButton) rendered under the lede. */
   cta?: ReactNode;
+  /** Cohere-style staggered entrance for eyebrow → headline → lede. */
+  animate?: boolean;
 }
 
 export default function EditorialSectionHeader({
@@ -78,10 +81,14 @@ export default function EditorialSectionHeader({
   titleAccent,
   lede,
   cta,
+  animate = false,
 }: EditorialSectionHeaderProps) {
-  return (
-    <div className="mb-8 sm:mb-12 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 lg:gap-12">
+  const anim = (ms: number): { "data-cohere-item": string; style: CSSProperties } | {} =>
+    animate ? { "data-cohere-item": "", style: { "--cohere-delay": `${ms}ms` } as CSSProperties } : {};
+
+  const body = (
+    <>
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 lg:gap-12" {...anim(0)}>
         <div className="space-y-3 max-w-3xl">
           <EditorialEyebrow num={num} kickerAr={kickerAr} kickerEn={kickerEn} />
           <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-tight leading-[1.2] text-[#222f30] font-kufi">
@@ -96,7 +103,7 @@ export default function EditorialSectionHeader({
         </div>
 
         {(lede || cta) && (
-          <div className="flex flex-col gap-4 shrink-0 lg:max-w-md w-full lg:w-auto">
+          <div className="flex flex-col gap-4 shrink-0 lg:max-w-md w-full lg:w-auto" {...anim(120)}>
             {lede ? (
               <p className="text-sm sm:text-base text-[#55696a] leading-relaxed">{lede}</p>
             ) : null}
@@ -104,6 +111,12 @@ export default function EditorialSectionHeader({
           </div>
         )}
       </div>
+    </>
+  );
+
+  return (
+    <div className="mb-8 sm:mb-12 pb-6 sm:pb-8 border-b border-[#e4e3e3]">
+      {animate ? <RevealGroup>{body}</RevealGroup> : body}
     </div>
   );
 }

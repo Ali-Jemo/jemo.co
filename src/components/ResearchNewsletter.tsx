@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, CheckCircle2, ShieldCheck, Check } from "lucide-react";
+import { Mail, CheckCircle2, ShieldCheck, Check, AlertTriangle, Loader2 } from "lucide-react";
 import { EditorialEyebrow } from "@/components/EditorialSectionHeader";
 
 export default function ResearchNewsletter() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [topics, setTopics] = useState<string[]>(["العلوم الشرعية", "الذكاء الاصطناعي"]);
 
   const toggleTopic = (topic: string) => {
@@ -17,10 +19,29 @@ export default function ResearchNewsletter() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email) return;
-    setSubmitted(true);
+    const clean = email.trim();
+    if (!clean) return;
+    setIsSubmitting(true);
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: clean, topics }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string; message?: string };
+      if (!res.ok) {
+        throw new Error(data.error || "تعذر إتمام الاشتراك، يرجى المحاولة لاحقاً");
+      }
+      setSubmitted(true);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "حدث خطأ أثناء التسجيل";
+      setSubmitError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -49,7 +70,7 @@ export default function ResearchNewsletter() {
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>تم تسجيل بريدك بنجاح! ستتلقى أولى النسخ المسبقة من أبحاث JEMO LABS فور صدورها.</span>
           </div>
-        ) : (
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             {/* Topic Filter Pills */}
             <div className="flex items-center sm:flex-wrap justify-start sm:justify-center gap-2 text-xs font-mono overflow-x-auto no-scrollbar pb-1 px-1">
@@ -92,11 +113,20 @@ export default function ResearchNewsletter() {
 
               <button
                 type="submit"
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl sm:rounded-full bg-[#222f30] text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#162224] transition-all shrink-0 cursor-pointer shadow-xs active:scale-95"
+                disabled={isSubmitting}
+                className="w-full sm:w-auto px-6 py-2.5 rounded-xl sm:rounded-full bg-[#222f30] text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#162224] transition-all shrink-0 cursor-pointer shadow-xs active:scale-95 disabled:opacity-60 disabled:cursor-wait inline-flex items-center justify-center gap-2"
               >
-                انضمام
+                {isSubmitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                {isSubmitting ? "جارٍ الاشتراك..." : "انضمام"}
               </button>
             </div>
+
+            {submitError && (
+              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-700 font-mono text-xs flex items-center justify-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{submitError}</span>
+              </div>
+            )}
 
             <div className="flex items-center justify-center gap-2 text-[11px] font-mono text-[#445e5f]">
               <ShieldCheck className="w-4 h-4 text-[#728825]" />
