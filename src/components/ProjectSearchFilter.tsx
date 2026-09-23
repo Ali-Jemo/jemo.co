@@ -5,7 +5,7 @@ import { Project } from "@/lib/data/research-data";
 import { motion, AnimatePresence } from "framer-motion";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
-import { FolderGit2, Search, Filter, Users, ArrowUpLeft } from "lucide-react";
+import { FolderGit2, Search, Users, ArrowUpLeft } from "lucide-react";
 
 interface ProjectSearchFilterProps {
   projects: Project[];
@@ -16,6 +16,11 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const statuses = ["Research", "Prototype", "Active", "Completed"];
+  const counts = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const p of projects) map[p.status] = (map[p.status] ?? 0) + 1;
+    return map;
+  }, [projects]);
 
   const filteredProjects = useMemo(() => {
     return projects.filter((proj) => {
@@ -34,8 +39,11 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
 
   return (
     <div className="space-y-8">
-      {/* Search & Filter controls */}
-      <Card className="p-6 space-y-4 border-2 border-[var(--brand)]/20">
+      {/* Search & Filter controls — pinned under the header on desktop */}
+      <Card
+        data-cohere-toolbar
+        className="p-6 space-y-4 border-2 border-[var(--brand)]/20 lg:sticky lg:top-24 z-20"
+      >
         <div className="flex flex-col md:flex-row items-center gap-4">
           <div className="relative flex-1 w-full">
             <Search className="w-4 h-4 text-[var(--ink-2)] absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -51,8 +59,10 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
           {/* Status Pills */}
           <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <button
+              type="button"
               onClick={() => setStatusFilter("all")}
-              className={`px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
+              aria-pressed={statusFilter === "all"}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition active:scale-95 ${
                 statusFilter === "all"
                   ? "bg-[var(--brand)] text-white"
                   : "bg-[var(--bg)] border border-[var(--line)] text-[var(--ink-2)] hover:text-[var(--ink-1)]"
@@ -63,14 +73,16 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
             {statuses.map((st) => (
               <button
                 key={st}
+                type="button"
                 onClick={() => setStatusFilter(st)}
-                className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition-colors ${
+                aria-pressed={statusFilter === st}
+                className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition active:scale-95 ${
                   statusFilter === st
                     ? "bg-[var(--brand)] text-white"
                     : "bg-[var(--bg)] border border-[var(--line)] text-[var(--ink-2)] hover:text-[var(--ink-1)]"
                 }`}
               >
-                {st}
+                {st} ({counts[st] ?? 0})
               </button>
             ))}
           </div>
@@ -78,7 +90,7 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
       </Card>
 
       {/* Grid */}
-      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 xl:gap-8">
         <AnimatePresence mode="popLayout">
           {filteredProjects.map((proj) => (
             <motion.div
@@ -90,7 +102,11 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
               transition={{ duration: 0.2 }}
               className="h-full"
             >
-              <Card hover className="p-7 flex flex-col justify-between h-full">
+              <Card
+                hover
+                data-cohere-card
+                className="p-7 flex flex-col justify-between h-full border border-[var(--line)]"
+              >
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[var(--surface)] border border-[var(--line)] text-[var(--brand)]">
@@ -142,7 +158,7 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
                   className="inline-flex items-center gap-1 font-bold text-[var(--brand)] hover:underline"
                 >
                   <span>عرض تفاصيل المشروع</span>
-                  <ArrowUpLeft className="w-3.5 h-3.5" />
+                  <ArrowUpLeft className="w-3.5 h-3.5 cohere-arrow" />
                 </Link>
               </div>
             </div>
@@ -151,6 +167,23 @@ export default function ProjectSearchFilter({ projects }: ProjectSearchFilterPro
           ))}
         </AnimatePresence>
       </motion.div>
+
+      {filteredProjects.length === 0 && (
+        <div className="text-center py-16 border border-[var(--line)] rounded-3xl bg-white">
+          <Search className="w-8 h-8 mx-auto mb-3 text-[var(--ink-2)] opacity-30" />
+          <p className="font-mono text-sm text-[var(--ink-2)]">لا توجد مشاريع تطابق بحثك</p>
+          <button
+            type="button"
+            onClick={() => {
+              setQuery("");
+              setStatusFilter("all");
+            }}
+            className="mt-3 text-xs font-bold text-[var(--brand)] hover:underline"
+          >
+            إعادة ضبط البحث والفلاتر
+          </button>
+        </div>
+      )}
     </div>
   );
 }

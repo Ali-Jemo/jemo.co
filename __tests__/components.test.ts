@@ -26,9 +26,6 @@ import DashboardPage from "../src/app/dashboard/page";
 import SupportPage from "../src/app/support/page";
 import DashboardHeader from "../src/components/dashboard/DashboardHeader";
 import DashboardMetrics from "../src/components/dashboard/DashboardMetrics";
-import ResearchObjectsTab from "../src/components/dashboard/ResearchObjectsTab";
-import ReplicationsTab from "../src/components/dashboard/ReplicationsTab";
-import BookmarksTab from "../src/components/dashboard/BookmarksTab";
 import ApiHubTab from "../src/components/dashboard/ApiHubTab";
 import ProfileSettingsTab from "../src/components/dashboard/ProfileSettingsTab";
 

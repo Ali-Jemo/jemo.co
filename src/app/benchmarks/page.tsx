@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
-import SectionHeader from "@/components/ui/SectionHeader";
 import { getLiveBenchmarks } from "@/lib/live-content";
 import { isSafeHttpUrl } from "@/lib/security-client";
-import { Trophy, ArrowUpLeft, Cpu, Database, CheckCircle2, TrendingUp } from "lucide-react";
+import { Trophy, ArrowUpLeft, Database, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {

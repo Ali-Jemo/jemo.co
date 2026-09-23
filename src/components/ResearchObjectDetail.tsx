@@ -14,28 +14,21 @@ import {
   Download, 
   Database, 
   Code2, 
-  Tag, 
   Share2, 
   Copy, 
-  Check, 
   GitFork, 
   MessageSquareQuote, 
   Scale, 
-  HelpCircle, 
-  Clock, 
   Sparkles, 
-  Layers, 
   Send, 
-  Eye, 
   FlaskConical, 
   Wrench, 
   BookOpen,
   RotateCcw,
-  Bot
+  Bot,
+  Loader2,
 } from "lucide-react";
 import CitationBox from "@/components/ui/CitationBox";
-import PaperReaderModal from "@/components/PaperReaderModal";
-import ExportCitationModal from "@/components/ExportCitationModal";
 import { isSafeHttpUrl } from "@/lib/security-client";
 
 interface ResearchObjectDetailProps {
@@ -96,7 +89,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
     if (!text || isChatLoading) return;
 
     const userMessage = {
-      id: `user-${Date.now()}`,
+      id: `user-${new Date().getTime()}`,
       role: "user" as const,
       content: text,
       timestamp: new Date().toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" }),
@@ -239,24 +232,54 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
       return;
     }
 
-    const newResp: ResearchResponse = {
-      id: `resp-${Date.now()}`,
-      type: respType,
-      author: respAuthor,
-      date: new Date().toLocaleDateString("ar-EG"),
-      content: respContent,
-      verified: false,
-    };
-    setResponses([newResp, ...responses]);
-    setRespAuthor("");
-    setRespContent("");
-    setRespSubmitted(true);
-    setIsSubmittingResponse(false);
-    setTimeout(() => {
-      setRespSubmitted(false);
-      setShowAddResponse(false);
-      setModNotice(null);
-    }, 1500);
+    try {
+      const repRes = await fetch('/api/research/' + paper.slug + '/responses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: respType,
+          findings: respContent,
+          author: respAuthor,
+        }),
+      });
+
+      if (repRes.status === 401) {
+        setModNotice("يلزم تسجيل الدخول أو استخدام مفتاح API معتمد لإرسال مراجعة نظيرة.");
+        setIsSubmittingResponse(false);
+        return;
+      }
+
+      if (!repRes.ok) {
+        const errData = await repRes.json().catch(() => ({}));
+        setModNotice(errData.message || errData.error || "تعذر حفظ المراجعة حالياً، يرجى المحاولة لاحقاً.");
+        setIsSubmittingResponse(false);
+        return;
+      }
+
+      const repData = await repRes.json().catch(() => null);
+
+      const newResp: ResearchResponse = {
+        id: `resp-${Date.now()}`,
+        type: respType,
+        author: repData?.data?.responses?.[repData.data.responses.length - 1]?.author || respAuthor,
+        date: new Date().toLocaleDateString("ar-EG"),
+        content: respContent,
+        verified: false,
+      };
+      setResponses((prev) => [newResp, ...prev]);
+      setRespAuthor("");
+      setRespContent("");
+      setRespSubmitted(true);
+      setIsSubmittingResponse(false);
+      setTimeout(() => {
+        setRespSubmitted(false);
+        setShowAddResponse(false);
+        setModNotice(null);
+      }, 1500);
+    } catch {
+      setModNotice("تعذر حفظ المراجعة النظيرة، يرجى إعادة المحاولة.");
+      setIsSubmittingResponse(false);
+    }
   };
 
   const filteredResponses = filterType === "all" 
@@ -271,7 +294,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
         <div className="flex items-center justify-between gap-4 mb-8">
           <Link
             href="/research"
-            className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] hover:text-[#222f30] transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-sans font-bold text-[#445e5f] hover:text-[#222f30] transition-colors"
           >
             <ArrowRight className="w-4 h-4" />
             <span>العودة لسجلات الاكتشاف والأبحاث</span>
@@ -280,14 +303,14 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           <div className="flex flex-wrap items-center gap-2">
             <a
               href="#ask-ai"
-              className="px-3 py-1.5 rounded-full border border-emerald-300 bg-emerald-50 text-xs font-mono font-bold text-emerald-900 hover:bg-emerald-100 flex items-center gap-1.5 shadow-xs transition-colors"
+              className="px-3.5 py-1.5 rounded-full border border-emerald-300 bg-emerald-50 text-xs font-sans font-bold text-emerald-900 hover:bg-emerald-100 flex items-center gap-1.5 shadow-xs transition-colors"
             >
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
               <span>اسأل الذكاء الاصطناعي (JEMO AI)</span>
             </a>
             <button
               onClick={handleCopyLink}
-              className="px-3 py-1.5 rounded-full border border-[#e4e3e3] bg-white text-xs font-mono text-[#445e5f] hover:text-[#222f30] flex items-center gap-1.5 shadow-xs"
+              className="px-3 py-1.5 rounded-full border border-[#e4e3e3] bg-white text-xs font-sans text-[#445e5f] hover:text-[#222f30] flex items-center gap-1.5 shadow-xs cursor-pointer"
               title="مشاركة رابط البحث"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -295,7 +318,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             </button>
             <button
               onClick={handleExportJSON}
-              className="px-3 py-1.5 rounded-full border border-[#e4e3e3] bg-white text-xs font-mono text-[#445e5f] hover:text-[#222f30] flex items-center gap-1.5 shadow-xs"
+              className="px-3 py-1.5 rounded-full border border-[#e4e3e3] bg-white text-xs font-sans text-[#445e5f] hover:text-[#222f30] flex items-center gap-1.5 shadow-xs cursor-pointer"
               title="تصدير كائن البحث بصيغة JSON"
             >
               <Copy className="w-3.5 h-3.5" />
@@ -308,14 +331,15 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
         <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-sm mb-6 sm:mb-8 space-y-5 sm:space-y-6">
           {/* Badges strip */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#cef79e] text-[#222f30] text-xs font-mono font-bold flex items-center gap-1.5 border border-[#a7e26e]">
+            <span className="px-3 py-1 rounded-full bg-[#cef79e] text-[#222f30] text-xs font-sans font-bold flex items-center gap-1.5 border border-[#a7e26e]">
               <BrainCircuit className="w-4 h-4" />
-              كائن بحثي · Research Object
+              <span>كائن بحثي</span>
+              <span className="font-mono text-[10px] opacity-75">/ Research Object</span>
             </span>
-            <span className="px-3 py-1 rounded-full bg-[#f5f8f7] border border-[#e4e3e3] text-[#445e5f] text-xs font-mono font-semibold">
+            <span className="px-3 py-1 rounded-full bg-[#f5f8f7] border border-[#e4e3e3] text-[#445e5f] text-xs font-sans font-semibold">
               {paper.field}
             </span>
-            <span className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono flex items-center gap-1">
+            <span className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-sans font-medium flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               {paper.humanVerification?.confidence || "مرتفعة - تم التحقق"}
             </span>
@@ -360,14 +384,14 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
           {/* Cognitive Curation Bar (Reputation & Verifications over Likes) */}
           <div className="pt-6 border-t border-[#e4e3e3]">
-            <div className="text-[11px] font-mono font-bold text-[#738284] uppercase tracking-wider mb-3">
+            <div className="text-[11px] font-sans font-bold text-[#738284] uppercase tracking-wider mb-3">
               مؤشرات الموثوقية وتدقيق المجتمع (Evidence & Verification):
             </div>
             
             <div className="flex flex-wrap items-center gap-2.5">
               <button
                 onClick={() => toggleMetric("reproduced")}
-                className={`px-3.5 py-2 rounded-xl border text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl border text-xs font-sans font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   voted.reproduced
                     ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
                     : "bg-[#f5f8f7] border-[#e4e3e3] text-[#222f30] hover:border-emerald-500 hover:bg-emerald-50"
@@ -375,12 +399,13 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
                 title="تمت إعادة التجربة وتكرار النتيجة بنجاح"
               >
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 group-hover:text-white" />
-                <span>تم التكرار بنجاح ({metrics.reproduced})</span>
+                <span>تم التكرار بنجاح</span>
+                <span className="font-mono">({metrics.reproduced})</span>
               </button>
 
               <button
                 onClick={() => toggleMetric("evidenceBacked")}
-                className={`px-3.5 py-2 rounded-xl border text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl border text-xs font-sans font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   voted.evidenceBacked
                     ? "bg-[#222f30] text-white border-[#222f30] shadow-xs"
                     : "bg-[#f5f8f7] border-[#e4e3e3] text-[#222f30] hover:border-[#222f30] hover:bg-zinc-100"
@@ -388,12 +413,13 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
                 title="مدعوم بمصادر وأدلة كافية"
               >
                 <FileText className="w-4 h-4 text-blue-600" />
-                <span>مدعوم بأدلة ({metrics.evidenceBacked})</span>
+                <span>مدعوم بأدلة</span>
+                <span className="font-mono">({metrics.evidenceBacked})</span>
               </button>
 
               <button
                 onClick={() => toggleMetric("disputed")}
-                className={`px-3.5 py-2 rounded-xl border text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl border text-xs font-sans font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   voted.disputed
                     ? "bg-amber-600 text-white border-amber-600 shadow-xs"
                     : "bg-[#f5f8f7] border-[#e4e3e3] text-[#222f30] hover:border-amber-500 hover:bg-amber-50"
@@ -401,12 +427,13 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
                 title="يوجد خلاف أو احتمال هلوسة قيد الفحص"
               >
                 <AlertTriangle className="w-4 h-4 text-amber-600" />
-                <span>يحتوي هلوسة/خطأ ({metrics.disputed})</span>
+                <span>يحتوي هلوسة/خطأ</span>
+                <span className="font-mono">({metrics.disputed})</span>
               </button>
 
               <button
                 onClick={() => toggleMetric("insightful")}
-                className={`px-3.5 py-2 rounded-xl border text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl border text-xs font-sans font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   voted.insightful
                     ? "bg-purple-600 text-white border-purple-600 shadow-xs"
                     : "bg-[#f5f8f7] border-[#e4e3e3] text-[#222f30] hover:border-purple-500 hover:bg-purple-50"
@@ -414,12 +441,13 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
                 title="طرح ذكي أو منهجية جديدة"
               >
                 <Sparkles className="w-4 h-4 text-purple-600" />
-                <span>مثير للاهتمام ({metrics.insightful})</span>
+                <span>مثير للاهتمام</span>
+                <span className="font-mono">({metrics.insightful})</span>
               </button>
 
               <Link
                 href={`/publish?fork=${paper.slug}`}
-                className="px-3.5 py-2 rounded-xl border border-[#e4e3e3] bg-white text-xs font-mono font-bold text-[#445e5f] hover:text-[#222f30] hover:border-[#a7e26e] flex items-center gap-1.5 ms-auto"
+                className="px-3.5 py-2 rounded-xl border border-[#e4e3e3] bg-white text-xs font-sans font-bold text-[#445e5f] hover:text-[#222f30] hover:border-[#a7e26e] flex items-center gap-1.5 ms-auto transition-colors"
                 title="إنشاء تفريعة أو امتداد لهذا البحث (Research Fork)"
               >
                 <GitFork className="w-3.5 h-3.5 text-[#a7e26e]" />
@@ -871,7 +899,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
                   <input
                     type="text"
                     required
-                    placeholder="مثال: د. أحمد الراوي (مختبر النظم)"
+                    placeholder="مثال: علي حسين (مطور ومراجع مستقل)"
                     value={respAuthor}
                     onChange={(e) => setRespAuthor(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border border-[#e4e3e3] bg-white text-xs"
@@ -910,9 +938,14 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
                 {respSubmitted && <span className="text-xs font-bold text-emerald-600">تم تسجيل مساهمتك بنجاح!</span>}
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-full bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] ms-auto flex items-center gap-1.5"
+                  disabled={isSubmittingResponse}
+                  className="px-5 py-2 rounded-full bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] ms-auto flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                 >
-                  <Send className="w-3.5 h-3.5" />
+                  {isSubmittingResponse ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Send className="w-3.5 h-3.5" />
+                  )}
                   إرسال المراجعة
                 </button>
               </div>

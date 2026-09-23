@@ -32,7 +32,7 @@ export default function TerminalCard({ project, featured = false }: TerminalCard
         {/* Animated Typing Cursor Effect */}
         <div className="text-[10px] font-mono text-[#8b949e] mb-4 uppercase tracking-widest flex items-center gap-2">
           <span className="text-[#3fb950] font-bold">~</span>
-          <span>./execute --lab="{project.status}"</span>
+          <span>./execute --lab=&quot;{project.status}&quot;</span>
           <span className="w-1.5 h-3 bg-[var(--brand)] animate-pulse" />
         </div>
 

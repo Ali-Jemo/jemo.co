@@ -5,8 +5,7 @@ import AnimatedSection from "@/components/AnimatedSection";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
 import { getLiveAboutInfo } from "@/lib/live-content";
-import { Target, ArrowUpLeft, Compass, Sparkles, BookOpen, ShieldCheck, Cpu, GitBranch, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
+import { Target, Compass, Sparkles, BookOpen, ShieldCheck, Cpu, GitBranch, CheckCircle2 } from "lucide-react";
 import BioLeadershipGrid from "@/components/BioLeadershipGrid";
 import BioPartnersGrid from "@/components/BioPartnersGrid";
 import BioButton from "@/components/BioButton";
@@ -67,7 +66,7 @@ export default async function AboutPage() {
               <span className="text-gradient">سجل أبحاث واكتشافات عصر الذكاء الاصطناعي</span>
             </h1>
             <blockquote className="text-lg md:text-xl font-bold text-[var(--brand)] border-y border-[var(--line)] py-6 my-6 bg-[var(--bg)]/50 rounded-xl leading-relaxed max-w-3xl mx-auto">
-              "{about.coreQuote}"
+              &quot;{about.coreQuote}&quot;
             </blockquote>
           </div>
         </AnimatedSection>

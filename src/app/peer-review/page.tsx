@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
-import SectionHeader from "@/components/ui/SectionHeader";
 import { getLivePeerReviewPolicy } from "@/lib/live-content";
-import { ShieldCheck, CheckCircle2, FileCheck, Lock, Globe, Scale } from "lucide-react";
-import Link from "next/link";
+import { ShieldCheck, CheckCircle2, FileCheck, Globe, Scale } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "سياسة التدقيق الأكاديمي والتحكيم | JEMO LABS",

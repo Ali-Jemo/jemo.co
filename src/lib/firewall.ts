@@ -267,7 +267,6 @@ export function detectInjection(urlStr: string): { detected: boolean; type?: str
 // 6. CSRF & Mutation Origin Validation
 // --------------------------------------------------------------------------
 const MUTATION_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
-const ALLOWED_MUTATION_HOSTS = new Set(["jemo.co", "localhost", "127.0.0.1"]);
 
 function isAllowedMutationOrigin(target: string): boolean {
   try {

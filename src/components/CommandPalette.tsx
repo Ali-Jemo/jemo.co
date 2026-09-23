@@ -145,10 +145,11 @@ export default function CommandPalette() {
       .slice(0, 10);
   }, [allItems, query]);
 
-  // Reset selected index when results change
-  useEffect(() => {
+  // Reset selected index when query changes
+  const updateQuery = (newQuery: string) => {
+    setQuery(newQuery);
     setSelectedIndex(0);
-  }, [results]);
+  };
 
   // Keydown shortcuts: Cmd+K / Ctrl+K, Escape, Arrow keys, Enter
   useEffect(() => {
@@ -168,6 +169,7 @@ export default function CommandPalette() {
     (url: string) => {
       setIsOpen(false);
       setQuery("");
+      setSelectedIndex(0);
       router.push(url);
     },
     [router]
@@ -204,13 +206,13 @@ export default function CommandPalette() {
                 autoFocus
                 placeholder="ابحث عن أوراق، مشاريع، مختبرات، أو معايير قياس..."
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => updateQuery(e.target.value)}
                 onKeyDown={handleKeyDownInInput}
                 className="w-full bg-transparent text-sm text-[var(--ink-1)] placeholder-[var(--ink-2)] outline-none font-sans"
               />
               {query && (
                 <button
-                  onClick={() => setQuery("")}
+                  onClick={() => updateQuery("")}
                   className="text-[var(--ink-2)] hover:text-[var(--ink-1)] text-xs"
                 >
                   مسح

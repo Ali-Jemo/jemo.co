@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 export interface UserReplication {
   id: string;
@@ -60,10 +60,16 @@ export function getUserReplications(): UserReplication[] {
   }
 }
 
+let cachedRaw: string | null = null;
+let cachedReplications: UserReplication[] = INITIAL_REPLICATIONS;
+
 export function saveUserReplications(replications: UserReplication[]): void {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(REPLICATIONS_STORAGE_KEY, JSON.stringify(replications));
+    const raw = JSON.stringify(replications);
+    cachedRaw = raw;
+    cachedReplications = replications;
+    localStorage.setItem(REPLICATIONS_STORAGE_KEY, raw);
     window.dispatchEvent(new CustomEvent(REPLICATIONS_EVENT, { detail: replications }));
   } catch {
     // ignore
@@ -89,31 +95,54 @@ export function removeUserReplication(id: string): void {
   saveUserReplications(current.filter((r) => r.id !== id));
 }
 
+function subscribeReplications(callback: () => void): () => void {
+  window.addEventListener(REPLICATIONS_EVENT, callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener(REPLICATIONS_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getReplicationsSnapshot(): UserReplication[] {
+  if (typeof window === "undefined") return INITIAL_REPLICATIONS;
+  try {
+    const raw = localStorage.getItem(REPLICATIONS_STORAGE_KEY);
+    if (!raw) {
+      return INITIAL_REPLICATIONS;
+    }
+    if (raw === cachedRaw) {
+      return cachedReplications;
+    }
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      cachedRaw = raw;
+      cachedReplications = parsed;
+      return cachedReplications;
+    }
+    return INITIAL_REPLICATIONS;
+  } catch {
+    return INITIAL_REPLICATIONS;
+  }
+}
+
+function getServerSnapshot(): UserReplication[] {
+  return INITIAL_REPLICATIONS;
+}
+
+const emptySubscribe = () => () => {};
+
 export function useReplications() {
-  const [replications, setReplications] = useState<UserReplication[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    setReplications(getUserReplications());
-
-    const handleUpdate = (e: Event) => {
-      const customEvent = e as CustomEvent<UserReplication[]>;
-      if (customEvent.detail) {
-        setReplications(customEvent.detail);
-      } else {
-        setReplications(getUserReplications());
-      }
-    };
-
-    window.addEventListener(REPLICATIONS_EVENT, handleUpdate);
-    window.addEventListener("storage", handleUpdate);
-    return () => {
-      window.removeEventListener(REPLICATIONS_EVENT, handleUpdate);
-      window.removeEventListener("storage", handleUpdate);
-    };
-  }, []);
-
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+  const replications = useSyncExternalStore(
+    subscribeReplications,
+    getReplicationsSnapshot,
+    getServerSnapshot
+  );
   const add = useCallback((item: Omit<UserReplication, "id" | "date"> & { date?: string }) => {
     return addUserReplication(item);
   }, []);

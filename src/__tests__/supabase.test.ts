@@ -1,3 +1,4 @@
+import type { Paper } from '@/lib/data/research-data'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createClient } from '@supabase/supabase-js'
@@ -57,7 +58,7 @@ describe('normalizePaper', () => {
       title: 'اختبار النواة',
       abstract: 'ملخص',
       authors: ['م. أحمد الفراتي', 'علي حسين هادي (Jemo)'],
-    } as any
+    } as unknown as Paper
 
     const normalized = normalizePaper(rawPaper)
     expect(normalized.authors).toHaveLength(2)
@@ -76,7 +77,7 @@ describe('normalizePaper', () => {
       title: 'بحث ثاني',
       abstract: 'ملخص',
       authors: [{ name: 'علي هادي', slug: 'ali-hadi', role: 'رئيس الباحثين' }],
-    } as any
+    } as unknown as Paper
 
     const normalized = normalizePaper(rawPaper)
     expect(normalized.authors[0]).toEqual({

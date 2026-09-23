@@ -5,7 +5,7 @@ import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NEWS_ITEMS } from "@/lib/data/research-data";
-import { Newspaper, ArrowRight, Calendar, Tag } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 
 interface NewsPageProps {
   params: Promise<{ slug: string }>;

@@ -1,6 +1,14 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { NextRequest } from "next/server";
+
+const { currentUserMock } = vi.hoisted(() => ({ currentUserMock: vi.fn() }));
+
+vi.mock("@clerk/nextjs/server", () => ({
+  currentUser: () => currentUserMock(),
+}));
 import { GET as getResearch, POST as postResearch } from "@/app/api/research/route";
 import { GET as getResearchSlug, POST as postResearchSlug } from "@/app/api/research/[slug]/route";
+import { POST as postResponses } from "@/app/api/research/[slug]/responses/route";
 import { POST as postContentSchema } from "@/app/api/content/schema/route";
 import { ResearchRegistry, JemoApiError } from "@/lib/sdk";
 import { validateApiKey, listResearchObjects, getResearchObject } from "@/lib/research/store";
@@ -12,6 +20,8 @@ describe("JEMO Research API & Store", () => {
     // A key is only valid when it is registered in the server-side registry.
     process.env.JEMO_API_KEYS = `${validApiKey}|عمر الكرخي|@omar_karkhi|باحث مواطن مستقل`;
     delete process.env.CONTENT_ADMIN_SECRET;
+    currentUserMock.mockReset();
+    currentUserMock.mockResolvedValue(null);
     delete process.env.JEMO_API_KEY;
   });
 
@@ -148,6 +158,97 @@ describe("JEMO Research API & Store", () => {
       if (lastResponse) {
         expect(lastResponse.verified).toBe(false);
       }
+    });
+  });
+  describe("POST /api/research/[slug]/responses", () => {
+    it("records peer responses via POST /api/research/[slug]/responses with API key and rejects unauthenticated calls", async () => {
+      // First create a paper
+      const createReq = new Request("http://localhost:3000/api/research", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${validApiKey}`,
+        },
+        body: JSON.stringify({
+          title: "Responses Route Test Object",
+          field: "Security & Verification",
+          abstract: "Testing responses endpoint.",
+        }),
+      });
+      const createRes = await postResearch(createReq);
+      expect(createRes.status).toBe(201);
+      const paper = (await createRes.json()).data;
+
+      // Unauthenticated call should fail with 401
+      const unauthReq = new NextRequest(`http://localhost:3000/api/research/${paper.slug}/responses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "challenge",
+          findings: "Unauthenticated challenge",
+        }),
+      });
+      const unauthRes = await postResponses(unauthReq, { params: Promise.resolve({ slug: paper.slug }) });
+      expect(unauthRes.status).toBe(401);
+
+      // Authenticated call with API key succeeds
+      const authReq = new NextRequest(`http://localhost:3000/api/research/${paper.slug}/responses`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${validApiKey}`,
+        },
+        body: JSON.stringify({
+          type: "replication",
+          findings: "Replication validated successfully.",
+        }),
+      });
+      const authRes = await postResponses(authReq, { params: Promise.resolve({ slug: paper.slug }) });
+      expect(authRes.status).toBe(201);
+      const authJson = await authRes.json();
+      expect(authJson.success).toBe(true);
+      expect(authJson.data.responses.length).toBeGreaterThanOrEqual(1);
+    });
+    it("allows signed-in Clerk user without API key to submit peer response", async () => {
+      currentUserMock.mockResolvedValue({
+        id: "user_clerk_123",
+        firstName: "سارة",
+        lastName: "الزبيدي",
+        emailAddresses: [{ emailAddress: "sara@jemo.iq" }],
+      });
+
+      const createReq = new Request("http://localhost:3000/api/research", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${validApiKey}`,
+        },
+        body: JSON.stringify({
+          title: "Clerk Session Response Object",
+          field: "Operating Systems",
+          abstract: "Testing Clerk user response submission.",
+        }),
+      });
+      const createRes = await postResearch(createReq);
+      expect(createRes.status).toBe(201);
+      const paper = (await createRes.json()).data;
+
+      const clerkReq = new NextRequest(`http://localhost:3000/api/research/${paper.slug}/responses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "extension",
+          findings: "وثقت امتداداً منهجياً باستخدام بيئة تجريبية جديدة.",
+        }),
+      });
+
+      const res = await postResponses(clerkReq, { params: Promise.resolve({ slug: paper.slug }) });
+      expect(res.status).toBe(201);
+      const json = await res.json();
+      expect(json.success).toBe(true);
+      const lastResp = json.data.responses[json.data.responses.length - 1];
+      expect(lastResp.author).toBe("سارة الزبيدي");
+      expect(lastResp.verified).toBe(false);
     });
   });
 

@@ -6,7 +6,7 @@ import { clearAllRateLimits } from "@/lib/security";
 const mockUpsert = vi.fn();
 vi.mock("@/lib/supabase", () => ({
   supabaseAdmin: () => ({
-    from: (_table: string) => ({
+    from: () => ({
       upsert: (...args: unknown[]) => mockUpsert(...args),
     }),
   }),

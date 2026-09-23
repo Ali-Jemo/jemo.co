@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 const BOOKMARKS_STORAGE_KEY = "jemo_user_bookmarks";
 const BOOKMARKS_EVENT = "jemo_bookmarks_updated";
@@ -10,12 +10,19 @@ const DEFAULT_BOOKMARKS = [
   "deep-debugging-memory-leak-kernel"
 ];
 
+const SERVER_BOOKMARKS: string[] = [];
+let cachedRaw: string | null = null;
+let cachedBookmarks: string[] = DEFAULT_BOOKMARKS;
+
 export function getBookmarkedSlugs(): string[] {
   if (typeof window === "undefined") return DEFAULT_BOOKMARKS;
   try {
     const raw = localStorage.getItem(BOOKMARKS_STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(BOOKMARKS_STORAGE_KEY, JSON.stringify(DEFAULT_BOOKMARKS));
+      const initial = JSON.stringify(DEFAULT_BOOKMARKS);
+      cachedRaw = initial;
+      cachedBookmarks = DEFAULT_BOOKMARKS;
+      localStorage.setItem(BOOKMARKS_STORAGE_KEY, initial);
       return DEFAULT_BOOKMARKS;
     }
     const parsed = JSON.parse(raw);
@@ -28,7 +35,10 @@ export function getBookmarkedSlugs(): string[] {
 export function saveBookmarkedSlugs(slugs: string[]): void {
   if (typeof window === "undefined") return;
   try {
-    localStorage.setItem(BOOKMARKS_STORAGE_KEY, JSON.stringify(slugs));
+    const raw = JSON.stringify(slugs);
+    cachedRaw = raw;
+    cachedBookmarks = slugs;
+    localStorage.setItem(BOOKMARKS_STORAGE_KEY, raw);
     window.dispatchEvent(new CustomEvent(BOOKMARKS_EVENT, { detail: slugs }));
   } catch {
     // ignore
@@ -63,50 +73,62 @@ export function isBookmarked(slug: string): boolean {
   return getBookmarkedSlugs().includes(slug);
 }
 
-export function useBookmarks() {
-  const [bookmarks, setBookmarks] = useState<string[]>([]);
-  const [mounted, setMounted] = useState(false);
+const emptySubscribe = () => () => {};
 
-  useEffect(() => {
-    setMounted(true);
-    setBookmarks(getBookmarkedSlugs());
+function subscribeBookmarks(callback: () => void) {
+  window.addEventListener(BOOKMARKS_EVENT, callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener(BOOKMARKS_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+}
 
-    const handleUpdate = (e: Event) => {
-      const customEvent = e as CustomEvent<string[]>;
-      if (customEvent.detail) {
-        setBookmarks(customEvent.detail);
-      } else {
-        setBookmarks(getBookmarkedSlugs());
+function getBookmarksSnapshot(): string[] {
+  if (typeof window === "undefined") return DEFAULT_BOOKMARKS;
+  try {
+    const raw = localStorage.getItem(BOOKMARKS_STORAGE_KEY);
+    if (!raw) {
+      return DEFAULT_BOOKMARKS;
+    }
+    if (raw !== cachedRaw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        cachedRaw = raw;
+        cachedBookmarks = parsed;
       }
-    };
+    }
+    return cachedBookmarks;
+  } catch {
+    return DEFAULT_BOOKMARKS;
+  }
+}
 
-    window.addEventListener(BOOKMARKS_EVENT, handleUpdate);
-    window.addEventListener("storage", handleUpdate);
-    return () => {
-      window.removeEventListener(BOOKMARKS_EVENT, handleUpdate);
-      window.removeEventListener("storage", handleUpdate);
-    };
-  }, []);
+const getServerBookmarksSnapshot = () => SERVER_BOOKMARKS;
+const getClientMountedSnapshot = () => true;
+const getServerMountedSnapshot = () => false;
 
-  const toggle = useCallback((slug: string) => {
-    return toggleBookmark(slug);
-  }, []);
-
-  const remove = useCallback((slug: string) => {
-    removeBookmark(slug);
-  }, []);
+export function useBookmarks() {
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    getClientMountedSnapshot,
+    getServerMountedSnapshot
+  );
+  const bookmarks = useSyncExternalStore(
+    subscribeBookmarks,
+    getBookmarksSnapshot,
+    getServerBookmarksSnapshot
+  );
 
   const has = useCallback(
-    (slug: string) => {
-      return mounted ? bookmarks.includes(slug) : false;
-    },
+    (slug: string) => (mounted ? bookmarks.includes(slug) : false),
     [mounted, bookmarks]
   );
 
   return {
     bookmarks,
-    toggle,
-    remove,
+    toggle: toggleBookmark,
+    remove: removeBookmark,
     has,
     count: bookmarks.length,
     mounted,

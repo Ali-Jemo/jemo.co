@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, ShieldCheck, PieChart, Users, Cpu, BookOpen, Server } from "lucide-react";
+import { DollarSign, PieChart, Users, Cpu, BookOpen, Server } from "lucide-react";
 
 export interface BreakdownItem {
   title: string;

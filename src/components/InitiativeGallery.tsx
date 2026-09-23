@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { GalleryVerticalEnd, Play } from "lucide-react";
+import { Play } from "lucide-react";
 
 interface InitiativeGalleryProps {
   image?: string;
@@ -9,8 +9,6 @@ interface InitiativeGalleryProps {
 
 export default function InitiativeGallery({ image, gallery, title }: InitiativeGalleryProps) {
   if (!image && (!gallery || gallery.length === 0)) return null;
-
-  const images = image ? [image, ...(gallery || [])] : gallery || [];
 
   return (
     <section className="mb-12">

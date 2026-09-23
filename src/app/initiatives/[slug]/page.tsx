@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import InitiativeGallery from "@/components/InitiativeGallery";
 import Link from "next/link";
+import InitiativeContributeAction from "@/components/initiatives/InitiativeContributeAction";
 import { notFound } from "next/navigation";
 import { INITIATIVES, RESEARCHERS, RESEARCH_PROJECTS } from "@/lib/data/research-data";
 import {
@@ -330,12 +331,7 @@ export default async function InitiativeDetailPage({ params }: InitiativePagePro
                   <span>المستودع</span>
                 </a>
               )}
-              <Link
-                href="/join"
-                className="px-5 py-3 rounded-xl bg-[var(--brand)] text-white font-bold text-sm hover:opacity-90 transition-opacity"
-              >
-                ساهم في المبادرة
-              </Link>
+              <InitiativeContributeAction slug={init.slug} title={init.title} />
             </div>
           </Card>
         </div>

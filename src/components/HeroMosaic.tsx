@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const PALETTE = [
   '#1e3a8a', // brand (Deep Blue)
@@ -14,21 +14,17 @@ const PALETTE = [
 const COLS = 12;
 const ROWS = 6;
 
-interface Cell {
-  r: number;
-  c: number;
-  filled: boolean;
-  color: string;
-}
+const INITIAL_CELLS = Array.from({ length: ROWS * COLS }, (_, i) => {
+  const pseudo = ((i * 9301 + 49297) % 233280) / 233280;
+  const filled = pseudo > 0.4;
+  const color = filled ? PALETTE[Math.floor((pseudo * 37) % (PALETTE.length - 1))] : 'transparent';
+  return { filled, color };
+});
 
 export default function HeroMosaic() {
   const gridRef = useRef<HTMLDivElement>(null);
   const cellsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const [isMounted, setIsMounted] = useState(false);
-
   useEffect(() => {
-    setIsMounted(true);
-
     // Initial stagger animation
     cellsRef.current.forEach((cell, i) => {
       if (!cell) return;
@@ -80,8 +76,6 @@ export default function HeroMosaic() {
     });
   };
 
-  if (!isMounted) return null; // Avoid hydration mismatch
-
   return (
     <div
       ref={gridRef}
@@ -96,27 +90,22 @@ export default function HeroMosaic() {
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
     >
-      {Array.from({ length: ROWS * COLS }).map((_, i) => {
-        const filled = Math.random() > 0.4;
-        const color = filled ? PALETTE[Math.floor(Math.random() * (PALETTE.length - 1))] : 'transparent';
-        
-        return (
-          <div
-            key={i}
-            ref={(el) => {
-              cellsRef.current[i] = el;
-            }}
-            data-filled={filled.toString()}
-            style={{
-              background: color,
-              opacity: 0,
-              transform: 'scale(0.2)',
-              transition: 'background-color 0.6s ease',
-            }}
-            className="w-full h-full rounded-sm opacity-20" // Slight rounding and lowered overall opacity so it doesn't distract text
-          />
-        );
-      })}
+      {INITIAL_CELLS.map((cell, i) => (
+        <div
+          key={i}
+          ref={(el) => {
+            cellsRef.current[i] = el;
+          }}
+          data-filled={cell.filled.toString()}
+          style={{
+            background: cell.color,
+            opacity: 0,
+            transform: 'scale(0.2)',
+            transition: 'background-color 0.6s ease',
+          }}
+          className="w-full h-full rounded-sm opacity-20" // Slight rounding and lowered overall opacity so it doesn't distract text
+        />
+      ))}
     </div>
   );
 }

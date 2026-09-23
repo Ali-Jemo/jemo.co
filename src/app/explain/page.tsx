@@ -322,7 +322,7 @@ export default function ExplainPage() {
                             رسالة من الكواليس:
                           </div>
                           <p className="font-kufi font-bold text-sm sm:text-base text-white leading-relaxed">
-                            "ديله ارجع للصفحة الرئيسية سلبوح , تره تعبان بالموقع الرئيسي 🗿, ارجع شوفه على وقت فراغك"
+                            &quot;ديله ارجع للصفحة الرئيسية سلبوح , تره تعبان بالموقع الرئيسي 🗿, ارجع شوفه على وقت فراغك&quot;
                           </p>
                         </div>
                       </div>
@@ -468,7 +468,7 @@ function Slide1Animation() {
           <span>أنت (الساعة 2:40 الفجر)</span>
         </div>
         <p className="font-kufi text-xs text-white">
-          "شلون أحل مشكلة تسريب الذاكرة بـ Ziqa Kernel واستخرج البنشمارك؟"
+          &quot;شلون أحل مشكلة تسريب الذاكرة بـ Ziqa Kernel واستخرج البنشمارك؟&quot;
         </p>
       </div>
 
@@ -481,7 +481,7 @@ function Slide1Animation() {
           `atomic_exchange(&lock, 0);`
         </p>
         <p className="font-kufi text-[11px] text-zinc-400 mt-1">
-          "لقينا الحل! النتيجة تحسنت بنسبة 42%..."
+          &quot;لقينا الحل! النتيجة تحسنت بنسبة 42%...&quot;
         </p>
       </div>
 
@@ -507,7 +507,7 @@ function Slide2Animation() {
           </span>
         </div>
         <p className="text-xs text-zinc-300 line-through decoration-red-400 decoration-2 font-mono">
-          import non_existing_library_v5 from "imaginary";
+          import non_existing_library_v5 from &quot;imaginary&quot;;
         </p>
         <p className="text-[11px] text-red-300 font-kufi mt-1.5">
           ⚠️ الذكاء اخترع مكاتب وهمية وما تشتغل بالحقيقة!

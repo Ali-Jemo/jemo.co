@@ -18,7 +18,6 @@ import "server-only";
  * Server-only.
  */
 
-import crypto from "crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { CONTENT_REGISTRY, getSpec, itemId, type CollectionSpec } from "./registry";
 

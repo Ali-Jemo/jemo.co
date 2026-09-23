@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
-import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, useReducedMotion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import BioButton from "@/components/BioButton";
 import { useAuth } from "@/lib/auth-context";
@@ -37,10 +37,13 @@ const PILLARS_PREVIEW = [
   },
 ];
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 export default function HeroSection() {
   const { profile } = useAuth();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activePillar, setActivePillar] = useState<number | null>(null);
+  const reduceMotion = useReducedMotion();
 
   // Mouse Parallax for subtle 3D cinematic depth
   const mouseX = useMotionValue(0);
@@ -170,10 +173,21 @@ export default function HeroSection() {
 
       <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 my-auto py-2 sm:py-4 lg:py-5">
         <div className="max-w-5xl">
-          <div className="mb-3 flex items-center gap-3 text-[10px] sm:text-xs font-mono uppercase tracking-[0.24em] text-[#bef264]">
-            <span className="h-px w-10 bg-[#bef264]/70" aria-hidden />
+          <motion.div
+            className="mb-3 flex items-center gap-3 text-[10px] sm:text-xs font-mono uppercase tracking-[0.24em] text-[#bef264]"
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.05, ease: EASE }}
+          >
+            <motion.span
+              aria-hidden
+              className="h-px w-10 origin-right bg-[#bef264]/70"
+              initial={reduceMotion ? false : { scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.7, delay: 0.18, ease: EASE }}
+            />
             <span>RESEARCH, VERIFIED</span>
-          </div>
+          </motion.div>
           <h1
             style={{ color: "#ffffff" }}
             className="text-[1.85rem] xs:text-[2.15rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.18] sm:leading-[1.12] tracking-tight font-kufi text-white select-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
@@ -193,7 +207,12 @@ export default function HeroSection() {
       </div>
       <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 pb-12 sm:pb-14 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
         {/* Right side (start in RTL): Subtitle + 3 Research Pillars Navigation Pills */}
-        <div className="flex flex-col gap-3 max-w-xl relative w-full lg:w-auto">
+        <motion.div
+          className="flex flex-col gap-3 max-w-xl relative w-full lg:w-auto"
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.42, ease: EASE }}
+        >
           <div className="hidden lg:block w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           <AnimatePresence>
             {activePillar !== null && (
@@ -252,8 +271,14 @@ export default function HeroSection() {
               </Link>
             ))}
           </div>
-        </div>
-        <div dir="ltr" className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full sm:w-auto">
+        </motion.div>
+        <motion.div
+          dir="ltr"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full sm:w-auto"
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.58, ease: EASE }}
+        >
           <BioButton
             href="/explain"
             label="لخصلي الموقع"
@@ -270,17 +295,20 @@ export default function HeroSection() {
             dir="ltr"
             className="w-full sm:w-auto"
           />
-        </div>
+        </motion.div>
       </div>
 
-      {/* 5. Center-Bottom Scroll Cue Button */}
+      {/* 5. Center-Bottom Scroll Cue Button.
+          Opacity-only entrance: a transform animation would override the
+          centering translate and the hover lift. */}
       <button
+        type="button"
         onClick={scrollToContent}
-        className="absolute bottom-4 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-2.5 sm:py-1.5 min-h-[42px] sm:min-h-[32px] rounded-full bg-[#0c1415]/85 border border-white/15 hover:border-[#bef264]/60 hover:bg-black/90 text-xs sm:text-[10px] font-mono tracking-wider text-white/90 hover:text-white transition-all shadow-md hover:-translate-y-0.5 cursor-pointer group"
+        className="hero-cue absolute bottom-4 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-2.5 sm:py-1.5 min-h-[42px] sm:min-h-[32px] rounded-full bg-[#0c1415]/85 border border-white/15 hover:border-[#bef264]/60 hover:bg-black/90 text-xs sm:text-[10px] font-mono tracking-wider text-white/90 hover:text-white transition-all shadow-md hover:-translate-y-0.5 cursor-pointer group"
         aria-label="الانتقال للمنظومة المتكاملة"
       >
         <span>اكتشف المنظومة</span>
-        <ChevronDown className="w-3.5 h-3.5 text-[#bef264] transition-transform group-hover:translate-y-0.5 animate-[bounce_2s_infinite]" />
+        <ChevronDown className="w-3.5 h-3.5 text-[#bef264] transition-transform group-hover:translate-y-0.5 motion-safe:animate-[bounce_2s_infinite]" />
       </button>
     </section>
   );

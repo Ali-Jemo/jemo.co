@@ -83,7 +83,7 @@ export default function EditorialSectionHeader({
   cta,
   animate = false,
 }: EditorialSectionHeaderProps) {
-  const anim = (ms: number): { "data-cohere-item": string; style: CSSProperties } | {} =>
+  const anim = (ms: number): { "data-cohere-item"?: string; style?: CSSProperties } =>
     animate ? { "data-cohere-item": "", style: { "--cohere-delay": `${ms}ms` } as CSSProperties } : {};
 
   const body = (

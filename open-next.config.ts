@@ -1,6 +1,6 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 
-export default {
+const config = {
 	...defineCloudflareConfig({
 		incrementalCache: "dummy",
 		tagCache: "dummy",
@@ -8,3 +8,5 @@ export default {
 	}),
 	buildCommand: "bun run build:next",
 };
+
+export default config;

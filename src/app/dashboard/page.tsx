@@ -156,7 +156,7 @@ function DashboardInner() {
                   className="w-full py-2.5 rounded-xl border border-[#cef79e] bg-[#f8fdf2] hover:bg-[#cef79e]/40 text-[#222f30] text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>دخول تجريبي فوري (عمر الكرخي)</span>
+                  <span>دخول تجريبي فوري (علي حسين هادي)</span>
                 </button>
 
                 <div className="pt-2 border-t border-[#e4e3e3] text-xs text-[#55696a]">
@@ -177,8 +177,8 @@ function DashboardInner() {
   // Merge user-published papers with authored demo papers
   const authoredDemoPapers = RESEARCH_PAPERS.filter((p) =>
     (p.authors ?? []).some((a: unknown) => {
-      const name = typeof a === "string" ? a : (a as { name?: string })?.name || "";
-      return name.includes("عمر الكرخي") || (profile.name && name.includes(profile.name));
+      const name = typeof a === "string" ? a : (typeof a === "object" && a !== null && "name" in a && typeof a.name === "string" ? a.name : "");
+      return Boolean(profile.name && name.includes(profile.name));
     })
   );
 

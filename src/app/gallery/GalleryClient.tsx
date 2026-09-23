@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   BookOpen, BarChart2, FlaskConical, Video, Tv,
   Palette, Terminal, Smartphone, FolderOpen,
@@ -155,12 +156,21 @@ const getStatusBadge = (status?: string) => {
   }
 };
 
-export default function GalleryClient() {
+function GalleryContent() {
+  const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [selectedCat, setSelectedCat] = useState("all");
-  const [search, setSearch] = useState("");
-  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const itemParam = searchParams.get("item");
+  const catParam = searchParams.get("cat");
+  const qParam = searchParams.get("q");
+
+  const [selectedCat, setSelectedCat] = useState(() =>
+    catParam && CATEGORIES.some((c) => c.id === catParam) ? catParam : "all"
+  );
+  const [search, setSearch] = useState(() => qParam || "");
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(() =>
+    itemParam ? ITEMS.find((it) => it.id === itemParam) || null : null
+  );
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<"newest" | "title">("newest");
   const [copied, setCopied] = useState(false);
@@ -175,25 +185,6 @@ export default function GalleryClient() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const itemParam = params.get("item");
-    const catParam = params.get("cat");
-    const qParam = params.get("q");
-
-    if (itemParam) {
-      const found = ITEMS.find((it) => it.id === itemParam);
-      if (found) setSelectedItem(found);
-    }
-    if (catParam && CATEGORIES.some((c) => c.id === catParam)) {
-      setSelectedCat(catParam);
-    }
-    if (qParam) {
-      setSearch(qParam);
-    }
   }, []);
 
   useGSAP(() => {
@@ -424,7 +415,7 @@ export default function GalleryClient() {
 
             {search && (
               <span className="px-2.5 py-1 rounded-md bg-[var(--brand)]/10 text-[var(--brand-700)] border border-[var(--brand)]/20 font-sans font-semibold text-[11px] flex items-center gap-1">
-                البحث: "{search}"
+                البحث: &quot;{search}&quot;
                 <button onClick={() => setSearch("")} className="hover:text-[var(--ink)] ms-1 cursor-pointer">
                   <X size={12} />
                 </button>
@@ -455,7 +446,7 @@ export default function GalleryClient() {
             </div>
             <h3 className="text-xl font-bold text-[var(--ink)] mb-2">لا توجد نتائج تطابق بحثك</h3>
             <p className="text-sm text-[var(--ink-2)] max-w-md mb-6 leading-relaxed">
-              لم نعثر على أي عنصر يطابق "{search}". جرب استخدام كلمات مفتاحية أخرى أو تصفح التوصيات أدناه.
+              لم نعثر على أي عنصر يطابق &quot;{search}&quot;. جرب استخدام كلمات مفتاحية أخرى أو تصفح التوصيات أدناه.
             </p>
 
             {/* Quick Suggestions */}
@@ -748,5 +739,13 @@ export default function GalleryClient() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function GalleryClient() {
+  return (
+    <Suspense fallback={null}>
+      <GalleryContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Award, Heart, Shield, Users, CheckCircle } from "lucide-react";
+import { Award, Shield, CheckCircle } from "lucide-react";
 
 export interface SupportWallProps {
   onOpenInquiry: (category?: string) => void;

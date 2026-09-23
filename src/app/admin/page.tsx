@@ -305,7 +305,7 @@ export default async function AdminPage() {
               </div>
               <div className="space-y-2 text-xs text-zinc-300">
                 <p className="text-[11px] text-zinc-400">
-                  // Core Kernel & Services Diagnostics
+                  {"// Core Kernel & Services Diagnostics"}
                 </p>
                 <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 space-y-1 text-[11px]">
                   <p>AUTH: <span className="text-[#bef264]">Clerk (server-verified)</span></p>
@@ -350,7 +350,7 @@ export default async function AdminPage() {
                 {/* Inquiries */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-bold font-mono text-[#738284]">
-                    // أحدث طلبات الحوسبة والرعاية (INQUIRIES)
+                    {"// أحدث طلبات الحوسبة والرعاية (INQUIRIES)"}
                   </h3>
                   {inquiries.length === 0 ? (
                     <p className="text-xs text-[#738284] p-4 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] text-center">
@@ -380,7 +380,7 @@ export default async function AdminPage() {
                 {/* Initiatives */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-bold font-mono text-[#738284]">
-                    // تسجيلات الاهتمام بالمبادرات (INITIATIVE INTEREST)
+                    {"// تسجيلات الاهتمام بالمبادرات (INITIATIVE INTEREST)"}
                   </h3>
                   {initiatives.length === 0 ? (
                     <p className="text-xs text-[#738284] p-4 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] text-center">
@@ -410,7 +410,7 @@ export default async function AdminPage() {
                 {/* Subscribers */}
                 <div className="space-y-3">
                   <h3 className="text-xs font-bold font-mono text-[#738284]">
-                    // أحدث مشتركي النشرة البريدية (NEWSLETTER)
+                    {"// أحدث مشتركي النشرة البريدية (NEWSLETTER)"}
                   </h3>
                   {recentSubscribers.length === 0 ? (
                     <p className="text-xs text-[#738284] p-4 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] text-center">

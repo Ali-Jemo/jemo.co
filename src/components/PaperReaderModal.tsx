@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Paper } from "@/lib/data/research-data";
 import { isSafeHttpUrl } from "@/lib/security-client";
-import { BookOpen, X, Download, Copy, Check, FileText, CheckCircle2, ShieldCheck } from "lucide-react";
+import { BookOpen, X, Download, Copy, Check, ShieldCheck } from "lucide-react";
 
 interface PaperReaderModalProps {
   paper: Paper;

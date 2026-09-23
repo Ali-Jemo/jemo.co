@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
-import { Image, Video, Presentation, Download, FileText } from "lucide-react";
+import { ImageIcon, Video, Presentation } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "مكتبة الوسائط | JEMO LABS",
@@ -29,7 +29,7 @@ export default function MediaLibraryPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
             <Card hover className="p-6 text-center space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-[var(--brand)]/10 text-[var(--brand)] flex items-center justify-center mx-auto">
-                <Image className="w-6 h-6" />
+                <ImageIcon className="w-6 h-6" />
               </div>
               <h2 className="text-xl font-bold text-[var(--ink-1)]">معرض الصور</h2>
               <p className="text-xs text-[var(--ink-2)]">صور المختبرات، الأجهزة، والفعاليات الأكاديمية.</p>

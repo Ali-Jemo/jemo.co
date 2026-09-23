@@ -16,7 +16,12 @@ export default function SupportInquiryModal({
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [prevDefaultCategory, setPrevDefaultCategory] = useState(defaultCategory);
   const [category, setCategory] = useState(defaultCategory);
+  if (prevDefaultCategory !== defaultCategory) {
+    setPrevDefaultCategory(defaultCategory);
+    setCategory(defaultCategory);
+  }
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -24,9 +29,6 @@ export default function SupportInquiryModal({
     amountOrOffer: "",
     message: "",
   });
-  useEffect(() => {
-    setCategory(defaultCategory);
-  }, [defaultCategory]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -201,7 +203,7 @@ export default function SupportInquiryModal({
                 <input
                   required
                   type="text"
-                  placeholder="مثال: د. أحمد التميمي"
+                  placeholder="مثال: علي حسين (مهندس نظم)"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] text-sm text-[var(--ink-1)] focus:border-[#728825] focus:outline-none transition-colors"

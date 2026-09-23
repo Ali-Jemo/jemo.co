@@ -5,15 +5,11 @@ import BioButton from "@/components/BioButton";
 import {
   Coffee,
   Gamepad2,
-  Cpu,
   Wrench,
   Building2,
   Package,
   Heart,
-  Sparkles,
   Mail,
-  Zap,
-  CheckCircle2,
 } from "lucide-react";
 
 export default function PhysicalLabGoal() {

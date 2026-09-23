@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { getClientIp, checkRateLimit } from "@/lib/security";
 import {
   getResearchObject,
@@ -9,6 +10,22 @@ import {
 interface RouteContext {
   params: Promise<{ slug: string }>;
 }
+async function getClerkAuthor(): Promise<string | null> {
+  try {
+    const user = await currentUser();
+    if (!user) return null;
+    const fullName = [user.firstName, user.lastName].filter(Boolean).join(" ").trim();
+    if (fullName) return fullName;
+    if (user.username) return `@${user.username}`;
+    const email = user.primaryEmailAddress?.emailAddress ?? user.emailAddresses?.[0]?.emailAddress ?? "";
+    const localPart = email.split("@")[0];
+    if (localPart) return `باحث (${localPart})`;
+    return "باحث معتمد";
+  } catch {
+    return null;
+  }
+}
+
 
 /**
  * POST /api/research/[slug]/responses
@@ -22,7 +39,7 @@ interface RouteContext {
  *   - forces `verified: false` server-side (the Jev audit pipeline — see
  *     lib/research/store.ts — is the only consumer that may flip it later)
  */
-export async function POST(req: NextRequest, context: RouteContext) {
+export async function POST(req: NextRequest | Request, context: RouteContext) {
   const ip = getClientIp(req);
   const rateLimit = checkRateLimit(`research_responses:${ip}`, 30, 60_000);
   if (!rateLimit.allowed) {
@@ -33,13 +50,28 @@ export async function POST(req: NextRequest, context: RouteContext) {
   const { validateApiKey } = await import("@/lib/research/store");
   const authHeader = req.headers.get("Authorization");
   const xApiKey = req.headers.get("X-API-Key");
-  const auth = await validateApiKey(authHeader, xApiKey);
 
-  if (!auth.valid) {
+  let apiKeyAuthor: string | null = null;
+  let isApiKeyValid = false;
+
+  if (authHeader || xApiKey) {
+    const auth = await validateApiKey(authHeader, xApiKey);
+    if (auth.valid) {
+      isApiKeyValid = true;
+      apiKeyAuthor = auth.researcher?.name || null;
+    }
+  }
+
+  let clerkAuthor: string | null = null;
+  if (!isApiKeyValid) {
+    clerkAuthor = await getClerkAuthor();
+  }
+
+  if (!isApiKeyValid && !clerkAuthor) {
     return NextResponse.json(
       {
         error: "Unauthorized",
-        message: auth.error || "Valid API key required to submit peer replications.",
+        message: "Valid API key or signed-in Clerk session required to submit peer replications.",
       },
       { status: 401 }
     );
@@ -73,7 +105,7 @@ export async function POST(req: NextRequest, context: RouteContext) {
     // from a client-side condition.
     const repResult = replicateResearchObject(slug, {
       ...body,
-      author: auth.researcher?.name || body.author || "مدقق نظير معتمد",
+      author: clerkAuthor || apiKeyAuthor || body.author || "مدقق نظير معتمد",
       // The store treats `verified` differently per type, but we override
       // explicitly by stripping any client-supplied verified field on
       // response — replicateResearchObject computes it from `type` only.

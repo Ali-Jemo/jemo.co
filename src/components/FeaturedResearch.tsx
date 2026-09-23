@@ -7,6 +7,14 @@ import { isSafeHttpUrl } from "@/lib/security-client";
 import RevealGroup, { cohereDelay } from "@/components/RevealGroup";
 import { ArrowUpLeft, Database, GitBranch, FileText, Users, Filter, BrainCircuit, Wrench } from "lucide-react";
 
+function getAuthorName(author: unknown): string {
+  if (typeof author === "string") return author;
+  if (author && typeof author === "object" && "name" in author && typeof author.name === "string") {
+    return author.name;
+  }
+  return "";
+}
+
 // IntegratedBio-style editorial research grid: numbered publication cards with
 // bio-lime category pills, pine titles, slate metadata, and arrow-slide links.
 export default function FeaturedResearch() {
@@ -31,7 +39,7 @@ export default function FeaturedResearch() {
       {/* Category Filter Toolbar & Feed Counter */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#e4e3e3]">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar flex-nowrap sm:flex-wrap py-1 max-w-full min-w-0">
-          <span className="text-xs font-mono text-[#738284] inline-flex items-center gap-1.5 ml-1 shrink-0">
+          <span className="text-xs font-sans text-[#738284] inline-flex items-center gap-1.5 ml-1 shrink-0 font-medium">
             <Filter className="w-3.5 h-3.5 text-[#a7e26e]" /> تصفية:
           </span>
           {fields.map((f) => {
@@ -40,10 +48,10 @@ export default function FeaturedResearch() {
               <button
                 key={f}
                 onClick={() => setField(f)}
-                className={`min-h-[38px] px-3.5 py-2 rounded-full text-xs font-mono transition-all shrink-0 cursor-pointer border flex items-center justify-center ${
+                className={`min-h-[38px] px-3.5 py-2 rounded-full text-xs font-sans transition-all shrink-0 cursor-pointer border flex items-center justify-center ${
                   isSelected
                     ? "bg-[#222f30] text-white border-[#222f30] font-bold shadow-xs"
-                    : "bg-white text-[#55696a] border-[#e4e3e3] hover:border-[#a7e26e] hover:text-[#222f30]"
+                    : "bg-white text-[#55696a] border-[#e4e3e3] hover:border-[#a7e26e] hover:text-[#222f30] font-medium"
                 }`}
               >
                 {f}
@@ -52,9 +60,9 @@ export default function FeaturedResearch() {
           })}
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-[#738284] shrink-0 self-start sm:self-auto">
+        <div className="flex items-center gap-2 text-xs font-sans text-[#738284] shrink-0 self-start sm:self-auto font-medium">
           <span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" />
-          <span>{filtered.length} أوراق منشورة ومحققة</span>
+          <span><strong className="font-mono text-[#222f30]">{filtered.length}</strong> أبحاث منشورة ومحققة</span>
         </div>
       </div>
       <div className="w-full">
@@ -117,7 +125,7 @@ export default function FeaturedResearch() {
               >
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-[#55696a]">
                   <Users className="w-4 h-4 text-[#a7e26e]" />
-                  <span>{(hero.authors ?? []).map((a: any) => (typeof a === "string" ? a : a?.name || "")).filter(Boolean).join(" ، ")}</span>
+                  <span>{(hero.authors ?? []).map(getAuthorName).filter(Boolean).join(" ، ")}</span>
                 </div>
 
                 <div className="flex items-center gap-3 flex-wrap">
@@ -211,7 +219,7 @@ export default function FeaturedResearch() {
                   >
                     <div className="flex items-center gap-2 text-xs text-[#55696a]">
                       <Users className="w-3.5 h-3.5 text-[#a7e26e]" />
-                      <span>{(p.authors ?? []).map((a: any) => (typeof a === "string" ? a : a?.name || "")).filter(Boolean).join(" ، ")}</span>
+                      <span>{(p.authors ?? []).map(getAuthorName).filter(Boolean).join(" ، ")}</span>
                     </div>
 
                     <Link
@@ -292,7 +300,7 @@ export default function FeaturedResearch() {
                     style={cohereDelay(220)}
                   >
                     <Users className="w-3.5 h-3.5 text-[#a7e26e]" />
-                    <span>{(hero.authors ?? []).map((a: any) => (typeof a === "string" ? a : a?.name || "")).filter(Boolean).join(" ، ")}</span>
+                    <span>{(hero.authors ?? []).map(getAuthorName).filter(Boolean).join(" ، ")}</span>
                   </div>
 
                   <div

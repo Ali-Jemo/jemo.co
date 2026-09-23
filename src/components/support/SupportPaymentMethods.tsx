@@ -2,15 +2,12 @@
 
 import { useState } from "react";
 import {
-  Copy,
   Check,
-  QrCode,
   ExternalLink,
   Coins,
   Smartphone,
   Globe2,
   Building,
-  ShieldCheck,
   AlertCircle,
 } from "lucide-react";
 import { GithubIcon } from "@/components/Icons";
@@ -25,14 +22,6 @@ export default function SupportPaymentMethods({
   onOpenInquiry,
 }: SupportPaymentMethodsProps) {
   const [activeTab, setActiveTab] = useState<"local" | "global" | "wire">("local");
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const copyToClipboard = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 2500);
-  };
-
-
 
   return (
     <section id="payment-methods" className="py-16">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Sparkles, Cpu, Award, BookOpen, Server, Heart, ArrowUpLeft, Layers } from "lucide-react";
+import { Check, Sparkles, Cpu, Award, BookOpen, Heart, ArrowUpLeft, Layers } from "lucide-react";
 
 export interface SupportTiersProps {
   onSelectTier: (tierName: string, amount: number) => void;

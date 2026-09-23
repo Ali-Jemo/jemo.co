@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
-import SectionHeader from "@/components/ui/SectionHeader";
 import { getLivePartners } from "@/lib/live-content";
-import { Building2, Globe, GraduationCap, Handshake, ArrowUpLeft } from "lucide-react";
+import { Globe, GraduationCap, Handshake, ArrowUpLeft } from "lucide-react";
 import Link from "next/link";
 
 export const metadata: Metadata = {

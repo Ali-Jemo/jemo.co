@@ -14,12 +14,11 @@ export default function CitationBox({ bibtex, apa, ieee, ris }: CitationBoxProps
   const [tab, setTab] = useState<"bibtex" | "apa" | "ieee" | "ris">("bibtex");
   const [copied, setCopied] = useState(false);
 
-  const fallbackIeee = `A. Al-Furati and A. Jemo, "Ziqa Kernel: Safe and Lightweight Microkernel Architecture for Critical Systems," JEMO LABS Research Papers, vol. 1, pp. 14-29, 2026.`;
-  const fallbackRis = `TY  - JOUR
-TI  - Ziqa Kernel: Safe and Lightweight Microkernel Architecture
-AU  - Al-Furati, Ahmed
+  const fallbackIeee = `A. Jemo, "Ziqa Kernel: Safe and Lightweight Microkernel Architecture in Rust," JEMO Technical Reports, 2026.`;
+  const fallbackRis = `TY  - RPRT
+TI  - Ziqa Kernel: Safe and Lightweight Microkernel Architecture in Rust
 AU  - Jemo, Ali
-JO  - JEMO LABS Research Papers
+JO  - JEMO Technical Reports
 PY  - 2026
 ER  -`;
 

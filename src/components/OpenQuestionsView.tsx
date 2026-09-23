@@ -4,21 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import BioButton from "@/components/BioButton";
 import type { OpenQuestion } from "@/lib/data/research-data";
 import { 
   HelpCircle, 
-  BrainCircuit, 
-  FlaskConical, 
-  CheckCircle2, 
-  Clock, 
-  Tag, 
   ArrowUpLeft, 
   Sparkles, 
   Search, 
   Send, 
   Filter,
-  Layers,
   Scale
 } from "lucide-react";
 
@@ -29,7 +22,6 @@ import {
  */
 export default function OpenQuestionsView({ initialQuestions }: { initialQuestions: OpenQuestion[] }) {
   const [questions, setQuestions] = useState<OpenQuestion[]>(initialQuestions);
-  const [selectedField, setSelectedField] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -40,17 +32,15 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
   const [newDesc, setNewDesc] = useState("");
   const [suggestSubmitted, setSuggestSubmitted] = useState(false);
 
-  const fields = ["all", "معالجة اللغة الطبيعية", "الرؤية الحاسوبية والتراث", "هندسة النظم والبرمجيات", "أنظمة التشغيل والنوى"];
   const statuses = ["all", "مفتوح للنقاش والبحث", "قيد التجارب والتكرار", "غير محسوم بعد", "محلول جزئياً"];
 
   const filteredQuestions = questions.filter((q) => {
-    const matchesField = selectedField === "all" || q.field === selectedField;
     const matchesStatus = selectedStatus === "all" || q.status === selectedStatus;
     const matchesQuery = searchQuery === "" || 
       q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       q.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       q.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesField && matchesStatus && matchesQuery;
+    return matchesStatus && matchesQuery;
   });
 
   const handleSuggest = (e: React.FormEvent) => {
@@ -207,7 +197,7 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
               />
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-mono text-[#738284] flex items-center gap-1">
+              <span className="text-xs font-sans text-[#738284] flex items-center gap-1 font-medium">
                 <Filter className="w-3.5 h-3.5 text-[#a7e26e]" />
                 الحالة:
               </span>
@@ -215,10 +205,10 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
                 <button
                   key={st}
                   onClick={() => setSelectedStatus(st)}
-                  className={`px-3 py-1 rounded-full text-xs font-mono transition-all ${
+                  className={`px-3 py-1 rounded-full text-xs font-sans transition-all cursor-pointer ${
                     selectedStatus === st
-                      ? "bg-[#222f30] text-white font-bold"
-                      : "bg-[#f5f8f7] border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                      ? "bg-[#222f30] text-white font-bold shadow-xs"
+                      : "bg-[#f5f8f7] border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30] font-medium"
                   }`}
                 >
                   {st === "all" ? "كافة الحالات" : st}
@@ -237,11 +227,11 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
                 <div className="space-y-4">
                   {/* Top Meta */}
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="px-3 py-1 rounded-full bg-[#f5f8f7] border border-[#e4e3e3] text-[#445e5f] text-[11px] font-mono font-bold">
+                    <span className="px-3 py-1 rounded-full bg-[#f5f8f7] border border-[#e4e3e3] text-[#445e5f] text-[11px] font-sans font-bold">
                       {q.field}
                     </span>
 
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-sans font-bold ${
                       q.status === "محلول جزئياً" ? "bg-emerald-100 text-emerald-800" :
                       q.status === "قيد التجارب والتكرار" ? "bg-blue-100 text-blue-800" :
                       q.status === "غير محسوم بعد" ? "bg-amber-100 text-amber-800" :
@@ -261,28 +251,30 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
                   </p>
 
                   {/* Metrics Badges */}
-                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 py-3 border-y border-[#e4e3e3] text-center font-mono">
+                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 py-3 border-y border-[#e4e3e3] text-center">
                     <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-sm sm:text-base font-extrabold text-[#222f30]">{q.researchCount}</div>
-                      <div className="text-[10px] text-[#738284]">أبحاث موثقة</div>
+                      <div className="text-sm sm:text-base font-extrabold text-[#222f30] font-mono">{q.researchCount}</div>
+                      <div className="text-[10px] text-[#738284] font-sans">أبحاث موثقة</div>
                     </div>
                     <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-sm sm:text-base font-extrabold text-[#222f30]">{q.experimentsCount}</div>
-                      <div className="text-[10px] text-[#738284]">تجارب واختبارات</div>
+                      <div className="text-sm sm:text-base font-extrabold text-[#222f30] font-mono">{q.experimentsCount}</div>
+                      <div className="text-[10px] text-[#738284] font-sans">تجارب واختبارات</div>
                     </div>
                     <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-sm sm:text-base font-extrabold text-emerald-700">{q.replicationsCount}</div>
-                      <div className="text-[10px] text-[#738284]">تكرارات ناجحة</div>
+                      <div className="text-sm sm:text-base font-extrabold text-emerald-700 font-mono">{q.replicationsCount}</div>
+                      <div className="text-[10px] text-[#738284] font-sans">تكرارات ناجحة</div>
                     </div>
                   </div>
 
                   {/* Current Scientific Consensus */}
                   <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-xs text-emerald-950 space-y-1">
-                    <span className="font-bold font-mono text-emerald-800 flex items-center gap-1">
-                      <Scale className="w-3.5 h-3.5" />
-                      الإجماع العلمي الحالي (Consensus):
+                    <span className="font-bold font-sans text-emerald-800 flex items-center gap-1.5">
+                      <Scale className="w-3.5 h-3.5 text-emerald-700" />
+                      <span>الإجماع العلمي الحالي</span>
+                      <span className="font-mono text-[10px] text-emerald-700/80">(Consensus)</span>
+                      <span>:</span>
                     </span>
-                    <p className="leading-relaxed text-[11px] text-emerald-900">
+                    <p className="leading-relaxed text-xs text-emerald-900 font-sans">
                       {q.consensus}
                     </p>
                   </div>
@@ -300,10 +292,10 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
 
                   <Link
                     href={`/publish?question=${encodeURIComponent(q.title)}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold font-mono text-[#222f30] hover:text-[#a7e26e] group-hover:-translate-x-1 transition-all"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold font-sans text-[#222f30] hover:text-[#1c6442] group-hover:-translate-x-1 transition-all"
                   >
                     <span>ساهم ببحثك في هذا السؤال</span>
-                    <ArrowUpLeft className="w-4 h-4" />
+                    <ArrowUpLeft className="w-4 h-4 text-[#a7e26e]" />
                   </Link>
                 </div>
               </article>

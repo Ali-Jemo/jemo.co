@@ -92,8 +92,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // overflow-x clamped by globals `html, body { overflow-x: clip }` — the old
+  // `overflow-x-hidden` utility made <body> a scroll container and killed every
+  // position:sticky (filter toolbar, research sidebar) site-wide.
   return (
-    <html lang="ar" dir="rtl" className={`${noto.variable} ${mono.variable} overflow-x-hidden`}>
+    <html lang="ar" dir="rtl" className={`${noto.variable} ${mono.variable}`}>
       <head>
         <link rel="preconnect" href="https://img.clerk.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://img.clerk.com" />
@@ -103,7 +106,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)] overflow-x-hidden max-w-full" suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)] max-w-full" suppressHydrationWarning>
         <ClerkProvider
           publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
           appearance={clerkGlobalAppearance}

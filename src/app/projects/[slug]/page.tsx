@@ -5,7 +5,7 @@ import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RESEARCH_PROJECTS } from "@/lib/data/research-data";
-import { FolderGit2, ArrowRight, ExternalLink, Code2, Users, Layers, PlayCircle, CheckCircle2 } from "lucide-react";
+import { FolderGit2, ArrowRight, ExternalLink, Code2, Users } from "lucide-react";
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;

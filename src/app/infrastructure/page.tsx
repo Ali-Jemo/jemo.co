@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Card from "@/components/ui/Card";
 import ComputeRequestModal from "@/components/ComputeRequestModal";
 import { getLiveInfrastructure } from "@/lib/live-content";
-import { Cpu, Server, MapPin, Activity } from "lucide-react";
+import { Cpu, MapPin, Activity } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "البنية التحتية والعتاد | JEMO LABS",

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { escapeHtml, escapeMarkdown, generateContractId, maskEmail, safeCompare, checkRateLimit, sanitizeInput, readJsonBody } from "@/lib/security";
-import { isSafeHttpUrl, normalizeSafeHttpUrl } from "@/lib/security-client";
+import { isSafeHttpUrl } from "@/lib/security-client";
 import { signActionLink, verifyActionLink } from "@/lib/link-tokens";
 describe("Security Utilities", () => {
   describe("escapeHtml", () => {

@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import BioButton from "@/components/BioButton";
 import { useAuth } from "@/lib/auth-context";
 import type { Paper } from "@/lib/data/research-data";
 import {
@@ -14,10 +13,7 @@ import {
   AlertTriangle,
   Eye,
   HelpCircle,
-  Code2,
   BookOpen,
-  Scale,
-  Stethoscope,
   Copy,
   Check,
   Zap,
@@ -41,13 +37,6 @@ const PUBLICATION_TYPES = [
   { id: "novel", label: "رواية", desc: "عمل أدبي تريد حفظه ونشره", icon: BookOpen },
 ] as const;
 
-const RESEARCH_TYPES = [
-  { id: "Experiment", label: "Experiment", icon: BookOpen, desc: "تجربة عملية" },
-  { id: "Quick Investigation", label: "Investigation", icon: Zap, desc: "استقصاء سريع" },
-  { id: "Full Research", label: "Full Paper", icon: BookOpen, desc: "بحث متكامل" },
-  { id: "Discovery", label: "Discovery",  icon: Sparkles, desc: "اكتشاف" },
-  { id: "Replication", label: "Replication", icon: CheckCircle2, desc: "إعادة تجربة" },
-] as const;
 
 const CATEGORIES = [
   { value: "Systems & Kernels", label: "أبحاث النظم والأنوية — Ziqa، أنظمة التشغيل، والبرمجة منخفضة المستوى" },
@@ -86,7 +75,6 @@ export default function PublishResearchPage() {
   const [submitted, setSubmitted] = useState(false);
   const [createdPaper, setCreatedPaper] = useState<Paper | null>(null);
   const [guidelinesOpen, setGuidelinesOpen] = useState(false);
-  const [researchType, setResearchType] = useState<string>("Experiment");
   const [title, setTitle] = useState("استقصاء ومقارنة 6 نماذج في تصحيح نصوص عربية تراثية");
   const [trail, setTrail] = useState("اليوم 1: تفريغ العينات ← اليوم 2: مقارنة النماذج ← اليوم 3: التحقق بالمصادر");
   const [tools, setTools] = useState("Claude 3.5 Sonnet, ChatGPT-4o, DeepSeek-R1, Google Books");
@@ -233,7 +221,7 @@ export default function PublishResearchPage() {
     }
     const paper = publishPaper({
       title: normalizedTitle,
-      researchType: (publicationType === "book" ? "Book" : publicationType === "novel" ? "Novel" : researchType) as Paper["researchType"],
+      researchType: (publicationType === "book" ? "Book" : publicationType === "novel" ? "Novel" : "Experiment") as Paper["researchType"],
       publicationType,
       subtitle: subtitle.trim() || undefined,
       synopsis: synopsis.trim() || undefined,
@@ -311,7 +299,7 @@ export default function PublishResearchPage() {
             </p>
             <div className="mt-6 mx-auto max-w-2xl inline-flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/75 border border-[#dce3dc] text-xs sm:text-sm font-bold text-[#263635] shadow-[0_10px_30px_rgba(24,37,38,0.06)]">
               <Sparkles className="w-4 h-4 text-[#83b83b] shrink-0" />
-              <span>"حاسوبك مع واجهة AI يصنع مختبراً لشخص واحد — شرط التحقق البشري الصارم."</span>
+              <span>&quot;حاسوبك مع واجهة AI يصنع مختبراً لشخص واحد — شرط التحقق البشري الصارم.&quot;</span>
             </div>
           </header>
           {/* ===== Publishing Path ===== */}
@@ -375,7 +363,7 @@ export default function PublishResearchPage() {
                   className="text-[11px] font-bold text-amber-900 bg-amber-200/60 hover:bg-amber-200 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer w-fit"
                 >
                   <Zap className="w-3.5 h-3.5 text-emerald-700" />
-                  <span>دخول تجريبي فوري (عمر الكرخي)</span>
+                  <span>دخول تجريبي فوري (علي حسين هادي)</span>
                 </button>
               </div>
               <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-200/60 text-[11px]">
@@ -486,7 +474,7 @@ export default function PublishResearchPage() {
                     )}
                     <div>
                       <label className="block text-xs font-bold text-[#222f30] mb-1.5">اسمك أو اسم الفريق *</label>
-                      <input type="text" required placeholder="مثال: عمر الكرخي" value={authorName} onChange={(e) => setAuthorName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#e4e3e3] bg-[#fcfdfc] text-sm focus:outline-none focus:border-[#a7e26e]" />
+                      <input type="text" required placeholder="مثال: علي حسين هادي أو فريق Axiq" value={authorName} onChange={(e) => setAuthorName(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#e4e3e3] bg-[#fcfdfc] text-sm focus:outline-none focus:border-[#a7e26e]" />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-[#222f30] mb-1.5">حسابك (GitHub أو X أو بريد)</label>
@@ -670,7 +658,7 @@ export default function PublishResearchPage() {
                           <span>ضوابط النزاهة العلمية والمجالات الحساسة (الطب والفتاوى):</span>
                         </div>
                         <p>
-                          للحفاظ على الأمان والمصداقية، تُمنع "الأبحاث الاستنتاجية بالذكاء الاصطناعي" التي تقدّم تشخيصات طبية أو فتاوى شرعية كحقائق قاطعة. جميع المساهمات المجتمعية تُوسم بوسم شفاف يوضح أنها <strong>"بحث مدعوم بالذكاء الاصطناعي قيد المراجعة المجتمعية"</strong> ولا تعد بديلاً عن الجهات المختصة.
+                          للحفاظ على الأمان والمصداقية، تُمنع &quot;الأبحاث الاستنتاجية بالذكاء الاصطناعي&quot; التي تقدّم تشخيصات طبية أو فتاوى شرعية كحقائق قاطعة. جميع المساهمات المجتمعية تُوسم بوسم شفاف يوضح أنها <strong>&quot;بحث مدعوم بالذكاء الاصطناعي قيد المراجعة المجتمعية&quot;</strong> ولا تعد بديلاً عن الجهات المختصة.
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#e4e3e3]">

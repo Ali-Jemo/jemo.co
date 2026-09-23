@@ -6,7 +6,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RESEARCH_LABS, RESEARCH_PAPERS, RESEARCH_PROJECTS, RESEARCHERS } from "@/lib/data/research-data";
 import { getLabNews } from "@/lib/data/lab-news";
-import { Cpu, ArrowRight, Users, FileText, FolderGit2, ArrowUpLeft, UserCheck, Newspaper, Calendar } from "lucide-react";
+import { ArrowRight, Users, FileText, FolderGit2, ArrowUpLeft, Newspaper, Calendar } from "lucide-react";
 
 interface LabPageProps {
   params: Promise<{ slug: string }>;

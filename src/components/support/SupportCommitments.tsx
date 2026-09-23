@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldCheck, CheckCircle2, FileText, ArrowUpLeft, Lock, Award } from "lucide-react";
+import { ShieldCheck, CheckCircle2, FileText, ArrowUpLeft, Lock } from "lucide-react";
 import Link from "next/link";
 
 export interface SupportCommitmentsProps {

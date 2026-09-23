@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Server, ArrowUpLeft, Cpu, HardDrive, Wifi, MapPin } from "lucide-react";
+import { Server, Cpu, HardDrive, MapPin } from "lucide-react";
 import { INFRASTRUCTURE } from "@/lib/data/research-data";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";

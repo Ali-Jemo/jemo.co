@@ -17,6 +17,12 @@ export default function InitiativeSearchFilter({ initiatives }: InitiativeSearch
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
+  const counts = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const it of initiatives) map[it.status] = (map[it.status] ?? 0) + 1;
+    return map;
+  }, [initiatives]);
+
   const filtered = useMemo(() => {
     return initiatives.filter((init) => {
       const matchesQuery =
@@ -50,20 +56,23 @@ export default function InitiativeSearchFilter({ initiatives }: InitiativeSearch
             {STATUSES.map((s) => (
               <button
                 key={s}
+                type="button"
                 onClick={() => setStatusFilter(s)}
-                className={`px-3 py-1.5 rounded-full text-xs font-mono font-bold transition-all ${
+                aria-pressed={statusFilter === s}
+                className={`px-3 py-1.5 rounded-full text-xs font-mono font-bold transition-all active:scale-95 ${
                   statusFilter === s
                     ? "bg-[var(--brand)] text-white"
                     : "bg-[var(--bg)] border border-[var(--line)] text-[var(--ink-2)] hover:border-[var(--brand)]"
                 }`}
               >
-                {s}
+                {s} ({counts[s] ?? 0})
               </button>
             ))}
             {statusFilter !== "all" && (
               <button
+                type="button"
                 onClick={() => setStatusFilter("all")}
-                className="px-3 py-1.5 rounded-full text-xs font-mono text-[var(--brand)] hover:underline"
+                className="px-3 py-1.5 rounded-full text-xs font-mono text-[var(--brand)] hover:underline active:scale-95"
               >
                 الكل
               </button>

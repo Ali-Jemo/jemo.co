@@ -13,7 +13,7 @@ export default function NextGenButton() {
   
   const [isHovered, setIsHovered] = useState(false);
   const [displayText, setDisplayText] = useState("قدّم الآن");
-  const [particles, setParticles] = useState<{ id: number; x: number; y: number }[]>([]);
+  const [particles, setParticles] = useState<{ id: number; x: number; y: number; targetX: number }[]>([]);
   const particleIdCounter = useRef(0);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -29,7 +29,8 @@ export default function NextGenButton() {
     // Spawn a particle occasionally on move
     if (Math.random() > 0.85) {
       const id = particleIdCounter.current++;
-      setParticles((prev) => [...prev, { id, x, y }]);
+      const targetX = x + (Math.random() * 20 - 10);
+      setParticles((prev) => [...prev, { id, x, y, targetX }]);
       setTimeout(() => {
         setParticles((prev) => prev.filter((p) => p.id !== id));
       }, 600);
@@ -98,7 +99,7 @@ export default function NextGenButton() {
             <motion.div
               key={p.id}
               initial={{ opacity: 1, scale: 0, x: p.x, y: p.y }}
-              animate={{ opacity: 0, scale: 1.5, y: p.y - 40, x: p.x + (Math.random() * 20 - 10) }}
+              animate={{ opacity: 0, scale: 1.5, y: p.y - 40, x: p.targetX }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="absolute text-[var(--gold)]"

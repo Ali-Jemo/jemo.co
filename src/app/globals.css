@@ -248,6 +248,23 @@ main.home > section:not(:first-child) {
   background: var(--brand);
 }
 
+/* LTR islands inside the RTL site (English titles, IDs, specs, emails).
+   The `dir-ltr` class is used across ~27 files — define it here so those
+   elements actually isolate direction instead of rendering bidi-broken. */
+.dir-ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Horizontal scrollers (filter pill rows, ticker tabs) hide their bar */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .ltr, code, kbd, samp, pre, .font-mono, .mono, .latin {
   font-family: var(--font-mono);
   direction: ltr;
@@ -1555,8 +1572,9 @@ a:active, button:active, [role="button"]:active {
 }
 
 /* ============================================================
-   COHERE-STYLE CARD ANIMATIONS — homepage-scoped (.home)
-   Ported from cohere.com: staggered scroll-reveal (fadeInUp 0.5s
+   COHERE-STYLE CARD ANIMATIONS — scoped to [data-cohere-reveal] groups
+   (homepage sections, research registry feed). Ported from cohere.com:
+   staggered scroll-reveal (fadeInUp 0.5s
    ease-in-out with per-card/per-element delays) + arrow wiggle on
    hover, with a dedicated RTL variant. CSS-driven, no JS animation.
    ============================================================ */
@@ -1589,11 +1607,11 @@ a:active, button:active, [role="button"]:active {
 
   /* Reveal targets start hidden only when motion is allowed; JS (Reveal)
      flips data-revealed=true on the group when it scrolls into view. */
-  .home [data-cohere-reveal] :is([data-cohere-item]) {
+  [data-cohere-reveal] :is([data-cohere-item]) {
     opacity: 0;
   }
 
-  .home [data-cohere-reveal][data-revealed="true"] :is([data-cohere-item]) {
+  [data-cohere-reveal][data-revealed="true"] :is([data-cohere-item]) {
     animation: cohere-fade-in-up 0.5s ease-in-out forwards;
     animation-delay: var(--cohere-delay, 0ms);
   }
@@ -1603,17 +1621,30 @@ a:active, button:active, [role="button"]:active {
    keyframes above are declared inside the media query). Default is the RTL
    variant (our site is Arabic); LTR contexts flip to +5px. */
 @media (prefers-reduced-motion: no-preference) {
-  .home [data-cohere-card] .cohere-arrow {
+  [data-cohere-card] .cohere-arrow {
     transition: color 0.3s ease-in-out;
   }
-  .home [data-cohere-card]:hover .cohere-arrow,
-  .home [data-cohere-card]:focus-visible .cohere-arrow {
+  [data-cohere-card]:hover .cohere-arrow,
+  [data-cohere-card]:focus-visible .cohere-arrow {
     animation: cohere-arrow-wiggle-rtl 0.4s ease-in-out;
   }
-  [dir="ltr"] .home [data-cohere-card]:hover .cohere-arrow,
-  [dir="ltr"] .home [data-cohere-card]:focus-visible .cohere-arrow {
+  [dir="ltr"] [data-cohere-card]:hover .cohere-arrow,
+  [dir="ltr"] [data-cohere-card]:focus-visible .cohere-arrow {
     animation: cohere-arrow-wiggle 0.4s ease-in-out;
   }
+}
+
+/* ============================================================
+   PROJECTS PAGE hover fixes — plain CSS beats the unlayered
+   `.card:hover` academic-blue border + lift (Tailwind `!`-suffix
+   utilities never generated; specificity wins instead).
+============================================================ */
+.card[data-cohere-card]:hover {
+  border-color: #a7e26e; /* brand lime instead of rgba(37,99,235,.3) */
+}
+.card[data-cohere-toolbar]:hover {
+  transform: none; /* control surface: no lift */
+  border-color: rgba(167, 226, 110, 0.6);
 }
 
 /* Clerk Widget Hardware Acceleration, Transitions & Smoothness */

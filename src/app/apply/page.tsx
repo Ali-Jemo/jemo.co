@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   CheckCircle2,
   AlertTriangle,
@@ -136,19 +137,19 @@ export default function ApplyPage() {
             )}
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <a
+              <Link
                 href="/applications"
                 className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm bg-[var(--brand)] !text-white shadow-md hover:opacity-90 transition-all"
               >
                 <span>متابعة حالة القبولات</span>
                 <ArrowUpLeft size={18} />
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/"
                 className="inline-flex items-center justify-center px-6 py-3.5 rounded-xl font-medium text-sm bg-[var(--bg)] text-[var(--ink-2)] border border-[var(--line)] hover:text-[var(--ink)] transition-all"
               >
                 الرئيسية
-              </a>
+              </Link>
             </div>
           </motion.div>
         </main>
