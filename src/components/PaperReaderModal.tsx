@@ -117,15 +117,17 @@ export default function PaperReaderModal({ paper }: PaperReaderModalProps) {
 
             {/* Modal Footer */}
             <div className="p-5 bg-[var(--surface)] border-t border-[var(--line)] flex items-center justify-between">
-              <a
-                href={paper.pdfUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--brand)] text-white font-bold text-xs shadow-sm hover:opacity-90 transition-all"
-              >
-                <Download className="w-4 h-4" />
-                <span>تحميل ملف PDF الأصلي</span>
-              </a>
+              {paper.pdfUrl && isSafeHttpUrl(paper.pdfUrl) && (
+                <a
+                  href={paper.pdfUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--brand)] text-white font-bold text-xs shadow-sm hover:opacity-90 transition-all"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>تحميل ملف PDF الأصلي</span>
+                </a>
+              )}
 
               <button
                 onClick={() => setIsOpen(false)}
