@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Check, Repeat, ShieldCheck, AlertTriangle, GitFork } from "lucide-react";
 import { RESEARCH_PAPERS } from "@/lib/data/research-data";
+import { isSafeHttpUrl } from "@/lib/security-client";
 import type { UserReplication } from "@/lib/replications";
 import {
   primaryBtnClass,
@@ -37,6 +38,7 @@ export default function ReplicationModal({
   const [confidence, setConfidence] = useState<"high" | "medium" | "exploratory">("high");
   const [evidenceUrl, setEvidenceUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -44,9 +46,12 @@ export default function ReplicationModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (!findings.trim()) return;
-
-    setSubmitting(true);
+    if (evidenceUrl.trim() && !isSafeHttpUrl(evidenceUrl.trim())) {
+      setError("رابط غير صالح — يرجى إدخال رابط http(s)");
+      return;
+    }
     onSubmit({
       paperSlug,
       paperTitle: selectedPaper?.title || "كائن بحث مخصص",
@@ -156,6 +161,9 @@ export default function ReplicationModal({
             />
           </Field>
         </div>
+        {error && (
+          <p className="text-xs text-rose-600 font-bold text-center">{error}</p>
+        )}
 
         <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-[#e4e3e3]">
           <button

@@ -20,7 +20,8 @@ import {
   KeyRound
 } from "lucide-react";
 import { RESEARCH_PROJECTS, RESEARCH_PAPERS, OPEN_QUESTIONS } from "@/lib/data/research-data";
-
+import { isAdminUser } from "@/lib/security";
+import { supabaseAdmin } from "@/lib/supabase";
 export const metadata: Metadata = {
   title: "لوحة الإدارة السيادية | JEMO LABS",
   description: "بوابة إدارة المنظومة وأبحاث الذكاء الاصطناعي السيادية.",
@@ -33,10 +34,28 @@ export default async function AdminPage() {
     redirect("/sign-in?redirect_url=/admin");
   }
 
-  const role = (user.publicMetadata as { role?: string })?.role;
-  const isSuperAdminEmail = user.emailAddresses.some(e => e.emailAddress === "ali.jemo1.9@gmail.com");
-  const isAdmin = role === "admin" || isSuperAdminEmail;
+  const isAdmin = isAdminUser(user);
 
+  let inquiries: Array<Record<string, unknown>> = [];
+  let initiatives: Array<Record<string, unknown>> = [];
+  let recentSubscribers: Array<{ email: string; created_at: string }> = [];
+  let dbError = false;
+
+  if (isAdmin) {
+    try {
+      const supabase = supabaseAdmin();
+      const [inqRes, initRes, subsRes] = await Promise.all([
+        supabase.from("inquiries").select("*").order("created_at", { ascending: false }).limit(50),
+        supabase.from("initiative_interest").select("*").order("created_at", { ascending: false }).limit(50),
+        supabase.from("newsletter_subscribers").select("email, created_at").order("created_at", { ascending: false }).limit(20),
+      ]);
+      if (inqRes.data) inquiries = inqRes.data;
+      if (initRes.data) initiatives = initRes.data;
+      if (subsRes.data) recentSubscribers = subsRes.data;
+    } catch {
+      dbError = true;
+    }
+  }
   if (!isAdmin) {
     return (
       <>
@@ -83,7 +102,7 @@ export default async function AdminPage() {
                 لوحة الإدارة والتحكم السيادي
               </h1>
               <p className="text-xs text-zinc-400 font-mono">
-                المسؤول: {user.firstName ? `${user.firstName} ${user.lastName || ""}` : "Ali Hadi"} (@{user.username || "jemo"}) · {user.emailAddresses[0]?.emailAddress}
+                المسؤول: {user.firstName ? `${user.firstName} ${user.lastName || ""}` : "مدير النظام"} (@{user.username || "admin"}) · {user.emailAddresses[0]?.emailAddress}
               </p>
             </div>
 
@@ -158,7 +177,7 @@ export default async function AdminPage() {
                   لوحات التحكم المتصلة ونظام إدارة الطلبات والأبحاث
                 </h2>
                 <p className="text-xs text-[#55696a]">
-                  ربط موحد بين موقع المنصة jemo.co ومحرك الإدارة الداخلي (/home/jemo/Projects/jemo-admin)
+                  ربط موحد بين موقع المنصة ومحرك الإدارة الداخلي
                 </p>
               </div>
 
@@ -183,7 +202,7 @@ export default async function AdminPage() {
                         <h3 className="text-sm font-bold text-[#222f30]">محرك الإدارة الرئيسي (Next.js 16)</h3>
                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#bef264] text-[#162021]">MAIN PANEL</span>
                       </div>
-                      <p className="text-[11px] font-mono text-[#738284]">Port :3301 • Jemo Admin Engine (Sovereign Core)</p>
+                      <p className="text-[11px] font-mono text-[#738284]">Jemo Admin Engine (Sovereign Core)</p>
                     </div>
                   </div>
                 </div>
@@ -194,17 +213,12 @@ export default async function AdminPage() {
 
                 <div className="pt-2 flex items-center justify-between">
                   <div className="text-[11px] font-mono text-zinc-500">
-                    رمز PIN: <span className="font-bold text-[#222f30]">a.j1_6</span>
+                    الوصول: <span className="font-bold text-emerald-600">محمي بنظام الصلاحيات</span>
                   </div>
-                  <a
-                    href="http://localhost:3301"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#222f30] hover:bg-[#162021] text-white text-xs font-bold transition-colors shadow-sm"
-                  >
-                    <span>فتح محرك الإدارة الرئيسي (:3301)</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 text-zinc-500 text-xs font-bold">
+                    <span>محرك الإدارة الداخلي</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  </span>
                 </div>
               </div>
 
@@ -217,29 +231,23 @@ export default async function AdminPage() {
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-[#222f30]">جسر سطح المكتب الميداني (Bridge)</h3>
-                      <p className="text-[11px] font-mono text-[#738284]">Port :3300 • Node Desktop Bridge (مؤرشف: old-projects)</p>
+                      <p className="text-[11px] font-mono text-[#738284]">Node Desktop Bridge (مؤرشف)</p>
                     </div>
                   </div>
                   <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-zinc-200 text-zinc-700">DESKTOP BRIDGE</span>
                 </div>
 
                 <p className="text-xs text-[#55696a] leading-relaxed">
-                  خادم الربط المحلي لعمليات ملفات Git و Cloudflare. تم أرشفة لوحة الموقع القديمة إلى مجلد المشاريع القديمة (old-projects/old-website-admin).
+                  خادم الربط للعمليات الإدارية وأرشفة المشاريع السابقة.
                 </p>
 
                 <div className="pt-2 flex items-center justify-between">
                   <div className="text-[11px] font-mono text-zinc-500">
-                    الربط: <span className="font-bold text-emerald-600">x-admin-secret</span>
+                    الحالة: <span className="font-bold text-zinc-600">مؤرشف</span>
                   </div>
-                  <a
-                    href="http://localhost:3300/hub.html"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-zinc-50 text-[#222f30] border border-[#e4e3e3] text-xs font-bold transition-colors shadow-xs"
-                  >
-                    <span>فتح Hub الميداني (:3300)</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 text-zinc-500 text-xs font-bold">
+                    <span>Hub الميداني</span>
+                  </span>
                 </div>
               </div>
             </div>
@@ -253,7 +261,9 @@ export default async function AdminPage() {
               </div>
               <div className="flex items-center gap-2 text-[11px] text-[#55696a]">
                 <span>المسؤول المعتمد:</span>
-                <strong className="text-[#222f30]">ali.jemo1.9@gmail.com</strong>
+                <strong className="text-[#222f30]">
+                  {user.primaryEmailAddress?.emailAddress ?? user.emailAddresses?.[0]?.emailAddress ?? "—"}
+                </strong>
                 <span className="text-emerald-600 font-bold">✓ مُفعل</span>
               </div>
             </div>
@@ -272,11 +282,11 @@ export default async function AdminPage() {
               <div className="space-y-2 pt-2 text-xs font-mono">
                 <div className="p-3 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] flex items-center justify-between">
                   <span>اسم المستخدم:</span>
-                  <span className="font-bold text-[#222f30]">jemo</span>
+                  <span className="font-bold text-[#222f30]">{user.username || "admin"}</span>
                 </div>
                 <div className="p-3 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] flex items-center justify-between">
                   <span>الدور الوظيفي:</span>
-                  <span className="font-bold text-emerald-700">admin (System Founder)</span>
+                  <span className="font-bold text-emerald-700">admin</span>
                 </div>
                 <div className="p-3 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] flex items-center justify-between">
                   <span>المعرف الرقمي:</span>
@@ -298,13 +308,129 @@ export default async function AdminPage() {
                   // Core Kernel & Services Diagnostics
                 </p>
                 <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 space-y-1 text-[11px]">
-                  <p>AUTH_PROVIDER: <span className="text-[#bef264]">CLERK_v3</span></p>
-                  <p>ENCRYPTION: <span className="text-zinc-200">SHA-256 + OAuth2</span></p>
-                  <p>TARGET_APP: <span className="text-zinc-200">app_3JBeECW9w6hwJDmB0buQyuggNjG</span></p>
-                  <p>ENVIRONMENT: <span className="text-emerald-400">DEVELOPMENT (ONLINE)</span></p>
+                  <p>AUTH: <span className="text-[#bef264]">Clerk (server-verified)</span></p>
+                  <p>DB: <span className="text-zinc-200">Supabase PostgreSQL</span></p>
+                  <p>RUNTIME: <span className="text-zinc-200">Cloudflare Workers</span></p>
+                  <p>ENV: <span className="text-emerald-400">production</span></p>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Submissions & Inquiries Section */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-6">
+            <div className="flex items-center justify-between border-b border-[#f0efee] pb-4">
+              <div className="space-y-1">
+                <h2 className="text-lg font-bold text-[#222f30] font-kufi">
+                  طلبات ومبادرات ومشتركين
+                </h2>
+                <p className="text-xs text-[#55696a]">
+                  سجلات استمارات الدعم، الحوسبة، مبادرات البحث، والمشتركين في النشرة البريدية
+                </p>
+              </div>
+              <div className="flex gap-2 text-xs font-mono">
+                <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                  {inquiries.length} طلبات
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 font-bold border border-blue-200">
+                  {initiatives.length} مبادرات
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 font-bold border border-amber-200">
+                  {recentSubscribers.length} مشتركون
+                </span>
+              </div>
+            </div>
+
+            {dbError ? (
+              <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-bold text-center">
+                تعذر الاتصال بقاعدة البيانات
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Inquiries */}
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold font-mono text-[#738284]">
+                    // أحدث طلبات الحوسبة والرعاية (INQUIRIES)
+                  </h3>
+                  {inquiries.length === 0 ? (
+                    <p className="text-xs text-[#738284] p-4 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] text-center">
+                      لا توجد طلبات مسجلة بعد
+                    </p>
+                  ) : (
+                    <div className="divide-y divide-[#f0efee] border border-[#e4e3e3] rounded-2xl overflow-hidden">
+                      {inquiries.slice(0, 10).map((inq, idx) => (
+                        <div key={String(inq.id ?? idx)} className="p-4 bg-white hover:bg-[#fafafa] transition-colors space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-[#222f30]">
+                              {String(inq.name || "—")} ({String(inq.email || "—")})
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#728825]/10 text-[#728825]">
+                              {String(inq.type === "compute" ? "حوسبة" : "رعاية")}
+                            </span>
+                          </div>
+                          <p className="text-xs text-[#55696a]">
+                            {String(inq.institution || inq.organization || inq.resource || inq.amount_or_funding || inq.message || "—")}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Initiatives */}
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold font-mono text-[#738284]">
+                    // تسجيلات الاهتمام بالمبادرات (INITIATIVE INTEREST)
+                  </h3>
+                  {initiatives.length === 0 ? (
+                    <p className="text-xs text-[#738284] p-4 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] text-center">
+                      لا توجد تسجيلات اهتمام بعد
+                    </p>
+                  ) : (
+                    <div className="divide-y divide-[#f0efee] border border-[#e4e3e3] rounded-2xl overflow-hidden">
+                      {initiatives.slice(0, 10).map((init, idx) => (
+                        <div key={String(init.id ?? idx)} className="p-4 bg-white hover:bg-[#fafafa] transition-colors space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-[#222f30]">
+                              {String(init.name || "—")} ({String(init.email || "—")})
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-blue-50 text-blue-700">
+                              {String(init.initiative_slug || "—")}
+                            </span>
+                          </div>
+                          {Boolean(init.message) && (
+                            <p className="text-xs text-[#55696a]">{String(init.message)}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Subscribers */}
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold font-mono text-[#738284]">
+                    // أحدث مشتركي النشرة البريدية (NEWSLETTER)
+                  </h3>
+                  {recentSubscribers.length === 0 ? (
+                    <p className="text-xs text-[#738284] p-4 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] text-center">
+                      لا يوجد مشتركون بعد
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+                      {recentSubscribers.map((sub, idx) => (
+                        <div key={String(sub.email ?? idx)} className="p-2.5 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] flex items-center justify-between">
+                          <span className="text-[#222f30] truncate">{sub.email}</span>
+                          <span className="text-[10px] text-[#738284]">
+                            {sub.created_at ? new Date(sub.created_at).toLocaleDateString("ar-EG") : "—"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
         </div>

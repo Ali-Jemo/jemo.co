@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpLeft, ShieldCheck } from "lucide-react";
 import EditorialSectionHeader from "@/components/EditorialSectionHeader";
-
+import { isSafeHttpUrl } from "@/lib/security-client";
 interface PeerInstitution {
   id: string;
   name: string;
@@ -15,85 +15,28 @@ interface PeerInstitution {
   metrics: string;
 }
 
-const PEER_INSTITUTIONS: PeerInstitution[] = [
-  {
-    id: "uot",
-    name: "الجامعة التكنولوجية",
-    code: "IRQ-UOT",
-    field: "الحوسبة الفائقة، هندسة النظم الموزعة، وتطوير النوى منخفضة المستوى",
-    type: "جامعات حكومية",
-    website: "https://uotechnology.edu.iq",
-    metrics: "عقدة تشغيل مستقلة · Hマト-01",
-  },
-  {
-    id: "uob",
-    name: "جامعة بغداد",
-    code: "IRQ-UOB",
-    field: "تدقيق الخوارزميات، تدريب نماذج المعرفة التراثية، ونظم المعالجة اللغوية",
-    type: "جامعات حكومية",
-    website: "https://uobaghdad.edu.iq",
-    metrics: "مجموعة تدقيق النماذج · BAGHDAD-LLM",
-  },
-  {
-    id: "src",
-    name: "مركز الأبحاث السيادية",
-    code: "REG-SRC",
-    field: "المعايير الوطنية لأمن الشيفرات المصدرية، الأنظمة السيادية، وفحص الاعتمادية",
-    type: "مراكز سيادية",
-    website: "https://jemo.co/labs",
-    metrics: "معايير التدقيق السيادي · SEC-CORE",
-  },
-  {
-    id: "uom",
-    name: "جامعة الموصل",
-    code: "IRQ-UOM",
-    field: "رقمنة المخطوطات والذكاء الاصطناعي في فحص وتحقيق الوثائق التاريخية",
-    type: "جامعات حكومية",
-    website: "https://uomisan.edu.iq",
-    metrics: "أرشيف النصوص المحققة · DOC-ARCHIVE",
-  },
-  {
-    id: "osn",
-    name: "iraq-network",
-    code: "INT-IRN",
-    field: "سجل ثقة مستقل للشركات العراقية · التحقق من الهوية والمستندات والنشاط الفعلي",
-    type: "تحالفات دولية",
-    website: "https://iraq-network.tech/",
-    metrics: "سجل الثقة · VER-IR-XXX",
-  },
-  {
-    id: "altuff",
-    name: "طلاب جامعة الطف",
-    code: "INT-ALTUFF",
-    field: "طالب ضمن منظومة جامعة الطف",
-    type: "تحالفات دولية",
-    website: "https://www.altuff.edu.iq/",
-    metrics: "عضو في سجل الثقة · ALTUFF-STUDENT",
-  },
-  {
-    id: "uon",
-    name: "جامعة النهرين",
-    code: "IRQ-UON",
-    field: "أبحاث التشفير ما بعد الكمي، الذكاء الاصطناعي الحيوي، وشبكات الحوسبة الحافة",
-    type: "جامعات حكومية",
-    website: "https://nahrainuniv.edu.iq",
-    metrics: "مختبر التشفير الكمي · PQ-CRYPTO",
-  },
-];
+export const PEER_INSTITUTIONS: PeerInstitution[] = [];
 
 export default function BioPartnersGrid() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
-  const [isDesktopMouse, setIsDesktopMouse] = useState(false);
+  const [isDesktopMouse, setIsDesktopMouse] = useState<boolean>(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function")
+      return false;
+    return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
   const isHoveringRef = useRef(false);
   const rafIdRef = useRef<number | null>(null);
 
-  // 1. Detect pointer type for desktop mouse hover
+  // 1. Detect pointer type for desktop mouse hover.
+  // Initial value comes from the lazy useState initializer above, so this
+  // effect only subscribes to changes — no synchronous setState on mount.
   useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function")
+      return;
     const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    setIsDesktopMouse(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsDesktopMouse(e.matches);
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
@@ -210,12 +153,15 @@ export default function BioPartnersGrid() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
         <EditorialSectionHeader
           num="08"
-          kickerAr="التحالف الأكاديمي والبحثي"
-          kickerEn="ACADEMIC ALLIANCE"
-          title="شبكة معرفية لكل العلوم،"
-          titleAccent="تعاون مفتوح مع الجامعات والمراكز البحثية."
-          lede="حائط الشراكات الأكاديمية والمؤسسات البحثية المستقلة — تعاون مفتوح في النظم، الخوارزميات، والعتاد."
+          kickerAr="جهات نستهدف التعاون معها"
+          kickerEn="OUTREACH TARGETS — NO SIGNED MOU YET"
+          title="نبحث عن شركاء،"
+          titleAccent="لا توجد شراكات موقعة بعد."
+          lede="قائمة استهداف مفتوحة للجامعات والمراكز البحثية. تواصل معنا لبدء حوار تعاون — لا توجد مذكرات تفاهم موقعة حتى الآن."
         />
+        <p className="mb-6 text-xs font-mono text-[#738284] border border-dashed border-[#e4e3e3] rounded-xl p-3 bg-white">
+          إفصاح: لا توجد اتفاقيات شراكة موقعة. الأسماء السابقة أُزيلت حتى توثيق رسمي.
+        </p>
         {/* 3. The Wall (Interactive Kinetic Typo-Grid with Optical Scroll-Spy) */}
         <div 
           onMouseMove={handleMouseMove}
@@ -339,17 +285,18 @@ export default function BioPartnersGrid() {
                         </span>
 
                         <span className="text-[#94a3b8] hidden sm:inline">·</span>
-
-                        <a
-                          href={item.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-[#222f30] hover:text-[#728825] font-bold text-xs underline underline-offset-4 decoration-[#a7e26e] decoration-2 transition-colors py-1 group/link"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <span>الرابط التوثيقي</span>
-                          <ArrowUpLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover/link:-translate-x-0.5 group-hover/link:-translate-y-0.5" />
-                        </a>
+                        {item.website && isSafeHttpUrl(item.website) && (
+                          <a
+                            href={item.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[#222f30] hover:text-[#728825] font-bold text-xs underline underline-offset-4 decoration-[#a7e26e] decoration-2 transition-colors py-1 group/link"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <span>الرابط التوثيقي</span>
+                            <ArrowUpLeft className="w-3.5 h-3.5 transition-transform duration-200 group-hover/link:-translate-x-0.5 group-hover/link:-translate-y-0.5" />
+                          </a>
+                        )}
                       </div>
                     </motion.div>
                   )}

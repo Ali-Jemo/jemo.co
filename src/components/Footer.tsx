@@ -37,7 +37,7 @@ const FOOTER_COLUMNS = [
 ];
 
 const SOCIAL_LINKS = [
-  { href: "https://t.me/alijemo", label: "Telegram", Icon: TelegramIcon },
+  { href: "https://t.me/jemo_channel", label: "Telegram", Icon: TelegramIcon },
   { href: "https://x.com/jemolabs", label: "X", Icon: XIcon },
   { href: "https://github.com/Ali-Jemo", label: "GitHub", Icon: GithubIcon },
 ];
@@ -191,10 +191,6 @@ export default function Footer() {
             <Link href="/terms" className="hover:text-[var(--ink)] transition-colors">
               الشروط والأحكام
             </Link>
-            <span className="opacity-30">·</span>
-            <span className="text-emerald-600/90">[LATENCY: OPTIMAL]</span>
-            <span className="opacity-30">·</span>
-            <span className="text-emerald-600/90">[NODES: ONLINE]</span>
           </div>
         </div>
 

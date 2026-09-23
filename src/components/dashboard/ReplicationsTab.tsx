@@ -12,6 +12,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import type { UserReplication } from "@/lib/replications";
+import { isSafeHttpUrl } from "@/lib/security-client";
 import {
   cardClass,
   primaryBtnClass,
@@ -177,7 +178,7 @@ export default function ReplicationsTab({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  {rep.evidenceUrl && (
+                  {rep.evidenceUrl && isSafeHttpUrl(rep.evidenceUrl) && (
                     <a
                       href={rep.evidenceUrl}
                       target="_blank"

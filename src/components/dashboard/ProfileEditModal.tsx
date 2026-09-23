@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Check, User, BookOpen } from "lucide-react";
 import { GithubIcon } from "@/components/Icons";
+import { isSafeHttpUrl } from "@/lib/security-client";
 import type { ResearcherProfile } from "@/lib/auth-context";
 import {
   primaryBtnClass,
@@ -38,11 +39,23 @@ export default function ProfileEditModal({
   });
 
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (formData.githubHandle && formData.githubHandle.startsWith("http") && !isSafeHttpUrl(formData.githubHandle)) {
+      setError("رابط غير صالح — يرجى إدخال رابط http(s)");
+      return;
+    }
+    if (formData.scholarUrl && !isSafeHttpUrl(formData.scholarUrl)) {
+      setError("رابط غير صالح — يرجى إدخال رابط http(s)");
+      return;
+    }
+
     setSaving(true);
     onSave(formData);
     setTimeout(() => {
@@ -146,6 +159,9 @@ export default function ProfileEditModal({
             />
           </Field>
         </div>
+        {error && (
+          <p className="text-xs text-rose-600 font-bold text-center">{error}</p>
+        )}
 
         {/* Footer actions */}
         <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-[#e4e3e3]">

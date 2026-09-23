@@ -14,7 +14,7 @@ export default async function InitiativesIndexPage() {
   const initiatives = await getLiveInitiatives();
 
   const stats = [
-    { icon: Users, label: "باحث مشارك", value: "53" },
+    { icon: Users, label: "باحث ومؤسس", value: "1" },
     { icon: Target, label: "مبادرة نشطة", value: String(initiatives.length) },
     {
       icon: BookOpen,

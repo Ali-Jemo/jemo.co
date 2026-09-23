@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import type { Paper } from "@/lib/data/research-data";
+import { isAdminUser } from "@/lib/security";
 
 describe("Connected Auth & Publish Pipeline", () => {
   beforeEach(() => {
@@ -85,35 +86,34 @@ describe("Connected Auth & Publish Pipeline", () => {
   });
 
   it("correctly recognizes Clerk superadmin and standard user identity structures", () => {
+    delete process.env.ADMIN_EMAILS;
+
     // Superadmin Clerk user mapping simulation
     const adminUser = {
       id: "user_2test12345",
-      fullName: "Ali Hussein Hadi",
-      username: "jemo",
-      primaryEmailAddress: { emailAddress: "ali.jemo1.9@gmail.com" },
+      fullName: "System Administrator",
+      username: "jemo_admin",
+      primaryEmailAddress: { emailAddress: "admin@jemo.co" },
       publicMetadata: { role: "admin" },
     };
 
-    const isSuperAdmin =
-      adminUser.primaryEmailAddress.emailAddress === "ali.jemo1.9@gmail.com" ||
-      adminUser.username === "jemo" ||
-      adminUser.publicMetadata?.role === "admin";
+    const isSuperAdmin = isAdminUser(adminUser);
 
     const adminProfile = {
       id: adminUser.id,
       email: adminUser.primaryEmailAddress.emailAddress,
-      name: isSuperAdmin ? "م. علي حسين هادي" : adminUser.fullName,
+      name: isSuperAdmin ? "مدير النظام" : adminUser.fullName,
       handle: `@${adminUser.username}`,
-      role: isSuperAdmin ? "المؤسس والمهندس الرئيسي • Founder & Lead Engineer" : "باحث مستقل",
-      domain: isSuperAdmin ? "الأنظمة المضمنة وهندسة الاستدلال والبرمجيات السيادية" : "أبحاث النظم",
-      researchId: isSuperAdmin ? "JEMO-CORE-0001" : `JEMO-RES-${adminUser.id.slice(0, 4)}`,
+      role: isSuperAdmin ? "مدير النظام • System Administrator" : "باحث مستقل",
+      domain: isSuperAdmin ? "إدارة المنظومة والأنظمة السيادية" : "أبحاث النظم",
+      researchId: isSuperAdmin ? "JEMO-ADMIN-0001" : `JEMO-RES-${adminUser.id.slice(0, 4)}`,
       isAdmin: isSuperAdmin,
     };
 
     expect(adminProfile.isAdmin).toBe(true);
-    expect(adminProfile.name).toBe("م. علي حسين هادي");
-    expect(adminProfile.researchId).toBe("JEMO-CORE-0001");
-    expect(adminProfile.handle).toBe("@jemo");
+    expect(adminProfile.name).toBe("مدير النظام");
+    expect(adminProfile.researchId).toBe("JEMO-ADMIN-0001");
+    expect(adminProfile.handle).toBe("@jemo_admin");
 
     // Standard Clerk researcher mapping simulation
     const standardUser = {
@@ -124,9 +124,7 @@ describe("Connected Auth & Publish Pipeline", () => {
       publicMetadata: {},
     };
 
-    const isStandardSuperAdmin =
-      standardUser.primaryEmailAddress.emailAddress === "ali.jemo1.9@gmail.com" ||
-      standardUser.username === "jemo";
+    const isStandardSuperAdmin = isAdminUser(standardUser);
 
     const standardProfile = {
       id: standardUser.id,
@@ -143,5 +141,14 @@ describe("Connected Auth & Publish Pipeline", () => {
     expect(standardProfile.name).toBe("د. سارة البغدادي");
     expect(standardProfile.researchId).toBe("JEMO-RES-9876");
     expect(standardProfile.handle).toBe("@sara_baghdadi");
+
+    // Regression guard: merely holding the site's publicly published contact
+    // address must not be enough to become an admin.
+    expect(
+      isAdminUser({
+        publicMetadata: {},
+        emailAddresses: [{ emailAddress: "contact@jemo.co" }],
+      })
+    ).toBe(false);
   });
 });

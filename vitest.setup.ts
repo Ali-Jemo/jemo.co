@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 import React from 'react'
 
+vi.mock('server-only', () => ({}))
 vi.mock('@clerk/nextjs', () => ({
   ClerkProvider: ({ children }: { children: React.ReactNode }) => children,
   Show: ({ when, children }: { when: string; children: React.ReactNode }) => {

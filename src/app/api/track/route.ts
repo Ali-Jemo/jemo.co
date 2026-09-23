@@ -22,11 +22,12 @@ export async function POST(req: NextRequest) {
     const cleanUa = typeof rawUa === "string" ? sanitizeInput(rawUa, 300) : null;
 
     const db = supabaseAdmin();
-    await db.from("page_views").insert({
+    const { error } = await db.from("page_views").insert({
       path: cleanPath,
       user_agent: cleanUa,
       referrer: cleanReferrer,
     });
+    if (error) console.error("Page view tracking error:", error.message);
 
     return NextResponse.json({ success: true });
   } catch {

@@ -9,8 +9,10 @@ class TestJemoSdk(unittest.TestCase):
         with self.assertRaises(ValueError):
             ResearchRegistry(api_key="")
 
-        client = ResearchRegistry(api_key="jemo_live_res_test12345678")
-        self.assertEqual(client.api_key, "jemo_live_res_test12345678")
+        # Obvious placeholder — the jemo_live_res_ prefix belongs only to real
+        # issued tokens, so secret scanners don't flag this file as a leak.
+        client = ResearchRegistry(api_key="test_placeholder_key_not_a_credential")
+        self.assertEqual(client.api_key, "test_placeholder_key_not_a_credential")
         self.assertEqual(client.endpoint, "https://jemo.co/api")
 
     def test_discovery_result_wrapper(self):

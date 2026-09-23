@@ -84,7 +84,6 @@ describe("Institutional UI Components", () => {
     expect(html).toContain("الشروط والأحكام والسياسات العامة");
     expect(html).toContain("الخصوصية وحماية البيانات الشخصية");
     expect(html).toContain("الملكية الفكرية والحقوق الرقمية");
-    expect(html).toContain("اتفاقية مستوى الخدمة (SLA)");
     expect(html).toContain("legal@jemo.co");
   });
 
@@ -124,7 +123,6 @@ describe("Institutional UI Components", () => {
     expect(html).toContain("استثمر في استقلال العقول وتطوير النظم المفتوحة");
     expect(html).toContain("برامج الرعاية والمساهمة");
     expect(html).toContain("طرق ووسائل الدعم المتاحة");
-    expect(html).toContain("العملات المشفرة (Crypto)");
     expect(html).toContain("طرق أخرى للمساهمة في نهضة البحث");
     expect(html).toContain("أين يذهب كل دولار يتلقاه المختبر؟");
     expect(html).toContain("ميثاق الشفافية والاستقلالية العلمية");
@@ -145,7 +143,6 @@ describe("Institutional UI Components", () => {
       bio: "أبحاث متقدمة في الاستدلال الرياضي والسيادة الرقمية.",
       orcidId: "0000-0001-2345-6789",
       githubHandle: "https://github.com/sami-baghdadi",
-      apiKey: "jemo_live_res_test12345678",
       stats: {
         publishedCount: 4,
         replicationsCount: 6,
@@ -193,11 +190,14 @@ describe("Institutional UI Components", () => {
     const apiHtml = renderToStaticMarkup(
       React.createElement(ApiHubTab, {
         profile: mockProfile,
-        onUpdateApiKey: () => {},
       })
     );
     console.log("ApiHubTab OK");
-    expect(apiHtml).toContain("jemo_live_res_test12345678");
+    // Keys are minted server-side, so nothing exists at render time: the
+    // snippets carry a placeholder and the management surface shows its
+    // empty state.
+    expect(apiHtml).toContain("jemo_live_res_xxxxxxxxxxxxxxxx");
+    expect(apiHtml).toContain("المفاتيح النشطة");
     expect(apiHtml).toContain("حزمة بايثون (JEMO Python SDK)");
     expect(apiHtml).toContain("curl -X POST https://jemo.co/api/content/schema");
 

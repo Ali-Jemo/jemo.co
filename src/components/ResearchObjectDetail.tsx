@@ -36,6 +36,7 @@ import {
 import CitationBox from "@/components/ui/CitationBox";
 import PaperReaderModal from "@/components/PaperReaderModal";
 import ExportCitationModal from "@/components/ExportCitationModal";
+import { isSafeHttpUrl } from "@/lib/security-client";
 
 interface ResearchObjectDetailProps {
   paper: Paper;
@@ -55,24 +56,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
   const [copiedJSON, setCopiedJSON] = useState(false);
 
   // Peer review contribution state
-  const [responses, setResponses] = useState<ResearchResponse[]>(paper.responses ?? [
-    {
-      id: "resp-sample-1",
-      type: "replication",
-      author: "د. خالد السامرائي (جامعة بغداد)",
-      date: "2026-08-18",
-      content: "أعدت التجربة على 10 نصوص جديدة من العصر العباسي؛ تكررت نفس نسبة الهلوسة (حوالي 26%) في اختلاق المصادر الفرعية، مما يؤكد صحة استنتاج البحث ودقة المنهجية.",
-      verified: true
-    },
-    {
-      id: "resp-sample-2",
-      type: "challenge",
-      author: "م. أنس البغدادي",
-      date: "2026-08-20",
-      content: "عند تفعيل نمط التفكير العميق الموصول بقواعد بيانات خارجية، انخفضت نسبة الهلوسة إلى 8%؛ أرجو اختبار النمط المقترن بالاسترجاع (RAG) في النسخة القادمة.",
-      verified: false
-    }
-  ]);
+  const [responses, setResponses] = useState<ResearchResponse[]>(paper.responses ?? []);
 
   const [filterType, setFilterType] = useState<string>("all");
   const [showAddResponse, setShowAddResponse] = useState(false);
@@ -221,7 +205,6 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
     setIsSubmittingResponse(true);
     setModNotice(null);
 
-    let isVerified = respType === "replication";
     try {
       const res = await fetch("/api/jev", {
         method: "POST",
@@ -232,6 +215,16 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           author: respAuthor,
         }),
       });
+      if (res.status === 401) {
+        setModNotice("يلزم تسجيل الدخول لإرسال مراجعة");
+        setIsSubmittingResponse(false);
+        return;
+      }
+      if (!res.ok) {
+        setModNotice("تعذر التحقق آلياً مؤقتاً");
+        setIsSubmittingResponse(false);
+        return;
+      }
       const data = await res.json();
       if (data.success && data.result) {
         if (!data.result.isConstructive) {
@@ -239,12 +232,11 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           setIsSubmittingResponse(false);
           return;
         }
-        if (data.result.contributionType === "solution" || data.result.constructiveProbability > 0.9) {
-          isVerified = true;
-        }
       }
     } catch {
-      // graceful fallback
+      setModNotice("تعذر التحقق آلياً مؤقتاً");
+      setIsSubmittingResponse(false);
+      return;
     }
 
     const newResp: ResearchResponse = {
@@ -253,7 +245,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
       author: respAuthor,
       date: new Date().toLocaleDateString("ar-EG"),
       content: respContent,
-      verified: isVerified,
+      verified: false,
     };
     setResponses([newResp, ...responses]);
     setRespAuthor("");
@@ -776,11 +768,11 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
         {/* Action Buttons: Reader, PDF, Dataset, Code */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-12">
-          {paper.pdfUrl && (
+          {paper.pdfUrl && isSafeHttpUrl(paper.pdfUrl) && (
             <a
               href={paper.pdfUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all shadow-xs"
             >
               <Download className="w-4 h-4" />
@@ -788,11 +780,11 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             </a>
           )}
 
-          {paper.datasetUrl ? (
+          {paper.datasetUrl && isSafeHttpUrl(paper.datasetUrl) ? (
             <a
               href={paper.datasetUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-white border border-[#e4e3e3] text-xs font-bold text-[#222f30] hover:border-[#a7e26e] transition-all shadow-xs"
             >
               <Database className="w-4 h-4 text-[#a7e26e]" />
@@ -804,11 +796,11 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             </div>
           )}
 
-          {paper.codeUrl ? (
+          {paper.codeUrl && isSafeHttpUrl(paper.codeUrl) ? (
             <a
               href={paper.codeUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-white border border-[#e4e3e3] text-xs font-bold text-[#222f30] hover:border-[#a7e26e] transition-all shadow-xs"
             >
               <Code2 className="w-4 h-4 text-[#a7e26e]" />
@@ -913,6 +905,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
                 />
               </div>
 
+              {modNotice && <p className="text-xs font-bold text-rose-600">{modNotice}</p>}
               <div className="flex items-center justify-between">
                 {respSubmitted && <span className="text-xs font-bold text-emerald-600">تم تسجيل مساهمتك بنجاح!</span>}
                 <button

@@ -96,6 +96,7 @@ export default function PublishResearchPage() {
   const [confidence, setConfidence] = useState("مرتفعة - تم التحقق والاختبار");
   const [sources, setSources] = useState("");
   const [jevValidating, setJevValidating] = useState(false);
+  const [jevError, setJevError] = useState<string | null>(null);
   const [jevResult, setJevResult] = useState<{
     isRelevant: boolean;
     suggestedCategory: string;
@@ -103,9 +104,9 @@ export default function PublishResearchPage() {
     depthNormalized: number;
     relevanceProbability: number;
   } | null>(null);
-
   const handleJevScreen = async () => {
     setJevValidating(true);
+    setJevError(null);
     try {
       const res = await fetch("/api/jev", {
         method: "POST",
@@ -119,15 +120,21 @@ export default function PublishResearchPage() {
           content: `${trail}\n${methodology}`,
         }),
       });
+      if (!res.ok) {
+        setJevError("تعذر التحقق آلياً مؤقتاً");
+        return;
+      }
       const data = await res.json();
       if (data.success && data.result) {
         setJevResult(data.result);
         if (data.result.suggestedCategory) {
           setCategory(data.result.suggestedCategory);
         }
+      } else {
+        setJevError("تعذر التحقق آلياً مؤقتاً");
       }
-    } catch (err) {
-      console.error("Jev screen failed", err);
+    } catch {
+      setJevError("تعذر التحقق آلياً مؤقتاً");
     } finally {
       setJevValidating(false);
     }
@@ -502,6 +509,9 @@ export default function PublishResearchPage() {
                       <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-[#e4e3e3] bg-[#fcfdfc] text-sm focus:outline-none focus:border-[#a7e26e]">
                         {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
                       </select>
+                      {jevError && (
+                        <p className="mt-2 text-xs text-rose-600 font-bold">{jevError}</p>
+                      )}
                       {jevResult && (
                         <div className="mt-2 p-3 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs text-emerald-950 flex flex-wrap items-center justify-between gap-2 animate-in fade-in">
                           <div className="flex items-center gap-2">

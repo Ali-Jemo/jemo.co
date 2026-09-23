@@ -8,8 +8,8 @@ import { Building2, Globe, GraduationCap, Handshake, ArrowUpLeft } from "lucide-
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "الشركاء والتعاون الأكاديمي | JEMO LABS",
-  description: "الشركاء الأكاديميون، الجامعات، ومؤسسات الأبحاث التعاونية.",
+  title: "نبحث عن شركاء | JEMO LABS",
+  description: "دعوة مفتوحة للتعاون الأكاديمي. لا توجد شراكات موقعة بعد.",
 };
 
 export default async function PartnersPage() {
@@ -25,9 +25,9 @@ export default async function PartnersPage() {
               <Handshake className="w-3.5 h-3.5" />
               <span>التعاون العلمي المفتوح</span>
             </div>
-            <h1 className="text-4xl font-extrabold text-[var(--ink-1)]">الشركاء الأكاديميون والؤسسات</h1>
+            <h1 className="text-4xl font-extrabold text-[var(--ink-1)]">نبحث عن شركاء — لا توجد شراكات موقعة بعد</h1>
             <p className="text-[var(--ink-2)] text-base leading-relaxed">
-              نعمل جنباً إلى جنب مع الجامعات والمراكز البحثية لبناء جسور التبادل المعرفي وتطوير الأبحاث.
+              مختبر بحثي مستقل نبحث عن تعاون أكاديمي. القائمة السابقة أُزيلت حتى توقيع مذكرات تفاهم موثقة.
             </p>
           </div>
 

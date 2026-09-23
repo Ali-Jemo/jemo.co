@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { checkRateLimit, escapeHtml, getClientIp, sanitizeInput } from "@/lib/security";
+import { supabaseAdmin } from "@/lib/supabase";
 
-// ponytail: minimal newsletter subscription endpoint with rate limiting & Resend confirmation
+// ponytail: newsletter subscription endpoint with rate limiting, Supabase persistence, & Resend confirmation
 const resendKey = process.env.RESEND_API_KEY;
 const resend = resendKey && resendKey !== "re_YOUR_KEY" ? new Resend(resendKey) : null;
 
@@ -99,9 +100,18 @@ export async function POST(req: NextRequest) {
 
     const email = sanitizeInput(rawEmail);
 
+    const upsert = await supabaseAdmin()
+      .from("newsletter_subscribers")
+      .upsert(
+        { email, format, topics },
+        { onConflict: "email", ignoreDuplicates: true }
+      );
+    if (upsert.error) {
+      return NextResponse.json({ success: false, error: "تعذر الحفظ الآن، حاول لاحقاً" }, { status: 502 });
+    }
+
     // ponytail: fire welcome email asynchronously without blocking the response
     sendWelcomeEmail(email, topics, format);
-
     return NextResponse.json({
       success: true,
       email,

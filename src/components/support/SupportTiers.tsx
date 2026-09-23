@@ -69,7 +69,7 @@ export default function SupportTiers({ onSelectTier, onOpenInquiry }: SupportTie
       nameEn: "Sovereign Infrastructure",
       monthlyPrice: 2000,
       oncePrice: 5000,
-      description: "تمويل خوادم H100 وعناقيد RISC-V وتجهيز مختبرات النواة والسيادة التقنية.",
+      description: "هدف تمويلي مستقبلي لبنية حوسبية مخططة — لا عتاد حالي.",
       features: [
         "شراكة استراتيجية وتسمية قاعة بحثية أو عنقود حوسبي",
         "تنسيق الأولويات البحثية للمشاريع السيادية ذات الأثر",

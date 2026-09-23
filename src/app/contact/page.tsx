@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { GithubIcon } from "@/components/Icons";
-import { Mail, Send, Globe, Phone } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "تواصل معنا | JEMO LABS",
@@ -31,7 +30,7 @@ export default function ContactPage() {
               <h2 className="text-2xl font-bold text-[var(--ink-1)] mb-6 text-center">قنوات التواصل المباشرة</h2>
 
               <a
-                href="mailto:ali.jemo1.9@gmail.com"
+                href="mailto:contact@jemo.co"
                 className="p-6 rounded-2xl bg-[var(--surface)] border border-[var(--line)] hover:border-[var(--brand)] transition-all flex items-center gap-4 block"
               >
                 <div className="w-12 h-12 rounded-xl bg-[var(--brand)]/10 text-[var(--brand)] flex items-center justify-center">
@@ -39,12 +38,12 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div className="text-xs text-[var(--ink-2)] font-mono">البريد الإلكتروني المباشر</div>
-                  <div className="font-bold text-[var(--ink-1)] dir-ltr text-right">ali.jemo1.9@gmail.com</div>
+                  <div className="font-bold text-[var(--ink-1)] dir-ltr text-right">contact@jemo.co</div>
                 </div>
               </a>
 
               <a
-                href="https://t.me/alijemo"
+                href="https://t.me/jemo_channel"
                 target="_blank"
                 rel="noreferrer"
                 className="p-6 rounded-2xl bg-[var(--surface)] border border-[var(--line)] hover:border-[var(--brand)] transition-all flex items-center gap-4 block"
@@ -53,51 +52,8 @@ export default function ContactPage() {
                   <Send className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-xs text-[var(--ink-2)] font-mono">حساب Telegram</div>
-                  <div className="font-bold text-[var(--ink-1)] dir-ltr text-right">t.me/alijemo (@alijemo)</div>
-                </div>
-              </a>
-
-              <a
-                href="tel:+9647709763396"
-                className="p-6 rounded-2xl bg-[var(--surface)] border border-[var(--line)] hover:border-[var(--brand)] transition-all flex items-center gap-4 block"
-              >
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-xs text-[var(--ink-2)] font-mono">الهاتف المباشر</div>
-                  <div className="font-bold text-[var(--ink-1)] dir-ltr text-right">+964 770 976 3396</div>
-                </div>
-              </a>
-
-              <a
-                href="https://ali.lxds.org/"
-                target="_blank"
-                rel="noreferrer"
-                className="p-6 rounded-2xl bg-[var(--surface)] border border-[var(--line)] hover:border-[var(--brand)] transition-all flex items-center gap-4 block"
-              >
-                <div className="w-12 h-12 rounded-xl bg-violet-500/10 text-violet-500 flex items-center justify-center">
-                  <Globe className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-xs text-[var(--ink-2)] font-mono">الموقع الشخصي للمؤسس</div>
-                  <div className="font-bold text-[var(--ink-1)] dir-ltr text-right">ali.lxds.org</div>
-                </div>
-              </a>
-
-              <a
-                href="https://github.com/Ali-Jemo"
-                target="_blank"
-                rel="noreferrer"
-                className="p-6 rounded-2xl bg-[var(--surface)] border border-[var(--line)] hover:border-[var(--brand)] transition-all flex items-center gap-4 block"
-              >
-                <div className="w-12 h-12 rounded-xl bg-[var(--brand)]/10 text-[var(--ink-1)] flex items-center justify-center">
-                  <GithubIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <div className="text-xs text-[var(--ink-2)] font-mono">مستودعات GitHub</div>
-                  <div className="font-bold text-[var(--ink-1)] dir-ltr text-right">github.com/Ali-Jemo</div>
+                  <div className="text-xs text-[var(--ink-2)] font-mono">قناة Telegram</div>
+                  <div className="font-bold text-[var(--ink-1)] dir-ltr text-right">t.me/jemo_channel</div>
                 </div>
               </a>
             </div>

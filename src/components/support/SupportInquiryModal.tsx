@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, CheckCircle2, Send, Building2, Cpu, DollarSign, MessageSquare } from "lucide-react";
-
+import { X, CheckCircle2, Send, Building2, Cpu, DollarSign, MessageSquare, Loader2 } from "lucide-react";
 export interface SupportInquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,6 +14,8 @@ export default function SupportInquiryModal({
   defaultCategory = "institutional",
 }: SupportInquiryModalProps) {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState(defaultCategory);
   const [form, setForm] = useState({
     name: "",
@@ -23,7 +24,6 @@ export default function SupportInquiryModal({
     amountOrOffer: "",
     message: "",
   });
-
   useEffect(() => {
     setCategory(defaultCategory);
   }, [defaultCategory]);
@@ -40,11 +40,35 @@ export default function SupportInquiryModal({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "support",
+          name: form.name,
+          email: form.email,
+          category,
+          organization: form.organization,
+          amountOrOffer: form.amountOrOffer,
+          message: form.message,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "fail");
+      }
+      setSubmitted(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error && err.message !== "fail" ? err.message : "حدث خطأ غير متوقع — أعد المحاولة");
+    } finally {
+      setSubmitting(false);
+    }
   };
-
   const handleResetAndClose = () => {
     setSubmitted(false);
     setForm({
@@ -100,7 +124,7 @@ export default function SupportInquiryModal({
               تم استلام مقترحك بنجاح!
             </h4>
             <p className="text-sm text-[var(--ink-2)] leading-relaxed max-w-sm mx-auto">
-              شكراً لحرصك على دعم استقلال البحث العلمي العراقي. سيتواصل معك أحد أعضاء الهيئة القيادية في JEMO LABS خلال 24 ساعة.
+              تم استلام طلبك بنجاح — سنراجعه ونعاود التواصل عبر البريد.
             </p>
             <div className="pt-4">
               <button
@@ -219,7 +243,7 @@ export default function SupportInquiryModal({
                 </label>
                 <input
                   type="text"
-                  placeholder="مثال: 5,000$، أو 8x H100 GPUs..."
+                  placeholder="مثال: 500$، أو ساعات سحابية، أو دعم برمجي..."
                   value={form.amountOrOffer}
                   onChange={(e) => setForm({ ...form, amountOrOffer: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] text-sm text-[var(--ink-1)] focus:border-[#728825] focus:outline-none transition-colors"
@@ -240,7 +264,9 @@ export default function SupportInquiryModal({
                 className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface-2)] border border-[var(--line)] text-sm text-[var(--ink-1)] focus:border-[#728825] focus:outline-none transition-colors resize-none"
               />
             </div>
-
+            {error && (
+              <p className="text-xs text-red-500 font-bold text-center">{error}</p>
+            )}
             <div className="pt-2 flex items-center justify-between gap-4">
               <button
                 type="button"
@@ -252,10 +278,17 @@ export default function SupportInquiryModal({
 
               <button
                 type="submit"
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[var(--brand)] text-white text-xs font-bold shadow-md hover:opacity-90 transition-all"
+                disabled={submitting}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[var(--brand)] text-white text-xs font-bold shadow-md hover:opacity-90 transition-all disabled:opacity-50"
               >
-                <Send className="w-4 h-4" />
-                <span>إرسال مقترح الرعاية</span>
+                {submitting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>إرسال مقترح الرعاية</span>
+                  </>
+                )}
               </button>
             </div>
           </form>

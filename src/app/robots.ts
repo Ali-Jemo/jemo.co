@@ -6,7 +6,8 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        // Block aggressive AI models and data harvesters from scraping proprietary research and content
+        // AI harvesters: blocked sitewide except public research content,
+        // which we want cited by AI search. Everything else stays closed.
         userAgent: [
           "GPTBot",
           "ChatGPT-User",
@@ -25,6 +26,7 @@ export default function robots(): MetadataRoute.Robots {
           "Amazonbot",
           "Applebot-Extended",
         ],
+        allow: ["/research/", "/labs/", "/news/", "/projects/"],
         disallow: ["/"],
       },
       {
@@ -35,6 +37,7 @@ export default function robots(): MetadataRoute.Robots {
           "/api/",
           "/admin/",
           "/dashboard/",
+          "/publish",
           "/sign-in/",
           "/sign-up/",
           "/_next/",

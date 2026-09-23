@@ -226,7 +226,7 @@ export default function HeroSection() {
             <span>منصة التحقق البشري</span>
           </div>
           <p className="text-xs sm:text-sm lg:text-base leading-relaxed font-normal text-white/90 [text-shadow:0_1px_4px_rgba(0,0,0,0.8)] sm:[text-shadow:0_2px_12px_rgba(0,0,0,0.6)] max-w-lg">
-            نبحث، نكتشف، ونصل لنتائج غير مسبوقة يومياً. <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">JEMO هي المنصة التي تذهب إليها بعد أن بحثت</strong> — لتحويل الحوار العابر إلى مرجع تقني نخبوي محمي بمعيار التحقق البشري <bdi dir="ltr" className="inline-block whitespace-nowrap">(Proof of Work)</bdi>.
+            نبحث، نكتشف، ونسعى لنتائج موثقة. <strong className="text-white font-bold underline decoration-[#bef264]/70 decoration-2 underline-offset-4">JEMO هي المنصة التي تذهب إليها بعد أن بحثت</strong> — لتحويل الحوار العابر إلى مرجع تقني نخبوي محمي بمعيار التحقق البشري <bdi dir="ltr" className="inline-block whitespace-nowrap">(Proof of Work)</bdi>.
           </p>
           <div className="pt-1 flex flex-wrap items-center gap-2">
             <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest shrink-0 self-center">استكشف</span>

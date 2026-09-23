@@ -20,9 +20,9 @@ export default function BioManifesto() {
         {/* Content Section */}
         <div className="flex flex-col gap-8 max-w-4xl">
           <h2 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-bold leading-[1.25] sm:leading-[1.18] tracking-tight font-kufi text-[#222f30]">
-            نحن جميعاً نبحث ونصل لنتائج غير مسبوقة يومياً داخل عالمنا الرقمي،{" "}
+            نحن جميعاً نبحث يومياً داخل عالمنا الرقمي،{" "}
             <span className="text-[#738284] font-normal block sm:inline mt-1 sm:mt-0">
-              لكن 99% من هذا الجهد يتبخر دون توثيق.
+              لكن كثيراً من هذا الجهد يضيع دون توثيق.
             </span>
           </h2>
           <p className="text-sm sm:text-lg text-[#55696a] leading-relaxed max-w-3xl font-normal">
@@ -40,7 +40,7 @@ export default function BioManifesto() {
                 Democratization of Research
               </h4>
               <p className="text-xs text-[#55696a] leading-relaxed">
-                شخص يقضي 8 ساعات مع نموذج ذكي في تفكيك خوارزمية أو فحص نواة نظام قد يصل لنتيجة أدق وأسرع من بحث أكاديمي استغرق 6 أشهر. منصتنا تمنحه الاعتراف والشرعية.
+                شخص يقضي ساعات مع نموذج ذكي في تفكيك خوارزمية قد يصل لنتيجة مفيدة — مثال توضيحي، ليس ادعاء قياس. منصتنا تمنحه التوثيق والمراجعة.
               </p>
             </div>
 

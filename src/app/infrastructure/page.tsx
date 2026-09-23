@@ -7,8 +7,8 @@ import { getLiveInfrastructure } from "@/lib/live-content";
 import { Cpu, Server, MapPin, Activity } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "البنية التحتية والخوادم (Infrastructure) | JEMO LABS",
-  description: "مجموعات الحوسبة فائقة الأداء، خوادم H100، ومنصات اختبار معالجات RISC-V.",
+  title: "البنية التحتية والعتاد | JEMO LABS",
+  description: "البنية التحتية السحابية وأجهزة التطوير في منظومة JEMO LABS.",
 };
 
 export default async function InfrastructurePage() {
@@ -25,10 +25,10 @@ export default async function InfrastructurePage() {
               <span>العتاد الحوسبي الفائق · SOVEREIGN INFRASTRUCTURE</span>
             </div>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#222f30] mb-4 tracking-tight leading-tight font-kufi">
-              البنية التحتية والتجهيزات الحوسبية.
+              البنية التحتية للمنظومة
             </h1>
             <p className="text-base sm:text-xl text-[#445e5f] leading-relaxed max-w-2xl">
-              عناقيد حوسبة فائقة، خوادم H100، ومنصات اختبار معالجات RISC-V المجهزة لدعم الباحثين والمؤسسات السيادية.
+              من الحوسبة السحابية إلى بناء أنظمة محلية تدريجياً — خطوة بخطوة وحسب التمويل.
             </p>
           </div>
           <div className="text-center mb-12">

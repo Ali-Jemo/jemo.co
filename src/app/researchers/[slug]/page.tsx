@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
 import { RESEARCHERS, RESEARCH_PAPERS, RESEARCH_PROJECTS, RESEARCH_LABS } from "@/lib/data/research-data";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { ArrowRight, Mail, FileText, FolderGit2, BookOpen, Globe, Send } from "lucide-react";
-
+import { isSafeHttpUrl } from "@/lib/security-client";
 interface ResearcherPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -102,7 +102,7 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
 
               {/* Scholar Social Links */}
               <div className="flex flex-wrap gap-3 pt-2">
-                {researcher.website && (
+                {researcher.website && isSafeHttpUrl(researcher.website) && (
                   <a
                     href={researcher.website}
                     target="_blank"
@@ -113,7 +113,7 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
                     <span>الموقع الشخصي</span>
                   </a>
                 )}
-                {researcher.github && (
+                {researcher.github && isSafeHttpUrl(researcher.github) && (
                   <a
                     href={researcher.github}
                     target="_blank"
@@ -124,7 +124,7 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
                     <span>GitHub</span>
                   </a>
                 )}
-                {researcher.telegram && (
+                {researcher.telegram && isSafeHttpUrl(researcher.telegram) && (
                   <a
                     href={researcher.telegram}
                     target="_blank"
@@ -135,7 +135,7 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
                     <span>Telegram</span>
                   </a>
                 )}
-                {researcher.linkedin && (
+                {researcher.linkedin && isSafeHttpUrl(researcher.linkedin) && (
                   <a
                     href={researcher.linkedin}
                     target="_blank"
@@ -146,7 +146,7 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
                     <span>LinkedIn</span>
                   </a>
                 )}
-                {researcher.scholar && (
+                {researcher.scholar && isSafeHttpUrl(researcher.scholar) && (
                   <a
                     href={researcher.scholar}
                     target="_blank"

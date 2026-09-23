@@ -23,15 +23,16 @@ import {
   EmptyState,
 } from "@/components/dashboard/ui";
 interface JevEvaluation {
-  rigorScore: number;
-  rigorNormalized: number;
-  reproducibilityProbability: number;
-  reproducibilityPercent: number;
-  contribution: string;
+  status?: "pending" | "completed" | "failed";
+  rigorScore: number | null;
+  rigorNormalized: number | null;
+  reproducibilityProbability: number | null;
+  reproducibilityPercent: number | null;
+  contribution: string | null;
   confidence: {
     rigor: number;
     contribution: number;
-  };
+  } | null;
 }
 
 interface ResearchObjectsTabProps {
@@ -48,9 +49,10 @@ export default function ResearchObjectsTab({
   const [copiedBibtexId, setCopiedBibtexId] = useState<string | null>(null);
   const [evaluations, setEvaluations] = useState<Record<string, JevEvaluation>>({});
   const [loadingEvaluations, setLoadingEvaluations] = useState<Record<string, boolean>>({});
-
+  const [auditErrors, setAuditErrors] = useState<Record<string, string>>({});
   const handleAudit = async (paper: Paper) => {
     setLoadingEvaluations((prev) => ({ ...prev, [paper.id]: true }));
+    setAuditErrors((prev) => ({ ...prev, [paper.id]: "" }));
     try {
       const res = await fetch("/api/jev", {
         method: "POST",
@@ -63,12 +65,18 @@ export default function ResearchObjectsTab({
           field: paper.field,
         }),
       });
-      const data = await res.json();
-      if (data.success && data.evaluation) {
-        setEvaluations((prev) => ({ ...prev, [paper.id]: data.evaluation }));
+      if (!res.ok) {
+        setAuditErrors((prev) => ({ ...prev, [paper.id]: "التقييم غير متاح حالياً" }));
+        return;
       }
-    } catch (err) {
-      console.error("Jev evaluation error:", err);
+      const data = await res.json();
+      if (data.success && data.evaluation && data.evaluation.status !== "failed" && data.evaluation.rigorScore != null) {
+        setEvaluations((prev) => ({ ...prev, [paper.id]: data.evaluation }));
+      } else {
+        setAuditErrors((prev) => ({ ...prev, [paper.id]: "التقييم غير متاح حالياً" }));
+      }
+    } catch {
+      setAuditErrors((prev) => ({ ...prev, [paper.id]: "التقييم غير متاح حالياً" }));
     } finally {
       setLoadingEvaluations((prev) => ({ ...prev, [paper.id]: false }));
     }
@@ -234,7 +242,13 @@ export default function ResearchObjectsTab({
                   </div>
                 )}
 
-                {evaluations[paper.id] && (
+                {auditErrors[paper.id] && (
+                  <div className="p-3 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-xs text-[#738284] font-mono text-center">
+                    {auditErrors[paper.id]}
+                  </div>
+                )}
+
+                {evaluations[paper.id] && evaluations[paper.id].status !== "failed" && evaluations[paper.id].rigorScore != null && (
                   <div className="p-4 rounded-2xl bg-[#f5f8f7] border border-emerald-200 space-y-3 font-mono text-xs animate-in fade-in duration-300">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
@@ -244,11 +258,12 @@ export default function ResearchObjectsTab({
                           {evaluations[paper.id].rigorNormalized}% دقة موثقة
                         </span>
                       </div>
-                      <span className="text-[10px] text-[#738284]">
-                        معايرة: {(evaluations[paper.id].confidence.rigor * 100).toFixed(0)}% ثقة
-                      </span>
+                      {evaluations[paper.id].confidence && (
+                        <span className="text-[10px] text-[#738284]">
+                          معايرة: {(evaluations[paper.id].confidence!.rigor * 100).toFixed(0)}% ثقة
+                        </span>
+                      )}
                     </div>
-
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                       <div className="p-2.5 rounded-xl bg-white border border-[#e4e3e3] space-y-1">
                         <span className="text-[10px] text-[#738284] block">الدقة التجريبية (Rigor)</span>

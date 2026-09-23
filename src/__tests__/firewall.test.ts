@@ -169,6 +169,86 @@ describe("Edge Firewall & WAF Engine", () => {
       const result = validateMutationOrigin(req);
       expect(result.valid).toBe(false);
     });
+
+    it("should allow stateless API clients (curl/SDK) with no browser signal in any environment", () => {
+      // Regression: the previous implementation rejected POSTs with no
+      // Origin/Referer header in production, breaking the documented cURL and
+      // Python SDK workflow. Non-browser clients authenticate via bearer
+      // keys / admin secrets, so CSRF does not apply to them.
+      const curlReq = new Request("https://jemo.co/api/research", { method: "POST" });
+      expect(validateMutationOrigin(curlReq).valid).toBe(true);
+
+      const sdkReq = new Request("https://jemo.co/api/research", {
+        method: "POST",
+        headers: { authorization: "Bearer jemo_live_res_valid" },
+      });
+      expect(validateMutationOrigin(sdkReq).valid).toBe(true);
+    });
+
+    it("should reject cross-site mutations flagged by the browser (Sec-Fetch-Site)", () => {
+      const crossSite = new Request("https://jemo.co/api/track", {
+        method: "POST",
+        headers: { "sec-fetch-site": "cross-site" },
+      });
+      const result = validateMutationOrigin(crossSite);
+      expect(result.valid).toBe(false);
+      expect(result.reason).toContain("Sec-Fetch-Site");
+
+      const sameSite = new Request("https://jemo.co/api/track", {
+        method: "POST",
+        headers: { "sec-fetch-site": "same-site" },
+      });
+      expect(validateMutationOrigin(sameSite).valid).toBe(false);
+    });
+
+    it("should reject cross-site mutations even when Origin is spoofed to the target", () => {
+      // Origin is attacker-forgeable by non-browser clients; Sec-Fetch-Site
+      // is set by the browser and not stripped by modern intermediaries.
+      const req = new Request("https://jemo.co/api/admin/update-status", {
+        method: "POST",
+        headers: {
+          "sec-fetch-site": "cross-site",
+          origin: "https://jemo.co",
+        },
+      });
+      expect(validateMutationOrigin(req).valid).toBe(false);
+    });
+
+    it("should allow same-origin browser mutations", () => {
+      const req = new Request("https://jemo.co/api/track", {
+        method: "POST",
+        headers: {
+          "sec-fetch-site": "same-origin",
+          origin: "https://jemo.co",
+          referer: "https://jemo.co/applications",
+        },
+      });
+      expect(validateMutationOrigin(req).valid).toBe(true);
+    });
+
+    it("should allow non-browser sec-fetch-site 'none' values", () => {
+      const req = new Request("https://jemo.co/api/research", {
+        method: "POST",
+        headers: { "sec-fetch-site": "none" },
+      });
+      expect(validateMutationOrigin(req).valid).toBe(true);
+    });
+
+    it("should reject malformed Origin/Referer on mutations from legacy browsers", () => {
+      const req = new Request("https://jemo.co/api/track", {
+        method: "POST",
+        headers: { origin: "not-a-valid-url" },
+      });
+      expect(validateMutationOrigin(req).valid).toBe(false);
+    });
+
+    it("should reject subdomain lookalikes like evil-jemo.co", () => {
+      const req = new Request("https://jemo.co/api/track", {
+        method: "POST",
+        headers: { origin: "https://evil-jemo.co" },
+      });
+      expect(validateMutationOrigin(req).valid).toBe(false);
+    });
   });
 
   describe("Payload Size Guard", () => {

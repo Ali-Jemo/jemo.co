@@ -5,7 +5,7 @@ import ApplicationsClient from "./ApplicationsClient";
 
 export const metadata: Metadata = {
   title: "القبولات والطلبات",
-  description: "سجل القبولات الشفاف لطلبات الانضمام لفرع jemo البحثي.",
+  description: "مؤشرات شفافة حول طلبات الانضمام إلى فرع jemo البحثي — أرقام فقط دون بيانات شخصية.",
 };
 
 export default function ApplicationsPage() {

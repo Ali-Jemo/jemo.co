@@ -1,61 +1,59 @@
-/**
- * HTML Sanitization: Escapes special characters to prevent HTML/XSS injection.
- */
-export function escapeHtml(str: string): string {
-  if (!str || typeof str !== "string") return "";
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;")
-    .replace(/\//g, "&#x2F;");
+import "server-only";
+
+import {
+  escapeHtml,
+  maskEmail,
+  safeCompare,
+  sanitizeInput,
+  escapeMarkdown,
+  generateContractId,
+  isValidTelegramChatId,
+} from "./security-client";
+
+export {
+  escapeHtml,
+  maskEmail,
+  safeCompare,
+  sanitizeInput,
+  escapeMarkdown,
+  generateContractId,
+  isValidTelegramChatId,
+};
+
+/** Minimal structural shape of a Clerk user, so this stays framework-agnostic. */
+export interface AdminCandidate {
+  publicMetadata?: unknown;
+  emailAddresses?: Array<{ emailAddress?: string | null }>;
 }
 
 /**
- * Server-side email masking to protect user privacy and prevent data harvesting.
- * Example: "ali.jemo1.9@gmail.com" -> "a***9@gmail.com"
- */
-export function maskEmail(email: string): string {
-  if (!email || typeof email !== "string") return "***";
-  const parts = email.trim().toLowerCase().split("@");
-  if (parts.length !== 2) return "***";
-
-  const [local, domain] = parts;
-  if (!local || !domain) return "***";
-
-  if (local.length <= 2) {
-    return `${local[0]}***@${domain}`;
-  }
-
-  return `${local[0]}***${local[local.length - 1]}@${domain}`;
-}
-
-/**
- * Timing-safe string comparison.
+ * Authoritative admin check for an authenticated user.
  *
- * IMPORTANT: we pad both inputs to equal length before the comparison so the
- * code path is identical regardless of input length — a length-mismatch
- * short-circuit would leak the secret's length to the caller via timing, and
- * secrets compared across differing-length inputs (empty header vs. real
- * secret) would otherwise diverge observably.
+ * Admin status comes ONLY from the server-controlled Clerk
+ * `publicMetadata.role` claim. An optional comma-separated `ADMIN_EMAILS` env
+ * allowlist bootstraps accounts whose Clerk role has not been assigned yet.
+ *
+ * Email addresses and usernames are deliberately NOT authorization signals:
+ * they are user-visible — this project even publishes its contact address
+ * across the marketing pages — so treating one as a credential lets anyone who
+ * controls that mailbox escalate to admin.
  */
-export function safeCompare(a?: string | null, b?: string | null): boolean {
-  if (!a || !b) return false;
-  if (typeof a !== "string" || typeof b !== "string") return false;
+export function isAdminUser(user: AdminCandidate | null | undefined): boolean {
+  if (!user) return false;
 
-  const lenA = a.length;
-  const lenB = b.length;
-  const maxLen = Math.max(lenA, lenB);
+  const role = (user.publicMetadata as { role?: unknown } | undefined)?.role;
+  if (role === "admin") return true;
 
-  let mismatch = lenA ^ lenB;
-  for (let i = 0; i < maxLen; i++) {
-    const charA = i < lenA ? a.charCodeAt(i) : 0;
-    const charB = i < lenB ? b.charCodeAt(i) : 0;
-    mismatch |= charA ^ charB;
-  }
+  const allowlist = (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((entry) => entry.trim().toLowerCase())
+    .filter(Boolean);
+  if (allowlist.length === 0) return false;
 
-  return mismatch === 0;
+  return (user.emailAddresses ?? []).some(
+    (entry) =>
+      typeof entry?.emailAddress === "string" && allowlist.includes(entry.emailAddress.toLowerCase())
+  );
 }
 
 /**
@@ -80,7 +78,7 @@ export function getClientIp(req: Request): string {
     );
   }
   return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-forwarded-for")?.split(",").pop()?.trim() ||
     req.headers.get("x-real-ip") ||
     "127.0.0.1"
   );
@@ -158,15 +156,9 @@ export function checkRateLimit(
   };
 }
 
-/**
- * Sanitize plain string input to remove null bytes and control chars.
- */
-export function sanitizeInput(input: unknown, maxLength = 1000): string {
-  if (typeof input !== "string") return "";
-  return input
-    .replace(/\0/g, "")
-    .slice(0, maxLength)
-    .trim();
+/** Clears all in-memory rate-limit buckets. Intended for tests only. */
+export function clearAllRateLimits(): void {
+  rateLimitStore.clear();
 }
 
 /**
@@ -185,18 +177,14 @@ export function enforceBodySize(req: Request, maxBytes: number): boolean {
 }
 
 /**
- * CSRF defense via the `Sec-Fetch-Site` header.
- *
- * Browsers always send this on cross-site requests (`cross-origin`/`same-site`*`);
- * same-origin navigations and fetches carry `same-origin`. Non-browser clients
- * (curl, server-to-server) send `none` or omit it. We reject only the cases a
- * cross-site attacker can trigger, so legitimate same-origin use and
- * non-browser admin tooling are unaffected.
+ * Safely reads and parses a JSON request body bounded by actual byte count.
+ * Returns null if the payload exceeds maxBytes or is empty (callers return 413 or 400).
  */
-export function isSameOrigin(req: Request): boolean {
-  const site = req.headers.get("sec-fetch-site");
-  if (site === null) return true; // no header => non-browser client
-  return site === "same-origin" || site === "none";
+export async function readJsonBody(req: Request, maxBytes = 1_048_576): Promise<unknown | null> {
+  const buf = new Uint8Array(await req.arrayBuffer());
+  if (buf.byteLength > maxBytes) return null;
+  if (buf.byteLength === 0) return null;
+  return JSON.parse(new TextDecoder().decode(buf));
 }
 
 /**
@@ -239,34 +227,148 @@ const TELEGRAM_IPV4_RANGES = [
   "91.108.56.0/22",
 ] as const;
 
+// Telegram's published IPv6 ranges (https://core.telegram.org/bots/webhooks).
+// Previously the check rejected any non-IPv4 caller, which let an attacker
+// spoof IPv6 webhook traffic from outside the published ranges.
+const TELEGRAM_IPV6_RANGES = [
+  "2001:67c:4e8::/48",
+  "2001:b28:f23d::/48",
+  "2001:b28:f23f::/48",
+  "2001:7a8::/32",
+] as const;
+
+/** Expands a hex digit to four bits ("f" -> "1111"). */
+function hexToBits(hex: string): string {
+  let out = "";
+  for (let i = 0; i < hex.length; i++) {
+    const c = hex.charCodeAt(i);
+    let nibble = 0;
+    if (c >= 48 && c <= 57) nibble = c - 48;
+    else if (c >= 97 && c <= 102) nibble = c - 87; // a-f
+    else if (c >= 65 && c <= 70) nibble = c - 55; // A-F
+    else return "";
+    out += nibble.toString(2).padStart(4, "0");
+  }
+  return out;
+}
+
+/** Normalises an IPv6 address to 128 zero-padded bits. Returns "" on parse error. */
+function ipv6ToBits(ip: string): string {
+  // Strip zone identifier (e.g. fe80::1%eth0 -> fe80::1)
+  const zoneStripped = ip.split("%")[0] ?? ip;
+  if (!zoneStripped.includes(":")) return "";
+  let parts: string[];
+  let embeddedV4 = "";
+  if (zoneStripped.includes(".")) {
+    // IPv4-mapped suffix — e.g. ::ffff:127.0.0.1
+    const lastColon = zoneStripped.lastIndexOf(":");
+    const v4 = zoneStripped.slice(lastColon + 1);
+    const octets = v4.split(".");
+    if (octets.length !== 4) return "";
+    const hex =
+      (parseInt(octets[0] ?? "0", 10) * 256 + parseInt(octets[1] ?? "0", 10))
+        .toString(16)
+        .padStart(4, "0") +
+      (parseInt(octets[2] ?? "0", 10) * 256 + parseInt(octets[3] ?? "0", 10))
+        .toString(16)
+        .padStart(4, "0");
+    embeddedV4 = hex;
+    parts = (zoneStripped.slice(0, lastColon) + ":").split(":");
+  } else {
+    parts = zoneStripped.split(":");
+  }
+  // Find "::" run.
+  const emptyIdx = parts.indexOf("");
+  let head: string[] = [];
+  let tail: string[] = [];
+  if (emptyIdx !== -1) {
+    head = parts.slice(0, emptyIdx);
+    tail = parts.slice(emptyIdx + 1).filter((p) => p.length > 0);
+  } else {
+    head = parts.filter((p) => p.length > 0);
+    tail = [];
+  }
+  if (head.length + tail.length > 8) return "";
+  if (emptyIdx === -1 && head.length !== 8) return "";
+  const fillCount = 8 - head.length - tail.length;
+  const filled = [
+    ...head,
+    ...Array(fillCount).fill("0"),
+    ...tail,
+  ];
+  if (embeddedV4) filled[filled.length - 1] = embeddedV4;
+  if (filled.length !== 8) return "";
+  let bits = "";
+  for (const group of filled) {
+    const expanded = (group.length === 0 ? "0" : group).padStart(4, "0").padStart(4, "0");
+    const groupBits = hexToBits(expanded);
+    if (!groupBits) return "";
+    bits += groupBits;
+  }
+  return bits;
+}
+
+/** True if an IPv6 address (full or compressed) falls inside an IPv6 CIDR. */
+export function ipv6InCidr(ip: string, cidr: string): boolean {
+  const [addr, prefixStr] = cidr.split("/");
+  const prefix = Number(prefixStr);
+  if (!addr || Number.isNaN(prefix)) return false;
+  if (prefix < 0 || prefix > 128) return false;
+  const ipBits = ipv6ToBits(ip);
+  const cidrBits = ipv6ToBits(addr);
+  if (!ipBits || !cidrBits) return false;
+  return ipBits.slice(0, prefix) === cidrBits.slice(0, prefix);
+}
+
 export function isKnownTelegramIp(ip: string): boolean {
-  const dot = ip.includes(".");
-  if (!dot) return false; // only IPv4 ranges are pinned here
+  if (!ip) return false;
+  if (ip.includes(":")) {
+    return TELEGRAM_IPV6_RANGES.some((cidr) => ipv6InCidr(ip, cidr));
+  }
   return TELEGRAM_IPV4_RANGES.some((cidr) => ipv4InCidr(ip, cidr));
 }
 
+
 /**
- * Escapes Telegram Markdown control characters to prevent formatting injection or parse failures.
+ * Returns true when the supplied secret meets the minimum-strength bar for
+ * authentication. Rejects:
+ *   - empty / non-string values
+ *   - well-known weak defaults ("jemo123", "changeme", "password", ...)
+ *   - anything shorter than MIN_SECRET_LENGTH (so brute-force or env-not-set
+ *     deployments cannot authenticate against a 4-character password)
+ *
+ * Callers MUST combine this with safeCompare() — the function is a strength
+ * gate, not an equality check.
  */
-export function escapeMarkdown(text: string): string {
-  if (!text || typeof text !== "string") return "";
-  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, "\\$&");
+export const MIN_SECRET_LENGTH = 24;
+const REJECTED_DEFAULT_SECRETS = new Set([
+  "jemo123",
+  "changeme",
+  "password",
+  "admin",
+  "secret",
+  "12345678",
+]);
+
+export function isStrongSecret(secret: unknown): secret is string {
+  if (typeof secret !== "string") return false;
+  if (!secret) return false;
+  if (REJECTED_DEFAULT_SECRETS.has(secret.toLowerCase())) return false;
+  if (secret.length < MIN_SECRET_LENGTH) return false;
+  return true;
 }
 
-/** Generates a cryptographically strong contract/claim id. */
-export function generateContractId(): string {
-  let randHex = "";
-  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
-    const arr = new Uint8Array(4);
-    crypto.getRandomValues(arr);
-    randHex = Array.from(arr, (b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
-  } else {
-    randHex = Math.floor(0x10000000 + Math.random() * 0xefffffff).toString(16).toUpperCase();
-  }
-  return `IJL-2026-${randHex}`;
-}
-/** Telegram chat id must be a non-zero integer (negative ids are valid for groups). */
-export function isValidTelegramChatId(value: unknown): boolean {
-  if (typeof value !== "number") return false;
-  return Number.isInteger(value) && value !== 0;
+/**
+ * Verifies an inbound `x-admin-secret` header against ADMIN_SECRET.
+ *
+ * SECURITY: This is the single chokepoint for admin-secret authentication
+ * across the app. Every admin route MUST call this helper instead of doing
+ * its own comparison, so that the strength gate is applied consistently and
+ * the rejected-default list cannot be bypassed by one-off checks.
+ */
+export function verifyAdminSecret(req: Request): boolean {
+  const provided = req.headers.get("x-admin-secret");
+  const expected = process.env.ADMIN_SECRET;
+  if (!provided || !isStrongSecret(expected)) return false;
+  return safeCompare(provided, expected);
 }

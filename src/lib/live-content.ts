@@ -1,4 +1,5 @@
 import { liveDocument, liveItems } from "@/lib/content/server";
+import { cache } from "react";
 import type {
   ABOUT_INFO,
   Benchmark,
@@ -64,10 +65,10 @@ export function normalizePaper(paper: Paper): Paper {
   };
 }
 
-export async function getLiveResearchPapers(): Promise<Paper[]> {
+export const getLiveResearchPapers = cache(async (): Promise<Paper[]> => {
   const papers = await liveItems<Paper>("published_papers");
   return papers.map(normalizePaper);
-}
+});
 
 export function getLiveProjects(): Promise<Project[]> {
   return liveItems<Project>("research_projects");

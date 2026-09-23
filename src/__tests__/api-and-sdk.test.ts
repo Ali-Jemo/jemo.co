@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { GET as getResearch, POST as postResearch } from "@/app/api/research/route";
 import { GET as getResearchSlug, POST as postResearchSlug } from "@/app/api/research/[slug]/route";
 import { POST as postContentSchema } from "@/app/api/content/schema/route";
@@ -6,32 +6,38 @@ import { ResearchRegistry, JemoApiError } from "@/lib/sdk";
 import { validateApiKey, listResearchObjects, getResearchObject } from "@/lib/research/store";
 
 describe("JEMO Research API & Store", () => {
-  const validApiKey = "jemo_live_res_89fa41c09b2e817d"; // Omar Al-Karkhi demo key
+  const validApiKey = "test_researcher_key_1234567890";
+
+  beforeEach(() => {
+    // A key is only valid when it is registered in the server-side registry.
+    process.env.JEMO_API_KEYS = `${validApiKey}|عمر الكرخي|@omar_karkhi|باحث مواطن مستقل`;
+    delete process.env.CONTENT_ADMIN_SECRET;
+    delete process.env.JEMO_API_KEY;
+  });
 
   describe("API Key Authentication", () => {
-    it("accepts valid Bearer token", () => {
-      const res = validateApiKey(`Bearer ${validApiKey}`);
+    it("accepts valid Bearer token", async () => {
+      const res = await validateApiKey(`Bearer ${validApiKey}`);
       expect(res.valid).toBe(true);
       expect(res.researcher?.name).toBe("عمر الكرخي");
     });
 
-    it("accepts valid X-API-Key header", () => {
-      const res = validateApiKey(null, validApiKey);
+    it("accepts valid X-API-Key header", async () => {
+      const res = await validateApiKey(null, validApiKey);
       expect(res.valid).toBe(true);
       expect(res.researcher?.name).toBe("عمر الكرخي");
     });
 
-    it("rejects missing or malformed keys", () => {
-      expect(validateApiKey(null).valid).toBe(false);
-      expect(validateApiKey("").valid).toBe(false);
-      expect(validateApiKey("invalid_prefix_12345678").valid).toBe(false);
+    it("rejects missing or malformed keys", async () => {
+      expect((await validateApiKey(null)).valid).toBe(false);
+      expect((await validateApiKey("")).valid).toBe(false);
+      expect((await validateApiKey("invalid_prefix_12345678")).valid).toBe(false);
     });
 
-    it("accepts dynamically generated valid researcher keys", () => {
-      const dynamicKey = "jemo_live_res_abcdef1234567890";
-      const res = validateApiKey(`Bearer ${dynamicKey}`);
-      expect(res.valid).toBe(true);
-      expect(res.researcher?.role).toBe("باحث مستقل مسجل");
+    it("rejects a well-formed but unregistered key", async () => {
+      // Regression guard: this used to authenticate on format alone.
+      const res = await validateApiKey("Bearer jemo_live_res_abcdef1234567890");
+      expect(res.valid).toBe(false);
     });
   });
 
@@ -138,6 +144,10 @@ describe("JEMO Research API & Store", () => {
       const repJson = await repRes.json();
       expect(repJson.success).toBe(true);
       expect(repJson.data.lineage.replicationsCount).toBeGreaterThanOrEqual(1);
+      const lastResponse = repJson.data.responses?.[repJson.data.responses.length - 1];
+      if (lastResponse) {
+        expect(lastResponse.verified).toBe(false);
+      }
     });
   });
 
@@ -168,7 +178,9 @@ describe("JEMO Research API & Store", () => {
 describe("JEMO TypeScript SDK", () => {
   it("initializes client and handles basic configuration", () => {
     const client = new ResearchRegistry({
-      apiKey: "jemo_live_res_testkey12345678",
+      // Obvious placeholder — the jemo_live_res_ prefix belongs only to real
+      // issued tokens, so secret scanners don't flag this file as a leak.
+      apiKey: "test_placeholder_key_not_a_credential",
       endpoint: "https://jemo.co/api",
     });
 

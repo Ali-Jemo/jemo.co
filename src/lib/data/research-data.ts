@@ -15,7 +15,8 @@ export interface Paper {
   abstract: string;
   authors: { name: string; slug: string; role?: string }[];
   publishDate: string;
-  doi?: string;
+  /** Persistent lab identifier, e.g. jemo:2026-08-019. Replaces fake Elsevier DOIs. */
+  jemoId?: string;
   pdfUrl: string;
   datasetUrl?: string;
   codeUrl?: string;
@@ -64,13 +65,13 @@ export interface Paper {
   responses?: ResearchResponse[];
   jevEvaluation?: {
     status: "pending" | "completed" | "failed";
-    rigorScore: number;
-    rigorNormalized: number;
-    reproducibilityProbability: number;
-    reproducibilityPercent: number;
-    contribution: string;
+    rigorScore: number | null;
+    rigorNormalized: number | null;
+    reproducibilityProbability: number | null;
+    reproducibilityPercent: number | null;
+    contribution: string | null;
     isRelevant?: boolean;
-    confidence: Record<string, number>;
+    confidence: Record<string, number> | { rigor: number; contribution: number } | null;
     evaluatedAt: string;
   };
 };
@@ -219,10 +220,10 @@ export interface EventItem {
 }
 
 export const INSTITUTION_STATS = {
-  papers: 15,
+  papers: 12,
   projects: 8,
-  researchers: 12,
-  fields: 8,
+  researchers: 1,
+  fields: 4,
   founded: 2024,
 };
 
@@ -331,6 +332,8 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
   },
 ];
 
+export const FOUNDER_NAME = "علي حسين هادي (Jemo)";
+
 export const RESEARCH_LABS: Lab[] = [
   {
     id: "ai-lab",
@@ -338,11 +341,11 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر الذكاء الاصطناعي ونماذج الأساس",
     nameEn: "AI & Foundation Models Lab",
     description: "يركز على تطوير النماذج اللغوية الكبيرة باللغة العربية، خوارزميات الاستدلال المعرفي، وتصميم شبكات عصبية كفؤة وبنى المحولات السيادية.",
-    leadName: "علي حسين هادي (Jemo)",
+    leadName: FOUNDER_NAME,
     leadSlug: "ali-jemo",
-    researchersCount: 18,
-    activeProjectsCount: 5,
-    publishedPapersCount: 11,
+    researchersCount: 1,
+    activeProjectsCount: 2,
+    publishedPapersCount: 5,
     focusAreas: ["Arabic LLMs", "Neural Architecture Search", "Efficient Inference", "Foundation Models"],
     iconName: "Cpu",
     category: "cs-ai",
@@ -353,11 +356,11 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر أنظمة التشغيل وهندسة النوى",
     nameEn: "Operating Systems & Kernel Architecture Lab",
     description: "أبحاث النوى الصغيرة (Microkernels)، الحوسبة الآمنة بلغات مثل Rust وZig، وهندسة المعالجات المعمارية والأنظمة الزمنية الحقيقية.",
-    leadName: "علي حسين هادي (Jemo)",
+    leadName: FOUNDER_NAME,
     leadSlug: "ali-jemo",
-    researchersCount: 14,
-    activeProjectsCount: 4,
-    publishedPapersCount: 8,
+    researchersCount: 1,
+    activeProjectsCount: 2,
+    publishedPapersCount: 3,
     focusAreas: ["Ziqa Kernel", "Memory Safety", "Real-Time Systems", "Rust/Zig OS"],
     iconName: "Terminal",
     category: "cs-ai",
@@ -368,119 +371,14 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر الرؤية الحاسوبية والإدراك المكاني",
     nameEn: "Computer Vision & Spatial Computing Lab",
     description: "معالجة الصور الطبية المتقدمة، التعرف الضوئي على المخطوطات والوثائق التاريخية، النمذجة ثلاثية الأبعاد، وأنظمة الرؤية للمركبات الذاتية.",
-    leadName: "د. هدى التميمي",
-    leadSlug: "huda-tamimi",
-    researchersCount: 11,
-    activeProjectsCount: 3,
-    publishedPapersCount: 7,
-    focusAreas: ["Historical OCR", "Medical Imaging", "Edge Vision", "Spatial Computing"],
+    leadName: FOUNDER_NAME,
+    leadSlug: "ali-jemo",
+    researchersCount: 1,
+    activeProjectsCount: 2,
+    publishedPapersCount: 3,
+    focusAreas: ["Medical Imaging", "Manuscript OCR", "Spatial Computing", "SLAM"],
     iconName: "Eye",
     category: "cs-ai",
-  },
-  {
-    id: "cybersec-lab",
-    slug: "cybersec-lab",
-    name: "مختبر الأمن السيبراني والتشفير السيادي",
-    nameEn: "Cybersecurity & Sovereign Cryptography Lab",
-    description: "تطوير بروتوكولات التشفير المقاومة للكم، التدقيق الرياضي للثغرات البرمجية، وهندسة البنى التحتية الوطنية الحصينة ضد الهجمات المتقدمة.",
-    leadName: "د. زيد المنصور",
-    leadSlug: "zaid-almansoor",
-    researchersCount: 13,
-    activeProjectsCount: 4,
-    publishedPapersCount: 9,
-    focusAreas: ["Zero-Knowledge Proofs", "Post-Quantum Crypto", "Kernel Hardening", "Threat Defense"],
-    iconName: "ShieldCheck",
-    category: "cs-ai",
-  },
-  {
-    id: "hpc-lab",
-    slug: "hpc-lab",
-    name: "مختبر الحوسبة الفائقة والأنظمة الموزعة",
-    nameEn: "Supercomputing & Distributed Systems Lab",
-    description: "تصميم عناقيد الحوسبة المتوازية فائقة الضخامة، جدولة الأحمال الذكية، وأنظمة التخزين الشبكي الموزع لدعم النماذج المليارية والمحاكاة الضخمة.",
-    leadName: "م. رامي الكرخي",
-    leadSlug: "rami-karkhi",
-    researchersCount: 10,
-    activeProjectsCount: 3,
-    publishedPapersCount: 6,
-    focusAreas: ["Distributed Training", "Fault Tolerance", "Exascale Storage", "Cluster Orchestration"],
-    iconName: "Server",
-    category: "cs-ai",
-  },
-  {
-    id: "quantum-lab",
-    slug: "quantum-lab",
-    name: "مختبر الحوسبة والفيزياء الكمومية",
-    nameEn: "Quantum Computing & Information Lab",
-    description: "أبحاث الخوارزميات الكمومية، المحاكاة الجزيئية الكمية، وتطوير برمجيات الكيوبت والتصحيح الكمي للأخطاء والتشفير بعد الكمومي.",
-    leadName: "د. عمر الفاروق الراوي",
-    leadSlug: "omar-alrawi",
-    researchersCount: 8,
-    activeProjectsCount: 3,
-    publishedPapersCount: 5,
-    focusAreas: ["Quantum Algorithms", "Qubit Simulation", "Quantum Error Correction", "Quantum Information"],
-    iconName: "Atom",
-    category: "hardware-quantum",
-  },
-  {
-    id: "silicon-lab",
-    slug: "silicon-lab",
-    name: "مختبر عتاد السيليكون والأنظمة المدمجة",
-    nameEn: "Silicon Hardware & Microelectronics Lab",
-    description: "تصميم معمارية الرقاقات المفتوحة RISC-V، مسرعات الذكاء الاصطناعي على مستوى السيليكون (NPU)، وهندسة المتحكمات الدقيقة وإنترنت الأشياء.",
-    leadName: "د. حسام البابلي",
-    leadSlug: "hussam-babili",
-    researchersCount: 9,
-    activeProjectsCount: 3,
-    publishedPapersCount: 5,
-    focusAreas: ["RISC-V Architecture", "NPU Accelerators", "FPGA Synthesis", "Embedded RTOS"],
-    iconName: "CircuitBoard",
-    category: "hardware-quantum",
-  },
-  {
-    id: "robotics-lab",
-    slug: "robotics-lab",
-    name: "مختبر الروبوتات والأنظمة الذاتية",
-    nameEn: "Robotics & Autonomous Systems Lab",
-    description: "التحكم الميكاترونيكي المتقدم، أنظمة الملاحة الذاتية في البيئات الوعرة والقاسية، والروبوتات الميدانية الموجهة لخدمة الصناعة والإنقاذ والزراعة.",
-    leadName: "د. طارق الجبوري",
-    leadSlug: "tariq-aljubouri",
-    researchersCount: 12,
-    activeProjectsCount: 4,
-    publishedPapersCount: 7,
-    focusAreas: ["Kinematics", "Autonomous Navigation", "Swarms & SLAM", "Embedded Control"],
-    iconName: "Bot",
-    category: "robotics-aerospace",
-  },
-  {
-    id: "aerospace-lab",
-    slug: "aerospace-lab",
-    name: "مختبر تكنولوجيا الفضاء والاستشعار عن بُعد",
-    nameEn: "Aerospace & Remote Sensing Lab",
-    description: "تصميم الأقمار الصناعية المصغرة (CubeSats)، تحليل البيانات الرادارية والحرارية والفضائية، ونمذجة مدارات الطيران والاستكشاف الفضائي.",
-    leadName: "د. سارة الهاشمي",
-    leadSlug: "sara-alhashimi",
-    researchersCount: 8,
-    activeProjectsCount: 2,
-    publishedPapersCount: 4,
-    focusAreas: ["CubeSat Systems", "Satellite Imagery", "Orbital Dynamics", "Avionics"],
-    iconName: "Rocket",
-    category: "robotics-aerospace",
-  },
-  {
-    id: "healthcare-ai",
-    slug: "healthcare-ai",
-    name: "مختبر الذكاء الاصطناعي الطبي والتشخيص الرقمي",
-    nameEn: "Healthcare AI & Clinical Diagnostics Lab",
-    description: "تطبيقات التشخيص المبكر للأمراض والأورام، نمذجة السجلات الطبية التنبؤية، ومساندة القرار السريري للكوادر الطبية وتحليل الصور المجهرية.",
-    leadName: "د. ياسين الشمري",
-    leadSlug: "yassin-alshammari",
-    researchersCount: 11,
-    activeProjectsCount: 3,
-    publishedPapersCount: 8,
-    focusAreas: ["Clinical Diagnostics", "Medical NLP", "Pathology AI", "Predictive Medicine"],
-    iconName: "Activity",
-    category: "bio-health",
   },
   {
     id: "bioinformatics",
@@ -488,254 +386,14 @@ export const RESEARCH_LABS: Lab[] = [
     name: "مختبر المعلوماتية الحيوية وعلم الجينوم الحاسوبي",
     nameEn: "Bioinformatics & Computational Genomics Lab",
     description: "تحليل التسلسلات الوراثية الضخمة، حوسبة التعبير الجيني، طي البروتينات المعقد، وتطوير أطلس الجينوم الإقليمي لدراسة الأمراض المستوطنة.",
-    leadName: "د. لمى النقيب",
-    leadSlug: "lama-alnaqeeb",
-    researchersCount: 10,
-    activeProjectsCount: 3,
-    publishedPapersCount: 6,
+    leadName: FOUNDER_NAME,
+    leadSlug: "ali-jemo",
+    researchersCount: 1,
+    activeProjectsCount: 1,
+    publishedPapersCount: 1,
     focusAreas: ["Genomic Sequencing", "Protein Folding", "Metagenomics", "Biostatistics"],
     iconName: "Dna",
     category: "bio-health",
-  },
-  {
-    id: "synbio-lab",
-    slug: "synbio-lab",
-    name: "مختبر التكنولوجيا الحيوية والبيولوجيا الاصطناعية",
-    nameEn: "Synthetic Biology & Biotechnology Lab",
-    description: "إعادة هندسة المسارات الأيضية للميكروبات، النمذجة الجزيئية للإنزيمات الصناعية، وتطوير حلول المكافحة الحيوية والإنتاج الحيوي المستدام.",
-    leadName: "د. بلال العزاوي",
-    leadSlug: "bilal-alazzawi",
-    researchersCount: 7,
-    activeProjectsCount: 2,
-    publishedPapersCount: 4,
-    focusAreas: ["Metabolic Engineering", "Enzyme Design", "Bio-manufacturing", "CRISPR Systems"],
-    iconName: "FlaskConical",
-    category: "bio-health",
-  },
-  {
-    id: "neuroscience-lab",
-    slug: "neuroscience-lab",
-    name: "مختبر علوم الأعصاب الحاسوبية وواجهات الدماغ",
-    nameEn: "Computational Neuroscience & BCI Lab",
-    description: "فك تشفير الإشارات العصبية الحيوية (EEG/EMG)، دراسة الشبكات العصبية الحيوية، وتطوير واجهات حاسوبية عصبية متقدمة للأطراف التعويضية.",
-    leadName: "د. دينا الصالح",
-    leadSlug: "dina-alsaleh",
-    researchersCount: 8,
-    activeProjectsCount: 2,
-    publishedPapersCount: 5,
-    focusAreas: ["Neural Signal Decoding", "Brain-Computer Interface", "Synaptic Plasticity", "Neural Prosthetics"],
-    iconName: "Brain",
-    category: "bio-health",
-  },
-  {
-    id: "physics-math-lab",
-    slug: "physics-math-lab",
-    name: "مختبر الفيزياء النظرية والنمذجة الرياضية",
-    nameEn: "Theoretical Physics & Mathematical Modeling Lab",
-    description: "دراسة النظم الديناميكية المعقدة، معادلات التفاضل غير الخطية، الميكانيكا الإحصائية، والمحاكاة الفيزيائية الكونية وعالية الطاقة.",
-    leadName: "أ.د. حيدر الخوارزمي",
-    leadSlug: "haider-alkhwarizmi",
-    researchersCount: 9,
-    activeProjectsCount: 3,
-    publishedPapersCount: 12,
-    focusAreas: ["Complex Systems", "Nonlinear Dynamics", "Statistical Mechanics", "Numerical PDE Solvers"],
-    iconName: "Binary",
-    category: "physics-chemistry",
-  },
-  {
-    id: "nanotech-lab",
-    slug: "nanotech-lab",
-    name: "مختبر علم المواد وتكنولوجيا النانو",
-    nameEn: "Advanced Materials & Nanotechnology Lab",
-    description: "تصميم المواد ثنائية الأبعاد والغرافين، كواشف النانو فائقة الحساسية، والأغشية الكهروكيميائية لتنقية المياه وتخزين الطاقة والطلاءات الذكية.",
-    leadName: "د. مروان السعدي",
-    leadSlug: "marwan-alsaadi",
-    researchersCount: 10,
-    activeProjectsCount: 3,
-    publishedPapersCount: 7,
-    focusAreas: ["2D Materials & Graphene", "Nano-Sensors", "Surface Science", "Smart Polymers"],
-    iconName: "Layers",
-    category: "physics-chemistry",
-  },
-  {
-    id: "clean-energy-lab",
-    slug: "clean-energy-lab",
-    name: "مختبر الطاقة المتجددة واستدامة المناخ",
-    nameEn: "Clean Energy & Climate Technologies Lab",
-    description: "خلايا الوقود الكهروكيميائية، كيمياء بطاريات الحالة الصلبة، نمذجة المناخ الحسابية، والحلول التكنولوجية للهيدروجين الأخضر والتكيف البيئي.",
-    leadName: "د. نبيل الجراح",
-    leadSlug: "nabil-aljarrah",
-    researchersCount: 11,
-    activeProjectsCount: 4,
-    publishedPapersCount: 8,
-    focusAreas: ["Solid-State Batteries", "Solar PV Optimization", "Climate Modeling", "Green Hydrogen"],
-    iconName: "Zap",
-    category: "physics-chemistry",
-  },
-  {
-    id: "chemistry-lab",
-    slug: "chemistry-lab",
-    name: "مختبر الكيمياء الحسابية والهندسة الجزيئية",
-    nameEn: "Computational Chemistry & Molecular Engineering Lab",
-    description: "محاكاة التفاعلات الكيميائية المعقدة، تصميم المحفزات الجزيئية، وهندسة المركبات الخضراء باستخدام خوارزميات ميكانيكا الكم.",
-    leadName: "د. جابر الكندي",
-    leadSlug: "jaber-alkindi",
-    researchersCount: 8,
-    activeProjectsCount: 2,
-    publishedPapersCount: 5,
-    focusAreas: ["Molecular Dynamics", "Green Catalysis", "DFT Simulations", "Reaction Kinetics"],
-    iconName: "FlaskRound",
-    category: "physics-chemistry",
-  },
-  {
-    id: "astronomy-lab",
-    slug: "astronomy-lab",
-    name: "مختبر علم الفلك والفيزياء الكونية",
-    nameEn: "Astrophysics & Observational Cosmology Lab",
-    description: "رصد ودراسة الأجرام السماوية، نمذجة الثقوب السوداء وإشعاع الخلفية الكونية، وتحليل البيانات الطيفية من التلسكوبات الفضائية.",
-    leadName: "د. بتول الصوفي",
-    leadSlug: "batool-alsoofi",
-    researchersCount: 7,
-    activeProjectsCount: 2,
-    publishedPapersCount: 6,
-    focusAreas: ["Cosmological Modeling", "Spectroscopy", "Black Hole Physics", "Astrophotometry"],
-    iconName: "Telescope",
-    category: "physics-chemistry",
-  },
-  {
-    id: "earth-sciences-lab",
-    slug: "earth-sciences-lab",
-    name: "مختبر علوم الأرض والجيولوجيا والمناخ",
-    nameEn: "Geosciences & Hydrological Systems Lab",
-    description: "تحليل الأحواض الرسوبية، دراسة الموارد المائية الجوفية في بلاد الرافدين، ورصد المتغيرات الجيولوجية وحركة الصفائح التكتونية.",
-    leadName: "د. مؤيد الجيولوجي",
-    leadSlug: "moayed-algeologist",
-    researchersCount: 8,
-    activeProjectsCount: 3,
-    publishedPapersCount: 5,
-    focusAreas: ["Hydrology & Aquifers", "Basin Modeling", "Seismic Analytics", "Soil Geochemistry"],
-    iconName: "Mountain",
-    category: "physics-chemistry",
-  },
-  {
-    id: "agritech-lab",
-    slug: "agritech-lab",
-    name: "مختبر التقنيات الزراعية الذكية والأمن الغذائي",
-    nameEn: "Smart Agriculture & Food Security Lab",
-    description: "تطوير أنظمة الزراعة الدقيقة والمائية الذكية، تحسين خصوبة التربة المالحة والقاحلة، وتصميم بذور مقاومة للتغيرات المناخية.",
-    leadName: "د. أسامة الدجوي",
-    leadSlug: "osama-aldejwi",
-    researchersCount: 9,
-    activeProjectsCount: 3,
-    publishedPapersCount: 6,
-    focusAreas: ["Precision Farming", "Saline Agriculture", "Hydroponics IoT", "Crop Genetics"],
-    iconName: "Sprout",
-    category: "bio-health",
-  },
-  {
-    id: "islamic-studies-lab",
-    slug: "islamic-studies-lab",
-    name: "مختبر حوسبة العلوم الشرعية ودراسات الحديث وأصول الفقه",
-    nameEn: "Computational Islamic Studies & Hadith Analytics Lab",
-    description: "حوسبة أسانيد الحديث النبوي، التحليل الشبكي لطبقات الرواة، فهرسة المخطوطات الشرعية النادرة، ونمذجة المنطق الفقهي والأصولي.",
-    leadName: "د. طه البصري",
-    leadSlug: "taha-albasri",
-    researchersCount: 11,
-    activeProjectsCount: 4,
-    publishedPapersCount: 9,
-    focusAreas: ["Isnad Network Analysis", "Manuscript Verification", "Fiqh Logic Modeling", "Arabic Hadith NLP"],
-    iconName: "Scale",
-    category: "islamic-philosophy",
-  },
-  {
-    id: "philosophy-logic-lab",
-    slug: "philosophy-logic-lab",
-    name: "مختبر الفلسفة ونظرية المعرفة والمنطق الصوري",
-    nameEn: "Philosophy, Epistemology & Formal Logic Lab",
-    description: "أبحاث فلسفة العلوم، المنطق الصوري والرياضي، أخلاقيات الذكاء الاصطناعي والاستدلال الآلي، ودراسة تطور المدارس المعرفية.",
-    leadName: "د. كمال الفلسفي",
-    leadSlug: "kamal-alfalsafi",
-    researchersCount: 7,
-    activeProjectsCount: 2,
-    publishedPapersCount: 7,
-    focusAreas: ["Formal Logic", "Philosophy of Science", "AI Ethics", "Epistemology"],
-    iconName: "Lightbulb",
-    category: "islamic-philosophy",
-  },
-  {
-    id: "arabic-linguistics-lab",
-    slug: "arabic-linguistics-lab",
-    name: "مختبر فقه اللغة العربية واللسانيات الحاسوبية",
-    nameEn: "Arabic Philology & Corpus Linguistics Lab",
-    description: "التحليل الصرفي والدلالي العميق لجذور اللغة العربية، بناء المعاجم التاريخية الرقمية، ونمذجة فصاحة التراكيب والنحو التوليدي.",
-    leadName: "د. سمية السامرائي",
-    leadSlug: "somaya-alsamarrai",
-    researchersCount: 10,
-    activeProjectsCount: 3,
-    publishedPapersCount: 8,
-    focusAreas: ["Lexicography", "Morpho-Syntactic Parsing", "Historical Corpus", "Classical Arabic NLP"],
-    iconName: "Languages",
-    category: "humanities-social",
-  },
-  {
-    id: "comp-econ-lab",
-    slug: "comp-econ-lab",
-    name: "مختبر الاقتصاد الحاسوبي والأنظمة اللامركزية",
-    nameEn: "Computational Economics & FinTech Lab",
-    description: "هندسة آليات الأسواق الرقمية، نمذجة الاقتصاد التوظيفي والرمزي (Tokenomics)، والتحليل الإحصائي للشبكات المالية وسلاسل الكتل.",
-    leadName: "د. أمين البغدادي",
-    leadSlug: "ameen-albaghdadi",
-    researchersCount: 7,
-    activeProjectsCount: 2,
-    publishedPapersCount: 5,
-    focusAreas: ["Mechanism Design", "Algorithmic Game Theory", "DeFi Protocol Audits", "Microeconomic Simulation"],
-    iconName: "TrendingUp",
-    category: "humanities-social",
-  },
-  {
-    id: "digital-humanities-lab",
-    slug: "digital-humanities-lab",
-    name: "مختبر العلوم الإنسانية الرقمية وحوسبة التراث",
-    nameEn: "Digital Humanities & Heritage Computing Lab",
-    description: "معالجة اللغات الطبيعية التاريخية، فك شفرات المخطوطات والرقوق الأثرية، ورقمنة التراث المعماري والحضاري الرافديني بدقة متناهية.",
-    leadName: "د. قاسم المعموري",
-    leadSlug: "qasim-almamouri",
-    researchersCount: 8,
-    activeProjectsCount: 3,
-    publishedPapersCount: 6,
-    focusAreas: ["Mesopotamian NLP", "Historical Corpus Analytics", "Digital Epigraphy", "Cultural Heritage AI"],
-    iconName: "BookOpen",
-    category: "humanities-social",
-  },
-  {
-    id: "archaeology-lab",
-    slug: "archaeology-lab",
-    name: "مختبر علم الآثار والأنثروبولوجيا الحضارية",
-    nameEn: "Archaeology & Ancient Civilizations Lab",
-    description: "المسح الجيوراداري للمواقع الأثرية، إعادة الإعمار الرقمي ثلاثي الأبعاد للمدن السومرية والبابلية، وتحليل البقايا المادية بالمطياف.",
-    leadName: "د. فؤاد البابلي",
-    leadSlug: "fouad-albabili",
-    researchersCount: 8,
-    activeProjectsCount: 3,
-    publishedPapersCount: 5,
-    focusAreas: ["Mesopotamian Archaeology", "3D Heritage Reconstruction", "LiDAR Surveying", "Archaeometry"],
-    iconName: "Landmark",
-    category: "humanities-social",
-  },
-  {
-    id: "hci-lab",
-    slug: "hci-lab",
-    name: "مختبر التفاعل البشري الحاسوبي والأنظمة الإدراكية",
-    nameEn: "HCI & Cognitive Systems Lab",
-    description: "أبحاث تجربة الاستخدام التكيفية، تصميم واجهات تفاعل الإنسان مع الذكاء الاصطناعي، ودراسة التأثير النفسي والإدراكي للأنظمة التفاعلية.",
-    leadName: "م. ريم الحديثي",
-    leadSlug: "reem-alhadithi",
-    researchersCount: 8,
-    activeProjectsCount: 2,
-    publishedPapersCount: 4,
-    focusAreas: ["Human-AI Teaming", "Adaptive Interfaces", "Cognitive Load Measurement", "Accessibility Tech"],
-    iconName: "MousePointerClick",
-    category: "humanities-social",
   },
 ];
 
@@ -743,384 +401,18 @@ export const RESEARCHERS: Researcher[] = [
   {
     id: "ali-jemo",
     slug: "ali-jemo",
-    name: "علي حسين هادي (Jemo)",
-    role: "مهندس أنظمة ومطور أنظمة تشغيل · مؤسس المنصة وفريق Axiq",
-    bio: "مهندس أنظمة عراقي ومؤسس فريق Axiq ومطور نواة ZiqaKernel ونظام Axiq-IQ. طالب هندسة تقنيات الحاسوب، يركز على الأنظمة منخفضة المستوى (Rust، C، Linux Kernel)، معمارية أنظمة التشغيل، ومبادرات الذكاء الاصطناعي والسيادة التقنية في العراق.",
+    name: FOUNDER_NAME,
+    role: "مهندس أنظمة ومطور أنظمة تشغيل · مؤسس المنصة والباحث الرئيسي",
+    bio: "مهندس أنظمة عراقي ومطور نواة ZiqaKernel ونظام Axiq-IQ. يركز على الأنظمة منخفضة المستوى (Rust، C، Linux Kernel)، معمارية أنظمة التشغيل، ومبادرات الذكاء الاصطناعي والسيادة التقنية في العراق.",
     avatar: "/team/ali.jpg",
     labSlug: "ai-lab",
-    orcid: "0000-0002-1825-0001",
     github: "https://github.com/Ali-Jemo",
     website: "https://ali.lxds.org/",
     telegram: "https://t.me/alijemo",
-    email: "ali.jemo1.9@gmail.com",
-    papersCount: 8,
-    projectsCount: 8
-  },
-  {
-    id: "john-doe",
-    slug: "john-doe",
-    name: "فلان الفلاني (John Doe)",
-    role: "باحث افتراضي · مختبر أنظمة التشغيل (Dummy Researcher)",
-    bio: "ملف افتراضي تجريبي مخصص لاختبار واجهات العرض وهيكلية الملفات الأكاديمية وتوثيق أبحاث النظم في المنصة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "os-lab",
-    github: "https://github.com",
-    email: "dummy.os@jemo.co",
-    papersCount: 3,
-    projectsCount: 2
-  },
-  {
-    id: "jane-doe",
-    slug: "jane-doe",
-    name: "فلانة الفلانية (Jane Doe)",
-    role: "باحثة افتراضية · مختبر الرؤية الحاسوبية (Dummy Researcher)",
-    bio: "ملف افتراضي تجريبي مخصص لاختبار تدفق مراجعة الأقران وتوثيق أبحاث الرؤية الحاسوبية ومعالجة الصور.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "cv-lab",
-    github: "https://github.com",
-    email: "dummy.cv@jemo.co",
-    papersCount: 3,
-    projectsCount: 1
-  },
-  {
-    id: "alex-smith",
-    slug: "alex-smith",
-    name: "باحث افتراضي (Alex Smith)",
-    role: "باحث افتراضي · مختبر الروبوتات (Dummy Researcher)",
-    bio: "ملف تجريبي مخصص لاختبار نماذج المحاكاة الحركية وتوثيق مشاريع الروبوتات والأنظمة الذاتية المفتوحة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "robotics-lab",
-    github: "https://github.com",
-    email: "dummy.robotics@jemo.co",
-    papersCount: 2,
-    projectsCount: 1
-  },
-  {
-    id: "max-mustermann",
-    slug: "max-mustermann",
-    name: "باحث تجريبي (Max Mustermann)",
-    role: "باحث افتراضي · الذكاء الاصطناعي الصحي (Dummy Researcher)",
-    bio: "ملف تجريبي مخصص لاختبار مجموعات البيانات الطبية ونماذج التقييم السريرية وتجربة واجهات الباحثين.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "healthcare-ai",
-    github: "https://github.com",
-    email: "dummy.health@jemo.co",
-    papersCount: 2,
-    projectsCount: 1
-  },
-  {
-    id: "sample-fellow",
-    slug: "sample-fellow",
-    name: "مساهم افتراضي (Sample Fellow)",
-    role: "باحث افتراضي · مختبر المعلوماتية الحيوية (Dummy Researcher)",
-    bio: "ملف تجريبي مخصص لاختبار خطوط معالجة البيانات الجينومية وتوثيق الأبحاث البيولوجية والحوسبة الجزيئية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "bioinformatics",
-    github: "https://github.com",
-    email: "dummy.bio@jemo.co",
-    papersCount: 1,
-    projectsCount: 1
-  },
-  {
-    id: "huda-tamimi",
-    slug: "huda-tamimi",
-    name: "د. هدى التميمي",
-    role: "باحثة رئيسية · رئيسة مختبر الرؤية الحاسوبية والإدراك المكاني",
-    bio: "دكتوراه في الرؤية الحاسوبية ومعالجة الصور المتقدمة. تقود مشاريع التعرف الضوئي على المخطوطات والوثائق التاريخية العربية والنمذجة المكانية ثلاثية الأبعاد.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "cv-lab",
-    email: "huda.tamimi@jemo.co",
-    papersCount: 7,
-    projectsCount: 3
-  },
-  {
-    id: "zaid-almansoor",
-    slug: "zaid-almansoor",
-    name: "د. زيد المنصور",
-    role: "باحث رئيسي · رئيس مختبر الأمن السيبراني والتشفير السيادي",
-    bio: "متخصص في التشفير الرياضي بعد الكمومي وبروتوكولات إثبات المعرفة الصفرية (ZKP) وتأمين نوى أنظمة التشغيل ضد الهجمات المعمارية المتقدمة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "cybersec-lab",
-    email: "zaid.almansoor@jemo.co",
-    papersCount: 9,
-    projectsCount: 4
-  },
-  {
-    id: "rami-karkhi",
-    slug: "rami-karkhi",
-    name: "م. رامي الكرخي",
-    role: "مهندس حوسبة فائقة · رئيس مختبر الحوسبة الفائقة والأنظمة الموزعة",
-    bio: "مهندس معماريات موزعة وخبير في تنسيق عناقيد الحوسبة الفائقة (HPC) وتسريع تدريب النماذج اللغوية الضخمة على مستويات الـ Exascale.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "hpc-lab",
-    email: "rami.karkhi@jemo.co",
-    papersCount: 6,
-    projectsCount: 3
-  },
-  {
-    id: "omar-alrawi",
-    slug: "omar-alrawi",
-    name: "د. عمر الفاروق الراوي",
-    role: "عالم فيزياء وكم · رئيس مختبر الحوسبة والفيزياء الكمومية",
-    bio: "باحث في الخوارزميات الكمومية والمحاكاة الجزيئية للأنظمة الكمية المعقدة، وتطوير خوارزميات التصحيح الكمي للأخطاء للكيوبتات المترابطة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "quantum-lab",
-    email: "omar.alrawi@jemo.co",
-    papersCount: 5,
-    projectsCount: 3
-  },
-  {
-    id: "hussam-babili",
-    slug: "hussam-babili",
-    name: "د. حسام البابلي",
-    role: "مهندس سيليكون ورقاقات · رئيس مختبر عتاد السيليكون والأنظمة المدمجة",
-    bio: "متخصص في هندسة وتصميم الرقاقات المفتوحة على معمارية RISC-V وتوليد مسرعات الذكاء الاصطناعي (NPU) وعتاد الأنظمة المدمجة الحساسة للزمن.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "silicon-lab",
-    email: "hussam.babili@jemo.co",
-    papersCount: 5,
-    projectsCount: 3
-  },
-  {
-    id: "tariq-aljubouri",
-    slug: "tariq-aljubouri",
-    name: "د. طارق الجبوري",
-    role: "باحث ميكاترونيكس · رئيس مختبر الروبوتات والأنظمة الذاتية",
-    bio: "أستاذ باحث في علم الحركة والتحكم الآلي المستقل، يقود أبحاث أسراب الروبوتات والملاحة المستقلة في التضاريس البيئية القاسية والمعقدة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "robotics-lab",
-    email: "tariq.aljubouri@jemo.co",
-    papersCount: 7,
-    projectsCount: 4
-  },
-  {
-    id: "sara-alhashimi",
-    slug: "sara-alhashimi",
-    name: "د. سارة الهاشمي",
-    role: "عالمة فضاء واستشعار · رئيسة مختبر تكنولوجيا الفضاء والاستشعار عن بُعد",
-    bio: "دكتوراه في هندسة الطيران والفضاء، متخصصة في أنظمة الأقمار الصناعية المصغرة (CubeSats) وتحليل ومعالجة البيانات الطيفية الرادارية المنعكسة من الأرض.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "aerospace-lab",
-    email: "sara.alhashimi@jemo.co",
-    papersCount: 4,
-    projectsCount: 2
-  },
-  {
-    id: "yassin-alshammari",
-    slug: "yassin-alshammari",
-    name: "د. ياسين الشمري",
-    role: "طبيب وباحث ذكاء اصطناعي · رئيس مختبر الذكاء الاصطناعي الطبي والتشخيص الرقمي",
-    bio: "استشاري وباحث يجمع بين الطب السريري وعلوم التعلم العميق. يركز على نماذج الكشف المبكر عن الأورام ومساندة القرار السريري وتحليل الأنسجة الرقمي.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "healthcare-ai",
-    email: "yassin.alshammari@jemo.co",
-    papersCount: 8,
-    projectsCount: 3
-  },
-  {
-    id: "lama-alnaqeeb",
-    slug: "lama-alnaqeeb",
-    name: "د. لمى النقيب",
-    role: "عالمة جينوم ومعلوماتية · رئيسة مختبر المعلوماتية الحيوية وعلم الجينوم الحاسوبي",
-    bio: "دكتوراه في علم الجينوم الحسابي، تركز على خوارزميات تسلسل الحمض النووي وتنبؤ البنى ثلاثية الأبعاد للبروتينات ودراسة الطفرات الوراثية الإقليمية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "bioinformatics",
-    email: "lama.alnaqeeb@jemo.co",
-    papersCount: 6,
-    projectsCount: 3
-  },
-  {
-    id: "bilal-alazzawi",
-    slug: "bilal-alazzawi",
-    name: "د. بلال العزاوي",
-    role: "باحث بيولوجيا جزيئية · رئيس مختبر التكنولوجيا الحيوية والبيولوجيا الاصطناعية",
-    bio: "متخصص في هندسة السلالات الميكروبية وإعادة برمجة المسارات الأيضية وتصميم الإنزيمات الحيوية المستدامة لإنتاج الطاقة والتطبيقات الحيوية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "synbio-lab",
-    email: "bilal.alazzawi@jemo.co",
-    papersCount: 4,
-    projectsCount: 2
-  },
-  {
-    id: "dina-alsaleh",
-    slug: "dina-alsaleh",
-    name: "د. دينا الصالح",
-    role: "باحثة أعصاب حاسوبية · رئيسة مختبر علوم الأعصاب الحاسوبية وواجهات الدماغ",
-    bio: "أبحاث متقدمة في فك شفرات الإشارات العصبية الحركية وتطوير واجهات الدماغ والحاسوب (BCI) غير التداخلية للتحكم بالأطراف الروبوتية المعوضة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "neuroscience-lab",
-    email: "dina.alsaleh@jemo.co",
-    papersCount: 5,
-    projectsCount: 2
-  },
-  {
-    id: "haider-alkhwarizmi",
-    slug: "haider-alkhwarizmi",
-    name: "أ.د. حيدر الخوارزمي",
-    role: "أستاذ كرسي الرياضيات والفيزياء · رئيس مختبر الفيزياء النظرية والنمذجة الرياضية",
-    bio: "أستاذ في الفيزياء الرياضية والنظم الديناميكية اللاخطية. يركز على المحاكاة العددية للظواهر المعقدة والحلول التحليلية لمعادلات الحقول التفاضلية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "physics-math-lab",
-    email: "haider.alkhwarizmi@jemo.co",
+    email: "ali@jemo.co",
     papersCount: 12,
-    projectsCount: 3
+    projectsCount: 8,
   },
-  {
-    id: "marwan-alsaadi",
-    slug: "marwan-alsaadi",
-    name: "د. مروان السعدي",
-    role: "عالم مواد ونانو · رئيس مختبر علم المواد وتكنولوجيا النانو",
-    bio: "دكتوراه في تكنولوجيا النانو والمواد المتقدمة، يقود أبحاث تصنيع وتوصيف المواد ثنائية الأبعاد وأقطاب الغرافين المكثفة لتخزين الطاقة المستدامة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "nanotech-lab",
-    email: "marwan.alsaadi@jemo.co",
-    papersCount: 7,
-    projectsCount: 3
-  },
-  {
-    id: "nabil-aljarrah",
-    slug: "nabil-aljarrah",
-    name: "د. نبيل الجراح",
-    role: "باحث طاقة ومناخ · رئيس مختبر الطاقة المتجددة واستدامة المناخ",
-    bio: "خبير في كيمياء البطاريات الصلبة وخلايا الوقود الهيدروجيني، وتطوير نماذج محاكاة المناخ البيئي لتوليد حلول الاستدامة والتبريد السلبي.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "clean-energy-lab",
-    email: "nabil.aljarrah@jemo.co",
-    papersCount: 8,
-    projectsCount: 4
-  },
-  {
-    id: "ameen-albaghdadi",
-    slug: "ameen-albaghdadi",
-    name: "د. أمين البغدادي",
-    role: "اقتصادي حاسوبي · رئيس مختبر الاقتصاد الحاسوبي والأنظمة اللامركزية",
-    bio: "متخصص في نظرية الألعاب الخوارزمية، هندسة آليات الأسواق الرقمية، ونمذجة تدفقات رأس المال في الشبكات اللامركزية وسلاسل الكتل.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "comp-econ-lab",
-    email: "ameen.albaghdadi@jemo.co",
-    papersCount: 5,
-    projectsCount: 2
-  },
-  {
-    id: "qasim-almamouri",
-    slug: "qasim-almamouri",
-    name: "د. قاسم المعموري",
-    role: "باحث لسانيات وتراث · رئيس مختبر العلوم الإنسانية الرقمية وحوسبة التراث",
-    bio: "متخصص في اللغات السامية القديمة والحوسبة اللغوية. يقود مشاريع رقمنة وفك رموز النصوص المسمارية والمخطوطات النادرة بالتعلم الآلي.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "digital-humanities-lab",
-    email: "qasim.almamouri@jemo.co",
-    papersCount: 6,
-    projectsCount: 3
-  },
-  {
-    id: "reem-alhadithi",
-    slug: "reem-alhadithi",
-    name: "م. ريم الحديثي",
-    role: "باحثة واجهات معرفية · رئيسة مختبر التفاعل البشري الحاسوبي والأنظمة الإدراكية",
-    bio: "باحثة في التفاعل البشري الحاسوبي (HCI) وهندسة العوامل البشرية، تركز على قياس الحمل الإدراكي وتصميم واجهات الشراكة بين الإنسان والذكاء الاصطناعي.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "hci-lab",
-    email: "reem.alhadithi@jemo.co",
-    papersCount: 4,
-    projectsCount: 2
-  },
-  {
-    id: "taha-albasri",
-    slug: "taha-albasri",
-    name: "د. طه البصري",
-    role: "باحث علوم شرعية ورواية · رئيس مختبر حوسبة العلوم الشرعية ودراسات الحديث",
-    bio: "دكتوراه في الدراسات الإسلامية وعلم الحديث، متخصص في التحليل الشبكي لسلاسل الرواة (الإسناد) وتطبيق خوارزميات الذكاء الاصطناعي لفهرسة وتحقيق المخطوطات الفقهية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "islamic-studies-lab",
-    email: "taha.albasri@jemo.co",
-    papersCount: 9,
-    projectsCount: 4
-  },
-  {
-    id: "kamal-alfalsafi",
-    slug: "kamal-alfalsafi",
-    name: "د. كمال الفلسفي",
-    role: "أستاذ منطق ونظرية المعرفة · رئيس مختبر الفلسفة ونظرية المعرفة والمنطق الصوري",
-    bio: "باحث في فلسفة العلوم ونظرية المعرفة المقارنة والمنطق الرمزي الصوري. يركز على إشكاليات الاستدلال الآلي وأخلاقيات الذكاء الاصطناعي والأنظمة ذاتية الحكم.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "philosophy-logic-lab",
-    email: "kamal.alfalsafi@jemo.co",
-    papersCount: 7,
-    projectsCount: 2
-  },
-  {
-    id: "somaya-alsamarrai",
-    slug: "somaya-alsamarrai",
-    name: "د. سمية السامرائي",
-    role: "عالمة فقه لغة ولسانيات · رئيسة مختبر فقه اللغة العربية واللسانيات الحاسوبية",
-    bio: "أستاذة في فقه اللغة العربية والصرف التركيبي، تقود بناء المعاجم التاريخية المشروحة رقمياً ونمذجة فصاحة التراكيب اللغوية باستخدام الذكاء الاصطناعي التوليدي.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "arabic-linguistics-lab",
-    email: "somaya.alsamarrai@jemo.co",
-    papersCount: 8,
-    projectsCount: 3
-  },
-  {
-    id: "jaber-alkindi",
-    slug: "jaber-alkindi",
-    name: "د. جابر الكندي",
-    role: "كيميائي حاسوبي · رئيس مختبر الكيمياء الحسابية والهندسة الجزيئية",
-    bio: "دكتوراه في الكيمياء النظرية، يركز على محاكاة الديناميكا الجزيئية وحسابات نظرية الكثافة الوظيفية (DFT) لتصميم المحفزات الكيميائية الخضراء والأدوية الجزيئية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "chemistry-lab",
-    email: "jaber.alkindi@jemo.co",
-    papersCount: 5,
-    projectsCount: 2
-  },
-  {
-    id: "batool-alsoofi",
-    slug: "batool-alsoofi",
-    name: "د. بتول الصوفي",
-    role: "عالمة فلك وفيزياء فلكية · رئيسة مختبر علم الفلك والفيزياء الكونية",
-    bio: "باحثة في الفيزياء الفلكية وعلم الكونيات الرصدي. تركز على تحليل البيانات الطيفية للنجوم النيترونية ونمذجة إشعاع الخلفية الكونية الميكروي.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "astronomy-lab",
-    email: "batool.alsoofi@jemo.co",
-    papersCount: 6,
-    projectsCount: 2
-  },
-  {
-    id: "moayed-algeologist",
-    slug: "moayed-algeologist",
-    name: "د. مؤيد الجيولوجي",
-    role: "عالم جيولوجيا وموارد مائية · رئيس مختبر علوم الأرض والجيولوجيا والمناخ",
-    bio: "متخصص في النمذجة الهيدروجيولوجية للأحواض المائية في العراق والشرق الأوسط، ودراسة الصفائح التكتونية ورصد التغيرات الرسوبية والمناخية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "earth-sciences-lab",
-    email: "moayed.algeologist@jemo.co",
-    papersCount: 5,
-    projectsCount: 3
-  },
-  {
-    id: "osama-aldejwi",
-    slug: "osama-aldejwi",
-    name: "د. أسامة الدجوي",
-    role: "خبير تقنيات زراعية · رئيس مختبر التقنيات الزراعية الذكية والأمن الغذائي",
-    bio: "دكتوراه في التقنيات الزراعية الحيوية، يطور حلول الزراعة المائية وإنترنت الأشياء للحقول الزراعية الذكية واستصلاح الترب المالحة في البيئات الجافة.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "agritech-lab",
-    email: "osama.aldejwi@jemo.co",
-    papersCount: 6,
-    projectsCount: 3
-  },
-  {
-    id: "fouad-albabili",
-    slug: "fouad-albabili",
-    name: "د. فؤاد البابلي",
-    role: "عالم آثار وأنثروبولوجيا · رئيس مختبر علم الآثار والأنثروبولوجيا الحضارية",
-    bio: "متخصص في الآثار السومرية والبابلية وتقنيات المسح بالرادار المخترق للأرض (GPR)، وإعادة بناء المواقع الحضارية المنقرضة بنماذج ثلاثية الأبعاد تفاعلية.",
-    avatar: "/jemo-logo.svg",
-    labSlug: "archaeology-lab",
-    email: "fouad.albabili@jemo.co",
-    papersCount: 5,
-    projectsCount: 3
-  }
 ];
 
 export const RESEARCH_PAPERS: Paper[] = [
@@ -1131,11 +423,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Comparative Investigation of 6 LLMs in Arabic Classical Text Retrieval & Analysis",
     abstract: "سجل رحلة بحثية استمرت 8 ساعات قارنت بين Claude 3.5 وGPT-4o وDeepSeek-R1 في تحليل وتصحيح نصوص عربية تالفة جزئياً، مع توثيق دقيق لأماكن هلوسة النماذج والتحقق البشري من المصادر التاريخية الأصلية لتصحيحها.",
     authors: [
-      { name: "عمر الكرخي (مساهمة مجتمعية)", slug: "omar-al-karkhi", role: "باحث مواطن • AI-Assisted Research" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-08-15",
-    doi: "10.1016/j.jemo.2026.08.019",
-    pdfUrl: "/papers/arabic-texts-ai-study.pdf",
+    jemoId: "jemo:2026.08.019",
+    pdfUrl: "#/papers-placeholder/arabic-texts-ai-study.pdf",
     datasetUrl: "https://github.com/jemo-labs/open-research-logs",
     codeUrl: "https://github.com/jemo-labs/open-research-logs",
     field: "سجلات الاكتشاف بالذكاء الاصطناعي",
@@ -1144,7 +436,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{karkhi2026arabictexts,
   title={Comparative Investigation of 6 LLMs in Arabic Classical Text Retrieval & Analysis},
-  author={Al-Karkhi, Omar},
+  author={Jemo, Ali},
   journal={JEMO Open Discovery Logs},
   year={2026}
 }`,
@@ -1181,24 +473,6 @@ export const RESEARCH_PAPERS: Paper[] = [
       disputedCount: 2,
       insightfulCount: 48
     },
-    responses: [
-      {
-        id: "rep-1",
-        type: "replication",
-        author: "د. خالد السامرائي",
-        date: "2026-08-18",
-        content: "أعدت التجربة على 10 مقاطع جديدة من كتاب الحيوان للجاحظ؛ تكررت نفس نسبة الهلوسة (حوالي 26%) في اختلاق المصادر الفرعية، مما يؤكد صحة استنتاج البحث.",
-        verified: true
-      },
-      {
-        id: "rep-2",
-        type: "challenge",
-        author: "م. أنس البغدادي",
-        date: "2026-08-20",
-        content: "عند تفعيل نمط التفكير العميق والبحث الحي في الويب، انخفضت نسبة الهلوسة إلى 8%؛ أرجو تحديث التجربة باختبار النمط الموصول بقواعد البيانات.",
-        verified: false
-      }
-    ]
   },
   {
     id: "ai-debug-memory-leak-investigation",
@@ -1207,19 +481,19 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Resolving High-Load Node.js Memory Leak Through Iterative AI Prompt Chains",
     abstract: "توثيق استقصاء برمجي معمق: استخدام النماذج اللغوية لتحليل تفريغ الذاكرة (Heap Snapshot)، واكتشاف خطأ خفي في مصفوفات الإغلاق، مع تسجيل كيف قادت بعض الاقتراحات إلى مسارات خاطئة وكيف تم التحقق والاختبار الفعلي.",
     authors: [
-      { name: "م. زيد التميمي (مساهمة مجتمعية)", slug: "zaid-al-tamimi", role: "مطور برمجيات • Bug Solved via AI" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-07-28",
-    doi: "10.1016/j.jemo.2026.07.031",
-    pdfUrl: "/papers/nodejs-memory-leak-ai.pdf",
+    jemoId: "jemo:2026.07.031",
+    pdfUrl: "#/papers-placeholder/nodejs-memory-leak-ai.pdf",
     codeUrl: "https://github.com/jemo-labs/open-research-logs",
     field: "حلول برمجية بالذكاء الاصطناعي",
-    labSlug: "ai-lab",
+    labSlug: "os-lab",
     keywords: ["Bug Solved via AI", "Node.js", "Memory Leak", "AI Debugging", "Prompt Chains"],
     citation: {
       bibtex: `@article{tamimi2026nodejsleak,
   title={Resolving High-Load Node.js Memory Leak Through Iterative AI Prompt Chains},
-  author={Al-Tamimi, Zaid},
+  author={Jemo, Ali},
   journal={JEMO Open Discovery Logs},
   year={2026}
 }`,
@@ -1246,16 +520,6 @@ export const RESEARCH_PAPERS: Paper[] = [
       disputedCount: 1,
       insightfulCount: 39
     },
-    responses: [
-      {
-        id: "rep-node-1",
-        type: "replication",
-        author: "م. عمار الحلبي",
-        date: "2026-08-01",
-        content: "طبقت نفس تسلسل استجواب الـ Heap Snapshot على خدمة NestJS وتم اكتشاف تسريب مماثل في معالج WebSockets.",
-        verified: true
-      }
-    ]
   },
   {
     id: "ziqa-kernel-paper",
@@ -1264,12 +528,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures in Rust",
     abstract: "نستعرض في هذه الورقة والمستودع المفتوح معمارية تجريبية (Experimental Sandbox) لنواة دقيقة مكتوبة بلغة Rust لاستكشاف عزل الأخطاء وإدارة الذاكرة الآمنة بدون كود غير آمن. المشروع تجربة استكشافية مفتوحة لدراسة جدوى البنى المصغرة وتطوير أنظمة تشغيل تعلمية خفيفة.",
     authors: [
-      { name: "فلان الفلاني (John Doe)", slug: "john-doe", role: "مطور النواة (افتراضي)" },
-      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "مطور النواة والمصمم المعماري" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-05-14",
-    doi: "10.1016/j.jemo.2026.05.001",
-    pdfUrl: "/papers/ziqa-kernel.pdf",
+    jemoId: "jemo:2026.05.001",
+    pdfUrl: "#/papers-placeholder/ziqa-kernel.pdf",
     datasetUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
     codeUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
     field: "تجارب الفريق الاستكشافية",
@@ -1278,10 +541,10 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{furati2026ziqa,
   title={Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures},
-  author={Al-Furati, Ahmed and Jemo, Ali},
+  author={Jemo, Ali},
   journal={JEMO LABS Open Reports},
   year={2026},
-  doi={10.1016/j.jemo.2026.05.001}
+  jemoId={jemo:2026.05.001}
 }`,
       apa: "Al-Furati, A., & Jemo, A. (2026). Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures in Rust. JEMO LABS Open Reports."
     },
@@ -1306,24 +569,6 @@ export const RESEARCH_PAPERS: Paper[] = [
       disputedCount: 3,
       insightfulCount: 112
     },
-    responses: [
-      {
-        id: "rep-ziqa-1",
-        type: "replication",
-        author: "د. طارق السويدي",
-        date: "2026-06-02",
-        content: "تم تشغيل النواة على معالج RISC-V محاكى؛ اختبارات عزل مساحات العناوين أظهرت تطابقاً بنسبة 100% مع الورقة.",
-        verified: true
-      },
-      {
-        id: "rep-ziqa-2",
-        type: "challenge",
-        author: "م. يحيى البصري",
-        date: "2026-06-15",
-        content: "استهلاك الذاكرة في مرحلة الـ Boot يزيد بنسبة 4% عند تفعيل بروتوكول IPC المتزامن؛ مقترح تحسين تم إرفاقه.",
-        verified: true
-      }
-    ]
   },
   {
     id: "arabic-nlp-paper",
@@ -1332,12 +577,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Adapting Open-Weights LLMs for Iraqi Dialects and Domain Terminology",
     abstract: "تستعرض هذه الورقة والمبادرة تجربة ضبط وتكييف دقيق (Fine-tuning & Quantization) لنماذج لغوية مفتوحة المصدر لخدمة اللهجات العراقية والمصطلحات العلمية والتقنية، مع تقييم كفاءة الاستدلال على العتاد المتاح وإتاحة مجموعات الاختبار للباحثين مجاناً.",
     authors: [
-      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المشرف الهندسي" },
-      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "باحث مشارك (افتراضي)" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-03-20",
-    doi: "10.1016/j.jemo.2026.03.004",
-    pdfUrl: "/papers/baghdad-llm.pdf",
+    jemoId: "jemo:2026.03.004",
+    pdfUrl: "#/papers-placeholder/baghdad-llm.pdf",
     datasetUrl: "https://github.com/jemo-labs/open-iraq-dataset",
     codeUrl: "https://github.com/jemo-labs/baghdad-llm",
     field: "تجارب الفريق الاستكشافية",
@@ -1346,7 +590,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{jemo2026baghdad,
   title={Adapting Open-Weights LLMs for Iraqi Dialects and Domain Terminology},
-  author={Jemo, Ali and Al-Hussaini, Sara},
+  author={Jemo, Ali},
   journal={JEMO LABS AI Reports},
   year={2026}
 }`,
@@ -1361,11 +605,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Restoration of Rare Iraqi Manuscripts using Convolutional Vision Networks",
     abstract: "طريقة مبتكرة لقراءة وفك التآكل في المخطوطات التاريخية من مكتبات بغداد والموصل القديمة وتحويلها لبيانات رقمية دقيقة قابلة للبحث.",
     authors: [
-      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "المؤلف الرئيسي (افتراضي)" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-01-10",
-    doi: "10.1016/j.jemo.2026.01.012",
-    pdfUrl: "/papers/manuscript-ocr.pdf",
+    jemoId: "jemo:2026.01.012",
+    pdfUrl: "#/papers-placeholder/manuscript-ocr.pdf",
     codeUrl: "https://github.com/jemo-labs/manuscript-ocr",
     field: "الرؤية الحاسوبية",
     labSlug: "cv-lab",
@@ -1373,7 +617,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{hussaini2026restoration,
   title={Restoration of Rare Iraqi Manuscripts using Convolutional Vision Networks},
-  author={Al-Hussaini, Sara},
+  author={Jemo, Ali},
   journal={Journal of Heritage Informatics},
   year={2026}
 }`,
@@ -1387,12 +631,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Efficient Inference for Arabic LLMs via Quantization and Selective Pruning",
     abstract: "نقدم تقنية تكميم وإسقاط انتقائي تقلل حجم نماذج اللغة العربية بنسبة 60% مع الحفاظ على 97% من دقة الاستدلال، مما يجعل النشر على الأجهزة محدودة الموارد ممكناً.",
     authors: [
-      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "المؤلف الرئيسي (افتراضي)" },
-      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المؤلف المشارك" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-06-22",
-    doi: "10.1016/j.jemo.2026.06.002",
-    pdfUrl: "/papers/efficient-arabic-inference.pdf",
+    jemoId: "jemo:2026.06.002",
+    pdfUrl: "#/papers-placeholder/efficient-arabic-inference.pdf",
     codeUrl: "https://github.com/jemo-labs/baghdad-llm",
     field: "الذكاء الاصطناعي",
     labSlug: "ai-lab",
@@ -1400,10 +643,10 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{kindif2026efficient,
   title={Efficient Inference for Arabic LLMs via Quantization and Selective Pruning},
-  author={Al-Kindif, Noor and Jemo, Ali},
+  author={Jemo, Ali},
   journal={JEMO LABS AI Reports},
   year={2026},
-  doi={10.1016/j.jemo.2026.06.002}
+  jemoId={jemo:2026.06.002}
 }`,
       apa: "Al-Kindif, N., & Jemo, A. (2026). Efficient Inference for Arabic LLMs via Quantization and Selective Pruning. JEMO LABS AI Reports, 1(2)."
     },
@@ -1416,11 +659,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Formal Verification of the Ziqa Kernel Scheduler",
     abstract: "نثبت رسمياً خصائص الإنصاف وتأخر الاستجابة في مجدول Ziqa باستخدام التحقق بالنموذج، مع ضمان غياب حالات الجمود تحت أحمال متفاوتة.",
     authors: [
-      { name: "فلان الفلاني (John Doe)", slug: "john-doe", role: "المؤلف الرئيسي (افتراضي)" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-07-05",
-    doi: "10.1016/j.jemo.2026.07.001",
-    pdfUrl: "/papers/ziqa-scheduler-verification.pdf",
+    jemoId: "jemo:2026.07.001",
+    pdfUrl: "#/papers-placeholder/ziqa-scheduler-verification.pdf",
     codeUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
     field: "أنظمة التشغيل",
     labSlug: "os-lab",
@@ -1428,7 +671,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{furati2026scheduler,
   title={Formal Verification of the Ziqa Kernel Scheduler},
-  author={Al-Furati, Ahmed and Al-Basri, Omar},
+  author={Jemo, Ali},
   journal={JEMO LABS Systems Research},
   year={2026}
 }`,
@@ -1442,11 +685,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Early Tumor Detection from MRI with Region-Adaptive Model Tuning",
     abstract: "نقترح منهجية لتكييف نماذج التجزئة على البيانات الإشعاعية الإقليمية، محققةً تحسناً بنسبة 18% في الكشف المبكر عن الأورام مقارنة بالنماذج العامة.",
     authors: [
-      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "المؤلف الرئيسي (افتراضي)" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-04-28",
-    doi: "10.1016/j.jemo.2026.04.003",
-    pdfUrl: "/papers/early-tumor-detection.pdf",
+    jemoId: "jemo:2026.04.003",
+    pdfUrl: "#/papers-placeholder/early-tumor-detection.pdf",
     datasetUrl: "https://github.com/jemo-labs/open-datasets",
     field: "الرؤية الحاسوبية",
     labSlug: "cv-lab",
@@ -1454,7 +697,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{tikriti2026tumor,
   title={Early Tumor Detection from MRI with Region-Adaptive Model Tuning},
-  author={Al-Tikriti, Lina and Al-Hussaini, Sara},
+  author={Jemo, Ali},
   journal={Journal of Medical Imaging and AI},
   year={2026}
 }`,
@@ -1468,19 +711,19 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Robust SLAM in Low-Visibility Dusty Environments",
     abstract: "نقدم نهجاً لدمج بيانات الليدار والرؤية لتعويض تشتت الضوء في البيئات المغبرة، مما يحسّن دقة التموضع الذاتي للروبوتات بنسبة 40%.",
     authors: [
-      { name: "باحث افتراضي (Alex Smith)", slug: "alex-smith", role: "المؤلف الرئيسي (افتراضي)" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-05-30",
-    doi: "10.1016/j.jemo.2026.05.007",
-    pdfUrl: "/papers/slam-dusty-environments.pdf",
+    jemoId: "jemo:2026.05.007",
+    pdfUrl: "#/papers-placeholder/slam-dusty-environments.pdf",
     codeUrl: "https://github.com/jemo-labs",
     field: "الروبوتات",
-    labSlug: "robotics-lab",
+    labSlug: "cv-lab",
     keywords: ["SLAM", "Sensor Fusion", "LiDAR", "Autonomous Navigation"],
     citation: {
       bibtex: `@article{mosuli2026slam,
   title={Robust SLAM in Low-Visibility Dusty Environments},
-  author={Al-Mosuli, Mustafa and Al-Baghdadi, Haider},
+  author={Jemo, Ali},
   journal={JEMO LABS Robotics Reports},
   year={2026}
 }`,
@@ -1494,19 +737,19 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Clinical NLP for Arabic Health Records and Diagnosis Extraction",
     abstract: "نموذج لاستخراج الكيانات الطبية والتشخيصات من السجلات الصحية العربية غير المنظمة، بدقة 91% في تجارب على بيانات مستشفيات إقليمية.",
     authors: [
-      { name: "باحث تجريبي (Max Mustermann)", slug: "max-mustermann", role: "المؤلف الرئيسي (افتراضي)" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-06-12",
-    doi: "10.1016/j.jemo.2026.06.005",
-    pdfUrl: "/papers/arabic-clinical-nlp.pdf",
+    jemoId: "jemo:2026.06.005",
+    pdfUrl: "#/papers-placeholder/arabic-clinical-nlp.pdf",
     datasetUrl: "https://github.com/jemo-labs/open-datasets",
     field: "الذكاء الاصطناعي الصحي",
-    labSlug: "healthcare-ai",
+    labSlug: "ai-lab",
     keywords: ["Clinical NLP", "Named Entity Recognition", "Electronic Health Records", "Arabic"],
     citation: {
       bibtex: `@article{qadisiyya2026clinical,
   title={Clinical NLP for Arabic Health Records and Diagnosis Extraction},
-  author={Al-Qadisiyya, Zainab and Al-Babili, Maryam},
+  author={Jemo, Ali},
   journal={Journal of Healthcare Informatics},
   year={2026}
 }`,
@@ -1520,11 +763,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "Open-Source Genomic Variant Calling Pipeline for Regional Data",
     abstract: "نبني خط معالجة متوازياً لاستدعاء الطفرات الجينية يدعم البيانات الإقليمية ويقلل زمن التحليل بنسبة 55% عبر الجدولة على وحدات المعالجة الرسومية.",
     authors: [
-      { name: "مساهم افتراضي (Sample Fellow)", slug: "sample-fellow", role: "المؤلف الرئيسي (افتراضي)" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-03-08",
-    doi: "10.1016/j.jemo.2026.03.002",
-    pdfUrl: "/papers/genomic-variant-pipeline.pdf",
+    jemoId: "jemo:2026.03.002",
+    pdfUrl: "#/papers-placeholder/genomic-variant-pipeline.pdf",
     codeUrl: "https://github.com/jemo-labs",
     field: "المعلوماتية الحيوية",
     labSlug: "bioinformatics",
@@ -1532,7 +775,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{kufi2026genomic,
   title={Open-Source Genomic Variant Calling Pipeline for Regional Data},
-  author={Al-Kufi, Hussain and Al-Najafi, Youssef},
+  author={Jemo, Ali},
   journal={JEMO LABS Bioinformatics Reports},
   year={2026}
 }`,
@@ -1546,12 +789,11 @@ export const RESEARCH_PAPERS: Paper[] = [
     titleEn: "An Open Evaluation Benchmark for LLMs in Arabic and Iraqi Contexts",
     abstract: "نقدم مجموعة معايير تقييم مفتوحة تقيس الاستدلال المنطقي والفهم الثقافي للنماذج اللغوية، وتكشف فجوات الأداء في اللهجات والمصطلحات الإقليمية.",
     authors: [
-      { name: "فلانة الفلانية (Jane Doe)", slug: "jane-doe", role: "المؤلف الرئيسي (افتراضي)" },
-      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المؤلف المشارك" }
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-07-18",
-    doi: "10.1016/j.jemo.2026.07.004",
-    pdfUrl: "/papers/open-iraq-benchmark.pdf",
+    jemoId: "jemo:2026.07.004",
+    pdfUrl: "#/papers-placeholder/open-iraq-benchmark.pdf",
     datasetUrl: "https://github.com/jemo-labs/open-datasets",
     codeUrl: "https://github.com/jemo-labs/baghdad-llm",
     field: "الذكاء الاصطناعي",
@@ -1560,7 +802,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     citation: {
       bibtex: `@article{kindif2026benchmark,
   title={An Open Evaluation Benchmark for LLMs in Arabic and Iraqi Contexts},
-  author={Al-Kindif, Noor and Jemo, Ali},
+  author={Jemo, Ali},
   journal={JEMO LABS AI Reports},
   year={2026}
 }`,
@@ -1667,7 +909,7 @@ export const RESEARCH_PROJECTS: Project[] = [
       { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "مطور النظم المدمجة" }
     ],
     techStack: ["Embedded Systems", "AI/ML", "IoT", "C++", "Python"],
-    labSlug: "robotics-lab",
+    labSlug: "os-lab",
     githubUrl: "https://github.com/Ali-Jemo",
     image: "/departments-bg.png"
   },
@@ -2033,13 +1275,7 @@ export const FINANCIAL_SUPPORTS = {
 
 export type FinancialSupports = typeof FINANCIAL_SUPPORTS;
 
-export const PARTNERS: Partner[] = [
-  { name: "جامعة بغداد", type: "جامعات", country: "العراق", logoUrl: "/globe.svg", website: "https://uobaghdad.edu.iq" },
-  { name: "جامعة الموصل", type: "جامعات", country: "العراق", logoUrl: "/globe.svg", website: "https://uomisan.edu.iq" },
-  { name: "الجامعة التكنولوجية", type: "جامعات", country: "العراق", logoUrl: "/globe.svg", website: "https://uotechnology.edu.iq" },
-  { name: "مركز الأبحاث السيادية", type: "مؤسسات أبحاث", country: "الإقليمي", logoUrl: "/globe.svg", website: "#" },
-  { name: "شبكة العلوم المفتوحة الدولية", type: "مراكز دولية", country: "عالمي", logoUrl: "/globe.svg", website: "#" }
-];
+export const PARTNERS: Partner[] = [];
 
 export const EVENTS: EventItem[] = [
   {
@@ -2136,7 +1372,7 @@ export interface InfrastructureItem {
   specs: string;
   purpose: string;
   location: string;
-  status: "Online" | "Expanding" | "Planned";
+  status: "Online" | "Expanding" | "Planned" | "مُستخدم";
 }
 
 export const BENCHMARKS: Benchmark[] = [
@@ -2180,41 +1416,50 @@ export const BENCHMARKS: Benchmark[] = [
 
 export const INFRASTRUCTURE: InfrastructureItem[] = [
   {
-    id: "hpc-cluster-1",
-    name: "Baghdad-1 HPC Compute Cluster",
-    category: "AI Supercomputing",
-    specs: "32x NVIDIA H100 SXM5 80GB, InfiniBand Quantum-2 400Gbps, 2TB RAM",
-    purpose: "Training sovereign Arabic LLMs & large-scale neural architectures",
-    location: "JEMO LABS Computing Center",
-    status: "Online"
+    id: "cloudflare-edge",
+    name: "شبكة الحوسبة السحابية الطرفية (Cloudflare Workers)",
+    category: "Edge & Serverless",
+    specs: "V8 Isolate Edge Runtime, Global CDN, OpenNext Architecture, DDoS Shield",
+    purpose: "استضافة وتوزيع منصة JEMO وخدمة استجابات الـ API بسرعة استجابة عالية",
+    location: "Cloudflare Global Edge",
+    status: "مُستخدم"
   },
   {
-    id: "riscv-lab-rack",
-    name: "RISC-V Silicon & Microkernel Hardware Testbed",
-    category: "Hardware & Operating Systems",
-    specs: "64-node SiFive RISC-V development cluster, FPGA hardware emulators",
-    purpose: "Formal verification and microkernel testing for Ziqa OS",
-    location: "Embedded Systems Lab",
-    status: "Online"
+    id: "supabase-db",
+    name: "قاعدة البيانات وإدارة السجلات (Supabase PostgreSQL)",
+    category: "Database & Storage",
+    specs: "PostgreSQL Engine, Citext Extensions, Row Level Security, Automated Backups",
+    purpose: "حفظ واسترجاع كائنات البحث، المراجعات، الاستمارات، وتتبع الطلبات",
+    location: "Supabase Cloud Infrastructure",
+    status: "مُستخدم"
   },
   {
-    id: "digitization-scanner",
-    name: "Multispectral Manuscript Digitization Scanner",
-    category: "Heritage Optics",
-    specs: "150MP Phase One Multispectral Imaging Camera, UV/IR light arrays",
-    purpose: "Digitizing and restoring ancient Iraqi manuscripts",
-    location: "Computer Vision Cleanroom",
-    status: "Expanding"
+    id: "clerk-auth",
+    name: "منظومة التوثيق والتحقق من الهوية (Clerk)",
+    category: "Identity & Access",
+    specs: "Token Handshake, OAuth2, RBAC, Server-side Session Guards",
+    purpose: "إدارة هويات الباحثين وتأمين مسارات ولوحة الإدارة",
+    location: "Managed Cloud Auth",
+    status: "مُستخدم"
+  },
+  {
+    id: "dev-workstations",
+    name: "بيئة التطوير والاختبار التجريبي (Dev Workstations)",
+    category: "Development & Testing",
+    specs: "Rust Toolchain, QEMU Emulation (RISC-V / x86_64), Linux Dev Environments",
+    purpose: "تطوير واختبار معمارية نواة Ziqa، محاكاة الذاكرة، وبناء الأدوات البرمجية",
+    location: "العراق (محلي)",
+    status: "مُستخدم"
   }
 ];
 
 export const PEER_REVIEW_POLICY = {
-  title: "Open Peer Review & Ethical Research Policy",
-  summary: "JEMO LABS operates on rigorous open scientific principles. All papers undergo double-blind internal review followed by immediate public preprint deposit with open reviewer notes.",
+  title: "سياسة النشر والتحقق المفتوح",
+  summary: "يُفحص أي كائن بحثي قبل النشر عبر بوابة الذكاء الاصطناعي (Jev) للفحص الآلي — لا توجد هيئة تحرير بشرية مستقلة، ولا نلتزم بإصدار DOI لكل عمل.",
   guidelines: [
-    "Complete Transparency: Source code, hyper-parameters, and datasets MUST accompany every publication.",
-    "Open Reviewer Notes: Peer review reports and revision history are archived alongside the paper DOI.",
-    "Ethical Computing: AI models undergo safety evaluation for bias, safety, and non-proliferation.",
-    "Reproducibility Guarantee: Independent researchers must be able to reproduce benchmarks within 3 commands."
+    "الشفافية الكاملة: نشر الكود البرمجي والمنهجية المتبعة مع كل عمل كلما أمكن ذلك.",
+    "المراجعة المجتمعية المفتوحة: تتاح مراجعات التكرار والتحديات المضادة للجمهور مباشرة في شجرة التراكم.",
+    "التحقق الآلي: فحص مدخلات الأبحاث آلياً لتقييم الدقة والصلة والتصنيف دون ادعاء مراجعة بشرية مؤسسية.",
+    "استقلالية النشر: النشر مجاني ومفتوح بلا أي رسوم نشر أو اشتراكات تجارية."
   ]
 };

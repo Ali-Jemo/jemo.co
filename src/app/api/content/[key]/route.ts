@@ -2,27 +2,21 @@ import { NextResponse } from "next/server";
 import { getSpec } from "@/lib/content/registry";
 import {
   getCollectionPayload,
-  isAuthorizedAdmin,
   resetCollection,
   saveCollection,
 } from "@/lib/content/server";
-import { checkRateLimit, getClientIp } from "@/lib/security";
-
+import { requireAdmin } from "@/lib/admin-guard";
+import { isSafeHttpUrl } from "@/lib/security-client";
 interface RouteContext {
   params: Promise<{ key: string }>;
 }
 
 async function guard(req: Request, context: RouteContext) {
-  const ip = getClientIp(req);
-  const rateLimit = checkRateLimit(`content_admin:${ip}`, 30, 60_000);
-  if (!rateLimit.allowed) {
-    return { error: NextResponse.json({ error: "Too many requests" }, { status: 429 }) };
-  }
+  // Same rate limiting and dual auth as /api/admin/*, from the same module.
+  const auth = await requireAdmin(req, { bucket: "content", limit: 30 });
+  if (!auth.ok) return { error: auth.response };
 
   const { key } = await context.params;
-  if (!isAuthorizedAdmin(req)) {
-    return { error: NextResponse.json({ error: "unauthorized" }, { status: 401 }) };
-  }
   const spec = getSpec(key);
   if (!spec) {
     return { error: NextResponse.json({ error: `unknown collection` }, { status: 404 }) };
@@ -79,6 +73,23 @@ export async function PUT(req: Request, context: RouteContext) {
       return NextResponse.json({ error: "a document takes exactly one item" }, { status: 400 });
     }
 
+    const urlFields = resolved.spec.fields.filter((f) => f.type === "url");
+    if (urlFields.length > 0) {
+      for (const item of items) {
+        if (!item || typeof item !== "object") continue;
+        for (const field of urlFields) {
+          const val = (item as Record<string, unknown>)[field.key];
+          if (val !== undefined && val !== null && val !== "") {
+            if (!isSafeHttpUrl(val)) {
+              return NextResponse.json(
+                { error: "invalid_url_field", field: field.key },
+                { status: 400 }
+              );
+            }
+          }
+        }
+      }
+    }
     const result = await saveCollection(resolved.key, items);
     return NextResponse.json({ ok: true, saved: items.length, ...result });
   } catch (err) {

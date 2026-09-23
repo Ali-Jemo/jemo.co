@@ -36,7 +36,7 @@ TI  - ${paper.titleEn}
 ${(paper.authors ?? []).map((a: unknown) => `AU  - ${typeof a === "string" ? a : (a as { name?: string })?.name || ""}`).join("\n")}
 JO  - JEMO LABS Research Papers
 PY  - ${paper.publishDate.slice(0, 4)}
-DO  - ${paper.doi ?? ""}
+ID  - ${paper.jemoId ?? paper.id}
 ER  -`;
     downloadFile(risContent, `${paper.slug}.ris`, "application/x-research-info-systems");
     setDownloadedFormat("RIS (.ris)");

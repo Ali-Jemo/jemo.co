@@ -117,7 +117,7 @@ const PAPER_FIELDS: readonly FieldSpec[] = [
   { key: "publishDate", label: "تاريخ النشر", type: "date", required: true },
   { key: "field", label: "المجال", type: "text", hint: "هندسة النظم" },
   { key: "labSlug", label: "المختبر", type: "ref", ref: "research_labs", refValue: "slug", refLabel: "name" },
-  { key: "doi", label: "DOI", type: "text" },
+  { key: "jemoId", label: "JEMO-ID", type: "text" },
   { key: "pdfUrl", label: "رابط PDF", type: "text" },
   { key: "datasetUrl", label: "رابط البيانات", type: "url" },
   { key: "codeUrl", label: "رابط الشيفرة", type: "url" },

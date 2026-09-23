@@ -29,7 +29,8 @@ import {
   FlaskConical,
   Zap,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Search
 } from "lucide-react";
 
 interface ResearchSearchFilterProps {
@@ -88,6 +89,7 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [showAllFields, setShowAllFields] = useState(false);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [emailError, setEmailError] = useState(false);
@@ -131,6 +133,15 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
   const fields = useMemo(() => {
     return Array.from(new Set(papers.map((p) => p.field))).sort((a, b) => a.localeCompare(b, "ar"));
   }, [papers]);
+
+  const visibleFields = useMemo(() => {
+    if (showAllFields || fields.length <= 6) return fields;
+    const initial = fields.slice(0, 6);
+    if (selectedField !== "all" && !initial.includes(selectedField)) {
+      return [...initial, selectedField];
+    }
+    return initial;
+  }, [fields, showAllFields, selectedField]);
 
   const years = useMemo(() => {
     return Array.from(new Set(papers.map((p) => p.publishDate.slice(0, 4)))).sort((a, b) =>
@@ -271,8 +282,8 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
             <span>البحث والاستكشاف</span>
             <span className="text-[10px] text-[#738284]">/</span>
           </h3>
-          <div role="search" className="relative group border border-[#e4e3e3] bg-white rounded-xl flex items-center px-3 py-1 shadow-xs focus-within:border-[#a7e26e]">
-            <span aria-hidden="true" className="font-bold text-[#a7e26e] ml-2">{">"}</span>
+          <div role="search" className="relative group bg-[#f0f2f0] rounded-xl flex items-center px-3 py-2.5 shadow-xs gap-2">
+            <Search className="w-3.5 h-3.5 text-[#738284] shrink-0" />
             <input
               ref={searchRef}
               type="search"
@@ -280,27 +291,27 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
               placeholder="ابحث عن مسألة، أداة، أو كود..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full py-2 bg-transparent text-xs text-[#222f30] placeholder:text-[#848c8e] focus:outline-none"
+              className="w-full bg-transparent text-xs text-[#222f30] placeholder:text-[#848c8e] focus:outline-none"
             />
             {query && (
               <button
                 onClick={() => setQuery("")}
                 aria-label="مسح البحث"
-                className="text-[#738284] hover:text-[#222f30]"
+                className="text-[#738284] hover:text-[#222f30] shrink-0"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
+            <kbd className="hidden sm:inline text-[10px] px-1.5 py-0.5 rounded bg-white border border-[#e4e3e3] text-[#738284] font-mono shrink-0">⌘/</kbd>
           </div>
         </div>
 
         {/* Research Object Type Filter */}
         <div className="space-y-2 font-mono">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-[#222f30] border-b border-[#e4e3e3] pb-1.5 flex items-center gap-1.5">
-            <GitBranch className="w-3.5 h-3.5 text-[#a7e26e]" />
-            <span>نوع كائن البحث (Object Type)</span>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[#222f30] border-b border-[#e4e3e3] pb-1.5">
+            نوع كائن البحث (Object Type)
           </h3>
-          <div className="flex flex-wrap gap-1.5 pt-1">
+          <div className="space-y-1 pt-1">
             {[
               { id: "all", label: "الكل", icon: null },
               { id: "Experiment", label: "Experiment", icon: FlaskConical },
@@ -310,18 +321,23 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
               { id: "Replication", label: "Replication", icon: FlaskConical }
             ].map((t) => {
               const Icon = t.icon;
+              const isSelected = selectedType === t.id;
+              const count = t.id === "all" ? papers.length : papers.filter((p) => p.researchType === t.id).length;
               return (
                 <button
                   key={t.id}
                   onClick={() => setSelectedType(t.id)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 ${
-                    selectedType === t.id
-                      ? "bg-[#222f30] text-white shadow-xs"
-                      : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    isSelected
+                      ? "bg-[#222f30] text-white"
+                      : "text-[#55696a] hover:bg-[#f0f2f0]"
                   }`}
                 >
-                  {Icon && <Icon className="w-3 h-3 text-[#a7e26e]" />}
+                  {Icon ? <Icon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? "text-[#bef264]" : "text-[#a7e26e]"}`} /> : <span className="w-3.5 shrink-0" />}
                   <span>{t.label}</span>
+                  <span className={`mr-auto text-[10px] font-mono ${isSelected ? "text-white/70" : "text-[#738284]"}`}>
+                    {count}
+                  </span>
                 </button>
               );
             })}
@@ -330,31 +346,37 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
 
         {/* Evidence Status Filter */}
         <div className="space-y-2 font-mono">
-          <h3 className="text-xs font-bold uppercase tracking-widest text-[#222f30] border-b border-[#e4e3e3] pb-1.5 flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#a7e26e]" />
-            <span>حالة الإثبات (Evidence Status)</span>
+          <h3 className="text-xs font-bold uppercase tracking-widest text-[#222f30] border-b border-[#e4e3e3] pb-1.5">
+            حالة الإثبات (Evidence Status)
           </h3>
-          <div className="flex flex-wrap gap-1.5 pt-1">
+          <div className="space-y-1 pt-1">
             {[
-              { id: "all", label: "الكل", icon: null },
-              { id: "Evidence-backed", label: "مدعوم بالأدلة", icon: CheckCircle2, color: "text-emerald-600" },
-              { id: "Reproduced", label: "تمت إعادة التجربة", icon: FlaskConical, color: "text-purple-600" },
-              { id: "Under Review", label: "قيد المراجعة", icon: Clock, color: "text-amber-600" },
-              { id: "Disputed", label: "محل خلاف", icon: AlertTriangle, color: "text-red-600" }
+              { id: "all", label: "الكل", dotColor: "bg-[#738284]" },
+              { id: "Evidence-backed", label: "مدعوم بالأدلة", dotColor: "bg-emerald-500" },
+              { id: "Reproduced", label: "تمت إعادة التجربة", dotColor: "bg-purple-500" },
+              { id: "Under Review", label: "قيد المراجعة", dotColor: "bg-amber-500" },
+              { id: "Disputed", label: "محل خلاف", dotColor: "bg-red-500" }
             ].map((s) => {
-              const Icon = s.icon;
+              const isSelected = selectedStatus === s.id;
+              const count =
+                s.id === "all"
+                  ? papers.length
+                  : papers.filter((p) => (p.evidenceStatus || "Evidence-backed") === s.id).length;
               return (
                 <button
                   key={s.id}
                   onClick={() => setSelectedStatus(s.id)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 ${
-                    selectedStatus === s.id
-                      ? "bg-[#222f30] text-white shadow-xs"
-                      : "bg-white border border-[#e4e3e3] text-[#55696a] hover:text-[#222f30]"
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs transition-colors ${
+                    isSelected
+                      ? "bg-[#f0f2f0] text-[#222f30] font-bold"
+                      : "text-[#55696a] hover:bg-[#f0f2f0]"
                   }`}
                 >
-                  {Icon && <Icon className={`w-3 h-3 ${s.color}`} />}
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${s.dotColor}`} />
                   <span>{s.label}</span>
+                  <span className="mr-auto text-[10px] font-mono text-[#738284]">
+                    {count}
+                  </span>
                 </button>
               );
             })}
@@ -369,30 +391,43 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
             <li>
               <button 
                 onClick={() => setSelectedField("all")}
-                className={`w-full text-right transition-colors rounded-lg px-2.5 py-1.5 font-bold ${
-                  selectedField === "all" ? "bg-[#cef79e] text-[#222f30]" : "text-[#55696a] hover:bg-[#f0f2f0]"
+                className={`w-full flex items-center justify-between text-right transition-colors rounded-lg px-2.5 py-1.5 ${
+                  selectedField === "all" ? "bg-[#cef79e] text-[#222f30] font-bold" : "text-[#55696a] hover:bg-[#f0f2f0] font-medium"
                 }`}
               >
-                جميع المجالات
+                <span>جميع المجالات</span>
+                <span className="text-[10px] text-[#738284]">{papers.length}</span>
               </button>
             </li>
-            {fields.map((f) => (
-              <li key={f}>
-                <button 
-                  onClick={() => setSelectedField(f)}
-                  className={`w-full text-right transition-colors rounded-lg px-2.5 py-1.5 font-medium ${
-                    selectedField === f ? "bg-[#cef79e] text-[#222f30] font-bold" : "text-[#55696a] hover:bg-[#f0f2f0]"
-                  }`}
-                >
-                  {f}
-                </button>
-              </li>
-            ))}
+            {visibleFields.map((f) => {
+              const count = papers.filter((p) => p.field === f).length;
+              return (
+                <li key={f}>
+                  <button 
+                    onClick={() => setSelectedField(f)}
+                    className={`w-full flex items-center justify-between text-right transition-colors rounded-lg px-2.5 py-1.5 ${
+                      selectedField === f ? "bg-[#cef79e] text-[#222f30] font-bold" : "text-[#55696a] hover:bg-[#f0f2f0] font-medium"
+                    }`}
+                  >
+                    <span>{f}</span>
+                    <span className="text-[10px] text-[#738284]">{count}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
+          {fields.length > 6 && (
+            <button
+              onClick={() => setShowAllFields((prev) => !prev)}
+              className="w-full text-right text-[11px] font-bold text-[#738284] hover:text-[#222f30] px-2.5 py-1 transition-colors"
+            >
+              {showAllFields ? "عرض أقل ↑" : `عرض الكل (${fields.length}) ↓`}
+            </button>
+          )}
         </div>
 
         {/* Open Problems Teaser Card */}
-        <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] space-y-3 shadow-xs">
+        <div className="p-3.5 rounded-2xl bg-white border border-[#e4e3e3] space-y-3 shadow-xs">
           <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-[#445e5f]">
             <HelpCircle className="w-3.5 h-3.5 text-[#a7e26e]" />
             <span>الأسئلة المفتوحة · Open Problems</span>
@@ -412,7 +447,7 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
         </div>
 
         {/* Quick CTA to Publish */}
-        <div className="p-4 rounded-2xl bg-[#222f30] text-white space-y-3 shadow-sm">
+        <div className="p-3.5 rounded-2xl bg-[#222f30] text-white space-y-3 shadow-sm">
           <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-[#bef264]">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Research Object</span>
@@ -586,7 +621,7 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
           <div>
             {/* Toolbar: count + sort */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6 font-mono">
-              <p aria-live="polite" className="text-xs font-bold text-[#222f30]">
+              <p aria-live="polite" className="text-xs font-bold text-[#222f30] border-l border-[#e4e3e3] pl-3 ml-3">
                 {filteredPapers.length} كائنات بحثية (Research Objects)
               </p>
               <label className="flex items-center gap-2 text-[11px] font-bold text-[#55696a]">
@@ -623,48 +658,58 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
                   const rType = paper.researchType || "Full Research";
                   const eStatus = paper.evidenceStatus || "Evidence-backed";
                   const repCount = paper.lineage?.replicationsCount || paper.metrics?.reproducedCount || 0;
+                  const accentBorder =
+                    eStatus === "Reproduced"
+                      ? "border-r-purple-500"
+                      : eStatus === "Under Review"
+                      ? "border-r-amber-500"
+                      : eStatus === "Disputed"
+                      ? "border-r-red-500"
+                      : "border-r-emerald-500";
 
                   return (
                     <article
                       key={paper.id}
-                      className="group p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs hover:border-[#a7e26e] hover:shadow-xl transition-all duration-300 space-y-4"
+                      className={`group p-5 sm:p-6 rounded-3xl bg-white border border-[#e4e3e3] border-r-[3px] ${accentBorder} shadow-xs hover:border-[#a7e26e] hover:shadow-md transition-all duration-300 space-y-3 flex flex-col`}
                     >
-                      {/* Top Bar: Object Type + Evidence Status Badges */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e4e3e3] pb-3">
-                        <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-                          {/* Type Pill */}
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f0f2f0] text-[#222f30] font-bold">
-                            {rType === "Experiment" && <FlaskConical className="w-3 h-3 text-emerald-600" />}
-                            {rType === "Quick Investigation" && <Zap className="w-3 h-3 text-amber-600" />}
-                            {rType !== "Experiment" && rType !== "Quick Investigation" && <BookOpen className="w-3 h-3 text-blue-600" />}
-                            <span>{rType === "Experiment" ? "Experiment" : rType === "Quick Investigation" ? "Investigation" : "Research Object"}</span>
-                          </span>
+                      {/* Metadata line */}
+                      <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+                        {/* Type Pill */}
+                        <span className="inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-full bg-[#f0f2f0] text-[#222f30] font-bold">
+                          {rType === "Experiment" && <FlaskConical className="w-3 h-3 text-emerald-600" />}
+                          {rType === "Quick Investigation" && <Zap className="w-3 h-3 text-amber-600" />}
+                          {rType !== "Experiment" && rType !== "Quick Investigation" && <BookOpen className="w-3 h-3 text-blue-600" />}
+                          <span>{rType === "Experiment" ? "Experiment" : rType === "Quick Investigation" ? "Investigation" : "Research Object"}</span>
+                        </span>
 
-                          {/* Evidence Status */}
-                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold ${
-                            eStatus === "Reproduced"
-                              ? "bg-purple-100 text-purple-900 border border-purple-200"
-                              : eStatus === "Evidence-backed"
-                              ? "bg-emerald-100 text-emerald-900 border border-emerald-200"
-                              : "bg-amber-100 text-amber-900 border border-amber-200"
-                          }`}>
-                            <CheckCircle2 className="w-3 h-3" />
-                            <span>{eStatus === "Reproduced" ? `تمت إعادة التجربة (${repCount}×)` : eStatus === "Evidence-backed" ? "مدعوم بالأدلة" : "قيد المراجعة"}</span>
-                          </span>
+                        {/* Evidence Status Pill */}
+                        <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                          eStatus === "Reproduced"
+                            ? "bg-purple-100 text-purple-900 border border-purple-200"
+                            : eStatus === "Evidence-backed"
+                            ? "bg-emerald-100 text-emerald-900 border border-emerald-200"
+                            : eStatus === "Disputed"
+                            ? "bg-red-100 text-red-900 border border-red-200"
+                            : "bg-amber-100 text-amber-900 border border-amber-200"
+                        }`}>
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>{eStatus === "Reproduced" ? `تمت إعادة التجربة (${repCount}×)` : eStatus === "Evidence-backed" ? "مدعوم بالأدلة" : eStatus === "Disputed" ? "محل خلاف" : "قيد المراجعة"}</span>
+                        </span>
 
-                          <span className="text-[11px] text-[#738284]">
-                            {paper.field}
-                          </span>
-                        </div>
+                        {/* Field Name */}
+                        <span className="text-[11px] text-[#738284]">
+                          {paper.field}
+                        </span>
 
-                        <div className="text-xs font-mono text-[#738284]">
+                        {/* Date */}
+                        <span className="mr-auto text-xs font-mono text-[#738284]">
                           {paper.publishDate}
-                        </div>
+                        </span>
                       </div>
 
-                      {/* Title & Author */}
+                      {/* Title & English Subtitle */}
                       <div>
-                        <h2 className="text-xl sm:text-2xl font-bold font-kufi text-[#222f30] leading-snug group-hover:text-[#222f30]">
+                        <h2 className="text-lg sm:text-xl font-bold font-kufi text-[#222f30] leading-snug group-hover:text-[#222f30]">
                           <Link href={`/research/${paper.slug}`} className="hover:underline">
                             {highlightTerms(paper.title, terms)}
                           </Link>
@@ -674,99 +719,83 @@ export default function ResearchSearchFilter({ papers }: ResearchSearchFilterPro
                             {paper.titleEn}
                           </p>
                         )}
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-[#55696a] font-mono mt-2">
-                          <div className="flex items-center gap-1.5">
-                            <Users className="w-3.5 h-3.5 opacity-60" />
-                            <span>
-                              {(paper.authors ?? [])
-                                .map((a: unknown) => (typeof a === "string" ? a : (a && typeof a === "object" && "name" in a && typeof a.name === "string") ? a.name : ""))
-                                .filter(Boolean)
-                                .join(" • ")}
-                            </span>
-                          </div>
-                          {paper.jevEvaluation && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-bold">
-                              <Sparkles className="w-3 h-3 text-emerald-600" />
-                              <span>تدقيق Jev: {paper.jevEvaluation.rigorNormalized}% دقة</span>
-                            </span>
-                          )}
-                        </div>
                       </div>
 
-                      {/* The Question Box (Atomic to Research Object) */}
+                      {/* Question as inline italic */}
                       {paper.question && (
-                        <div className="p-3.5 rounded-2xl bg-[#f9faf9] border border-[#e4e3e3] text-xs leading-relaxed space-y-1">
-                          <span className="font-mono font-bold text-[#222f30] flex items-center gap-1.5">
-                            <HelpCircle className="w-3.5 h-3.5 text-[#a7e26e]" />
-                            <span>المسألة المراد حلها (The Question):</span>
-                          </span>
-                          <p className="text-[#55696a]">
-                            {paper.question}
-                          </p>
-                        </div>
+                        <p className="text-sm text-[#55696a] italic leading-relaxed mt-1">
+                          {paper.question}
+                        </p>
                       )}
 
-                      {/* Abstract / Findings */}
-                      <p className="text-xs sm:text-sm text-[#445e5f] leading-relaxed line-clamp-3">
+                      {/* Findings Excerpt */}
+                      <p className="text-sm text-[#445e5f] leading-relaxed line-clamp-3">
                         {highlightTerms(paper.findings || paper.abstract, terms)}
                       </p>
 
-                      {/* AI Tools Badges */}
-                      {paper.toolsUsed && paper.toolsUsed.length > 0 && (
-                        <div className="flex flex-wrap items-center gap-1.5 font-mono text-[11px]">
-                          <span className="text-[#738284] ml-1">الأدوات:</span>
-                          {paper.toolsUsed.map((tool, idx) => (
-                            <span key={idx} className="px-2.5 py-0.5 rounded-full bg-[#f0f2f0] border border-[#e4e3e3] text-[#222f30] font-semibold">
-                              {tool}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                      {/* Bottom Metadata Row */}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pt-3 mt-auto text-xs text-[#738284] font-mono">
+                        <span>
+                          {(paper.authors ?? [])
+                            .map((a: unknown) => (typeof a === "string" ? a : (a && typeof a === "object" && "name" in a && typeof a.name === "string") ? a.name : ""))
+                            .filter(Boolean)
+                            .join("، ")}
+                        </span>
 
-                      {/* Lineage Indicator & Forks */}
-                      {paper.lineage && (
-                        <div className="flex items-center gap-2 font-mono text-[11px] text-[#55696a] pt-1">
-                          <GitFork className="w-3.5 h-3.5 text-[#a7e26e]" />
-                          <span>شجرة التراكم (Lineage):</span>
-                          <span className="font-bold text-[#222f30]">
-                            {paper.lineage.replicationsCount} إعادة تجربة · {paper.lineage.challengesCount} تحديات · {paper.lineage.extensionsCount} امتداد
+                        {paper.jevEvaluation && paper.jevEvaluation.status === "completed" && paper.jevEvaluation.rigorNormalized != null && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-bold">
+                            <Sparkles className="w-3 h-3 text-emerald-600" />
+                            <span>تدقيق Jev: {paper.jevEvaluation.rigorNormalized}% دقة</span>
                           </span>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Footer Actions */}
-                      <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-[#e4e3e3]">
-                        <div className="flex flex-wrap items-center gap-2">
+                        {paper.toolsUsed && paper.toolsUsed.length > 0 && (
+                          <span>
+                            {paper.toolsUsed.slice(0, 3).join(" · ")}
+                            {paper.toolsUsed.length > 3 && ` +${paper.toolsUsed.length - 3}`}
+                          </span>
+                        )}
+
+                        {paper.lineage && (
+                          <span>
+                            {paper.lineage.replicationsCount} إعادة · {paper.lineage.extensionsCount} امتداد
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Actions Row */}
+                      <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
+                        <div className="flex items-center gap-3">
                           <Link
                             href={`/research/${paper.slug}`}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all shadow-xs"
+                            className="inline-flex items-center gap-1.5 text-sm font-bold text-[#222f30] hover:text-[#a7e26e] transition-colors"
                           >
-                            <span>قراءة كائن البحث (Read Object)</span>
-                            <ArrowUpLeft className="w-3.5 h-3.5" />
+                            <span>قراءة كائن البحث</span>
+                            <ArrowUpLeft className="w-4 h-4" />
                           </Link>
 
                           <Link
                             href={`/publish?replicate=${paper.slug}`}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#e4e3e3] bg-[#f5f8f7] text-[#222f30] text-xs font-bold hover:border-[#a7e26e] transition-all"
-                            title="إعادة التجربة بنفسك وتوثيق نتيجتك"
+                            className="p-1.5 rounded-lg hover:bg-[#f0f2f0] text-[#738284] hover:text-[#222f30] transition-colors"
+                            title="أعد التجربة"
+                            aria-label="أعد التجربة"
                           >
-                            <Repeat className="w-3.5 h-3.5 text-purple-600" />
-                            <span>Replicate (أعد التجربة)</span>
+                            <Repeat className="w-4 h-4 text-purple-600" />
                           </Link>
 
                           <Link
                             href={`/publish?challenge=${paper.slug}`}
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#e4e3e3] bg-white text-[#55696a] text-xs font-bold hover:text-red-700 hover:border-red-200 transition-all"
-                            title="تحدي النتيجة وتقديم أدلة مضادة"
+                            className="p-1.5 rounded-lg hover:bg-[#f0f2f0] text-[#738284] hover:text-[#222f30] transition-colors"
+                            title="تحدي النتيجة"
+                            aria-label="تحدي النتيجة"
                           >
-                            <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
-                            <span>Challenge (تحدي)</span>
+                            <AlertCircle className="w-4 h-4 text-amber-500" />
                           </Link>
                         </div>
 
-                        {paper.doi && (
+                        {paper.jemoId && (
                           <span className="text-[10px] font-mono text-[#738284]">
-                            DOI: {paper.doi}
+                            JEMO-ID: {paper.jemoId}
                           </span>
                         )}
                       </div>

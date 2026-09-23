@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { CONTENT_REGISTRY, registryGroups } from "@/lib/content/registry";
-import { isAuthorizedAdmin, listRegistryStatus } from "@/lib/content/server";
+import { listRegistryStatus } from "@/lib/content/server";
 import { checkRateLimit, getClientIp } from "@/lib/security";
+import { authenticateAdmin, requireAdmin } from "@/lib/admin-guard";
 import { validateApiKey, publishResearchObject } from "@/lib/research/store";
 /**
  * The dashboard's bootstrap call: every editable collection with its field
@@ -11,15 +12,9 @@ import { validateApiKey, publishResearchObject } from "@/lib/research/store";
  * items from /api/content/[key] and would otherwise bloat this response.
  */
 export async function GET(req: Request) {
-  const ip = getClientIp(req);
-  const rateLimit = checkRateLimit(`content_schema:${ip}`, 30, 60_000);
-  if (!rateLimit.allowed) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
-  }
-
-  if (!isAuthorizedAdmin(req)) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+  // Same rate limiting and dual auth as /api/admin/*, from the same module.
+  const auth = await requireAdmin(req, { bucket: "schema", limit: 30 });
+  if (!auth.ok) return auth.response;
 
   try {
     const status = await listRegistryStatus();
@@ -66,6 +61,8 @@ export async function GET(req: Request) {
  * Handles programmatic research object registration matching CLI & cURL examples.
  */
 export async function POST(req: Request) {
+  // Composite scheme: an API key OR an admin. One budget covers both schemes,
+  // so the limit is applied here and auth is delegated without its own bucket.
   const ip = getClientIp(req);
   const rateLimit = checkRateLimit(`content_schema_post:${ip}`, 60, 60_000);
   if (!rateLimit.allowed) {
@@ -74,13 +71,19 @@ export async function POST(req: Request) {
 
   const authHeader = req.headers.get("Authorization");
   const xApiKey = req.headers.get("X-API-Key");
-  const auth = validateApiKey(authHeader, xApiKey);
+  const auth = await validateApiKey(authHeader, xApiKey);
 
-  if (!auth.valid && !isAuthorizedAdmin(req)) {
-    return NextResponse.json(
-      { error: "unauthorized", message: auth.error || "Valid Bearer API key required." },
-      { status: 401 }
-    );
+  if (!auth.valid) {
+    const admin = await authenticateAdmin(req);
+    if (!admin.ok) {
+      // A throttled guard response must pass through untouched — replacing it
+      // with a 401 would hide the shared brute-force ceiling from this route.
+      if (admin.reason === "throttled") return admin.response;
+      return NextResponse.json(
+        { error: "unauthorized", message: auth.error || "Valid Bearer API key required." },
+        { status: 401 }
+      );
+    }
   }
 
   try {
@@ -112,7 +115,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ error: "Unsupported schema type" }, { status: 400 });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Internal error";
-    return NextResponse.json({ error: "Failed to process schema registration", message }, { status: 500 });
+    console.error("API /api/content/schema POST error:", err);
+    return NextResponse.json({ error: "Failed to process schema registration" }, { status: 500 });
   }
 }

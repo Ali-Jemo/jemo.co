@@ -23,9 +23,9 @@ const paragraphs = [
 ];
 
 const stats = [
-  { value: "٦", label: "مختبرات بحثية", suffix: "" },
+  { value: "٤", label: "مختبرات بحثية", suffix: "" },
   { value: "٨", label: "مشاريع سيادية", suffix: "+" },
-  { value: "١٢", label: "مطور وباحث", suffix: "+" },
+  { value: "١", label: "مؤسس وباحث رئيسي", suffix: "" },
   { value: "١٠٠", label: "مفتوح المصدر", suffix: "%" },
 ];
 

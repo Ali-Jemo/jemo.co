@@ -1,6 +1,7 @@
-import { describe, it, expect } from "vitest";
-import { escapeHtml, escapeMarkdown, generateContractId, maskEmail, safeCompare, checkRateLimit, sanitizeInput } from "@/lib/security";
-
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { escapeHtml, escapeMarkdown, generateContractId, maskEmail, safeCompare, checkRateLimit, sanitizeInput, readJsonBody } from "@/lib/security";
+import { isSafeHttpUrl, normalizeSafeHttpUrl } from "@/lib/security-client";
+import { signActionLink, verifyActionLink } from "@/lib/link-tokens";
 describe("Security Utilities", () => {
   describe("escapeHtml", () => {
     it("should escape dangerous HTML characters to prevent XSS", () => {
@@ -22,7 +23,7 @@ describe("Security Utilities", () => {
 
   describe("maskEmail", () => {
     it("should mask email addresses on the server side", () => {
-      expect(maskEmail("ali.jemo1.9@gmail.com")).toBe("a***9@gmail.com");
+      expect(maskEmail("admin@jemo.co")).toBe("a***n@jemo.co");
       expect(maskEmail("researcher@jemo.co")).toBe("r***r@jemo.co");
       expect(maskEmail("me@test.com")).toBe("m***@test.com");
     });
@@ -100,6 +101,75 @@ describe("Security Utilities", () => {
       expect(id1).toMatch(/^IJL-2026-[0-9A-F]{8}$/);
       expect(id2).toMatch(/^IJL-2026-[0-9A-F]{8}$/);
       expect(id1).not.toBe(id2);
+    });
+  });
+
+  describe("isSafeHttpUrl", () => {
+    it("should allow valid http and https URLs", () => {
+      expect(isSafeHttpUrl("https://example.com/path")).toBe(true);
+      expect(isSafeHttpUrl("http://localhost:3000")).toBe(true);
+      expect(isSafeHttpUrl("https://uomosul.edu.iq")).toBe(true);
+    });
+
+    it("should reject dangerous schemes, relative paths, and non-urls", () => {
+      expect(isSafeHttpUrl("javascript:alert(1)")).toBe(false);
+      expect(isSafeHttpUrl("data:text/html,<script>")).toBe(false);
+      expect(isSafeHttpUrl("vbscript:msgbox(1)")).toBe(false);
+      expect(isSafeHttpUrl("file:///etc/passwd")).toBe(false);
+      expect(isSafeHttpUrl("blob:https://evil.com")).toBe(false);
+      expect(isSafeHttpUrl("#")).toBe(false);
+      expect(isSafeHttpUrl("")).toBe(false);
+      expect(isSafeHttpUrl("not a url")).toBe(false);
+    });
+  });
+
+  describe("readJsonBody", () => {
+    it("should read and parse valid JSON within byte limit", async () => {
+      const req = new Request("http://localhost", {
+        method: "POST",
+        body: JSON.stringify({ hello: "world" }),
+      });
+      const parsed = await readJsonBody(req, 1000);
+      expect(parsed).toEqual({ hello: "world" });
+    });
+
+    it("should return null when body exceeds maxBytes", async () => {
+      const bigPayload = JSON.stringify({ data: "x".repeat(200) });
+      const req = new Request("http://localhost", {
+        method: "POST",
+        body: bigPayload,
+      });
+      const parsed = await readJsonBody(req, 50);
+      expect(parsed).toBeNull();
+    });
+  });
+
+  describe("link tokens (HMAC)", () => {
+    const originalSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+    beforeEach(() => {
+      process.env.TELEGRAM_WEBHOOK_SECRET = "test-webhook-secret-32-chars-long!";
+    });
+    afterEach(() => {
+      process.env.TELEGRAM_WEBHOOK_SECRET = originalSecret;
+    });
+
+    it("should sign and verify roundtrip correctly", async () => {
+      const token = await signActionLink("accepted", "IJL-2026-A1B2C3D4_research");
+      const verified = await verifyActionLink(token, "accepted");
+      expect(verified).toBe("IJL-2026-A1B2C3D4_research");
+    });
+
+    it("should reject tampered signature", async () => {
+      const token = await signActionLink("accepted", "IJL-2026-A1B2C3D4_research");
+      const tampered = token.slice(0, -1) + (token.slice(-1) === "0" ? "1" : "0");
+      const verified = await verifyActionLink(tampered, "accepted");
+      expect(verified).toBeNull();
+    });
+
+    it("should reject kind mismatch", async () => {
+      const token = await signActionLink("accepted", "data");
+      const verified = await verifyActionLink(token, "link");
+      expect(verified).toBeNull();
     });
   });
 });

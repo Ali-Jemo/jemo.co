@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { getLiveBenchmarks } from "@/lib/live-content";
+import { isSafeHttpUrl } from "@/lib/security-client";
 import { Trophy, ArrowUpLeft, Cpu, Database, CheckCircle2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
@@ -27,7 +28,7 @@ export default async function BenchmarksPage() {
             </div>
             <h1 className="text-4xl font-extrabold text-[var(--ink-1)]">لوحة النتائج والمعايير (Benchmarks)</h1>
             <p className="text-[var(--ink-2)] text-base leading-relaxed">
-              نتائج قياس أداء الابتكارات والنماذج المطورة في JEMO LABS مقارنة بأعلى المعايير العالمية (SOTA).
+              نتائج قياس داخلية أولية لأبحاث المختبر. المنهجية قيد النشر ولم تخضع لمراجعة أقران بعد.
             </p>
           </div>
 
@@ -58,7 +59,7 @@ export default async function BenchmarksPage() {
                     <div className="text-2xl font-extrabold text-[var(--brand)]">{bench.jemoScore}</div>
                     <div className="text-[10px] text-emerald-400 font-bold flex items-center justify-center gap-1">
                       <CheckCircle2 className="w-3 h-3" />
-                      <span>الأعلى كفاءة</span>
+                      <span>نتيجة داخلية أولية</span>
                     </div>
                   </div>
 
@@ -82,9 +83,9 @@ export default async function BenchmarksPage() {
                   </Link>
 
                   <a
-                    href={bench.datasetUrl}
+                    href={isSafeHttpUrl(bench.datasetUrl) ? bench.datasetUrl : "#"}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-[var(--ink-2)] hover:text-[var(--brand)] flex items-center gap-1"
                   >
                     <Database className="w-3.5 h-3.5" />

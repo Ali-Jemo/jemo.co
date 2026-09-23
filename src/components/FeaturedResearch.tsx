@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { RESEARCH_PAPERS } from "@/lib/data/research-data";
+import { isSafeHttpUrl } from "@/lib/security-client";
 import RevealGroup, { cohereDelay } from "@/components/RevealGroup";
 import { ArrowUpLeft, Database, GitBranch, FileText, Users, Filter, BrainCircuit, Wrench } from "lucide-react";
 
@@ -120,9 +121,9 @@ export default function FeaturedResearch() {
                 </div>
 
                 <div className="flex items-center gap-3 flex-wrap">
-                  {(hero.datasetUrl || hero.codeUrl) && (
+                  {(hero.datasetUrl || hero.codeUrl) && (isSafeHttpUrl(hero.datasetUrl) || isSafeHttpUrl(hero.codeUrl)) && (
                     <div className="flex items-center gap-2">
-                      {hero.datasetUrl && (
+                      {hero.datasetUrl && isSafeHttpUrl(hero.datasetUrl) && (
                         <Link
                           href={hero.datasetUrl}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e4e3e3] bg-[#f7f7f5] hover:bg-white hover:border-[#a7e26e] text-xs font-mono text-[#222f30] transition-colors shadow-2xs"
@@ -131,7 +132,7 @@ export default function FeaturedResearch() {
                           <span>البيانات</span>
                         </Link>
                       )}
-                      {hero.codeUrl && (
+                      {hero.codeUrl && isSafeHttpUrl(hero.codeUrl) && (
                         <Link
                           href={hero.codeUrl}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e4e3e3] bg-[#f7f7f5] hover:bg-white hover:border-[#a7e26e] text-xs font-mono text-[#222f30] transition-colors shadow-2xs"
@@ -308,10 +309,10 @@ export default function FeaturedResearch() {
                       <ArrowUpLeft className="cohere-arrow w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5" />
                     </Link>
 
-                    {(hero.datasetUrl || hero.codeUrl) && (
+                    {(hero.datasetUrl || hero.codeUrl) && (isSafeHttpUrl(hero.datasetUrl) || isSafeHttpUrl(hero.codeUrl)) && (
                       <div className="flex items-center gap-2">
                         <span className="text-[11px] font-mono text-[#738284] hidden sm:inline">المرفقات:</span>
-                        {hero.datasetUrl && (
+                        {hero.datasetUrl && isSafeHttpUrl(hero.datasetUrl) && (
                           <Link
                             href={hero.datasetUrl}
                             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#e4e3e3] bg-[#f7f7f5] hover:bg-white hover:border-[#a7e26e] text-xs font-mono text-[#222f30] transition-colors shadow-2xs"
@@ -320,7 +321,7 @@ export default function FeaturedResearch() {
                             <span>البيانات</span>
                           </Link>
                         )}
-                        {hero.codeUrl && (
+                        {hero.codeUrl && isSafeHttpUrl(hero.codeUrl) && (
                           <Link
                             href={hero.codeUrl}
                             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#e4e3e3] bg-[#f7f7f5] hover:bg-white hover:border-[#a7e26e] text-xs font-mono text-[#222f30] transition-colors shadow-2xs"

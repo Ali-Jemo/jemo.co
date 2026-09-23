@@ -4,6 +4,7 @@ import "./globals.css";
 import LenisProvider from "@/lib/lenis-provider";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ScrollProgress from "@/components/ScrollProgress";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { AuthProvider } from "@/lib/auth-context";
 import { clerkGlobalAppearance } from "@/lib/clerk-appearance";
 
@@ -94,8 +95,6 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`${noto.variable} ${mono.variable} overflow-x-hidden`}>
       <head>
-        <link rel="preconnect" href="https://balanced-cub-4691.clerk.accounts.dev" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://balanced-cub-4691.clerk.accounts.dev" />
         <link rel="preconnect" href="https://img.clerk.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://img.clerk.com" />
         <link rel="preconnect" href="https://clerk.com" />
@@ -106,7 +105,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)] overflow-x-hidden max-w-full" suppressHydrationWarning>
         <ClerkProvider
-          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_test_YmFsYW5jZWQtY3ViLTQ2OTEuY2xlcmsuYWNjb3VudHMuZGV2JA"}
+          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
           appearance={clerkGlobalAppearance}
           afterSignOutUrl="/"
           signInUrl="/sign-in"
@@ -125,6 +124,7 @@ export default function RootLayout({
           </div>
           </AuthProvider>
           </LenisProvider>
+          <MobileBottomNav />
         </ClerkProvider>
       </body>
     </html>

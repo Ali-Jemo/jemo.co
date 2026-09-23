@@ -84,7 +84,7 @@ const RESEARCH_BENEFITS = [
   },
   {
     title: "التكامل العابر للتخصصات",
-    desc: "تجسير فوري بين مهندسي النوى، علماء الجينوم، فيزيائيي الكم، وخبراء اللغات لإنتاج اكتشافات غير مسبوقة.",
+    desc: "تجسير بين مهندسي النوى والباحثين لإنتاج نتائج موثقة.",
     icon: Sparkles,
   },
 ];
@@ -110,26 +110,26 @@ export default async function LabsIndexPage() {
             </h1>
             
             <p className="text-base sm:text-xl text-[#445e5f] leading-relaxed max-w-3xl mb-8">
-              منظومة متكاملة من {labs.length} مختبراً تخصصياً تغطي العلوم الشرعية والفلسفية، العلوم الطبيعية، الهندسية، والحوسبة السيادية. شغالين حالياً أونلاين 100% بحماس ومصادر مفتوحة، ونطمح نشتري عتاد ومقر فيزيائي حقيقي يجمعنا في بغداد قبل ما تنزل GTA 6 🌝. الباب مفتوح لكل باحث وداعم!
+              منظومة من {labs.length} مختبرات بحثية تغطي أبحاث الذكاء الاصطناعي، أنظمة التشغيل، الرؤية الحاسوبية، والمعلوماتية الحيوية. شغالين حالياً أونلاين 100% بحماس ومصادر مفتوحة، ونطمح نشتري عتاد ومقر فيزيائي حقيقي يجمعنا في بغداد قبل ما تنزل GTA 6 🌝. الباب مفتوح لكل باحث وداعم!
             </p>
 
             {/* Quick Metrics Bar */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-10 font-mono">
               <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs">
                 <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">{labs.length}</div>
-                <div className="text-xs text-[#445e5f] mt-0.5">مختبراً تخصصياً</div>
+                <div className="text-xs text-[#445e5f] mt-0.5">مختبرات تخصصية</div>
               </div>
               <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs">
-                <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">180+</div>
-                <div className="text-xs text-[#445e5f] mt-0.5">باحثاً وعالماً</div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">12</div>
+                <div className="text-xs text-[#445e5f] mt-0.5">كائن بحثي منشور</div>
               </div>
               <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs">
                 <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">100%</div>
                 <div className="text-xs text-[#445e5f] mt-0.5">علم مفتوح وسيادي</div>
               </div>
               <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs">
-                <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">Q1/Q2</div>
-                <div className="text-xs text-[#445e5f] mt-0.5">دعم النشر المحكم</div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">مفتوح</div>
+                <div className="text-xs text-[#445e5f] mt-0.5">نشر مفتوح بلا رسوم</div>
               </div>
             </div>
 
@@ -294,7 +294,7 @@ export default async function LabsIndexPage() {
                 dir="ltr"
               />
               <a
-                href="mailto:ali.jemo1.9@gmail.com?subject=Scientific%20Research%20Proposal%20-%20JEMO%20LABS"
+                href="mailto:contact@jemo.co?subject=Scientific%20Research%20Proposal%20-%20JEMO%20LABS"
                 className="px-5 py-3 rounded-full border border-[#e4e3e3] bg-[#f7f7f5] text-xs sm:text-sm font-semibold text-[#222f30] hover:bg-[#e4e3e3] transition-colors"
               >
                 مراسلة المجلس العلمي مباشرة

@@ -1,4 +1,5 @@
-import { getClientIp, isKnownTelegramIp, safeCompare } from "./security";
+import { getClientIp, safeCompare } from "./security";
+import { reportSecurityEvent } from "./security-audit";
 
 /**
  * High-Performance Edge Firewall & Web Application Firewall (WAF)
@@ -68,6 +69,12 @@ export function isIpBanned(ip: string): { banned: boolean; reason?: string; expi
 
 /**
  * Ban an IP address for a designated period (default: 1 hour).
+ *
+ * Every ban (honeypot, exploit probe, attack tool, flood) funnels through
+ * here, so it is the single audit point: each ban is reported as a structured
+ * log event and, for the actively-hostile categories, pushed to the admin
+ * Telegram chat via reportSecurityEvent. Reporting is fire-and-forget and
+ * can never influence the ban decision.
  */
 export function banIp(ip: string, reason: string, durationMs = 3_600_000): void {
   if (!ip) return;
@@ -77,6 +84,16 @@ export function banIp(ip: string, reason: string, durationMs = 3_600_000): void 
     reason,
     bannedAt: now,
     expiresAt: now + durationMs,
+  });
+
+  void reportSecurityEvent({
+    event: "security.ban",
+    title: "تم حظر عنوان IP بسبب نشاط خبيث",
+    details: {
+      ip,
+      reason: reason.slice(0, 120),
+      duration_minutes: Math.round(durationMs / 60_000),
+    },
   });
 }
 
@@ -249,9 +266,46 @@ export function detectInjection(urlStr: string): { detected: boolean; type?: str
 // --------------------------------------------------------------------------
 // 6. CSRF & Mutation Origin Validation
 // --------------------------------------------------------------------------
+const MUTATION_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+const ALLOWED_MUTATION_HOSTS = new Set(["jemo.co", "localhost", "127.0.0.1"]);
+
+function isAllowedMutationOrigin(target: string): boolean {
+  try {
+    const hostname = new URL(target).hostname.toLowerCase();
+    // localhost is only a valid mutation origin in dev/test. In production
+    // Origin is attacker-forgeable, so allowing it would neuter CSRF checks.
+    const isDevEnv = process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
+    return (
+      hostname === "jemo.co" ||
+      hostname.endsWith(".jemo.co") ||
+      ((hostname === "localhost" || hostname === "127.0.0.1") && isDevEnv)
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * CSRF gate for state-changing requests.
+ *
+ * Two independent signals, checked in order:
+ *   1. `Sec-Fetch-Site` — every evergreen browser stamps it on fetch/XHR/
+ *      form submissions. `cross-site`/`same-site` on a mutation is a CSRF
+ *      attempt and is rejected outright, no matter what Origin says (Origin
+ *      is forgeable by non-browser clients; Sec-Fetch-Site is set by the
+ *      browser and stripped from incoming requests by modern proxies).
+ *   2. `Origin`/`Referer` allowlist for anything else that DOES present one.
+ *
+ * A mutation with NO browser signal at all (no Sec-Fetch-Site, no Origin, no
+ * Referer) is stateless API traffic — curl, the Python SDK, server-to-server
+ * webhooks. These routes authenticate via bearer keys / admin secrets rather
+ * than ambient cookies, so CSRF does not apply to them; rejecting the
+ * missing-header case previously broke the documented cURL/SDK workflow in
+ * production. The one cookie-authenticated surface (/api/admin/*) still
+ * rejects cross-site calls at check 1, so the ambient-cookie risk is closed.
+ */
 export function validateMutationOrigin(req: Request): { valid: boolean; reason?: string } {
-  const method = req.method.toUpperCase();
-  if (!["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+  if (!MUTATION_METHODS.has(req.method.toUpperCase())) {
     return { valid: true };
   }
 
@@ -264,48 +318,51 @@ export function validateMutationOrigin(req: Request): { valid: boolean; reason?:
       if (webhookSecret && receivedToken && safeCompare(receivedToken, webhookSecret)) {
         return { valid: true };
       }
-      const ip = getClientIp(req);
-      if (!webhookSecret && isKnownTelegramIp(ip)) {
-        return { valid: true };
-      }
     }
   } catch {
     // Ignore URL parse error and proceed to origin validation
   }
 
+  // 1. Browser-stamped fetch metadata: authoritative for CSRF decisions.
+  const site = req.headers.get("sec-fetch-site");
+  if (site !== null) {
+    if (site === "same-origin" || site === "none") return { valid: true };
+    return {
+      valid: false,
+      reason: `Cross-site mutation blocked (Sec-Fetch-Site: ${site})`,
+    };
+  }
+
+  // 2. Legacy browsers / intermediaries: fall back to Origin/Referer.
   const origin = req.headers.get("origin");
   const referer = req.headers.get("referer");
   const target = origin || referer;
 
   if (!target) {
-    if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
-      return { valid: true };
-    }
-    return { valid: false, reason: "Missing Origin and Referer header on state-changing request" };
-  }
-
-  try {
-    const parsed = new URL(target);
-    const hostname = parsed.hostname.toLowerCase();
-    // localhost is only a valid mutation origin in dev/test. In production
-    // Origin is attacker-forgeable, so allowing it would neuter CSRF checks.
-    const isDevEnv = process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
-    const isAllowed =
-      hostname === "jemo.co" ||
-      hostname.endsWith(".jemo.co") ||
-      ((hostname === "localhost" || hostname === "127.0.0.1") && isDevEnv);
-
-    if (!isAllowed) {
-      return { valid: false, reason: `Unauthorized cross-origin request from ${hostname}` };
-    }
+    // No browser signals present at all => non-browser client. Stateless API
+    // callers authenticate with explicit credentials, so there is no ambient
+    // cookie to abuse. Allowed in every environment.
     return { valid: true };
-  } catch {
-    return { valid: false, reason: "Malformed Origin or Referer header" };
   }
+
+  if (!isAllowedMutationOrigin(target)) {
+    const hostname = (() => {
+      try {
+        return new URL(target).hostname.toLowerCase();
+      } catch {
+        return target.slice(0, 64);
+      }
+    })();
+    return { valid: false, reason: `Unauthorized cross-origin request from ${hostname}` };
+  }
+  return { valid: true };
 }
 
 // --------------------------------------------------------------------------
 // 7. Payload Size Guard (Anti-DoS / Buffer Protection)
+// Advisory Content-Length pre-check. Edge middleware cannot read the stream
+// without consuming it for downstream handlers. Unauthenticated endpoints enforce
+// actual byte counts via readJsonBody, and Cloudflare Workers acts as a backstop.
 // --------------------------------------------------------------------------
 export function validatePayloadSize(req: Request, maxBytes = 1_048_576): { valid: boolean } {
   const lengthHeader = req.headers.get("content-length");
@@ -362,17 +419,6 @@ export interface FirewallEvaluation {
 export function evaluateFirewall(req: Request): FirewallEvaluation {
   const ip = getClientIp(req);
 
-  // 1. IP Blacklist check
-  const banStatus = isIpBanned(ip);
-  if (banStatus.banned) {
-    return {
-      action: "BLOCK",
-      status: 403,
-      reason: `Access Denied: Your IP is blacklisted (${banStatus.reason})`,
-      code: "IP_BANNED",
-    };
-  }
-
   let url: URL;
   try {
     url = new URL(req.url);
@@ -385,6 +431,20 @@ export function evaluateFirewall(req: Request): FirewallEvaluation {
     };
   }
 
+  const isTelegram = url.pathname === "/api/telegram/webhook";
+
+  // 1. IP Blacklist check (skip for Telegram webhook: Cloudflare egress IPs must not brick bot traffic)
+  if (!isTelegram) {
+    const banStatus = isIpBanned(ip);
+    if (banStatus.banned) {
+      return {
+        action: "BLOCK",
+        status: 403,
+        reason: `Access Denied: Your IP is blacklisted (${banStatus.reason})`,
+        code: "IP_BANNED",
+      };
+    }
+  }
   // 2. Honeypot trap check (trailing-slash normalized so
   // /api/v1/telemetry-ping/ can't dodge the exact-match Set)
   const normPath =
@@ -474,24 +534,26 @@ export function evaluateFirewall(req: Request): FirewallEvaluation {
     }
   }
 
-  // 9. Edge Rate Limiting & DoS Shield
-  const isApi = url.pathname.startsWith("/api/");
-  const edgeRate = checkEdgeRateLimit(ip, isApi);
-  if (!edgeRate.allowed) {
-    if (edgeRate.banned) {
+  // 9. Edge Rate Limiting & DoS Shield (skip for Telegram webhook: app-level secret + fromId rate limit gate it)
+  if (!isTelegram) {
+    const isApi = url.pathname.startsWith("/api/");
+    const edgeRate = checkEdgeRateLimit(ip, isApi);
+    if (!edgeRate.allowed) {
+      if (edgeRate.banned) {
+        return {
+          action: "BLOCK",
+          status: 429,
+          reason: "Too Many Requests: Traffic flood detected. Your IP has been temporarily banned.",
+          code: "FLOOD_BANNED",
+        };
+      }
       return {
         action: "BLOCK",
         status: 429,
-        reason: "Too Many Requests: Traffic flood detected. Your IP has been temporarily banned.",
-        code: "FLOOD_BANNED",
+        reason: "Too Many Requests: Rate limit exceeded. Please slow down.",
+        code: "RATE_LIMITED",
       };
     }
-    return {
-      action: "BLOCK",
-      status: 429,
-      reason: "Too Many Requests: Rate limit exceeded. Please slow down.",
-      code: "RATE_LIMITED",
-    };
   }
 
   return { action: "ALLOW" };

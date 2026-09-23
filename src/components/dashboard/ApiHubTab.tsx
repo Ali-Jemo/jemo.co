@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Key,
   Copy,
@@ -10,56 +10,157 @@ import {
   Code2,
   ShieldAlert,
   Eye,
-  EyeOff
+  EyeOff,
+  Trash2,
+  Loader2,
+  Clock,
 } from "lucide-react";
 import type { ResearcherProfile } from "@/lib/auth-context";
 import {
   cardClass,
   enBadgeClass,
   outlineBtnClass,
+  dangerGhostBtnClass,
   IconChip,
 } from "@/components/dashboard/ui";
 
 interface ApiHubTabProps {
   profile: ResearcherProfile;
-  onUpdateApiKey: (newKey: string) => void;
 }
+
+interface ApiKeyRecord {
+  id: string;
+  name: string;
+  prefix: string;
+  last4: string;
+  created_at: string;
+  last_used_at: string | null;
+}
+
+/** Shown in the snippets before any key exists. Not a credential. */
+const KEY_PLACEHOLDER = "jemo_live_res_xxxxxxxxxxxxxxxx";
 
 /** Small ghost button for use on dark code panels. */
 const codeBtnClass =
   "px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-zinc-300 text-[11px] flex items-center gap-1 cursor-pointer transition-colors";
 
-export default function ApiHubTab({ profile, onUpdateApiKey }: ApiHubTabProps) {
-  const currentKey = profile.apiKey || `jemo_live_res_${profile.id.replace(/^user_/, "").slice(0, 16)}`;
-  const [copiedKey, setCopiedKey] = useState(false);
+function formatDate(value: string | null): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString("en-CA");
+}
+
+/**
+ * API key management. Keys are issued and revoked server-side and only a hash
+ * is stored, so a freshly created token is displayed exactly once — after a
+ * reload it is unrecoverable by design.
+ */
+export default function ApiHubTab({ profile }: ApiHubTabProps) {
+  const isDemo = Boolean(profile.isDemo);
+
+  const [keys, setKeys] = useState<ApiKeyRecord[]>([]);
+  const [loading, setLoading] = useState(!isDemo);
+  const [creating, setCreating] = useState(false);
+  const [createdToken, setCreatedToken] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const [showToken, setShowToken] = useState(false);
+  const [copiedToken, setCopiedToken] = useState(false);
   const [copiedPython, setCopiedPython] = useState(false);
   const [copiedCurl, setCopiedCurl] = useState(false);
-  const [isRegenerating, setIsRegenerating] = useState(false);
-  const [showKey, setShowKey] = useState(false);
 
-  const handleCopyKey = () => {
-    navigator.clipboard.writeText(currentKey);
-    setCopiedKey(true);
-    setTimeout(() => setCopiedKey(false), 2000);
-  };
+  /** Pure fetch: writes no state, so callers decide when to re-render. */
+  const fetchKeys = useCallback(async (): Promise<ApiKeyRecord[]> => {
+    const res = await fetch("/api/keys", { headers: { accept: "application/json" } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return Array.isArray(data?.keys) ? data.keys : [];
+  }, []);
 
-  const handleRegenerateKey = () => {
-    if (window.confirm("هل أنت متأكد من رغبتك في توليد مفتاح API جديد؟ سيتوقف المفتاح القديم عن العمل فوراً.")) {
-      setIsRegenerating(true);
-      const randomHex = Array.from({ length: 16 }, () =>
-        Math.floor(Math.random() * 16).toString(16)
-      ).join("");
-      const newKey = `jemo_live_res_${randomHex}`;
-      onUpdateApiKey(newKey);
-      setTimeout(() => setIsRegenerating(false), 300);
+  useEffect(() => {
+    if (isDemo) return;
+
+    let active = true;
+    // State is written only after the await, never synchronously in the effect.
+    void (async () => {
+      try {
+        const next = await fetchKeys();
+        if (active) {
+          setKeys(next);
+          setError(null);
+        }
+      } catch {
+        if (active) setError("تعذر تحميل المفاتيح. حدّث الصفحة للمحاولة مجدداً.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [isDemo, fetchKeys]);
+
+  const handleCreate = async () => {
+    setCreating(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "Dashboard key" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data?.error || "تعذر إنشاء المفتاح. حاول مرة أخرى.");
+        return;
+      }
+      setCreatedToken(data.token);
+      setShowToken(true);
+      try {
+        setKeys(await fetchKeys());
+      } catch {
+        // The key exists; a failed list refresh is not worth surfacing.
+      }
+    } catch {
+      setError("تعذر الاتصال بالخادم.");
+    } finally {
+      setCreating(false);
     }
   };
+
+  const handleRevoke = async (id: string) => {
+    if (!window.confirm("هل أنت متأكد من إلغاء هذا المفتاح؟ سيتوقف عمله فوراً.")) return;
+    setError(null);
+    try {
+      const res = await fetch(`/api/keys?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data?.error || "تعذر إلغاء المفتاح.");
+        return;
+      }
+      setKeys((prev) => prev.filter((key) => key.id !== id));
+    } catch {
+      setError("تعذر الاتصال بالخادم.");
+    }
+  };
+
+  const copy = async (value: string, done: (v: boolean) => void) => {
+    await navigator.clipboard.writeText(value);
+    done(true);
+    setTimeout(() => done(false), 2000);
+  };
+
+  // Used by the code snippets. A brand-new token is shown until the page is
+  // reloaded; afterwards only the non-secret fragments remain.
+  const snippetKey =
+    createdToken ?? (keys[0] ? `${keys[0].prefix}…${keys[0].last4}` : KEY_PLACEHOLDER);
 
   const pythonSnippet = `from jemo import ResearchRegistry
 
 # التهيئة بمفتاحك الأكاديمي الموثق
 client = ResearchRegistry(
-    api_key="${currentKey}",
+    api_key="${snippetKey}",
     endpoint="https://jemo.co/api"
 )
 
@@ -77,7 +178,7 @@ discovery = client.publish_object(
 print(f"تم التوثيق برقم: {discovery.id} | الرابط: {discovery.url}")`;
 
   const curlSnippet = `curl -X POST https://jemo.co/api/content/schema \\
-  -H "Authorization: Bearer ${currentKey}" \\
+  -H "Authorization: Bearer ${snippetKey}" \\
   -H "Content-Type: application/json" \\
   -d '{
     "type": "research_object",
@@ -110,47 +211,136 @@ print(f"تم التوثيق برقم: {discovery.id} | الرابط: {discovery.
 
           <button
             type="button"
-            onClick={handleRegenerateKey}
-            disabled={isRegenerating}
-            className={`${outlineBtnClass} self-start sm:self-center shrink-0`}
+            onClick={handleCreate}
+            disabled={creating || isDemo}
+            className={`${outlineBtnClass} self-start sm:self-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed`}
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isRegenerating ? "animate-spin" : ""}`} />
-            <span>إعادة توليد المفتاح</span>
+            {creating ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <RefreshCw className="w-3.5 h-3.5" />
+            )}
+            <span>إنشاء مفتاح جديد</span>
           </button>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#0c1415] text-white font-mono text-xs space-y-2.5">
-          <div className="flex items-center justify-between">
-            <span className="text-zinc-400 text-[11px] font-mono">JEMO SECRET API KEY:</span>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setShowKey(!showKey)}
-                className={codeBtnClass}
-                title={showKey ? "إخفاء المفتاح" : "إظهار المفتاح"}
-              >
-                {showKey ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                <span>{showKey ? "إخفاء" : "إظهار"}</span>
-              </button>
-              <button
-                type="button"
-                onClick={handleCopyKey}
-                className={`${codeBtnClass} text-[#bef264]`}
-              >
-                {copiedKey ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedKey ? "تم النسخ!" : "نسخ المفتاح"}</span>
-              </button>
+        {isDemo && (
+          <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed">
+            <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+            <span>
+              هذه جلسة تجريبية محلية. للحصول على مفتاح حقيقي قابل للتفعيل، سجّل الدخول بحساب
+              معتمد من خلال <bdi>Clerk</bdi>.
+            </span>
+          </div>
+        )}
+
+        {error && (
+          <div className="flex items-start gap-2 p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-900 leading-relaxed">
+            <ShieldAlert className="w-4 h-4 text-rose-700 shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Freshly minted token — the only time the plaintext is ever visible. */}
+        {createdToken && (
+          <div className="p-4 rounded-2xl bg-[#0c1415] border border-[#a7e26e]/40 text-white font-mono text-xs space-y-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[#bef264] text-[11px] font-bold">
+                هذا المفتاح يظهر مرة واحدة فقط
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowToken((v) => !v)}
+                  className={codeBtnClass}
+                  title={showToken ? "إخفاء المفتاح" : "إظهار المفتاح"}
+                >
+                  {showToken ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  <span>{showToken ? "إخفاء" : "إظهار"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void copy(createdToken, setCopiedToken)}
+                  className={`${codeBtnClass} text-[#bef264]`}
+                >
+                  {copiedToken ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedToken ? "تم النسخ!" : "نسخ المفتاح"}</span>
+                </button>
+              </div>
             </div>
+            <div className="tracking-wider text-[#bef264] overflow-x-auto py-1 dir-ltr text-left select-all">
+              {showToken ? createdToken : `${createdToken.slice(0, 22)}${"•".repeat(20)}`}
+            </div>
+            <p className="text-[11px] text-zinc-400 leading-relaxed">
+              انسخه الآن وضعه في متغير البيئة <code>JEMO_API_KEY</code>. لا يمكن استرجاعه لاحقاً —
+              الخادم يحفظ بصمة مشفّرة فقط.
+            </p>
           </div>
-          <div className="tracking-wider text-[#bef264] overflow-x-auto py-1 dir-ltr text-left select-all">
-            {showKey ? currentKey : `${currentKey.slice(0, 14)}••••••••••••••••••••••••`}
-          </div>
+        )}
+
+        {/* Active keys */}
+        <div className="space-y-2">
+          <h3 className="text-[11px] font-mono font-bold text-[#55696a] uppercase tracking-wider">
+            المفاتيح النشطة
+          </h3>
+
+          {loading ? (
+            <div className="flex items-center gap-2 p-4 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3] text-xs text-[#55696a] font-mono">
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              <span>جارٍ تحميل المفاتيح...</span>
+            </div>
+          ) : keys.length === 0 ? (
+            <div className="p-4 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3] text-xs text-[#55696a] font-mono">
+              {isDemo ? "لا تتوفر مفاتيح في الجلسة التجريبية." : "لا توجد مفاتيح نشطة بعد."}
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {keys.map((key) => (
+                <li
+                  key={key.id}
+                  className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-white border border-[#e4e3e3]"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <IconChip accent="lime" size="md">
+                      <Key className="w-4 h-4" />
+                    </IconChip>
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-[#222f30] truncate">{key.name}</div>
+                      <div className="text-[11px] font-mono text-[#738284] dir-ltr text-left truncate">
+                        {key.prefix}…{key.last4}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-[#738284]">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      <span>أُنشئ {formatDate(key.created_at)}</span>
+                    </span>
+                    <span className="hidden sm:inline">
+                      آخر استخدام {formatDate(key.last_used_at)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => void handleRevoke(key.id)}
+                      className={dangerGhostBtnClass}
+                      aria-label={`إلغاء المفتاح ${key.name}`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>إلغاء</span>
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed">
           <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
           <span>
-            عامل هذا المفتاح بسرية تامة ككلمة المرور. لا تقم بتضمينه في مستودعات عامة (Public GitHub Repos) واستخدم متغيرات البيئة <code>JEMO_API_KEY</code> دائماً.
+            عامل هذا المفتاح بسرية تامة ككلمة المرور. لا تقم بتضمينه في مستودعات عامة (Public GitHub
+            Repos) واستخدم متغيرات البيئة <code>JEMO_API_KEY</code> دائماً.
           </span>
         </div>
       </div>
@@ -169,11 +359,7 @@ print(f"تم التوثيق برقم: {discovery.id} | الرابط: {discovery.
               </div>
               <button
                 type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(pythonSnippet);
-                  setCopiedPython(true);
-                  setTimeout(() => setCopiedPython(false), 2000);
-                }}
+                onClick={() => void copy(pythonSnippet, setCopiedPython)}
                 className="text-xs font-mono text-[#55696a] hover:text-[#222f30] flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#f0f2f0] transition-colors cursor-pointer"
               >
                 {copiedPython ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
@@ -204,11 +390,7 @@ print(f"تم التوثيق برقم: {discovery.id} | الرابط: {discovery.
               </div>
               <button
                 type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(curlSnippet);
-                  setCopiedCurl(true);
-                  setTimeout(() => setCopiedCurl(false), 2000);
-                }}
+                onClick={() => void copy(curlSnippet, setCopiedCurl)}
                 className="text-xs font-mono text-[#55696a] hover:text-[#222f30] flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#f0f2f0] transition-colors cursor-pointer"
               >
                 {copiedCurl ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}

@@ -44,13 +44,13 @@ export const ALL_PAGES = [
   { href: "/publications", label: "المنشورات", desc: "الأوراق المحكمة والتقارير", icon: BookOpen, group: "الأبحاث" },
   { href: "/newsletter", label: "النشرة الإخبارية", desc: "مستجدات الأبحاث الشهرية", icon: Mail, group: "الأبحاث" },
   { href: "/about", label: "عن المنصة", desc: "الرؤية، الرسالة، وميثاق السيادة", icon: Info, group: "الأبحاث" },
-  { href: "/infrastructure", label: "البنية التحتية", desc: "خوادم H100 ومجموعات الحوسبة", icon: Server, group: "الأنظمة" },
+  { href: "/infrastructure", label: "البنية التحتية", desc: "رؤية حوسبية مستقبلية مخططة", icon: Server, group: "الأنظمة" },
   { href: "/open-source", label: "المصدر المفتوح", desc: "المستودعات والبرمجيات الحرة", icon: GitBranch, group: "الأنظمة" },
   { href: "/timeline", label: "الخط الزمني", desc: "أرشيف التطوير ومراحل النمو", icon: History, group: "الأنظمة" },
   { href: "/benchmarks", label: "المقارنات المرجعية", desc: "قياسات الأداء ونماذج التقييم", icon: Activity, group: "الأنظمة" },
   { href: "/support", label: "الدعم", desc: "تمويل أبحاث السيادة التقنية", icon: HeartHandshake, group: "المؤسسة" },
   { href: "/events", label: "الفعاليات", desc: "الندوات العلمية والهاكاثونات", icon: Calendar, group: "المؤسسة" },
-  { href: "/partners", label: "الشركاء", desc: "الجامعات ومراكز الأبحاث", icon: Building2, group: "المؤسسة" },
+  { href: "/partners", label: "الشركاء", desc: "نبحث عن تعاون — لا شراكات موقعة", icon: Building2, group: "المؤسسة" },
   { href: "/contact", label: "تواصل معنا", desc: "قنوات الاتصال المباشرة بالمؤسس", icon: Sparkles, group: "المؤسسة" },
 ];
 
@@ -124,16 +124,32 @@ export default function Header() {
   const ctaMy = useMotionValue(50);
   const ctaGlow = useMotionTemplate`radial-gradient(110px circle at ${ctaMx}% ${ctaMy}%, rgba(167, 226, 110, 0.30), transparent 75%)`;
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll when mobile menu is open; also inert the page behind the
+  // drawer so keyboard focus can't tab out through footer/bottom-nav/content
   useEffect(() => {
+    const behind = (): HTMLElement[] =>
+      [document.querySelector("main"), document.querySelector("footer"), document.querySelector('nav[aria-label="التنقل السريع على الهاتف"]')].filter(Boolean) as HTMLElement[];
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
+      behind().forEach(el => (el.inert = true));
     } else {
       document.body.style.overflow = "";
+      behind().forEach(el => (el.inert = false));
     }
     return () => {
       document.body.style.overflow = "";
+      behind().forEach(el => (el.inert = false));
     };
+  }, [mobileMenuOpen]);
+
+  // Escape dismisses the mobile drawer
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [mobileMenuOpen]);
 
   const { profile, logout } = useAuth();
@@ -246,18 +262,19 @@ export default function Header() {
       <CommandPalette />
 
       <header
-        className={`fixed top-0 z-50 w-full transition-[transform,background-color,color] duration-300 ease-out ${
+        className={`fixed top-0 z-50 w-full transition-[transform,background-color,color,border-color,box-shadow] duration-300 ease-out ${
           hidden ? "-translate-y-full" : "translate-y-0"
         } ${
           mobileMenuOpen
             ? "border-b border-white/10 bg-[#0c1415] text-white shadow-2xl"
             : scrolled
-            ? "border-b border-[#e4e3e3] bg-[#f7f7f5]/96 backdrop-blur-md shadow-xs text-[#222f30]"
+            ? "border-b border-[#e4e3e3] bg-[#f7f7f5]/96 backdrop-blur-md shadow-sm text-[#222f30]"
             : isTransparent
             ? "border-b border-white/10 bg-[#0c1415]/85 backdrop-blur-md text-white"
             : "border-b border-[#e4e3e3]/80 bg-[#f7f7f5]/90 backdrop-blur-md text-[#222f30]"
         }`}
         style={{ pointerEvents: hidden ? "none" : "auto" }}
+        inert={hidden && !mobileMenuOpen}
       >
         {/* Cohere-style gradual masked backdrop blur curtain */}
         <div
@@ -316,16 +333,26 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={isActive ? "page" : undefined}
                   className={`group/nav relative px-3 py-1.5 text-xs font-semibold rounded-full transition-all duration-150 overflow-hidden ${
                     isActive
-                      ? isTransparent
-                        ? "bg-white/20 text-white font-bold shadow-xs"
-                        : "bg-[#222f30] text-white font-bold shadow-xs"
+                      ? "text-white font-bold"
                       : isTransparent
                       ? "text-white/80 hover:text-white hover:bg-white/10"
                       : "text-[#445e5f] hover:text-[#222f30] hover:bg-black/[0.04]"
                   }`}
                 >
+                  {/* active pill slides between items instead of popping */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active-pill"
+                      aria-hidden="true"
+                      className={`absolute inset-0 rounded-full shadow-xs ${
+                        isTransparent ? "bg-white/20" : "bg-[#222f30]"
+                      }`}
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
+                  )}
                   <span className="relative inline-block overflow-hidden">
                     <span className="block transition-transform duration-300 ease-out group-hover/nav:-translate-y-full group-focus-visible/nav:-translate-y-full motion-reduce:transform-none">
                       {item.label}
@@ -448,6 +475,7 @@ export default function Header() {
                                 <Link
                                   key={item.href}
                                   href={item.href}
+                                  aria-current={isActive ? "page" : undefined}
                                   onClick={() => setExploreOpen(false)}
                                   style={{ "--i": idx } as CSSProperties}
                                   className={`group j-header-dim j-header-drop px-2.5 py-2 rounded-xl transition-colors flex items-center gap-2.5 ${
@@ -692,6 +720,7 @@ export default function Header() {
                       <Link
                         key={item.href}
                         href={item.href}
+                        aria-current={isActive ? "page" : undefined}
                         onClick={() => setMobileMenuOpen(false)}
                         className={`text-xs font-bold py-2.5 px-3 rounded-xl transition-all flex items-center justify-between border ${
                           isFirst ? "col-span-2 shadow-xs" : ""
@@ -778,6 +807,7 @@ export default function Header() {
                             <Link
                               key={item.href}
                               href={item.href}
+                              aria-current={isActive ? "page" : undefined}
                               onClick={() => setMobileMenuOpen(false)}
                               className={`p-2.5 rounded-xl transition-all flex items-center gap-3 border ${
                                 isActive

@@ -13,6 +13,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { GithubIcon } from "@/components/Icons";
+import { isSafeHttpUrl } from "@/lib/security-client";
 import type { ResearcherProfile } from "@/lib/auth-context";
 import {
   heroDangerBtnClass,
@@ -132,7 +133,11 @@ export default function DashboardHeader({
 
                 {profile.githubHandle && (
                   <a
-                    href={profile.githubHandle}
+                    href={
+                      isSafeHttpUrl(profile.githubHandle)
+                        ? profile.githubHandle
+                        : `https://github.com/${encodeURIComponent(profile.githubHandle.replace(/^@/, "").trim())}`
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white hover:border-white/25 transition-all flex items-center gap-1.5"

@@ -59,3 +59,6 @@ dev.log
 __pycache__/
 *.pyc
 *.pyo
+
+# Internal research notes - not for the public repo
+/research/

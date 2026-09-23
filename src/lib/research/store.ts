@@ -1,5 +1,9 @@
+import "server-only";
+
 import { RESEARCH_PAPERS, type Paper, type ResearchResponse } from "@/lib/data/research-data";
-import { safeCompare } from "@/lib/security";
+import { isStrongSecret, safeCompare } from "@/lib/security";
+import { normalizeSafeHttpUrl } from "@/lib/security-client";
+import { resolveApiKey } from "@/lib/api-keys";
 
 export interface PublishResearchInput {
   title: string;
@@ -40,21 +44,50 @@ export interface QueryResearchOptions {
   offset?: number;
 }
 
-// Known researcher API keys for demo and core team
-const KNOWN_KEYS: Record<string, { name: string; handle: string; id: string; role: string }> = {
-  "jemo_live_res_89fa41c09b2e817d": {
-    name: "عمر الكرخي",
-    handle: "@omar_karkhi",
-    id: "karkhi",
-    role: "باحث مواطن مستقل",
-  },
-  "jemo_live_res_44189b2e817d0aa1": {
-    name: "د. مريم الهاشمي",
-    handle: "@mariam_hashemi",
-    id: "hashemi",
-    role: "باحثة أولى في النظم الموزعة",
-  },
-};
+interface ApiKeyProfile {
+  name: string;
+  handle: string;
+  id: string;
+  role: string;
+}
+
+/**
+ * Server-side registry of valid researcher API keys.
+ *
+ * Keys come exclusively from the `JEMO_API_KEYS` environment variable — never
+ * from source. Entries are comma-separated and formatted
+ * `<token>|<name>|<handle>|<role>`; only the token is required, the rest are
+ * optional profile metadata.
+ *
+ * There is deliberately NO format-based fallback. Previously any string
+ * matching /^jemo_live_res_[a-zA-Z0-9_-]{8,}$/ authenticated, so an
+ * unauthenticated caller could publish and mutate research objects. A key that
+ * merely *looks* like a credential must never be treated as one.
+ */
+let cachedKeysRaw: string | null = null;
+let cachedKeys = new Map<string, ApiKeyProfile>();
+
+function configuredKeys(): Map<string, ApiKeyProfile> {
+  const raw = process.env.JEMO_API_KEYS ?? "";
+  if (raw === cachedKeysRaw) return cachedKeys;
+
+  const parsed = new Map<string, ApiKeyProfile>();
+  for (const entry of raw.split(",")) {
+    const [token, name, handle, role] = entry.split("|").map((part) => part.trim());
+    if (!token || parsed.has(token)) continue;
+    const suffix = token.slice(-8);
+    parsed.set(token, {
+      name: name || "باحث معتمد",
+      handle: handle || `@res_${suffix}`,
+      id: `user_${suffix}`,
+      role: role || "باحث مستقل مسجل",
+    });
+  }
+
+  cachedKeysRaw = raw;
+  cachedKeys = parsed;
+  return parsed;
+}
 
 // In-memory dynamic store of API-published papers
 const dynamicPapers: Paper[] = [];
@@ -62,12 +95,18 @@ const dynamicPapers: Paper[] = [];
 /**
  * Validates inbound API keys from headers.
  * Accepts `Authorization: Bearer <key>` or `X-API-Key: <key>`.
+ *
+ * Async because dashboard-issued keys are resolved from the database, which is
+ * what makes them revocable without a redeploy.
  */
-export function validateApiKey(authHeader?: string | null, xApiKey?: string | null): {
+export async function validateApiKey(
+  authHeader?: string | null,
+  xApiKey?: string | null
+): Promise<{
   valid: boolean;
-  researcher?: { name: string; handle: string; id: string; role: string };
+  researcher?: ApiKeyProfile;
   error?: string;
-} {
+}> {
   let key = (authHeader || "").trim();
   if (key.toLowerCase().startsWith("bearer ")) {
     key = key.slice(7).trim();
@@ -83,9 +122,11 @@ export function validateApiKey(authHeader?: string | null, xApiKey?: string | nu
     };
   }
 
-  // Check master admin key if configured in environment
+  // Check master admin key if configured in environment. Gated through
+  // isStrongSecret like every other admin path (see verifyAdminSecret), so a
+  // weak/short master key can never authenticate against the publish API.
   const adminSecret = process.env.CONTENT_ADMIN_SECRET || process.env.JEMO_API_KEY;
-  if (adminSecret && safeCompare(key, adminSecret)) {
+  if (isStrongSecret(adminSecret) && safeCompare(key, adminSecret)) {
     return {
       valid: true,
       researcher: {
@@ -97,32 +138,25 @@ export function validateApiKey(authHeader?: string | null, xApiKey?: string | nu
     };
   }
 
-  // Check known demo profiles
-  if (KNOWN_KEYS[key]) {
-    return {
-      valid: true,
-      researcher: KNOWN_KEYS[key],
-    };
+  // Static allowlist for service accounts and CI. Compared in constant time so
+  // a mismatch does not leak the stored token via timing. Rotating one requires
+  // a redeploy, which is why interactive keys use the database path below.
+  for (const [token, profile] of configuredKeys()) {
+    if (safeCompare(key, token)) {
+      return { valid: true, researcher: profile };
+    }
   }
 
-  // General format validation: jemo_live_res_[alphanumeric_or_underscore]{8,}
-  const keyPattern = /^jemo_live_res_[a-zA-Z0-9_-]{8,}$/;
-  if (keyPattern.test(key)) {
-    const keyId = key.slice(-8);
-    return {
-      valid: true,
-      researcher: {
-        name: "باحث معتمد",
-        handle: `@res_${keyId}`,
-        id: `user_${keyId}`,
-        role: "باحث مستقل مسجل",
-      },
-    };
+  // Dashboard-issued keys: hashed at rest, revocable instantly.
+  const resolved = await resolveApiKey(key);
+  if (resolved) {
+    return { valid: true, researcher: resolved };
   }
 
+  // Fail closed: an unregistered key is never a credential, however it looks.
   return {
     valid: false,
-    error: "Invalid API key format. Expected 'jemo_live_res_...'.",
+    error: "Invalid or unrecognized API key.",
   };
 }
 
@@ -167,6 +201,26 @@ export function publishResearchObject(
   const authorHandle = authorOverride?.handle || "@independent_researcher";
   const authorRole = authorOverride?.role || "باحث مساهم";
 
+  // SECURITY: reject javascript:/data:/vbscript: URLs at write time.
+  // Relative /papers/*.pdf legacy values resolve to undefined (hidden in UI until re-upload).
+  for (const [key, val] of [
+    ["pdfUrl", input.pdfUrl],
+    ["codeUrl", input.codeUrl],
+    ["datasetUrl", input.datasetUrl],
+  ] as const) {
+    if (typeof val === "string" && val.trim() && val.trim() !== "#") {
+      const lower = val.trim().toLowerCase();
+      if (
+        lower.startsWith("javascript:") ||
+        lower.startsWith("data:") ||
+        lower.startsWith("vbscript:") ||
+        lower.startsWith("file:")
+      ) {
+        throw new Error(`Field '${key}' must be an http(s) URL.`);
+      }
+    }
+  }
+
   const newPaper: Paper = {
     id,
     slug,
@@ -185,17 +239,17 @@ export function publishResearchObject(
       },
     ],
     publishDate,
-    pdfUrl: input.pdfUrl || "#",
-    codeUrl: input.codeUrl,
-    datasetUrl: input.datasetUrl,
+    pdfUrl: normalizeSafeHttpUrl(input.pdfUrl) ?? "#",
+    codeUrl: normalizeSafeHttpUrl(input.codeUrl),
+    datasetUrl: normalizeSafeHttpUrl(input.datasetUrl),
     field,
     labSlug: "systems",
     keywords: ["JEMO API", "Research Object", field],
     researchType: rawType,
-    evidenceStatus: "Evidence-backed",
+    evidenceStatus: "Under Review",
     humanVerification: {
-      accuracyCheck: input.accuracyCheck || "تم التحقق من المخرجات عبر الـ API.",
-      confidence: (input.confidence as NonNullable<Paper["humanVerification"]>["confidence"]) || "مرتفعة - تم التكرار بنجاح",
+      accuracyCheck: input.accuracyCheck || "بانتظار التحقق من المخرجات عبر الـ API.",
+      confidence: (input.confidence as NonNullable<Paper["humanVerification"]>["confidence"]) || "استكشافية / أولية",
     },
     citation: {
       bibtex: `@article{${slug},\n  title={${title}},\n  author={${authorName}},\n  year={${publishDate.slice(0, 4)}},\n  publisher={JEMO Discovery Registry}\n}`,
@@ -307,35 +361,37 @@ export async function triggerBackgroundJevAudit(paper: Paper): Promise<void> {
         const data = await res.json();
         const answers = data.answers || {};
         const conf = data.providerMetadata?.typesafe?.confidence || {};
-        const rigorScore = typeof answers.rigor?.score === "number" ? answers.rigor.score : 1.5;
-        const reproProb = typeof answers.reproducibility?.noul === "number"
+        const rawRigor = typeof answers.rigor?.score === "number" ? answers.rigor.score : null;
+        const rawRepro = typeof answers.reproducibility?.noul === "number"
           ? answers.reproducibility.noul
           : typeof answers.reproducibility?.probability === "number"
           ? answers.reproducibility.probability
-          : 0.85;
+          : null;
 
-        evalData = {
-          status: "completed",
-          rigorScore: Number(rigorScore.toFixed(2)),
-          rigorNormalized: Math.min(100, Math.round((rigorScore / 2) * 100)),
-          reproducibilityProbability: Number(reproProb.toFixed(2)),
-          reproducibilityPercent: Math.round(reproProb * 100),
-          contribution: answers.contribution?.choice || "empirical",
-          confidence: { rigor: conf.rigor ?? 0.85, contribution: conf.contribution ?? 0.8 },
-          evaluatedAt: new Date().toISOString(),
-        };
+        if (rawRigor !== null && rawRepro !== null) {
+          evalData = {
+            status: "completed",
+            rigorScore: Number(rawRigor.toFixed(2)),
+            rigorNormalized: Math.min(100, Math.round((rawRigor / 2) * 100)),
+            reproducibilityProbability: Number(rawRepro.toFixed(2)),
+            reproducibilityPercent: Math.round(rawRepro * 100),
+            contribution: answers.contribution?.choice || "empirical",
+            confidence: { rigor: conf.rigor ?? 0.85, contribution: conf.contribution ?? 0.8 },
+            evaluatedAt: new Date().toISOString(),
+          };
+        }
       }
     }
 
     if (!evalData) {
       evalData = {
-        status: "completed",
-        rigorScore: 1.84,
-        rigorNormalized: 92,
-        reproducibilityProbability: 0.89,
-        reproducibilityPercent: 89,
-        contribution: "empirical",
-        confidence: { rigor: 0.9, contribution: 0.85 },
+        status: "failed",
+        rigorScore: null,
+        rigorNormalized: null,
+        reproducibilityProbability: null,
+        reproducibilityPercent: null,
+        contribution: null,
+        confidence: null,
         evaluatedAt: new Date().toISOString(),
       };
     }
@@ -345,12 +401,12 @@ export async function triggerBackgroundJevAudit(paper: Paper): Promise<void> {
     console.error(`[Background Jev] Evaluation error on ${paper.id}:`, err);
     paper.jevEvaluation = {
       status: "failed",
-      rigorScore: 1.76,
-      rigorNormalized: 88,
-      reproducibilityProbability: 0.84,
-      reproducibilityPercent: 84,
-      contribution: "empirical",
-      confidence: { rigor: 0.85, contribution: 0.8 },
+      rigorScore: null,
+      rigorNormalized: null,
+      reproducibilityProbability: null,
+      reproducibilityPercent: null,
+      contribution: null,
+      confidence: null,
       evaluatedAt: new Date().toISOString(),
     };
   }
@@ -450,7 +506,7 @@ export function replicateResearchObject(
     author: rep.author || "مدقق نظير (Peer Auditor)",
     date: new Date().toISOString().split("T")[0],
     content: rep.findings.trim(),
-    verified: rep.type !== "challenge",
+    verified: false,
   };
 
   if (!paper.responses) {

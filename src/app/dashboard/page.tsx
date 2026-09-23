@@ -321,12 +321,7 @@ function DashboardInner() {
 
           {activeTab === "bookmarks" && <BookmarksTab />}
 
-          {activeTab === "api" && (
-            <ApiHubTab
-              profile={profile}
-              onUpdateApiKey={(newKey) => updateProfile({ apiKey: newKey })}
-            />
-          )}
+          {activeTab === "api" && <ApiHubTab profile={profile} />}
 
           {activeTab === "settings" && (
             <ProfileSettingsTab

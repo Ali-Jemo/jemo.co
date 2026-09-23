@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { INITIATIVES } from "@/lib/data/research-data";
 import { checkRateLimit, getClientIp, sanitizeInput } from "@/lib/security";
-
+import { supabaseAdmin } from "@/lib/supabase";
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
   const rateLimit = checkRateLimit(`initiatives_get:${ip}`, 60, 60_000);
@@ -73,6 +73,15 @@ export async function POST(req: NextRequest) {
     const found = INITIATIVES.find((i) => i.slug === cleanInitiative);
     if (!found) {
       return NextResponse.json({ error: "المبادرة غير موجودة" }, { status: 404 });
+    }
+    const insert = await supabaseAdmin().from("initiative_interest").insert({
+      initiative_slug: cleanInitiative,
+      name: sanitizeInput(name, 100),
+      email: email.trim().toLowerCase(),
+      message: message ? sanitizeInput(message, 2000) : null,
+    });
+    if (insert.error) {
+      return NextResponse.json({ success: false, error: "تعذر الحفظ الآن، حاول لاحقاً" }, { status: 502 });
     }
 
     return NextResponse.json(

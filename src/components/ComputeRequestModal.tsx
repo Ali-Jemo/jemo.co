@@ -1,24 +1,55 @@
 "use client";
 
 import { useState } from "react";
-import { Server, Check, X, ArrowUpLeft, Cpu } from "lucide-react";
-
+import { Server, Check, X, ArrowUpLeft, Cpu, Loader2 } from "lucide-react";
+import { COMPUTE_RESOURCES } from "@/lib/compute-resources";
 export default function ComputeRequestModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState<{
+    name: string;
+    email: string;
+    institution: string;
+    resource: string;
+    proposal: string;
+  }>({
     name: "",
     email: "",
     institution: "",
-    resource: "Baghdad-1 HPC Cluster (NVIDIA H100)",
+    resource: COMPUTE_RESOURCES[0].id,
     proposal: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "compute",
+          name: form.name,
+          email: form.email,
+          institution: form.institution,
+          resource: form.resource,
+          proposal: form.proposal,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "fail");
+      }
+      setSubmitted(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error && err.message !== "fail" ? err.message : "حدث خطأ غير متوقع — أعد المحاولة");
+    } finally {
+      setSubmitting(false);
+    }
   };
-
   return (
     <>
       <button
@@ -48,9 +79,9 @@ export default function ComputeRequestModal() {
             {submitted ? (
               <div className="p-6 text-center bg-[var(--brand)]/10 rounded-2xl border border-[var(--brand)]/30 space-y-3">
                 <Check className="w-8 h-8 text-[var(--brand)] mx-auto" />
-                <h4 className="font-bold text-lg text-[var(--ink-1)]">تم تسجيل طلب الساعات الحوسبية!</h4>
+                <h4 className="font-bold text-lg text-[var(--ink-1)]">تم استلام طلبك بنجاح!</h4>
                 <p className="text-xs text-[var(--ink-2)]">
-                  سيتواصل معك فريق إدارة الخوادم لتقييم المقترح وتخصيص الموارد المناسبة.
+                  تم استلام طلبك بنجاح — سنراجعه ونعاود التواصل عبر البريد.
                 </p>
               </div>
             ) : (
@@ -98,9 +129,11 @@ export default function ComputeRequestModal() {
                     onChange={(e) => setForm({ ...form, resource: e.target.value })}
                     className="w-full px-4 py-2.5 rounded-xl bg-[var(--surface)] border border-[var(--line)] text-xs font-mono font-bold text-[var(--ink-1)] focus:border-[var(--brand)] outline-none"
                   >
-                    <option value="Baghdad-1 HPC Cluster (NVIDIA H100)">Baghdad-1 HPC Cluster (NVIDIA H100)</option>
-                    <option value="RISC-V Silicon Testbed (Ziqa OS Testing)">RISC-V Silicon Testbed (Ziqa OS Testing)</option>
-                    <option value="Multispectral Scanner & Vision Pipeline">Multispectral Scanner & Vision Pipeline</option>
+                    {COMPUTE_RESOURCES.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -116,12 +149,22 @@ export default function ComputeRequestModal() {
                   />
                 </div>
 
+                {error && (
+                  <p className="text-xs text-red-500 font-bold text-center">{error}</p>
+                )}
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-xl bg-[var(--brand)] text-white font-bold text-sm shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                  disabled={submitting}
+                  className="w-full py-3 rounded-xl bg-[var(--brand)] text-white font-bold text-sm shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <span>تقديم مقترح التخصيص</span>
-                  <ArrowUpLeft className="w-4 h-4" />
+                  {submitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <span>تقديم مقترح التخصيص</span>
+                      <ArrowUpLeft className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </form>
             )}

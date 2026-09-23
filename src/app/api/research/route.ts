@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/security";
+import { isSafeHttpUrl } from "@/lib/security-client";
 import {
   validateApiKey,
   publishResearchObject,
@@ -53,7 +54,7 @@ export async function POST(req: Request) {
   // Authenticate API key
   const authHeader = req.headers.get("Authorization");
   const xApiKey = req.headers.get("X-API-Key");
-  const auth = validateApiKey(authHeader, xApiKey);
+  const auth = await validateApiKey(authHeader, xApiKey);
 
   if (!auth.valid) {
     return NextResponse.json(
@@ -82,6 +83,30 @@ export async function POST(req: Request) {
       );
     }
 
+    for (const key of ["pdfUrl", "codeUrl", "datasetUrl"] as const) {
+      const val = (body as unknown as Record<string, unknown>)[key];
+      if (typeof val === "string" && val.trim() && val.trim() !== "#") {
+        const lower = val.trim().toLowerCase();
+        if (
+          lower.startsWith("javascript:") ||
+          lower.startsWith("data:") ||
+          lower.startsWith("vbscript:") ||
+          lower.startsWith("file:")
+        ) {
+          return NextResponse.json(
+            { error: "Invalid URL", message: `Field '${key}' must be an http(s) URL.` },
+            { status: 400 }
+          );
+        }
+        if (!isSafeHttpUrl(val)) {
+          return NextResponse.json(
+            { error: "Invalid URL", message: `Field '${key}' must be an http(s) URL.` },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     const paper = publishResearchObject(body, auth.researcher);
 
     return NextResponse.json(
@@ -96,10 +121,9 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Failed to publish research object";
     console.error("API /api/research POST error:", err);
     return NextResponse.json(
-      { error: "Internal Server Error", message },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

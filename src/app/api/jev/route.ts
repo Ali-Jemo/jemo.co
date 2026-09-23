@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { checkRateLimit, getClientIp } from "@/lib/security";
 
 const TYPESAFE_KEY = process.env.TYPESAFE_API_KEY || process.env.AI_GATEWAY_API_KEY || "";
@@ -110,6 +111,11 @@ Guidelines:
 
 // ponytail: single route, multi-action TypeSafe System One (Jev) evaluation & routing
 export async function POST(req: Request) {
+  const user = await currentUser();
+  if (!user) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
   const ip = getClientIp(req);
   const rateLimit = checkRateLimit(`jev_eval:${ip}`, 60, 60_000);
   if (!rateLimit.allowed) {
@@ -124,6 +130,12 @@ export async function POST(req: Request) {
     const body = JSON.parse(raw);
     const action = body.action || "audit";
 
+    if (!process.env.AI_GATEWAY_API_KEY && !process.env.TYPESAFE_API_KEY) {
+      return NextResponse.json(
+        { error: "ai_unavailable", message: "الخدمة غير متاحة حالياً" },
+        { status: 503 }
+      );
+    }
     let state = body.state;
     let questions: Record<string, unknown> = body.questions || {};
 
@@ -414,134 +426,80 @@ export async function POST(req: Request) {
         });
       }
 
-      const rigorScore = typeof answers.rigor?.score === "number" ? answers.rigor.score : 1.5;
-      const reproProb = typeof answers.reproducibility?.noul === "number"
+      const rawRigor = typeof answers.rigor?.score === "number" ? answers.rigor.score : null;
+      const rawRepro = typeof answers.reproducibility?.noul === "number"
         ? answers.reproducibility.noul
         : typeof answers.reproducibility?.probability === "number"
         ? answers.reproducibility.probability
-        : 0.85;
-      const contribution = answers.contribution?.choice || "empirical";
+        : null;
+      const contribution = answers.contribution?.choice || null;
+
+      if (rawRigor === null || rawRepro === null) {
+        return NextResponse.json({
+          success: false,
+          status: "failed",
+          model: "typesafe-ai/jev",
+          action: "audit",
+          evaluation: {
+            status: "failed",
+            rigorScore: null,
+            rigorNormalized: null,
+            reproducibilityProbability: null,
+            reproducibilityPercent: null,
+            contribution: null,
+            confidence: null,
+            evaluatedAt: timestamp,
+          },
+        });
+      }
 
       return NextResponse.json({
         success: true,
         model: "typesafe-ai/jev",
         action: "audit",
         evaluation: {
-          rigorScore: Number(rigorScore.toFixed(2)),
-          rigorNormalized: Math.min(100, Math.round((rigorScore / 2) * 100)),
-          reproducibilityProbability: Number(reproProb.toFixed(2)),
-          reproducibilityPercent: Math.round(reproProb * 100),
+          status: "completed",
+          rigorScore: Number(rawRigor.toFixed(2)),
+          rigorNormalized: Math.min(100, Math.round((rawRigor / 2) * 100)),
+          reproducibilityProbability: Number(rawRepro.toFixed(2)),
+          reproducibilityPercent: Math.round(rawRepro * 100),
           contribution,
           confidence: {
             rigor: confidences.rigor ?? 0.85,
             contribution: confidences.contribution ?? 0.8,
           },
-          timestamp,
+          evaluatedAt: timestamp,
         }
       });
     }
 
-    // ponytail: fallback values if gateway responds with error or offline
-    const timestamp = new Date().toISOString();
-    if (action === "validate" || action === "screen") {
+    if (action === "audit") {
       return NextResponse.json({
-        success: true,
-        model: "typesafe-ai/jev (cached)",
-        action,
-        result: {
-          isRelevant: true,
-          relevanceProbability: 0.94,
-          topic: "systems",
-          suggestedCategory: "Systems & Kernels",
-          depthScore: 2.85,
-          depthNormalized: 95,
-          confidence: { topic: 0.92, relevance: 0.95 },
-          timestamp,
+        success: false,
+        status: "failed",
+        model: "typesafe-ai/jev",
+        action: "audit",
+        evaluation: {
+          status: "failed",
+          rigorScore: null,
+          rigorNormalized: null,
+          reproducibilityProbability: null,
+          reproducibilityPercent: null,
+          contribution: null,
+          confidence: null,
+          evaluatedAt: new Date().toISOString(),
         },
       });
     }
 
-    if (action === "route") {
-      return NextResponse.json({
-        success: true,
-        model: "typesafe-ai/jev (cached)",
-        action,
-        result: {
-          targetModel: "frontier_reasoning",
-          requiresRetrieval: true,
-          confidence: 0.89,
-          timestamp,
-        },
-      });
-    }
-
-    if (action === "moderate") {
-      return NextResponse.json({
-        success: true,
-        model: "typesafe-ai/jev (cached)",
-        action,
-        result: {
-          isConstructive: true,
-          constructiveProbability: 0.98,
-          contributionType: "solution",
-          confidence: 0.94,
-          timestamp,
-        },
-      });
-    }
-
-    if (action === "chat") {
-      const messages = Array.isArray(body.messages) ? body.messages : [];
-      const query = body.query || (messages.length > 0 ? messages[messages.length - 1]?.content : "") || "";
-      const reply = await generateChatResponse(query, "general", "frontier_reasoning", body);
-
-      return NextResponse.json({
-        success: true,
-        model: "typesafe-ai/jev (cached)",
-        action: "chat",
-        route: {
-          targetModel: "frontier_reasoning",
-          focusArea: "general",
-          confidence: 0.92,
-        },
-        message: {
-          role: "assistant",
-          content: reply,
-          timestamp,
-        },
-      });
-    }
-
-    return NextResponse.json({
-      success: true,
-      model: "typesafe-ai/jev (cached)",
-      action: "audit",
-      evaluation: {
-        rigorScore: 1.84,
-        rigorNormalized: 92,
-        reproducibilityProbability: 0.89,
-        reproducibilityPercent: 89,
-        contribution: "empirical",
-        confidence: { rigor: 0.9, contribution: 0.85 },
-        timestamp,
-      }
-    });
-  } catch (err) {
-    // ponytail: graceful network fallback so UI never breaks
-    const timestamp = new Date().toISOString();
-    return NextResponse.json({
-      success: true,
-      model: "typesafe-ai/jev (resilient)",
-      action: "audit",
-      evaluation: {
-        rigorScore: 1.76,
-        rigorNormalized: 88,
-        reproducibilityProbability: 0.84,
-        reproducibilityPercent: 84,
-        contribution: "empirical",
-        confidence: { rigor: 0.85, contribution: 0.8 },
-        timestamp,
-      }
-    });
+    return NextResponse.json(
+      { error: "ai_unavailable", message: "الخدمة غير متاحة حالياً" },
+      { status: 503 }
+    );
+  } catch {
+    return NextResponse.json(
+      { error: "ai_unavailable", message: "الخدمة غير متاحة حالياً" },
+      { status: 503 }
+    );
   }
 }

@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * Content store — reads and writes the dashboard's edits over the committed
  * defaults, using the same `templates(key, responses)` rows the site already
@@ -231,15 +233,9 @@ export async function listRegistryStatus(): Promise<RegistryStatusRow[]> {
   }
 }
 
-import { safeCompare } from "@/lib/security";
-
-/**
- * Admin guard: constant-time comparison against ADMIN_SECRET, matching
- * /api/admin/applications.
- */
-export function isAuthorizedAdmin(req: Request): boolean {
-  const secret = req.headers.get("x-admin-secret");
-  const expected = process.env.ADMIN_SECRET;
-  if (!secret || !expected || expected === "jemo123") return false;
-  return safeCompare(secret, expected);
-}
+// Authorization for the content routes deliberately does NOT live here: it is
+// `requireAdmin` in src/lib/admin-guard.ts, the same chokepoint the admin API
+// uses. This module used to export its own `isAuthorizedAdmin`, which was a
+// bare rename of verifyAdminSecret — so these routes accepted only the shared
+// secret and were unreachable with a Clerk admin session, unlike
+// /api/admin/*. One guard, one behaviour.

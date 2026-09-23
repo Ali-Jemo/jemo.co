@@ -221,9 +221,10 @@ main.home > section:not(:first-child) {
   ul, ol { list-style: none; margin: 0; padding: 0; }
 }
 :focus-visible {
+  /* outline follows each element's own border-radius — forcing a radius here
+     collapsed every rounded pill to a 4px square while focused */
   outline: 2px solid var(--brand);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 ::selection { background: var(--gold); color: #fff; }
@@ -542,6 +543,14 @@ main.home > section:not(:first-child) {
 .j-header-underline:hover::after,
 .j-header-underline:focus-visible::after {
   transform: scaleX(1);
+}
+
+/* Header focus ring: accent core reads on the dark bar, dark halo keeps it
+   visible against the cream bar (the site-wide --brand ring vanishes there) */
+header a:focus-visible,
+header button:focus-visible {
+  outline: 2px solid var(--accent);
+  box-shadow: 0 0 0 5px rgba(34, 47, 48, 0.45);
 }
 
 /* gradient clip text — used by hero title, section headers */

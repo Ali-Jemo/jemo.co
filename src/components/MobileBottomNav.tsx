@@ -61,7 +61,7 @@ export default function MobileBottomNav() {
 
       <nav
         aria-label="التنقل السريع على الهاتف"
-        className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#0c1415]/95 backdrop-blur-md border-t border-white/10 text-white shadow-2xl pb-[env(safe-area-inset-bottom,0px)]"
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0c1415]/95 backdrop-blur-md border-t border-white/10 text-white shadow-2xl pb-[env(safe-area-inset-bottom,0px)]"
         dir="rtl"
       >
         <div className="grid grid-cols-5 h-14 items-center px-1">
@@ -74,6 +74,7 @@ export default function MobileBottomNav() {
                 scrollToTop();
               }
             }}
+            aria-current={pathname === "/" ? "page" : undefined}
             className={`flex flex-col items-center justify-center h-full transition-all active:scale-90 ${
               pathname === "/" ? "text-[#bef264]" : "text-white/70 hover:text-white"
             }`}
@@ -85,6 +86,7 @@ export default function MobileBottomNav() {
         {/* 2. Research / Feed */}
         <Link
           href="/research"
+          aria-current={pathname.startsWith("/research") ? "page" : undefined}
           className={`flex flex-col items-center justify-center h-full transition-all active:scale-90 ${
             pathname.startsWith("/research") ? "text-[#bef264]" : "text-white/70 hover:text-white"
           }`}
@@ -114,6 +116,7 @@ export default function MobileBottomNav() {
         {/* 4. Open Questions */}
         <Link
           href="/questions"
+          aria-current={pathname.startsWith("/questions") ? "page" : undefined}
           className={`flex flex-col items-center justify-center h-full transition-all active:scale-90 ${
             pathname.startsWith("/questions") ? "text-[#bef264]" : "text-white/70 hover:text-white"
           }`}

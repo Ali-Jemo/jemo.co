@@ -52,7 +52,7 @@ export async function POST(req: Request, context: RouteContext) {
   // Authenticate API key
   const authHeader = req.headers.get("Authorization");
   const xApiKey = req.headers.get("X-API-Key");
-  const auth = validateApiKey(authHeader, xApiKey);
+  const auth = await validateApiKey(authHeader, xApiKey);
 
   if (!auth.valid) {
     return NextResponse.json(
@@ -102,8 +102,7 @@ export async function POST(req: Request, context: RouteContext) {
       { status: 201 }
     );
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Failed to record replication";
     console.error("API /api/research/[slug] POST error:", err);
-    return NextResponse.json({ error: "Internal Server Error", message }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

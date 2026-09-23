@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { Resend } from 'resend';
 import { DEPT_CHANNELS, DEPT_BOT_KEY } from '@/lib/departments';
-import { checkRateLimit, escapeHtml, escapeMarkdown, generateContractId, getClientIp, safeCompare } from '@/lib/security';
-import { currentUser } from '@clerk/nextjs/server';
-
+import { escapeHtml, escapeMarkdown, generateContractId } from '@/lib/security';
+import { requireAdmin } from '@/lib/admin-guard';
+import { signActionLink } from '@/lib/link-tokens';
 const resendKey = process.env.RESEND_API_KEY;
 const resend = resendKey && resendKey !== 're_YOUR_KEY' ? new Resend(resendKey) : null;
 
@@ -20,7 +20,13 @@ async function sendAcceptanceEmail(app: {
 
   const deptChannel = DEPT_CHANNELS[app.section] ?? 'https://t.me/jemo_channel';
   const deptKey = DEPT_BOT_KEY[app.section] ?? 'research';
-  const botLink = `https://t.me/${process.env.TELEGRAM_BOT_USERNAME ?? 'jemo_bot'}?start=accepted_${encodeURIComponent(app.contractId)}_${encodeURIComponent(deptKey)}`;
+  let token = `${app.contractId}_${deptKey}`;
+  try {
+    token = await signActionLink("accepted", `${app.contractId}_${deptKey}`);
+  } catch (err) {
+    console.warn("Could not sign accepted action link:", err);
+  }
+  const botLink = `https://t.me/${process.env.TELEGRAM_BOT_USERNAME ?? 'jemo_bot'}?start=accepted_${encodeURIComponent(token)}`;
 
   if (!resend) return;
   await resend.emails.send({
@@ -133,36 +139,10 @@ async function notifyTelegramBot(app: {
 }
 
 export async function POST(req: NextRequest) {
-  // Rate limit: max 15 status update attempts per minute per IP
-  const ip = getClientIp(req);
-  const rateLimit = checkRateLimit(`admin_status:${ip}`, 15, 60_000);
-  if (!rateLimit.allowed) {
-    return NextResponse.json(
-      { error: 'Too many requests' },
-      { status: 429, headers: { 'Retry-After': '60' } }
-    );
-  }
-
-  // Dual auth: Check either secret header OR verified Clerk admin session
-  const secret = req.headers.get('x-admin-secret');
-  const hasValidSecret = secret && process.env.ADMIN_SECRET && safeCompare(secret, process.env.ADMIN_SECRET);
-
-  let isClerkAdmin = false;
-  if (!hasValidSecret) {
-    try {
-      const user = await currentUser();
-      if (user) {
-        const role = (user.publicMetadata as { role?: string })?.role;
-        isClerkAdmin = role === 'admin' || user.emailAddresses.some((e) => e.emailAddress === 'ali.jemo1.9@gmail.com');
-      }
-    } catch {
-      // Ignore clerk failure
-    }
-  }
-
-  if (!hasValidSecret && !isClerkAdmin) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  // Rate limiting plus dual auth (x-admin-secret OR verified Clerk admin) all
+  // live in one place now — see src/lib/admin-guard.ts.
+  const auth = await requireAdmin(req, { bucket: 'update-status', limit: 15 });
+  if (!auth.ok) return auth.response;
 
   try {
     const body = await req.json();
@@ -201,8 +181,9 @@ export async function POST(req: NextRequest) {
     console.info(JSON.stringify({
       audit: "application.status_change",
       at: new Date().toISOString(),
-      actor: hasValidSecret ? "admin-secret" : "clerk-admin",
-      ip,
+      actor: auth.session.actor,
+      actorId: auth.session.userId,
+      ip: auth.session.ip,
       applicationId: id,
       from: app.status ?? null,
       to: status,

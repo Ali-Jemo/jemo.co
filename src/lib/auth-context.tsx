@@ -22,7 +22,6 @@ export interface ResearcherProfile {
   githubHandle?: string;
   orcidId?: string;
   scholarUrl?: string;
-  apiKey?: string;
   stats: {
     publishedCount: number;
     replicationsCount: number;
@@ -51,7 +50,6 @@ const DEMO_PROFILES: Record<string, ResearcherProfile> = {
     githubHandle: "https://github.com/omar-karkhi",
     orcidId: "0009-0002-8192-4410",
     scholarUrl: "https://scholar.google.com",
-    apiKey: "jemo_live_res_89fa41c09b2e817d",
     stats: {
       publishedCount: 2,
       replicationsCount: 14,
@@ -74,7 +72,6 @@ const DEMO_PROFILES: Record<string, ResearcherProfile> = {
     githubHandle: "https://github.com/zaid-tamimi",
     orcidId: "0009-0004-1290-7731",
     scholarUrl: "https://scholar.google.com",
-    apiKey: "jemo_live_res_44189b2e817d0aa1",
     stats: {
       publishedCount: 1,
       replicationsCount: 8,
@@ -146,15 +143,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // ignore
       }
       const email = u.primaryEmailAddress?.emailAddress || u.emailAddresses?.[0]?.emailAddress || "";
-      const isSuperAdmin =
-        email === "ali.jemo1.9@gmail.com" ||
-        u.username === "jemo" ||
-        u.publicMetadata?.role === "admin";
+      // Authorization is the Clerk role claim only. Email and username are
+      // user-visible, so neither may grant admin — the server enforces the
+      // same rule through isAdminUser().
+      const isSuperAdmin = u.publicMetadata?.role === "admin";
 
       const name =
         u.fullName ||
         [u.firstName, u.lastName].filter(Boolean).join(" ") ||
-        (isSuperAdmin ? "م. علي حسين هادي" : (u.username ? `@${u.username}` : (email ? email.split("@")[0] : "باحث مستقل")));
+        (isSuperAdmin ? "مدير النظام" : (u.username ? `@${u.username}` : (email ? email.split("@")[0] : "باحث مستقل")));
 
       const handle = u.username
         ? (u.username.startsWith("@") ? u.username : `@${u.username}`)
@@ -163,20 +160,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const role =
         (u.publicMetadata?.role as string) ||
         (isSuperAdmin
-          ? "المؤسس والمهندس الرئيسي • Founder & Lead Engineer"
+          ? "مدير النظام • System Administrator"
           : "باحث مستقل • Independent Researcher");
 
       const domain =
         (u.publicMetadata?.domain as string) ||
         (isSuperAdmin
-          ? "الأنظمة المضمنة وهندسة الاستدلال والبرمجيات السيادية"
+          ? "إدارة المنظومة والأنظمة السيادية"
           : "أبحاث النظم والذكاء الاصطناعي");
 
       const avatar = u.imageUrl || "/jemo-logo.svg";
 
       const researchId =
         (u.publicMetadata?.researchId as string) ||
-        (isSuperAdmin ? "JEMO-CORE-0001" : `JEMO-RES-${u.id.replace(/^user_/, "").slice(0, 4).toUpperCase()}`);
+        (isSuperAdmin ? "JEMO-ADMIN-0001" : `JEMO-RES-${u.id.replace(/^user_/, "").slice(0, 4).toUpperCase()}`);
 
       // Check stored profile extensions
       let extProfile: Partial<ResearcherProfile> = {};
@@ -198,12 +195,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         researchId,
         isDemo: false,
         isAdmin: isSuperAdmin,
-        bio: extProfile.bio || (isSuperAdmin ? "مهندس وباحث مستقل يقود مشاريع السيادة الرقمية والذكاء الاصطناعي وبناء أنظمة التشغيل العربية." : "باحث مستقل يستكشف حدود المعرفة والاستدلال الرياضي والأنظمة."),
-        institution: extProfile.institution || (isSuperAdmin ? "JEMO CORE RESEARCH LABS" : "مستقل / Independent"),
+        bio: extProfile.bio || (isSuperAdmin ? "إدارة المنظومة والإشراف على مشاريع البحث والأنظمة." : "باحث مستقل يستكشف حدود المعرفة والاستدلال الرياضي والأنظمة."),
+        institution: extProfile.institution || (isSuperAdmin ? "JEMO LABS" : "مستقل / Independent"),
         githubHandle: extProfile.githubHandle || (u.username ? `https://github.com/${u.username}` : ""),
         orcidId: extProfile.orcidId || "",
         scholarUrl: extProfile.scholarUrl || "",
-        apiKey: extProfile.apiKey || `jemo_live_res_${u.id.replace(/^user_/, "").slice(0, 16)}`,
         stats: {
           publishedCount: extProfile.stats?.publishedCount ?? (isSuperAdmin ? 3 : 1),
           replicationsCount: extProfile.stats?.replicationsCount ?? (isSuperAdmin ? 18 : 4),
