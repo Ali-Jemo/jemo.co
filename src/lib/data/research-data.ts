@@ -417,6 +417,63 @@ export const RESEARCHERS: Researcher[] = [
 
 export const RESEARCH_PAPERS: Paper[] = [
   {
+    id: "ai-assisted-rafidain-calendar",
+    slug: "ai-assisted-rafidain-calendar",
+    title: "من الفكرة إلى نظام عامل: ما الذي أنجزه الذكاء الاصطناعي في بناء التقويم الرافديني؟",
+    titleEn: "From Idea to Working System: What AI Helped Achieve in Building the Rafidain Calendar",
+    abstract: "دراسة هندسية أولية توثّق مسار بناء نموذج تقويم رافديني جديد بمساعدة الذكاء الاصطناعي: صياغة المواصفة، تحويلها إلى مرجعين برمجيين، وبناء واجهة عربية تفاعلية، ثم فحص الحالات الحدية يدوياً. النتيجة نظام قابل للتشغيل والفحص، لا دليل على صحته الفلكية أو قانونيته أو جاهزيته المؤسسية.",
+    authors: [
+      { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
+    ],
+    publishDate: "2026-09-25",
+    jemoId: "jemo:2026.09.001",
+    pdfUrl: "",
+    field: "هندسة النظم والبناء بمساعدة الذكاء الاصطناعي",
+    labSlug: "ai-lab",
+    keywords: ["AI-Assisted Engineering", "Calendar Systems", "Arabic RTL", "Python", "JavaScript", "Verification"],
+    citation: {
+      bibtex: `@techreport{jemo2026rafidain,
+  title={From Idea to Working System: What AI Helped Achieve in Building the Rafidain Calendar},
+  author={Jemo, Ali},
+  institution={JEMO LABS},
+  year={2026},
+  type={Research Note}
+}`,
+      apa: "Jemo, A. (2026). From Idea to Working System: What AI Helped Achieve in Building the Rafidain Calendar. JEMO LABS Research Note."
+    },
+    featured: true,
+    researchType: "Research Note",
+    evidenceStatus: "Under Review",
+    lineage: {
+      replicationsCount: 0,
+      challengesCount: 0,
+      extensionsCount: 0
+    },
+    question: "ما الذي يمكن للذكاء الاصطناعي أن ينجزه فعلياً عند بناء تقويم جديد، وأين يبقى القرار والحكم والتحقق مسؤوليات بشرية؟",
+    toolsUsed: ["ذكاء اصطناعي مساند للبرمجة", "Python", "JavaScript", "HTML", "CSS", "JDN", "اختبارات تنفيذية"],
+    promptWorkflow: "حُوِّلت الفكرة إلى مواصفة، ثم إلى مرجعين بلغتي Python وJavaScript، ثم إلى واجهة عربية تفاعلية. فُصلت الادعاءات القابلة للاختبار عن الادعاءات المؤسسية، ولم تُنشر مقاييس زمنية أو تجارب مستخدمين لعدم توفرها.",
+    methodology: "فُحصت ملفات المشروع مباشرة: وثيقة RFC-2026، ومكتبتا librafidain.py وlibrafidain.js، وواجهات HTML/CSS/JavaScript. شُغّل فحص Python وJavaScript الذاتيان في 25 أيلول 2026، وتضمنا نقطة الانطلاق ورأس السنة والتحويل العكسي وثبات أيام بداية الأشهر وقاعدة الكبس. كما فُحصت الواجهة من حيث بنية HTML واتجاه RTL ووسوم الوصول الأساسية.",
+    findings: "أظهر البناء أن الذكاء الاصطناعي كان مفيداً في تحويل المواصفة إلى بنية برمجية وواجهة عربية متسقة، وتسريع صياغة الخوارزميات وإعداد حالات الفحص. لم يجرّ المشروع بعد اختباراً فلكياً مستقلاً، ولا تحققاً قانونياً أو مؤسسياً، ولا دراسة مستخدمين. لذلك فالإنجاز المؤكد هو قابلية البناء والفحص، لا إثبات أفضلية التقويم أو كفاءته.",
+    humanVerification: {
+      accuracyCheck: "شُغّلت مكتبة Python وفحصت نقطة الانطلاق ورأس السنة والعيد الوطني والتحويل العكسي وثبات بدايات الأشهر والسنة الكبيسة والترقيم المسماري. كما شُغّل فحص JavaScript لنقطة الانطلاق ورأس السنة والتحويل العكسي، ونجح الفحصان.",
+      hallucinationCorrected: "صيغت حدود الدراسة بوضوح: نجاح الاختبارات الداخلية لا يثبت صحة الحساب الفلكي أو القيمة القانونية أو الجاهزية المؤسسية.",
+      confidence: "استكشافية / أولية"
+    },
+    researchTrail: [
+      { step: "1. تثبيت المواصفة", note: "تعريف النظام، نقطة الصفر، بنية السنة العادية والكبيسة، وقواعد التحويل قبل بناء الواجهة." },
+      { step: "2. بناء مرجعين برمجيين", note: "تنفيذ التواريخ والـ JDN والتحويلين الأمام والعكسي في Python وJavaScript." },
+      { step: "3. بناء التمثيل التفاعلي", note: "إنشاء صفحات عربية باتجاه RTL لتحويل التواريخ وعرض المعادلات والبنية والتقويم التفاعلي." },
+      { step: "4. الفحص البشري", note: "مراجعة ادعاءات المصدر مقابل الملفات، ثم تشغيل فحوص Python وJavaScript وتسجيل النتائج دون اختلاق مؤشرات." }
+    ],
+    limitations: "هذه دراسة وصفية للمشروع لا تقارن الذكاء الاصطناعي ببديل، ولا تقيس زمن التوفير. لم تُجرَ حتى الآن مراجعة فلكية أو قانونية مستقلة لدقة نقطة الاعتدال أو بنية التقويم المقترحة، ولم تُنفّذ دراسة مستخدمين. كما تتكرر بعض بيانات الخوارزمية داخل ملفات HTML وJavaScript، ما يرفع كلفة الصيانة.",
+    metrics: {
+      reproducedCount: 0,
+      evidenceBackedCount: 0,
+      disputedCount: 0,
+      insightfulCount: 0
+    }
+  },
+  {
     id: "ai-assisted-arabic-texts-analysis",
     slug: "ai-assisted-arabic-texts-analysis",
     title: "استقصاء ومقارنة 6 نماذج ذكاء اصطناعي في تحليل واستعادة نصوص عربية تراثية",
