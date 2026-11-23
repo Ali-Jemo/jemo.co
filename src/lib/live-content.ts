@@ -1,4 +1,5 @@
 import { liveDocument, liveItems } from "@/lib/content/server";
+import { filterNews, filterPapers } from "@/lib/samples";
 import { cache } from "react";
 import type {
   ABOUT_INFO,
@@ -67,15 +68,16 @@ export function normalizePaper(paper: Paper): Paper {
 
 export const getLiveResearchPapers = cache(async (): Promise<Paper[]> => {
   const papers = await liveItems<Paper>("published_papers");
-  return papers.map(normalizePaper);
+  return filterPapers(papers.map(normalizePaper));
 });
 
 export function getLiveProjects(): Promise<Project[]> {
   return liveItems<Project>("research_projects");
 }
 
-export function getLiveNews(): Promise<NewsItem[]> {
-  return liveItems<NewsItem>("news_items");
+export async function getLiveNews(): Promise<NewsItem[]> {
+  const items = await liveItems<NewsItem>("news_items");
+  return filterNews(items);
 }
 
 export function getLiveLabs(): Promise<Lab[]> {

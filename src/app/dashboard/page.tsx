@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth, type ResearcherProfile } from "@/lib/auth-context";
+import { demoLoginEnabled } from "@/lib/site";
 import { RESEARCH_PAPERS } from "@/lib/data/research-data";
 import { useReplications, type UserReplication } from "@/lib/replications";
 import {
@@ -150,6 +151,7 @@ function DashboardInner() {
                   إنشاء حساب باحث جديد
                 </Link>
 
+                {demoLoginEnabled() ? (
                 <button
                   type="button"
                   onClick={() => loginAsDemo("karkhi")}
@@ -158,6 +160,7 @@ function DashboardInner() {
                   <Zap className="w-3.5 h-3.5 text-emerald-600" />
                   <span>دخول تجريبي فوري (علي حسين هادي)</span>
                 </button>
+                ) : null}
 
                 <div className="pt-2 border-t border-[#e4e3e3] text-xs text-[#55696a]">
                   <span>أو ابدأ بدون تسجيل: </span>

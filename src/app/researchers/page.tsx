@@ -6,6 +6,7 @@ import Badge from "@/components/ui/Badge";
 import Link from "next/link";
 import Image from "next/image";
 import { getLiveLabs, getLiveResearchers } from "@/lib/live-content";
+import { visiblePaperCountFor } from "@/lib/samples";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { Users, ArrowUpLeft, BookOpen } from "lucide-react";
 
@@ -118,7 +119,7 @@ export default async function ResearchersIndexPage() {
 
                     <div className="pt-4 border-t border-[var(--line)] flex items-center justify-between text-xs">
                       <div className="text-[var(--ink-2)] font-mono">
-                        <span>{r.papersCount} أوراق</span> • <span>{r.projectsCount} مشاريع</span>
+                        <span>{visiblePaperCountFor(r.slug, r.name)} أوراق محققة</span>
                       </div>
                       <Link
                         href={`/researchers/${r.slug}`}

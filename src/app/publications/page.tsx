@@ -5,15 +5,13 @@ import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import Link from "next/link";
 import { getLiveResearchPapers } from "@/lib/live-content";
+import { showUnverifiedSamples } from "@/lib/site";
 import { FileText, ArrowUpLeft, Users, Filter, Calendar } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "المنشورات والأوراق الأكاديمية | JEMO LABS",
   description: "مستودع المنشورات العلمية لـ JEMO LABS مصنفة حسب السنة، المجال، والمؤلف.",
 };
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 export default async function PublicationsPage() {
   const papers = await getLiveResearchPapers();
@@ -31,9 +29,21 @@ export default async function PublicationsPage() {
             </div>
             <h1 className="text-4xl font-extrabold text-[var(--ink-1)] mb-4">فهرس المنشورات والأوراق المحكمة</h1>
             <p className="text-[var(--ink-2)] leading-relaxed">
-              تصفح وتصنيف كافة الأوراق العلمية المنتجة حسب السنة، المجال الأكاديمي، أو المؤلفين.
+              تصفح وتصنيف الأوراق العلمية حسب السنة، المجال الأكاديمي، أو المؤلفين.
             </p>
+            {showUnverifiedSamples() ? (
+              <p className="mt-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+                العينات المعروضة غير مُحققة: أرقامها والمؤلفون المشاركون توضيحيون وليست سجلاً رسمياً. تُخفى في الإنتاج ما لم يُضبط NEXT_PUBLIC_SHOW_UNVERIFIED_SAMPLES.
+              </p>
+            ) : null}
           </div>
+          {papers.length === 0 ? (
+            <Card className="p-8">
+              <p className="text-[var(--ink-2)] leading-relaxed">
+                لا توجد منشورات محققة بعد. العينات التوضيحية مخفية في هذا النشر حتى لا تُقرأ كأوراق رسمية.
+              </p>
+            </Card>
+          ) : null}
 
           {/* Category Summary Filters */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">

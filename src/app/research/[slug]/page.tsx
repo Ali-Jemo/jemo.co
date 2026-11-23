@@ -4,12 +4,16 @@ import Footer from "@/components/Footer";
 import ResearchObjectDetail from "@/components/ResearchObjectDetail";
 import { notFound } from "next/navigation";
 import { getLiveResearchPapers } from "@/lib/live-content";
+import { visiblePapers } from "@/lib/samples";
 interface PaperPageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export function generateStaticParams() {
+  return visiblePapers().map((paper) => ({ slug: paper.slug }));
+}
+
+export const dynamicParams = false;
 
 export async function generateMetadata({ params }: PaperPageProps): Promise<Metadata> {
   const { slug } = await params;

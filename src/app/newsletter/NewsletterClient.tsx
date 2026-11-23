@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { SITE_URL, showUnverifiedSamples } from "@/lib/site";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -355,7 +356,7 @@ export default function NewsletterClient() {
   journal = {JEMO LABS Research Dispatch},
   volume = {${issue.number}},
   year = {2026},
-  url = {https://jemo.co/newsletter#${issue.id}}
+  url = {${SITE_URL}/newsletter#${issue.id}}
 }`;
       navigator.clipboard.writeText(citation);
       setCopiedCitation(true);
@@ -1311,7 +1312,7 @@ export default function NewsletterClient() {
                 <p className="text-xs text-[var(--ink-2)] leading-relaxed">{lab.desc}</p>
               </div>
               <div className="pt-2 border-t border-[var(--line)] flex items-center justify-between text-[11px] font-mono text-[var(--ink-2)]">
-                <span>{lab.papersCount}</span>
+                <span>{showUnverifiedSamples() ? "عينة غير مُحققة" : "بلا عدد منشور"}</span>
                 <Link href="/labs" className="hover:text-[var(--ink-1)] transition-colors flex items-center gap-1">
                   <span>زيارة المختبر</span>
                   <ArrowUpRight className="w-3 h-3" />

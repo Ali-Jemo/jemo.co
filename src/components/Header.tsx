@@ -29,6 +29,17 @@ const CommandPalette = dynamic(() => import("@/components/CommandPalette"), { ss
 import { useAuth } from "@/lib/auth-context";
 import { Show } from "@clerk/nextjs";
 import JemoUserButton from "@/components/JemoUserButton";
+import { isClerkConfigured } from "@/lib/clerk-config";
+
+function SignedOut({ children }: { children: React.ReactNode }) {
+  if (!isClerkConfigured()) return <>{children}</>;
+  return <Show when="signed-out">{children}</Show>;
+}
+
+function SignedIn({ children }: { children: React.ReactNode }) {
+  if (!isClerkConfigured()) return null;
+  return <Show when="signed-in">{children}</Show>;
+}
 
 const NAV_ITEMS = [
   { href: "/", label: "الرئيسية" },
@@ -576,7 +587,7 @@ export default function Header() {
             </button>
 
             {/* Session Indicator & Clerk Auth Controls */}
-            <Show when="signed-out">
+            <SignedOut>
               {profile?.isDemo && !mobileMenuOpen && (
                 <Link
                   href="/dashboard"
@@ -603,9 +614,9 @@ export default function Header() {
                   <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-r from-[#bef264] via-[#a7e26e] to-[#728825] transition-transform duration-300 ease-out origin-right scale-x-0 group-hover/signin:scale-x-100" />
                 </div>
               </Link>
-            </Show>
+            </SignedOut>
 
-            <Show when="signed-in">
+            <SignedIn>
               <Link
                 href="/dashboard"
                 className={`hidden sm:inline-flex j-header-underline items-center px-3 py-1.5 text-xs font-bold rounded-full transition-colors ${
@@ -619,7 +630,7 @@ export default function Header() {
               <div className={mobileMenuOpen ? "hidden" : "block"}>
                 <JemoUserButton />
               </div>
-            </Show>
+            </SignedIn>
 
             {/* Single Unified Primary CTA Button */}
             <Link
@@ -861,14 +872,14 @@ export default function Header() {
                 <div className="p-3.5 rounded-2xl bg-white/10 border border-white/15 space-y-2 pt-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      <Show when="signed-in">
+                      <SignedIn>
                         <JemoUserButton />
-                      </Show>
-                      <Show when="signed-out">
+                      </SignedIn>
+                      <SignedOut>
                         <span className="w-7 h-7 rounded-full bg-[#a7e26e] text-[#222f30] font-bold text-xs flex items-center justify-center shrink-0">
                           {profile.name.slice(0, 1)}
                         </span>
-                      </Show>
+                      </SignedOut>
                       <div>
                         <span className="text-xs font-bold text-white block">{profile.name}</span>
                         <span className="text-[10px] font-mono text-zinc-400 block">{profile.handle}</span>
@@ -903,7 +914,7 @@ export default function Header() {
                 </div>
               ) : (
                 <div className="pt-4 border-t border-white/10 space-y-3">
-                  <Show when="signed-out">
+                  <SignedOut>
                     <div className="flex gap-2.5">
                       <Link
                         href="/sign-in"
@@ -922,13 +933,13 @@ export default function Header() {
                         حساب جديد
                       </Link>
                     </div>
-                  </Show>
-                  <Show when="signed-in">
+                  </SignedOut>
+                  <SignedIn>
                     <div className="flex items-center justify-between p-3 rounded-2xl bg-white/10 border border-white/15">
                       <span className="text-xs font-bold text-white">حساب الباحث</span>
                       <JemoUserButton />
                     </div>
-                  </Show>
+                  </SignedIn>
                 </div>
               )}
               </motion.div>

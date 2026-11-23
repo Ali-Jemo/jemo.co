@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import BioButton from "@/components/BioButton";
+import { contactEmail } from "@/lib/site";
 import {
   Coffee,
   Gamepad2,
@@ -161,7 +162,7 @@ export default function PhysicalLabGoal() {
               dir="ltr"
             />
             <a
-              href="mailto:contact@jemo.co?subject=Hey%20JEMO%20-%20Hardware%20/%20Coffee%20Support"
+              href={contactEmail() ? `mailto:${contactEmail()}?subject=Hardware%20Support` : "/contact"}
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition-colors"
             >
               <Mail className="w-3.5 h-3.5 text-[#bef264]" />

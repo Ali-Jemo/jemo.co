@@ -193,14 +193,14 @@ export default function HeroSection() {
             className="text-[1.85rem] xs:text-[2.15rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.18] sm:leading-[1.12] tracking-tight font-kufi text-white select-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
           >
             <span className="block overflow-hidden pb-1 -mb-1">
-              <motion.span initial={{ y: "115%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="block">
+              <span className="block hero-rise">
                معرفتك المتناثرة، خليها يمنا
-              </motion.span>
+              </span>
             </span>
             <span className="block overflow-hidden pb-1 -mb-1">
-              <motion.span initial={{ y: "115%", opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, delay: 0.12, ease: [0.22, 1, 0.36, 1] }} className="block text-white">
+              <span className="block hero-rise hero-rise-delay text-white">
                 وتُحفظ كمعرفة دائمة<span className="text-[#bef264]">.</span>
-              </motion.span>
+              </span>
             </span>
           </h1>
         </div>

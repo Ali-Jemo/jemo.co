@@ -83,16 +83,18 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none hidden lg:block z-0"
               xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 1000 400"
+              preserveAspectRatio="none"
             >
               <path
-                d="M 98% 180 C 85% 180, 75% 90, 60% 90"
+                d="M 980 180 C 850 180, 750 90, 600 90"
                 fill="none"
                 stroke={activeNode === "ali" ? "#a7e26e" : "#c9cbbe"}
                 strokeWidth={activeNode === "ali" ? "2.2" : "1.2"}
                 strokeDasharray={activeNode === "ali" ? "none" : "3 4"}
                 className="transition-all duration-300"
               />
-              <circle cx="98%" cy="180" r="4.5" fill="#a7e26e" className="animate-pulse" />
+              <circle cx="980" cy="180" r="4.5" fill="#a7e26e" className="animate-pulse" />
             </svg>
 
             {/* -------------------------------------------------------------
@@ -118,7 +120,7 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
                   <p className="text-xs font-mono text-[#728825] font-semibold">مؤسس المنصة · مهندس أنظمة ومطور أنظمة تشغيل</p>
                   <p className="text-xs sm:text-sm text-[#55696a] leading-relaxed max-w-lg">مهندس أنظمة ومؤسس فريق Axiq ومشروع ZiqaKernel و Axiq-IQ. متخصص في لغات الأنظمة منخفضة المستوى (Rust / Zig / C)، وبناء البنى التحتية البرمجية والأنظمة السيادية المفتوحة.</p>
                   <div className="pt-2 flex items-center gap-4 text-xs font-mono text-[#55696a]">
-                    <span>8 مشاريع سيادية</span><span>·</span>
+                    <span>مشاريع مفتوحة المصدر</span><span>·</span>
                     <Link href="/researchers/ali-jemo" className="inline-flex items-center gap-1 text-[#222f30] font-bold hover:text-[#728825] transition-colors"><span>الملف التوثيقي</span><ArrowUpLeft className="w-3.5 h-3.5" /></Link>
                     <span>·</span>
                     <a href="https://ali.lxds.org/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[#728825] font-bold hover:underline transition-colors"><span>ali.lxds.org</span><ArrowUpLeft className="w-3.5 h-3.5" /></a>
@@ -128,11 +130,11 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
                   <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl p-1 bg-[#162021] border border-[#e4e3e3] shadow-md flex items-center justify-center overflow-hidden group/hud">
                     <div className="absolute inset-0.5 rounded-xl border border-dashed border-[#a7e26e]/45 animate-[spin_20s_linear_infinite]" />
                     <div className="absolute inset-2 rounded-lg border border-[#cef79e]/20" />
-                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden"><Image src="/team/ali.jpg" alt="علي حسين هادي (Jemo)" fill sizes="96px" className="object-cover transition-transform duration-500 group-hover/hud:scale-105" /></div>
+                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden"><Image src="/team/ali.webp" alt="علي حسين هادي (Jemo)" fill sizes="96px" className="object-cover transition-transform duration-500 group-hover/hud:scale-105" /></div>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] font-mono text-center min-w-[84px]">
-                    <span className="px-2 py-0.5 rounded-full bg-white border border-[#e4e3e3] text-[9px] font-bold text-[#222f30] uppercase tracking-wider flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#a7e26e]" /><span>FOUNDER</span></span>
-                    <div className="flex items-center justify-center gap-3 pt-1 text-xs"><div><span className="font-bold text-[#222f30] block">8</span><span className="text-[10px] text-[#738284]">أوراق</span></div><div className="w-px h-6 bg-[#e4e3e3]" /><div><span className="font-bold text-[#222f30] block">8</span><span className="text-[10px] text-[#738284]">مشاريع</span></div></div>
+                    <span className="px-2 py-0.5 rounded-full bg-white border border-[#e4e3e3] text-[9px] font-bold text-[#222f30] tracking-wider">المؤسس</span>
+                    <span className="text-[10px] text-[#738284] leading-relaxed">بلا أرقام غير محسوبة</span>
                   </div>
                 </div>
               </div>
@@ -187,69 +189,9 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
                 </Link>
               </div>
 
-              {/* Two Integrated Telemetry Micro-Widgets in Jemo Theme */}
-              <div className="pt-4 border-t border-[#e4e3e3] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3.5 font-mono">
-                
-                {/* Telemetry 1: Research Activity Sparkline Curve */}
-                <div className="p-3.5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] space-y-2">
-                  <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-[#55696a] font-bold uppercase">RESEARCH ACTIVITY</span>
-                    <span className="px-2 py-0.5 rounded-full bg-[#cef79e] text-[#162021] font-bold text-[9px] border border-[#a7e26e]">
-                      +18.4%
-                    </span>
-                  </div>
-
-                  {/* SVG Smooth Sine/Bézier Sparkline Curve in Jemo Pine + Lime */}
-                  <div className="h-10 w-full">
-                    <svg viewBox="0 0 160 40" className="w-full h-full overflow-visible">
-                      <defs>
-                        <linearGradient id="curveFillBio" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#a7e26e" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="#a7e26e" stopOpacity="0.0" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        d="M 0 35 C 30 35, 45 10, 80 14 C 115 18, 130 5, 160 8 L 160 40 L 0 40 Z"
-                        fill="url(#curveFillBio)"
-                      />
-                      <path
-                        d="M 0 35 C 30 35, 45 10, 80 14 C 115 18, 130 5, 160 8"
-                        fill="none"
-                        stroke="#222f30"
-                        strokeWidth="2"
-                      />
-                      <circle cx="80" cy="14" r="3" fill="#a7e26e" stroke="#222f30" strokeWidth="1.5" />
-                      <circle cx="160" cy="8" r="3.5" fill="#cef79e" stroke="#222f30" strokeWidth="1.5" />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Telemetry 2: Daily Commits Dynamic Bar Chart in Jemo Theme */}
-                <div className="p-3.5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] space-y-2">
-                  <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-[#55696a] font-bold uppercase">DAILY COMMITS</span>
-                    <span className="text-[#222f30] font-bold">42/DAY</span>
-                  </div>
-
-                  {/* Dynamic Vertical Commits Bar Chart */}
-                  <div className="h-9 flex items-end justify-between gap-1.5 pt-1 px-1">
-                    {[35, 55, 40, 75, 60, 90, 45, 80, 65, 100, 70, 85].map((h, i) => (
-                      <div
-                        key={i}
-                        style={{ height: `${h}%` }}
-                        className={`w-full rounded-sm transition-all duration-300 ${
-                          i === 9
-                            ? "bg-[#222f30] shadow-xs"
-                            : i === 5 || i === 11
-                            ? "bg-[#a7e26e]"
-                            : "bg-[#c9cbbe]"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-              </div>
+              <p className="pt-4 border-t border-[#e4e3e3] text-xs text-[#55696a] leading-relaxed">
+                لا نعرض نسب نشاط أو التزامات يومية إلا إذا حُسبت من السجل المنشور.
+              </p>
 
             </motion.div>
 

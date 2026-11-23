@@ -404,7 +404,7 @@ export const RESEARCHERS: Researcher[] = [
     name: FOUNDER_NAME,
     role: "مهندس أنظمة ومطور أنظمة تشغيل · مؤسس المنصة والباحث الرئيسي",
     bio: "مهندس أنظمة عراقي ومطور نواة ZiqaKernel ونظام Axiq-IQ. يركز على الأنظمة منخفضة المستوى (Rust، C، Linux Kernel)، معمارية أنظمة التشغيل، ومبادرات الذكاء الاصطناعي والسيادة التقنية في العراق.",
-    avatar: "/team/ali.jpg",
+    avatar: "/team/ali.webp",
     labSlug: "ai-lab",
     github: "https://github.com/Ali-Jemo",
     website: "https://ali.lxds.org/",
@@ -985,7 +985,7 @@ export const RESEARCH_PROJECTS: Project[] = [
     techStack: ["Rust", "Zig", "Assembly", "QEMU", "FAT32", "MLFQ", "GUI"],
     labSlug: "os-lab",
     githubUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
-    image: "/departments-bg.png",
+    image: "/departments-bg.webp",
     featured: true
   },
   {
@@ -1070,7 +1070,7 @@ export const RESEARCH_PROJECTS: Project[] = [
     techStack: ["Embedded Systems", "AI/ML", "IoT", "C++", "Python"],
     labSlug: "os-lab",
     githubUrl: "https://github.com/Ali-Jemo",
-    image: "/departments-bg.png"
+    image: "/departments-bg.webp"
   },
   {
     id: "dsp-project",
@@ -1316,11 +1316,11 @@ export const NEWS_ITEMS: NewsItem[] = [
   {
     id: "news-6",
     slug: "university-partnership-signed",
-    title: "توقيع اتفاقية تعاون بحثي مع الجامعة التكنولوجية",
+    title: "دعوة مفتوحة للتعاون البحثي — لا شراكة موقّعة",
     category: "التعاونات",
     date: "2026-05-20",
-    summary: "تعاون مشترك في مجالات الرؤية الحاسوبية والذكاء الاصطناعي الصحي وتبادل الباحثين.",
-    content: "تنص الاتفاقية على إتاحة الموارد الحاسوبية للطلبة وإشراكهم في المشاريع مفتوحة المصدر."
+    summary: "لا توجد مذكرة تفاهم موقّعة مع أي جامعة. هذه دعوة للتعاون في الرؤية الحاسوبية والذكاء الاصطناعي الصحي.",
+    content: "JEMO LABS لا تعلن عن شراكة موقّعة. الجامعات التي تريد التعاون يمكنها الكتابة عبر صفحة التواصل، ويُنشر أي اتفاق فقط بعد توقيعه."
   },
   {
     id: "news-7",

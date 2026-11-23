@@ -5,6 +5,7 @@ import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RESEARCH_LABS, RESEARCH_PAPERS, RESEARCH_PROJECTS, RESEARCHERS } from "@/lib/data/research-data";
+import { filterPapers, visiblePaperCountFor } from "@/lib/samples";
 import { getLabNews } from "@/lib/data/lab-news";
 import { ArrowRight, Users, FileText, FolderGit2, ArrowUpLeft, Newspaper, Calendar } from "lucide-react";
 
@@ -27,7 +28,7 @@ export default async function LabDetailPage({ params }: LabPageProps) {
   const { slug } = await params;
   const lab = RESEARCH_LABS.find((l) => l.slug === slug);
   if (!lab) notFound();
-  const labPapers = RESEARCH_PAPERS.filter((p) => p.labSlug === lab.slug);
+  const labPapers = filterPapers(RESEARCH_PAPERS).filter((p) => p.labSlug === lab.slug);
   const labProjects = RESEARCH_PROJECTS.filter((p) => p.labSlug === lab.slug);
   const labResearchers = RESEARCHERS.filter((r) => r.labSlug === lab.slug);
   const labNews = getLabNews(lab.slug);
@@ -107,7 +108,7 @@ export default async function LabDetailPage({ params }: LabPageProps) {
                         {r.name}
                       </Link>
                       <p className="text-xs text-[var(--ink-2)] truncate">{r.role}</p>
-                      <p className="text-[10px] font-mono text-[var(--ink-2)] mt-1">{r.papersCount} أوراق • {r.projectsCount} مشاريع</p>
+                      <p className="text-[10px] font-mono text-[var(--ink-2)] mt-1">{visiblePaperCountFor(r.slug, r.name)} أوراق محققة</p>
                     </div>
                   </Card>
                 ))}

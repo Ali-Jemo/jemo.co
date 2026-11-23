@@ -52,6 +52,7 @@ export default function ApplicationsClient() {
   const fetchStats = useCallback(async (): Promise<ApplicationStats> => {
     const res = await fetch("/api/public/applications/feed", {
       headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -172,9 +173,11 @@ export default function ApplicationsClient() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--brand)]/20 bg-[var(--brand)]/5 text-[var(--brand)] text-xs font-mono mb-6 shadow-xs">
               <Activity size={14} className={initialLoading ? "animate-pulse" : ""} />
               {lastUpdate ? (
-                <span className="tracking-widest">LIVE SYSTEM • LAST UPDATE: {lastUpdate}</span>
+                <span>آخر تحديث {lastUpdate}</span>
+              ) : error ? (
+                <span>الأرقام غير متاحة حالياً</span>
               ) : (
-                <span className="tracking-widest">LIVE SYSTEM INITIALIZING...</span>
+                <span>جارٍ جلب الأرقام...</span>
               )}
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[var(--ink)] leading-tight">

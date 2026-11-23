@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { SITE_URL, legalEmail } from "@/lib/site";
 import {
   ShieldCheck,
   Users,
@@ -20,6 +21,8 @@ import {
   Shield,
   FileCheck,
 } from "lucide-react";
+
+const LEGAL_INBOX = legalEmail();
 
 // ponytail: Static Server Component with native CSS anchors & <details> replaces 1,300 lines of client state/animation
 
@@ -41,15 +44,13 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-dynamic";
-
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebPage",
-      "@id": "https://jemo.co/terms",
-      "url": "https://jemo.co/terms",
+      "@id": `${SITE_URL}/terms`,
+      "url": `${SITE_URL}/terms`,
       "name": "الشروط والأحكام والسياسات العامة | JEMO LABS",
       "description": DESCRIPTION,
       "inLanguage": "ar",
@@ -518,13 +519,17 @@ export default function TermsPage() {
                 <p className="text-xs text-[var(--ink-2)] leading-relaxed">
                   لأي استفسارات بخصوص اتفاقيات مستوى الخدمة، عقود المشاريع الخاصة، أو طلبات الامتثال وحذف البيانات:
                 </p>
-                <a
-                  href="mailto:legal@jemo.co"
-                  className="inline-flex items-center justify-center w-full gap-2 px-3 py-2 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono font-medium text-[var(--ink-1)] transition-colors"
-                >
-                  <span>legal@jemo.co</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </a>
+                {LEGAL_INBOX ? (
+                  <a
+                    href={`mailto:${LEGAL_INBOX}`}
+                    className="inline-flex items-center justify-center w-full gap-2 px-3 py-2 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono font-medium text-[var(--ink-1)] transition-colors"
+                  >
+                    <span>{LEGAL_INBOX}</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                ) : (
+                  <a href="/contact" className="text-xs font-bold text-[var(--ink-1)] underline">نموذج التواصل</a>
+                )}
               </div>
             </aside>
 
@@ -649,11 +654,11 @@ export default function TermsPage() {
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                   <a
-                    href="mailto:legal@jemo.co"
+                    href={LEGAL_INBOX ? `mailto:${LEGAL_INBOX}` : "/contact"}
                     className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[var(--ink-1)] text-[var(--surface)] text-xs sm:text-sm font-semibold hover:opacity-90 transition-opacity"
                   >
                     <Mail className="w-4 h-4" />
-                    <span>تواصل مع الفريق القانوني: legal@jemo.co</span>
+                    <span>{LEGAL_INBOX ? `تواصل مع الفريق القانوني: ${LEGAL_INBOX}` : "نموذج التواصل"}</span>
                   </a>
                   <a
                     href="/contact"

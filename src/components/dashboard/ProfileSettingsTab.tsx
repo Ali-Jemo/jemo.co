@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { GithubIcon } from "@/components/Icons";
 import { UserProfile, Show } from "@clerk/nextjs";
+import { isClerkConfigured } from "@/lib/clerk-config";
 import type { ResearcherProfile } from "@/lib/auth-context";
 import { clerkUserProfileAppearance } from "@/lib/clerk-appearance";
 import {
@@ -267,14 +268,20 @@ export default function ProfileSettingsTab({
             desc="يمكنك هنا إدارة وتعديل كافة بياناتك الأساسية: تغيير وتحديث الصورة الشخصية، إدارة البريد الإلكتروني، كلمات المرور، المصادقة الثنائية (2FA)، وتتبع الأجهزة والجلسات النشطة."
           />
 
-          <Show when="signed-in">
-            <div className="w-full" dir="ltr">
-              <UserProfile
-                routing="hash"
-                appearance={clerkUserProfileAppearance}
-              />
-            </div>
-          </Show>
+          {isClerkConfigured() ? (
+            <Show when="signed-in">
+              <div className="w-full" dir="ltr">
+                <UserProfile
+                  routing="hash"
+                  appearance={clerkUserProfileAppearance}
+                />
+              </div>
+            </Show>
+          ) : (
+            <p className="text-xs text-[#55696a] leading-relaxed">
+              تسجيل الدخول غير مفعّل في هذا النشر. اضبط مفاتيح Clerk ثم أعد بناء الموقع لإدارة الحساب من هنا.
+            </p>
+          )}
 
           {profile.isDemo && (
             <div className="p-8 rounded-3xl bg-amber-50 border border-amber-200 text-center space-y-3">

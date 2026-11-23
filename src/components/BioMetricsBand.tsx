@@ -15,7 +15,7 @@ const STATS = [
     highlight: false,
   },
   {
-    num: "100%",
+    num: "مفتوح",
     label: "سجل مفتوح للجميع",
     labelEn: "OPEN DISCOVERY LOGS",
     desc: "لا رسوم على النشر ولا قيود تجارية، وتوثيق شفاف للأدوات والتحقق البشري من الهلوسة.",

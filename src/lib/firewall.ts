@@ -277,6 +277,9 @@ function isAllowedMutationOrigin(target: string): boolean {
     return (
       hostname === "jemo.co" ||
       hostname.endsWith(".jemo.co") ||
+      hostname === "jemo.dev" ||
+      hostname.endsWith(".jemo.dev") ||
+      hostname === "lab.jemo.dev" ||
       ((hostname === "localhost" || hostname === "127.0.0.1") && isDevEnv)
     );
   } catch {

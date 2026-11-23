@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { RESEARCH_PAPERS } from "@/lib/data/research-data";
+import { filterPapers } from "@/lib/samples";
 import { isSafeHttpUrl } from "@/lib/security-client";
 import RevealGroup, { cohereDelay } from "@/components/RevealGroup";
 import { ArrowUpLeft, Database, GitBranch, FileText, Users, Filter, BrainCircuit, Wrench } from "lucide-react";
@@ -18,6 +19,7 @@ function getAuthorName(author: unknown): string {
 // IntegratedBio-style editorial research grid: numbered publication cards with
 // bio-lime category pills, pine titles, slate metadata, and arrow-slide links.
 export default function FeaturedResearch() {
+  const source = filterPapers(RESEARCH_PAPERS);
   const [field, setField] = useState("الكل");
   const fields = [
     "الكل",
@@ -26,12 +28,19 @@ export default function FeaturedResearch() {
     "تجارب الفريق الاستكشافية"
   ];
 
-  const filtered = RESEARCH_PAPERS.filter((p) => {
+  const filtered = source.filter((p) => {
     if (field === "الكل") return true;
     return p.field.includes(field) || p.keywords.some((k) => k.includes(field));
   });
 
-  const hero = filtered[0] || RESEARCH_PAPERS[0];
+  const hero = filtered[0];
+  if (!hero) {
+    return (
+      <p className="rounded-2xl border border-[#e4e3e3] bg-white p-6 text-sm text-[#445e5f]">
+        لا سجلات محققة في الواجهة بعد. العينات التوضيحية مخفية حتى لا تُعرض كاكتشافات رسمية.
+      </p>
+    );
+  }
   const rest = filtered.slice(1, 3);
 
   return (

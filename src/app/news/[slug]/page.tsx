@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { NEWS_ITEMS } from "@/lib/data/research-data";
+import { visibleNews } from "@/lib/samples";
 import { ArrowRight, Calendar } from "lucide-react";
 
 interface NewsPageProps {
@@ -13,7 +13,7 @@ interface NewsPageProps {
 
 export async function generateMetadata({ params }: NewsPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const item = NEWS_ITEMS.find((n) => n.slug === slug);
+  const item = visibleNews().find((n) => n.slug === slug);
   if (!item) return { title: "الخبر غير موجود | JEMO LABS" };
 
   return {
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
 
 export default async function NewsDetailPage({ params }: NewsPageProps) {
   const { slug } = await params;
-  const item = NEWS_ITEMS.find((n) => n.slug === slug);
+  const item = visibleNews().find((n) => n.slug === slug);
   if (!item) notFound();
 
   return (

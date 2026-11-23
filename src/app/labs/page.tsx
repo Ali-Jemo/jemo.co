@@ -5,6 +5,7 @@ import BioButton from "@/components/BioButton";
 import LabsExplorer from "@/components/labs/LabsExplorer";
 import PhysicalLabGoal from "@/components/labs/PhysicalLabGoal";
 import { getLiveLabs } from "@/lib/live-content";
+import { contactEmail } from "@/lib/site";
 import {
   Crown,
   Award,
@@ -120,11 +121,11 @@ export default async function LabsIndexPage() {
                 <div className="text-xs text-[#445e5f] mt-0.5">مختبرات تخصصية</div>
               </div>
               <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs">
-                <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">12</div>
-                <div className="text-xs text-[#445e5f] mt-0.5">كائن بحثي منشور</div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">—</div>
+                <div className="text-xs text-[#445e5f] mt-0.5">بلا عدد منشور غير محسوب</div>
               </div>
               <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs">
-                <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">100%</div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#222f30] font-sans">مفتوح</div>
                 <div className="text-xs text-[#445e5f] mt-0.5">علم مفتوح وسيادي</div>
               </div>
               <div className="p-4 rounded-2xl bg-white border border-[#e4e3e3] shadow-xs">
@@ -294,7 +295,7 @@ export default async function LabsIndexPage() {
                 dir="ltr"
               />
               <a
-                href="mailto:contact@jemo.co?subject=Scientific%20Research%20Proposal%20-%20JEMO%20LABS"
+                href={contactEmail() ? `mailto:${contactEmail()}?subject=Research%20Proposal` : "/contact"}
                 className="px-5 py-3 rounded-full border border-[#e4e3e3] bg-[#f7f7f5] text-xs sm:text-sm font-semibold text-[#222f30] hover:bg-[#e4e3e3] transition-colors"
               >
                 مراسلة المجلس العلمي مباشرة

@@ -51,6 +51,24 @@ export interface CollectionPayload<T = unknown> {
  */
 let cached: SupabaseClient | null = null;
 
+/**
+ * Page renders must not wait on Supabase.
+ *
+ * The previous read used `cache: "no-store"` inside every public page. On the
+ * Cloudflare Worker that opted those routes into per-request SSR. The upstream
+ * call then hung (AbortSignal alone did not reliably settle the Worker fetch),
+ * and after ~8s the isolate died as plain "Internal Server Error" or
+ * Error 1102. Committed defaults are the render source. Set
+ * JEMO_LIVE_CONTENT=1 to overlay the dashboard's rows, with a hard race so a
+ * stalled database still returns the defaults.
+ */
+const LIVE_READ_TIMEOUT_MS = 2000;
+
+function liveContentEnabled(): boolean {
+  const flag = (process.env.JEMO_LIVE_CONTENT || "").trim().toLowerCase();
+  return flag === "1" || flag === "true" || flag === "on";
+}
+
 function db(): SupabaseClient {
   if (cached) return cached;
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -60,26 +78,44 @@ function db(): SupabaseClient {
   cached = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: {
-      // Always read fresh so a dashboard save shows up on the next request, and
-      // never let a slow database stall a page render.
       fetch: (input: RequestInfo | URL, init?: RequestInit) =>
-        fetch(input, { ...init, cache: "no-store", signal: AbortSignal.timeout(4000) }),
+        fetch(input, {
+          ...init,
+          // force-cache keeps a build-time read from opting the route into
+          // dynamic SSR. The race below is what actually bounds the wait.
+          cache: "force-cache",
+          signal: AbortSignal.timeout(LIVE_READ_TIMEOUT_MS),
+        }),
     },
   });
   return cached;
 }
 
+async function queryRows(key: string): Promise<TemplateRow[] | null> {
+  const { data, error } = await db()
+    .from("templates")
+    .select("id,key,responses,updated_at")
+    .in("key", [key, key + DELETED_SUFFIX]);
+  if (error || !data) return null;
+  return data as TemplateRow[];
+}
+
 /** Reads the override rows for one collection. Returns null when offline. */
 async function readRows(key: string): Promise<TemplateRow[] | null> {
+  if (!liveContentEnabled()) return null;
+  let timer: ReturnType<typeof setTimeout> | undefined;
   try {
-    const { data, error } = await db()
-      .from("templates")
-      .select("id,key,responses,updated_at")
-      .in("key", [key, key + DELETED_SUFFIX]);
-    if (error || !data) return null;
-    return data as TemplateRow[];
+    const result = await Promise.race([
+      queryRows(key),
+      new Promise<null>((resolve) => {
+        timer = setTimeout(() => resolve(null), LIVE_READ_TIMEOUT_MS);
+      }),
+    ]);
+    return result;
   } catch {
     return null;
+  } finally {
+    if (timer) clearTimeout(timer);
   }
 }
 

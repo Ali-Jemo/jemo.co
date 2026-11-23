@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { contactEmail } from "@/lib/site";
 import {
   Check,
   ExternalLink,
@@ -266,7 +267,7 @@ export default function SupportPaymentMethods({
               </button>
 
               <a
-                href="mailto:contact@jemo.co?subject=Institutional%20Grant%20Inquiry%20-%20JEMO%20LABS"
+                href={contactEmail() ? `mailto:${contactEmail()}?subject=Grant%20Inquiry` : "/contact"}
                 className="px-6 py-3 rounded-full bg-[var(--surface-2)] border border-[var(--line)] text-xs font-bold text-[var(--ink-1)] hover:bg-[var(--surface-hover)] transition-all"
               >
                 مراسلة الشؤون المالية عبر البريد

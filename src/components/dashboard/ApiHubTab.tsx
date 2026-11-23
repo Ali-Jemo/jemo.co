@@ -16,6 +16,7 @@ import {
   Clock,
 } from "lucide-react";
 import type { ResearcherProfile } from "@/lib/auth-context";
+import { SITE_URL } from "@/lib/site";
 import {
   cardClass,
   enBadgeClass,
@@ -161,7 +162,7 @@ export default function ApiHubTab({ profile }: ApiHubTabProps) {
 # التهيئة بمفتاحك الأكاديمي الموثق
 client = ResearchRegistry(
     api_key="${snippetKey}",
-    endpoint="https://jemo.co/api"
+    endpoint="${SITE_URL}/api"
 )
 
 # نشر كائن بحثي ناتج عن جلسة استدلال
@@ -177,7 +178,7 @@ discovery = client.publish_object(
 
 print(f"تم التوثيق برقم: {discovery.id} | الرابط: {discovery.url}")`;
 
-  const curlSnippet = `curl -X POST https://jemo.co/api/content/schema \\
+  const curlSnippet = `curl -X POST ${SITE_URL}/api/content/schema \\
   -H "Authorization: Bearer ${snippetKey}" \\
   -H "Content-Type: application/json" \\
   -d '{

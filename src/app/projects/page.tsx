@@ -12,9 +12,6 @@ export const metadata: Metadata = {
   description: "مستودع المشاريع البرمجية والنوى التشغيلية المفتوحة المصدر المبتكرة في JEMO LABS.",
 };
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 export default async function ProjectsIndexPage() {
   const projects = await getLiveProjects();
   return (

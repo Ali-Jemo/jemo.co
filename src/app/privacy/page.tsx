@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { SITE_URL, legalEmail, privacyEmail } from "@/lib/site";
 import {
   ShieldCheck,
   Lock,
@@ -20,6 +21,9 @@ import {
   UserCheck,
   Shield,
 } from "lucide-react";
+
+const PRIVACY_INBOX = privacyEmail();
+const LEGAL_INBOX = legalEmail();
 
 // ponytail: Static Server Component with native CSS anchors & <details> replaces client bloat
 
@@ -41,15 +45,13 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-dynamic";
-
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebPage",
-      "@id": "https://jemo.co/privacy",
-      "url": "https://jemo.co/privacy",
+      "@id": `${SITE_URL}/privacy`,
+      "url": `${SITE_URL}/privacy`,
       "name": "سياسة الخصوصية وحماية البيانات | JEMO LABS",
       "description": DESCRIPTION,
       "inLanguage": "ar",
@@ -71,7 +73,9 @@ const structuredData = {
           "name": "كيف يمكنني طلب حذف حسابي وجميع البيانات المرتبطة به؟",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "يمكنك تقديم طلب مباشر عبر إعدادات الحساب أو مراسلة مسؤول حماية البيانات (privacy@jemo.co) وسيتم مسح جميع سجلاتك خلال شهر.",
+            "text": PRIVACY_INBOX
+              ? `يمكنك تقديم طلب مباشر عبر إعدادات الحساب أو مراسلة مسؤول حماية البيانات (${PRIVACY_INBOX}) وسيتم مسح جميع سجلاتك خلال شهر.`
+              : "يمكنك تقديم طلب مباشر عبر إعدادات الحساب. سيُنشر عنوان مسؤول حماية البيانات عند ضبطه من قبل المالك.",
           },
         },
         {
@@ -328,7 +332,9 @@ const FAQS = [
   },
   {
     q: "كيف يمكنني طلب حذف حسابي وجميع البيانات المرتبطة به؟",
-    a: "يمكنك تقديم طلب مباشر عبر إعدادات الحساب أو مراسلة مسؤول حماية البيانات (privacy@jemo.co) وسيتم مسح جميع سجلاتك خلال 72 ساعة عمل.",
+    a: PRIVACY_INBOX
+      ? `يمكنك تقديم طلب مباشر عبر إعدادات الحساب أو مراسلة مسؤول حماية البيانات (${PRIVACY_INBOX}) وسيتم مسح جميع سجلاتك خلال 72 ساعة عمل.`
+      : "يمكنك تقديم طلب مباشر عبر إعدادات الحساب. سيُنشر عنوان مسؤول حماية البيانات عند ضبطه من قبل المالك.",
   },
   {
     q: "ما هي معايير التشفير المستخدمة لحماية البيانات والمشاريع؟",
@@ -520,19 +526,28 @@ export default function PrivacyPage() {
                   لطلبات تصدير البيانات، المحو النهائي، أو التبليغ عن أي مخاوف تتعلق بالخصوصية:
                 </p>
                 <div className="space-y-2 pt-1">
-                  <a
-                    href="mailto:privacy@jemo.co"
-                    className="inline-flex items-center justify-center w-full gap-2 px-3 py-2 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono font-medium text-[var(--ink-1)] transition-colors"
-                  >
-                    <span>privacy@jemo.co</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </a>
-                  <a
-                    href="mailto:legal@jemo.co"
-                    className="inline-flex items-center justify-center w-full gap-2 px-3 py-2 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono font-medium text-[var(--ink-2)] transition-colors"
-                  >
-                    <span>legal@jemo.co</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  {PRIVACY_INBOX ? (
+                    <a
+                      href={`mailto:${PRIVACY_INBOX}`}
+                      className="inline-flex items-center justify-center w-full gap-2 px-3 py-2 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono font-medium text-[var(--ink-1)] transition-colors"
+                    >
+                      <span>{PRIVACY_INBOX}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+                  ) : (
+                    <p className="text-xs text-[var(--ink-2)]">لم يُضبط عنوان الخصوصية بعد. استخدم نموذج التواصل.</p>
+                  )}
+                  {LEGAL_INBOX ? (
+                    <a
+                      href={`mailto:${LEGAL_INBOX}`}
+                      className="inline-flex items-center justify-center w-full gap-2 px-3 py-2 rounded-lg bg-[var(--bg)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono font-medium text-[var(--ink-2)] transition-colors"
+                    >
+                      <span>{LEGAL_INBOX}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+                  ) : null}
+                  <a href="/contact" className="inline-flex items-center justify-center w-full text-xs font-bold text-[var(--ink-1)] underline">
+                    نموذج التواصل
                   </a>
                 </div>
               </div>
@@ -658,13 +673,23 @@ export default function PrivacyPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-                  <a
-                    href="mailto:privacy@jemo.co"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[var(--ink-1)] text-[var(--surface)] text-xs sm:text-sm font-semibold hover:opacity-90 transition-opacity"
-                  >
-                    <Mail className="w-4 h-4" />
-                    <span>مراسلة مسؤول الخصوصية: privacy@jemo.co</span>
-                  </a>
+                  {PRIVACY_INBOX ? (
+                    <a
+                      href={`mailto:${PRIVACY_INBOX}`}
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[var(--ink-1)] text-[var(--surface)] text-xs sm:text-sm font-semibold hover:opacity-90 transition-opacity"
+                    >
+                      <Mail className="w-4 h-4" />
+                      <span>مراسلة مسؤول الخصوصية: {PRIVACY_INBOX}</span>
+                    </a>
+                  ) : (
+                    <a
+                      href="/contact"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[var(--ink-1)] text-[var(--surface)] text-xs sm:text-sm font-semibold hover:opacity-90 transition-opacity"
+                    >
+                      <Mail className="w-4 h-4" />
+                      <span>نموذج التواصل</span>
+                    </a>
+                  )}
                   <a
                     href="/terms"
                     className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[var(--bg)] border border-[var(--line)] text-[var(--ink-1)] text-xs sm:text-sm font-semibold hover:bg-[var(--line)] transition-colors"

@@ -30,10 +30,15 @@ export async function GET(req: NextRequest) {
 
   try {
     const db = supabaseAdmin();
+    const timed = <T,>(promise: PromiseLike<T>) =>
+      Promise.race([
+        promise,
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 2500)),
+      ]);
     // Single COUNT-only query — never pulls the full row set.
-    const { count, error } = await db
-      .from('applications')
-      .select('id', { count: 'exact', head: true });
+    const { count, error } = await timed(
+      db.from('applications').select('id', { count: 'exact', head: true })
+    );
 
     if (error) {
       console.error("Public applications feed count error:", error.message);
@@ -44,9 +49,9 @@ export async function GET(req: NextRequest) {
     // .select('status') because the result would carry every row's status
     // payload even if we only counted.
     const [pending, accepted, rejected] = await Promise.all([
-      db.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
-      db.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'accepted'),
-      db.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'rejected'),
+      timed(db.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
+      timed(db.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'accepted')),
+      timed(db.from('applications').select('id', { count: 'exact', head: true }).eq('status', 'rejected')),
     ]);
 
     return NextResponse.json(
@@ -66,6 +71,9 @@ export async function GET(req: NextRequest) {
     );
   } catch (err) {
     console.error("Error in public applications feed route:", err);
-    return NextResponse.json({ error: 'Failed to load applications' }, { status: 500 });
+    return NextResponse.json(
+      { total: 0, pending: 0, accepted: 0, rejected: 0, updatedAt: "", unavailable: true },
+      { status: 200, headers: { "Cache-Control": "no-store" } }
+    );
   }
 }

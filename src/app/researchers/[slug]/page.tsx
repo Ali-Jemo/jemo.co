@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { RESEARCHERS, RESEARCH_PAPERS, RESEARCH_PROJECTS, RESEARCH_LABS } from "@/lib/data/research-data";
+import { filterPapers } from "@/lib/samples";
 import { GithubIcon, LinkedinIcon } from "@/components/Icons";
 import { ArrowRight, Mail, FileText, FolderGit2, BookOpen, Globe, Send } from "lucide-react";
 import { isSafeHttpUrl } from "@/lib/security-client";
@@ -32,7 +33,7 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
 
   const lab = RESEARCH_LABS.find((l) => l.slug === researcher.labSlug);
 
-  const authoredPapers = RESEARCH_PAPERS.filter((p) =>
+  const authoredPapers = filterPapers(RESEARCH_PAPERS).filter((p) =>
     (p.authors ?? []).some((a: unknown) =>
       typeof a === "string"
         ? a.includes(researcher.name)
@@ -157,6 +158,15 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
                     <span>Google Scholar</span>
                   </a>
                 )}
+                {researcher.email.endsWith("@jemo.co") ? (
+                  <Link
+                    href="/contact"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)] text-xs font-mono text-[var(--ink-1)] hover:border-[var(--brand)] transition-colors"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>تواصل</span>
+                  </Link>
+                ) : (
                 <a
                   href={`mailto:${researcher.email}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--bg)] border border-[var(--line)] text-xs font-mono text-[var(--ink-1)] hover:border-[var(--brand)] transition-colors"
@@ -164,6 +174,7 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
                   <Mail className="w-3.5 h-3.5" />
                   <span>{researcher.email}</span>
                 </a>
+                )}
               </div>
             </div>
           </Card>
