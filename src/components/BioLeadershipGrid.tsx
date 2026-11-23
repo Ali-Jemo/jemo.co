@@ -65,7 +65,6 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
           <EditorialSectionHeader
             num={sectionNum}
             kickerAr="القيادة العلمية"
-            kickerEn="SCIENTIFIC LEADERSHIP"
             title="باحثون ومهندسون"
             titleAccent="يقودون المختبرات والبنية التجريبية."
           />
@@ -101,10 +100,7 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
                 NODE 1: علي حسين هادي (Jemo) (Systems Engineer & Founder)
                 ------------------------------------------------------------- */}
             <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
+              initial={false}
               onMouseEnter={() => setActiveNode("ali")}
               onMouseLeave={() => setActiveNode(null)}
               className={`relative z-10 p-5 sm:p-7 rounded-3xl bg-white border transition-all duration-300 shadow-sm hover:shadow-xl ${
@@ -134,7 +130,7 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
                   </div>
                   <div className="flex flex-col items-center justify-center gap-1.5 p-3 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] font-mono text-center min-w-[84px]">
                     <span className="px-2 py-0.5 rounded-full bg-white border border-[#e4e3e3] text-[9px] font-bold text-[#222f30] tracking-wider">المؤسس</span>
-                    <span className="text-[10px] text-[#738284] leading-relaxed">بلا أرقام غير محسوبة</span>
+                    <span className="text-[10px] text-[#3f5456] leading-relaxed">بلا أرقام غير محسوبة</span>
                   </div>
                 </div>
               </div>
@@ -153,16 +149,13 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
             
             {/* The Central Initiative Command Hub Card */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+              initial={false}
               className="relative p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-sm hover:shadow-xl transition-all duration-300 space-y-6"
             >
               {/* Header Track Tag */}
               <div className="flex items-center justify-between text-xs font-mono">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#f5f8f7] border border-[#e4e3e3] text-[#222f30] font-bold text-[10px] tracking-wider">
-                  <span>[INITIATIVE_HUB // CONTRIBUTORS]</span>
+                  <span>مركز المساهمين</span>
                 </div>
                 
                 {/* Anchor Port Dot on Left Border (Connecting out to nodes in Jemo Lime) */}
@@ -171,9 +164,9 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
 
               {/* Title & Mission Statement */}
               <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight text-[#222f30] font-kufi">
+                <h3 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight text-[#222f30] font-kufi">
                   علي حسين هادي
-                </h2>
+                </h3>
                 <p className="text-xs sm:text-sm text-[#55696a] leading-relaxed">
                   المؤسس والمهندس الرئيسي للمنصة.
                 </p>
@@ -189,7 +182,7 @@ export default function BioLeadershipGrid({ sectionNum }: { sectionNum?: string 
                 </Link>
               </div>
 
-              <p className="pt-4 border-t border-[#e4e3e3] text-xs text-[#55696a] leading-relaxed">
+              <p className="pt-4 border-t border-[#e4e3e3] text-xs text-[#3f5456] leading-relaxed">
                 لا نعرض نسب نشاط أو التزامات يومية إلا إذا حُسبت من السجل المنشور.
               </p>
 

@@ -17,11 +17,11 @@ export default async function ResearchIndexPage() {
       <main className="flex-1 pt-24 sm:pt-28 pb-16 bg-[var(--bg)]">
         <div className="container">
           <div className="max-w-4xl mb-8 sm:mb-12 border-b-2 border-[var(--ink)] pb-6 sm:pb-10">
-            <div className="flex items-center gap-2 text-[#222f30] text-xs sm:text-sm font-bold font-mono uppercase tracking-widest mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 text-[#222f30] text-xs sm:text-sm font-bold font-mono mb-4 sm:mb-6">
               <span className="bg-[#bef264] text-[#222f30] px-3 py-1 rounded-full font-bold shadow-xs">
-                RESEARCH_OBJECTS
+                كائنات البحث
               </span>
-              <span className="text-[#55696a]">/ OPEN_DISCOVERY_REGISTRY</span>
+              <span className="text-[#3f5456]">/ سجل الاكتشاف المفتوح</span>
             </div>
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#222f30] mb-4 sm:mb-6 leading-tight tracking-tight font-kufi">
               سجلات الاكتشاف وكائنات البحث.
@@ -33,8 +33,7 @@ export default async function ResearchIndexPage() {
           </div>
         </div>
         
-        {/* Mistral-style Ticker Tape — decorative, LTR: the words are Latin and the
-            track must scroll leftward from its start edge for a seamless loop. */}
+        {/* Decorative ticker. LTR keeps the loop moving in one direction. */}
         <div
           dir="ltr"
           aria-hidden="true"
@@ -43,17 +42,17 @@ export default async function ResearchIndexPage() {
           <div className="flex w-fit animate-[marquee_20s_linear_infinite]">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="flex items-center">
-                <span className="mx-8">RESEARCH OBJECTS</span>
+                <span className="mx-8">كائنات البحث</span>
                 <span className="text-[#bef264]">✦</span>
-                <span className="mx-8">REPLICATIONS</span>
+                <span className="mx-8">إعادات التجربة</span>
                 <span className="text-[#bef264]">✦</span>
-                <span className="mx-8">PEER CHALLENGES</span>
+                <span className="mx-8">تحديات الأقران</span>
                 <span className="text-[#bef264]">✦</span>
-                <span className="mx-8">PROOF OF WORK</span>
+                <span className="mx-8">Proof of Work</span>
                 <span className="text-[#bef264]">✦</span>
-                <span className="mx-8">SYSTEMS & KERNELS</span>
+                <span className="mx-8">النظم والأنوية</span>
                 <span className="text-[#bef264]">✦</span>
-                <span className="mx-8">REASONING BENCHMARKS</span>
+                <span className="mx-8">اختبارات الاستدلال</span>
                 <span className="text-[#bef264]">✦</span>
               </div>
             ))}

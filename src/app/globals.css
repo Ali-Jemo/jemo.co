@@ -1750,3 +1750,14 @@ a:active, button:active, [role="button"]:active {
   content-visibility: auto;
   contain-intrinsic-size: auto 600px;
 }
+
+/* Third hero line, after the shared rise. Text stays visible; reduced motion
+   already disables .hero-rise. */
+.hero-rise-late { animation-delay: 0.24s; }
+
+/* Brand outline disappears on the pine surfaces (hero, mobile tab bar). */
+.j-on-dark :focus-visible,
+.j-tabbar :focus-visible {
+  outline: 2px solid #bef264;
+  outline-offset: 3px;
+}

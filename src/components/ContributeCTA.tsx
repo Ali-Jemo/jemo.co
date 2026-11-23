@@ -22,7 +22,6 @@ export default function ContributeCTA() {
               <EditorialEyebrow
                 num="09"
                 kickerAr="مختبر الشخص الواحد"
-                kickerEn="THE HYPER-INDIVIDUAL ERA"
                 tone="dark"
               />
 
@@ -47,17 +46,17 @@ export default function ContributeCTA() {
             <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3.5 lg:items-end justify-start w-full lg:w-auto">
               <BioButton
                 href="/publish"
-                label="PUBLISH PROOF"
-                secondaryLabel="وثّق بحثك الآن (Proof of Work)"
+                label="وثّق بحثك"
+                secondaryLabel="Proof of Work"
                 variant="primary"
-                dir="ltr"
+                dir="rtl"
               />
               <BioButton
                 href="/research"
-                label="EXPLORE LOGS"
-                secondaryLabel="سجلات الاكتشافات المحققة"
+                label="تصفح السجلات"
+                secondaryLabel="اكتشافات محققة"
                 variant="dark-glass"
-                dir="ltr"
+                dir="rtl"
               />
             </div>
 

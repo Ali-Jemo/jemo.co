@@ -6,29 +6,29 @@ import RevealGroup, { cohereDelay } from "@/components/RevealGroup";
 const PILLARS = [
   {
     dot: "bg-[#a7e26e]",
-    kicker: "01. كسر احتكار البحث",
-    title: "Democratization of Research",
+    mark: "أ",
+    title: "كسر احتكار البحث",
     body: "شخص يقضي ساعات مع نموذج ذكي في تفكيك خوارزمية قد يصل لنتيجة مفيدة — مثال توضيحي، ليس ادعاء قياس. منصتنا تمنحه التوثيق والمراجعة.",
   },
   {
     dot: "bg-[#bef264]",
-    kicker: "02. معيار التحقق البشري",
-    title: "Proof of Work vs AI Slop",
+    mark: "ب",
+    title: "معيار التحقق البشري",
     body: "لا مكان للهلوسة أو المحتوى منخفض الجهد؛ نفرض قالباً صارماً يوثق: ما المشكلة؟ ما الفرضيات؟ وكيف تحققت بشرياً عبر الاختبارات القياسية (Benchmarks) والشفرات؟",
   },
   {
     dot: "bg-[#cef79e]",
-    kicker: "03. الفهرسة والسبق الفكري",
-    title: "The Value Exchange",
+    mark: "ج",
+    title: "الفهرسة والسبق الفكري",
     body: "أرشيف تقني نخبوي قابل للبحث والفهرسة المتخصصة، رابط مرجعي يحفظ السبق الفكري باسمك، وإمكانية إرفاق كود تفاعلي وجلسات قابلة للتكرار تُثبت نتائجك للمجتمع.",
   },
 ];
 
 const STEPS = [
-  { kicker: "01. المشكلة والفرضية", title: "The Problem", body: "المعضلة الهندسية أو السؤال الذي دفعك للتحقيق." },
-  { kicker: "02. الأدوات ومسار الـ AI", title: "Tools & Journey", body: "النماذج المستخدمة، التوجيه، والتجارب الأولية." },
-  { kicker: "03. التحقق البشري", title: "Proof of Work", body: "فحص الأكواد، الاختبارات (Benchmarks)، وتصحيح الهلوسة." },
-  { kicker: "04. الأثر والسبق", title: "Indexable Impact", body: "مرجع تقني قابل للتكرار ومحفوظ باسم الباحث." },
+  { mark: "١", title: "المشكلة والفرضية", body: "المعضلة الهندسية أو السؤال الذي دفعك للتحقيق." },
+  { mark: "٢", title: "الأدوات ومسار الذكاء الاصطناعي", body: "النماذج المستخدمة، التوجيه، والتجارب الأولية." },
+  { mark: "٣", title: "التحقق البشري", body: "فحص الأكواد، الاختبارات (Benchmarks)، وتصحيح الهلوسة." },
+  { mark: "٤", title: "الأثر والسبق", body: "مرجع تقني قابل للتكرار ومحفوظ باسم الباحث." },
 ];
 
 const CARD_LIFT =
@@ -48,8 +48,8 @@ export default function BioManifesto() {
           style={cohereDelay(0)}
         >
           <EditorialEyebrow num="01" kickerAr="البيان العلمي" />
-          <p className="text-xs font-mono tracking-wider uppercase text-[#738284]">
-            عصر التوليد الفردي الفائق · HYPER-INDIVIDUAL RESEARCH
+          <p className="text-xs font-mono tracking-wider text-[#3f5456]">
+            عصر البحث الفردي الفائق
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function BioManifesto() {
             data-cohere-item=""
             style={cohereDelay(160)}
           >
-            الجيل الجديد لم يعد ينتظر تمويلاً أو مختبراً تقليدياً لكي يبحث؛ حاسوب أو هاتف مع واجهة AI يكفي ليجعله مختبراً لشخص واحد. لكن الويب العربي مهدد بفخين: إما أن تضيع هذه الاكتشافات الفردية العميقة في أرشيف المحادثات الخاصة أو يخضع لنظرية الإنترنت الميت!، أو أن تتحول المنصات إلى مكب لغثاء الـ AI السطحي (AI Slop). <strong className="text-[#222f30] font-semibold">JEMO هي منصة التوثيق والتدقيق للاكتشافات المتقدمة في النظم والبرمجة والذكاء الاصطناعي</strong> — نلتقط نتائجك ونحميها بمعيار التحقق البشري الصارم (Proof of Work).
+            الجيل الجديد لم يعد ينتظر تمويلاً أو مختبراً تقليدياً لكي يبحث؛ حاسوب أو هاتف مع واجهة ذكاء اصطناعي يكفي ليجعله مختبراً لشخص واحد. لكن الويب العربي مهدد بفخّين: إمّا أن تضيع هذه الاكتشافات الفردية العميقة في أرشيف المحادثات الخاصة وتخضع لنظرية «الإنترنت الميت»، وإمّا أن تتحول المنصات إلى مكبّ لغثاء الذكاء الاصطناعي (AI Slop). <strong className="text-[#222f30] font-semibold">JEMO هي منصة التوثيق والتدقيق للاكتشافات المتقدمة في النظم والبرمجة والذكاء الاصطناعي</strong> — نلتقط نتائجك ونحميها بمعيار التحقق البشري الصارم (Proof of Work).
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4 pt-2">
@@ -85,8 +85,8 @@ export default function BioManifesto() {
                   className="pointer-events-none absolute inset-y-0 right-0 w-[3px] origin-top scale-y-0 bg-[#a7e26e] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-y-100 motion-reduce:transition-none"
                 />
                 <div className="inline-flex items-center gap-1.5 font-mono text-xs text-[#222f30] font-bold">
-                  <span className={`w-2 h-2 rounded-full ${pillar.dot}`} />
-                  <span>{pillar.kicker}</span>
+                  <span className={`w-2 h-2 rounded-full ${pillar.dot}`} aria-hidden />
+                  <span>محور {pillar.mark}</span>
                 </div>
                 <h3 className="text-base font-bold text-[#222f30] font-kufi">{pillar.title}</h3>
                 <p className="text-xs text-[#55696a] leading-relaxed">{pillar.body}</p>
@@ -112,7 +112,7 @@ export default function BioManifesto() {
                     style={cohereDelay(520 + i * 80)}
                     className={`p-4 rounded-2xl bg-[#f0f2f0] border border-[#e4e3e3] shadow-xs ${CARD_LIFT}`}
                   >
-                    <span className="font-mono text-xs text-[#445e5f] font-bold block mb-1">{step.kicker}</span>
+                    <span className="font-mono text-xs text-[#3f5456] font-bold block mb-1">خطوة {step.mark}</span>
                     <h3 className="text-sm font-bold text-[#222f30] mb-1">{step.title}</h3>
                     <p className="text-[11px] text-[#55696a]">{step.body}</p>
                   </article>
