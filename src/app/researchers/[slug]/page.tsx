@@ -49,11 +49,11 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
       <main className="flex-1 py-16 bg-[var(--bg)]">
         <div className="container max-w-4xl">
           <Link
-            href="/researchers"
+            href="/about"
             className="inline-flex items-center gap-2 text-xs font-mono text-[var(--ink-2)] hover:text-[var(--brand)] mb-8 transition-colors"
           >
             <ArrowRight className="w-4 h-4" />
-            <span>العودة لدليل الباحثين</span>
+            <span>عن JEMO</span>
           </Link>
 
           {/* Scholar Profile Header */}
@@ -87,10 +87,7 @@ export default async function ResearcherDetailPage({ params }: ResearcherPagePro
 
               <div className="flex flex-wrap gap-3 items-center">
                 {lab && (
-                  <Link
-                    href={`/labs/${lab.slug}`}
-                    className="inline-block"
-                  >
+                  <Link href="/projects" className="inline-block">
                     <Badge variant="info">{lab.name}</Badge>
                   </Link>
                 )}

@@ -17,7 +17,6 @@ import {
   Flame,
   Sparkles,
   ShieldCheck,
-  CheckCircle2,
   HelpCircle,
   Repeat,
   AlertCircle,
@@ -114,7 +113,7 @@ const STATUS_META: Record<
     accent: "border-r-purple-500",
   },
   "Under Review": {
-    label: "قيد المراجعة",
+    label: "أولية",
     dot: "bg-amber-500",
     glow: "shadow-[0_0_8px_rgba(245,158,11,0.5)]",
     pill: "bg-amber-50 text-amber-800 border-amber-200/80",
@@ -176,11 +175,11 @@ function authorNames(paper: Paper): string {
 
 /** Arabic counted-noun forms: 0, 1, 2, 3–10, 11+. */
 function objectsLabel(n: number): string {
-  if (n === 0) return "لا توجد كائنات بحثية";
-  if (n === 1) return "كائن بحثي واحد";
-  if (n === 2) return "كائنان بحثيان";
-  if (n <= 10) return `${n} كائنات بحثية`;
-  return `${n} كائناً بحثياً`;
+  if (n === 0) return "لا توجد سجلات";
+  if (n === 1) return "سجل واحد";
+  if (n === 2) return "سجلان";
+  if (n <= 10) return `${n} سجلات`;
+  return `${n} سجلاً`;
 }
 
 function readInitialParams(): {
@@ -811,41 +810,32 @@ export default function ResearchSearchFilter({ papers, questions }: ResearchSear
 
         {/* Open Problems Teaser Card */}
         <div className="p-4 rounded-3xl bg-white border border-[#e4e3e3] space-y-3 shadow-xs hover:border-[#a7e26e] transition-all group">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-[#445e5f]">
-            <HelpCircle className="w-3.5 h-3.5 text-[#a7e26e]" />
-            <span>OPEN PROBLEMS</span>
-          </div>
           <h4 className="text-sm font-bold text-[#222f30] font-kufi group-hover:text-black">
-            معضلات علمية بلا إجابة حاسمة
+            أسئلة مفتوحة
           </h4>
           <p className="text-xs text-[#55696a] leading-relaxed font-sans">
             استكشف المسائل المفتوحة التي يعمل عليها المجتمع وساهم ببحثك وتجربتك في فحصها.
           </p>
-          <button
-            type="button"
-            onClick={() => setLens("open-problems")}
+          <Link
+            href="/research?tab=questions"
             className="inline-flex items-center gap-1.5 text-xs font-bold font-sans text-[#222f30] group-hover:text-[#445e5f] transition-colors"
           >
-            <span>استعراض المسائل المفتوحة ←</span>
-          </button>
+            <span>أسئلة مفتوحة ←</span>
+          </Link>
         </div>
 
         {/* Quick CTA to Publish */}
         <div className="p-4 rounded-3xl bg-[#222f30] text-white space-y-3 shadow-md relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-24 h-24 bg-[#bef264]/10 rounded-full blur-2xl pointer-events-none" />
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-[#bef264]">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>RESEARCH OBJECT</span>
-          </div>
-          <h4 className="text-sm font-bold font-kufi">أجريت بحثاً وتريد تحويله لأثر دائم؟</h4>
+          <h4 className="text-sm font-bold font-kufi">عندك نتيجة لها دليل؟</h4>
           <p className="text-xs text-white/80 leading-relaxed font-sans">
-            لا تنشر منشوراً عابراً؛ وثّق السؤال، الأدوات، النتائج، والتحقق البشري ليكون مرجعاً تقنياً.
+            حوّلها إلى سجل. السؤال، وما فعله النموذج، وما فحصته أنت.
           </p>
           <Link
             href="/publish"
             className="block w-full py-2.5 text-center rounded-xl bg-[#bef264] text-[#222f30] text-xs font-bold hover:bg-[#a7e26e] transition-all shadow-xs hover:scale-[1.02] active:scale-[0.98]"
           >
-            وثّق كائن بحثك الآن ←
+            انشر سجلاً
           </Link>
         </div>
       </aside>
@@ -1067,9 +1057,6 @@ export default function ResearchSearchFilter({ papers, questions }: ResearchSear
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-2 border-b border-[#e4e3e3]/60">
               <p aria-live="polite" className="text-xs font-bold text-[#222f30] font-sans flex items-center gap-1.5">
                 <span>{objectsLabel(filteredPapers.length)}</span>
-                <span className="text-[#738284] font-mono text-[11px] font-normal">
-                  / {papers.length} TOTAL
-                </span>
               </p>
 
               <div className="flex items-center gap-2 text-xs font-sans">
@@ -1149,7 +1136,6 @@ export default function ResearchSearchFilter({ papers, questions }: ResearchSear
                           >
                             <TypeIcon className="w-3 h-3 shrink-0" />
                             <span>{tMeta.labelAr}</span>
-                            <span className="font-mono text-[9px] opacity-75">/ {tMeta.label}</span>
                           </span>
 
                           {/* Evidence Status Pill */}

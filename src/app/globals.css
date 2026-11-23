@@ -1750,3 +1750,35 @@ a:active, button:active, [role="button"]:active {
   content-visibility: auto;
   contain-intrinsic-size: auto 600px;
 }
+
+/* Hero headline stays readable with scripting off. The rise runs in CSS, so it
+   does not wait for hydration, and reduced-motion keeps the final state. */
+.hero-line {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-line-in {
+    from { opacity: 0; transform: translateY(0.45em); }
+    to { opacity: 1; transform: none; }
+  }
+  .hero-line {
+    animation: hero-line-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .hero-line-2 { animation-delay: 0.12s; }
+  .hero-line-3 { animation-delay: 0.24s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-line {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Brand outline disappears on the pine surfaces (hero, mobile tab bar). */
+.j-on-dark :focus-visible,
+.j-tabbar :focus-visible {
+  outline: 2px solid #bef264;
+  outline-offset: 3px;
+}

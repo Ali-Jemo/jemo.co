@@ -51,16 +51,15 @@ export default function ResearchNewsletter() {
         <EditorialEyebrow
           num="10"
           kickerAr="النشرة العلمية والتبليغات"
-          kickerEn="SCIENTIFIC DISPATCH"
           className="justify-center"
         />
 
-        <h3 className="text-xl sm:text-3xl lg:text-4xl font-bold text-[#222f30] tracking-tight font-kufi">
+        <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold text-[#222f30] tracking-tight font-kufi">
           اشترك في جديد جميع العلوم،{" "}
           <span className="text-[#738284] font-normal">
             أوراقٌ محققة تصل بريدك أولاً بأول.
           </span>
-        </h3>
+        </h2>
         <p className="text-xs sm:text-base text-[#445e5f] leading-relaxed">
           احصل على الدروس والكتب والأوراق العلمية في الشرعية والذكاء الاصطناعي والطب والطبيعة والإنسانية فور صدورها. بدون إعلانات وبخصوصية مطلقة.
         </p>

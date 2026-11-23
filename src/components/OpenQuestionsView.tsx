@@ -12,7 +12,6 @@ import {
   Search, 
   Send, 
   Filter,
-  Scale
 } from "lucide-react";
 
 /**
@@ -20,7 +19,13 @@ import {
  * (see `app/questions/page.tsx`) already merged with whatever the dashboard has
  * published, so this component stays free of any data access.
  */
-export default function OpenQuestionsView({ initialQuestions }: { initialQuestions: OpenQuestion[] }) {
+export default function OpenQuestionsView({
+  initialQuestions,
+  embedded = false,
+}: {
+  initialQuestions: OpenQuestion[];
+  embedded?: boolean;
+}) {
   const [questions, setQuestions] = useState<OpenQuestion[]>(initialQuestions);
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,26 +75,24 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
     }, 1500);
   };
 
+  const Shell = embedded ? "div" : "main";
+
   return (
     <>
-      <Header />
-      <main className="flex-1 bg-[#f7f7f5] pt-20 sm:pt-28 pb-16 sm:pb-20 text-[#222f30]" dir="rtl">
+      {embedded ? null : <Header />}
+      <Shell className={embedded ? "text-[#222f30]" : "flex-1 bg-[#f7f7f5] pt-20 sm:pt-28 pb-16 sm:pb-20 text-[#222f30]"} dir="rtl">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-10 lg:px-16">
           
           {/* Top Hero Banner */}
+          {embedded ? null : (
           <div className="max-w-4xl mb-8 sm:mb-12">
-            <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-[#e4e3e3] bg-white font-mono text-[11px] sm:text-xs uppercase tracking-widest text-[#445e5f] mb-3 sm:mb-4 shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-              <span>الأسئلة المفتوحة · OPEN RESEARCH PROBLEMS</span>
-            </div>
-
-            <h1 className="text-2xl sm:text-5xl lg:text-6xl font-black text-[#222f30] mb-4 sm:mb-6 tracking-tight leading-tight font-kufi">
-              معضلات علمية بانتظار من يستكشفها.
+            <h1 className="text-2xl sm:text-4xl font-black text-[#222f30] mb-4 tracking-tight leading-tight font-kufi">
+              أسئلة لم تُحسم بعد
             </h1>
 
-            <p className="text-sm sm:text-xl text-[#445e5f] leading-relaxed max-w-3xl">
-              في JEMO، لا نكتفي بنشر النتائج الجاهزة، بل نطرح <strong className="text-[#222f30]">الأسئلة المفتوحة (Open Problems)</strong> ككيان مستقل: معضلات لم تُحسم بعد، ليعمل عليها الباحثون والمطورون معاً عبر تجارب متتالية، تكرارات، وتحديات نقدية.
-            </p>
+              <p className="text-sm sm:text-xl text-[#243233] leading-relaxed max-w-3xl">
+                أسئلة في النظم والبرمجة وتقييم النماذج لم يُحسم جوابها بعد. إذا فحصت واحدة منها، انشر سجلاً.
+              </p>
 
             <div className="flex flex-wrap items-center gap-4 pt-4">
               <button
@@ -103,10 +106,11 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
                 href="/publish"
                 className="px-5 py-2.5 rounded-full border border-[#e4e3e3] bg-white text-xs font-bold text-[#445e5f] hover:text-[#222f30] transition-all"
               >
-                وثّق بحثك في سؤال موجود
+                انشر سجلاً
               </Link>
             </div>
           </div>
+          )}
 
           {/* Suggest Question Modal / Slide */}
           {showSuggestForm && (
@@ -250,33 +254,9 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
                     {q.description}
                   </p>
 
-                  {/* Metrics Badges */}
-                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 py-3 border-y border-[#e4e3e3] text-center">
-                    <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-sm sm:text-base font-extrabold text-[#222f30] font-mono">{q.researchCount}</div>
-                      <div className="text-[10px] text-[#738284] font-sans">أبحاث موثقة</div>
-                    </div>
-                    <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-sm sm:text-base font-extrabold text-[#222f30] font-mono">{q.experimentsCount}</div>
-                      <div className="text-[10px] text-[#738284] font-sans">تجارب واختبارات</div>
-                    </div>
-                    <div className="p-2 rounded-xl bg-[#f7f7f5]">
-                      <div className="text-sm sm:text-base font-extrabold text-emerald-700 font-mono">{q.replicationsCount}</div>
-                      <div className="text-[10px] text-[#738284] font-sans">تكرارات ناجحة</div>
-                    </div>
-                  </div>
-
-                  {/* Current Scientific Consensus */}
-                  <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-xs text-emerald-950 space-y-1">
-                    <span className="font-bold font-sans text-emerald-800 flex items-center gap-1.5">
-                      <Scale className="w-3.5 h-3.5 text-emerald-700" />
-                      <span>الإجماع العلمي الحالي</span>
-                      <span className="font-mono text-[10px] text-emerald-700/80">(Consensus)</span>
-                      <span>:</span>
-                    </span>
-                    <p className="leading-relaxed text-xs text-emerald-900 font-sans">
-                      {q.consensus}
-                    </p>
+                  <div className="p-3.5 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3] text-xs text-[#243233] space-y-1">
+                    <p className="font-bold">ما نعرفه حتى الآن</p>
+                    <p className="leading-relaxed">{q.consensus}</p>
                   </div>
                 </div>
 
@@ -294,7 +274,7 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
                     href={`/publish?question=${encodeURIComponent(q.title)}`}
                     className="inline-flex items-center gap-1.5 text-xs font-bold font-sans text-[#222f30] hover:text-[#1c6442] group-hover:-translate-x-1 transition-all"
                   >
-                    <span>ساهم ببحثك في هذا السؤال</span>
+                    <span>انشر سجلاً عن هذا السؤال</span>
                     <ArrowUpLeft className="w-4 h-4 text-[#a7e26e]" />
                   </Link>
                 </div>
@@ -311,8 +291,8 @@ export default function OpenQuestionsView({ initialQuestions }: { initialQuestio
           )}
 
         </div>
-      </main>
-      <Footer />
+      </Shell>
+      {embedded ? null : <Footer />}
     </>
   );
 }

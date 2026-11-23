@@ -74,6 +74,8 @@ export interface Paper {
     confidence: Record<string, number> | { rigor: number; contribution: number } | null;
     evaluatedAt: string;
   };
+  /** false = a real public record. Omitted records in this file stay samples. */
+  unverifiedSample?: boolean;
 };
 
 export type ResearchObject = Paper;
@@ -237,7 +239,7 @@ export const ABOUT_INFO = {
     { title: "هندسة النظم أولاً (Low-level First)", desc: "الانطلاق من العتاد، النوى، وإدارة الذاكرة الآمنة لبناء أنظمة راسخة ومستقلة." },
     { title: "التحقق البشري الصارم (Proof of Work)", desc: "تمييز واضح بين مخرجات النماذج التوليدية وبين الفحص والتصحيح البشري العملي على أرض الواقع." },
     { title: "السيادة والمعرفة المفتوحة", desc: "إتاحة الشيفرات والمصادر مجاناً للعموم لبناء مجتمع تقني عربي يصنع العلم ولا يستهلكه فقط." },
-    { title: "الريادة المجتمعية والتطوعية", desc: "قيادة فرق شبابية ومبادرات مثل فريق Axiq وحركة ++IRAQ لنشر المهارات التقنية المتقدمة." }
+    { title: "مساهمة مفتوحة", desc: "السجل يبدأ بشخص واحد، ويبقى مفتوحاً لمن يراجع السجلات أو يضيف سجلاً له دليل." }
   ],
   researchPhilosophy: "منهجية البناء والبحث: فهم العتاد والنواة ← استكشاف النماذج والأدوات ← الفحص والتصحيح البشري ← قياس الأداء وتوثيق البرهان ← النشر المفتوح للمجتمع."
 };
@@ -251,10 +253,10 @@ export const OPEN_QUESTIONS: OpenQuestion[] = [
     field: "معالجة اللغة الطبيعية",
     status: "غير محسوم بعد",
     description: "استقصاء مفتوح لفحص سبب تدهور الاستدلال عند الانتقال من الفصحى إلى اللهجات المنطوقة، وهل الحل في تكبير النموذج أم في هندسة التوجيه وتدريب محولات LoRA المتخصصة.",
-    researchCount: 12,
-    experimentsCount: 7,
-    replicationsCount: 4,
-    consensus: "تظهر التجارب الأولية أن التكميم العنيف يفقد النماذج الفروق الدقيقة، بينما محولات LoRA المدربة على حوارات محلية تحقق دقة أعلى بنسبة 38%.",
+    researchCount: 0,
+    experimentsCount: 0,
+    replicationsCount: 0,
+    consensus: "السؤال مفتوح. لا رقم منشوراً هنا يقارن حجم النموذج بتدريب محلي.",
     tags: ["Arabic NLP", "Dialects", "LoRA", "Evaluation Benchmark"]
   },
   {
@@ -265,10 +267,10 @@ export const OPEN_QUESTIONS: OpenQuestion[] = [
     field: "الرؤية الحاسوبية والتراث",
     status: "قيد التجارب والتكرار",
     description: "فحص قدرة نماذج الرؤية على قراءة الكلمات المطموسة ومقارنتها بالقواميس التاريخية، وتحديد نسبة اختلاق التواريخ والأعلام عند غياب الأدلة.",
-    researchCount: 8,
-    experimentsCount: 5,
-    replicationsCount: 3,
-    consensus: "النماذج تنجح في استعادة السياق النحوي لكنها تميل لاختلاق تواريخ دقيقة بنسبة 35% مما يجعل التحقق البشري الصارم شرطاً إلزامياً.",
+    researchCount: 0,
+    experimentsCount: 0,
+    replicationsCount: 0,
+    consensus: "السؤال ما زال قيد الفحص. لا نسبة منشورة هنا لاختلاق التواريخ.",
     tags: ["OCR", "Heritage", "Multimodal", "Hallucination Auditing"]
   },
   {
@@ -279,10 +281,10 @@ export const OPEN_QUESTIONS: OpenQuestion[] = [
     field: "هندسة النظم والبرمجيات",
     status: "محلول جزئياً",
     description: "بناء وتوثيق منهجية معيارية لتغذية تفريغ الذاكرة (Heap Snapshots) لنماذج التفكير (DeepSeek-R1 / Claude 3.7) لاكتشاف المراجع المعلقة آلياً.",
-    researchCount: 14,
-    experimentsCount: 9,
-    replicationsCount: 6,
-    consensus: "تقسيم التحليل إلى 3 خطوات (تحديد العقد الأثقل ← فحص مسارات الإغلاق ← كتابة اختبار فحص الإجهاد) يخفض زمن حل المشكلة بنسبة 70%.",
+    researchCount: 0,
+    experimentsCount: 0,
+    replicationsCount: 0,
+    consensus: "تقسيم التحليل إلى خطوات قصيرة مفيد كفرضية عمل، بلا نسبة زمنية منشورة.",
     tags: ["Debugging", "Memory Safety", "Node.js", "Prompt Chains"]
   },
   {
@@ -293,9 +295,9 @@ export const OPEN_QUESTIONS: OpenQuestion[] = [
     field: "أنظمة التشغيل والنوى",
     status: "مفتوح للنقاش والبحث",
     description: "دراسة مقارنة لأدوات الإثبات الشكلي في Rust (مثل Kani وCreusot) لضمان استحالة حدوث اختراق للذاكرة في بروتوكولات IPC السريعة.",
-    researchCount: 6,
-    experimentsCount: 3,
-    replicationsCount: 2,
+    researchCount: 0,
+    experimentsCount: 0,
+    replicationsCount: 0,
     consensus: "التحقق ممكن على مستوى المجدول وحلقات المعالجة، لكنه يفرض قيوداً على استخدام التراكيب الديناميكية.",
     tags: ["Microkernel", "Formal Verification", "Rust", "Safety"]
   }
@@ -313,14 +315,14 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     year: "2025",
     title: "تأسيس فريق Axiq التطوعي",
     subtitle: "نشر ثقافة الذكاء الاصطناعي",
-    description: "تأسيس وقيادة فريق تطوعي شبابي في العراق لتعلم ونشر تقنيات الذكاء الاصطناعي عملياً وبناء مشاريع تقنية سيادية مثل العملة الأكاديمية ASHURIX (ARI) لمنصة LabPoint.",
+    description: "تأسيس فريق تطوعي شبابي في العراق لتعلّم الذكاء الاصطناعي وتطبيقه.",
     highlight: true,
   },
   {
     year: "2026",
     title: "إطلاق نواة ZiqaKernel ونظام Axiq-IQ",
     subtitle: "أنظمة تشغيل ونوى سيادية",
-    description: "تطوير نواة دقيقة تجريبية بلغة Rust/Zig مع واجهة YOU OS GUI، وتصميم معمارية نظام التشغيل الثلاثي الطبقات Axiq-IQ، وإطلاق حركة ++IRAQ للسيادة الوطنية التقنية.",
+    description: "تطوير نواة تجريبية بلغة Rust و Zig مع واجهة YOU OS، وتصميم نظام تشغيل بثلاث طبقات باسم Axiq-IQ.",
     highlight: true,
   },
   {
@@ -403,13 +405,13 @@ export const RESEARCHERS: Researcher[] = [
     slug: "ali-jemo",
     name: FOUNDER_NAME,
     role: "مهندس أنظمة ومطور أنظمة تشغيل · مؤسس المنصة والباحث الرئيسي",
-    bio: "مهندس أنظمة عراقي ومطور نواة ZiqaKernel ونظام Axiq-IQ. يركز على الأنظمة منخفضة المستوى (Rust، C، Linux Kernel)، معمارية أنظمة التشغيل، ومبادرات الذكاء الاصطناعي والسيادة التقنية في العراق.",
+    bio: "مهندس أنظمة من العراق. يوثّق عمله على ZiqaKernel وAxiq-IQ في سجل مفتوح، ويركّز على النظم والبرمجة وتقييم النماذج.",
     avatar: "/team/ali.webp",
     labSlug: "ai-lab",
     github: "https://github.com/Ali-Jemo",
     website: "https://ali.lxds.org/",
     telegram: "https://t.me/alijemo",
-    email: "ali@jemo.co",
+    email: "ali@jemo.dev",
     papersCount: 12,
     projectsCount: 8,
   },
@@ -418,6 +420,7 @@ export const RESEARCHERS: Researcher[] = [
 export const RESEARCH_PAPERS: Paper[] = [
   {
     id: "ai-assisted-rafidain-calendar",
+    unverifiedSample: false,
     slug: "ai-assisted-rafidain-calendar",
     title: "كيف ساعد الذكاء الاصطناعي في بناء التقويم الرافديني؟",
     titleEn: "How AI Helped Build the Rafidain Calendar",
@@ -475,6 +478,7 @@ export const RESEARCH_PAPERS: Paper[] = [
   },
   {
     id: "ai-assisted-arabic-texts-analysis",
+    unverifiedSample: false,
     slug: "ai-assisted-arabic-texts-analysis",
     title: "استقصاء ومقارنة 6 نماذج ذكاء اصطناعي في تحليل واستعادة نصوص عربية تراثية",
     titleEn: "Comparative Investigation of 6 LLMs in Arabic Classical Text Retrieval & Analysis",
@@ -484,9 +488,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     ],
     publishDate: "2026-08-15",
     jemoId: "jemo:2026.08.019",
-    pdfUrl: "#",
-    datasetUrl: "https://github.com/jemo-labs/open-research-logs",
-    codeUrl: "https://github.com/jemo-labs/open-research-logs",
+    pdfUrl: "",
     field: "سجلات الاكتشاف بالذكاء الاصطناعي",
     labSlug: "ai-lab",
     keywords: ["Research Story", "AI-Assisted", "Classical Arabic", "Human Verification", "Discovery Log"],
@@ -501,7 +503,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     },
     featured: true,
     researchType: "Experiment",
-    evidenceStatus: "Evidence-backed",
+    evidenceStatus: "Under Review",
     lineage: {
       replicationsCount: 0,
       challengesCount: 0,
@@ -510,29 +512,30 @@ export const RESEARCH_PAPERS: Paper[] = [
     },
     question: "هل تستطيع النماذج اللغوية الحديثة استعادة كلمات مطموسة في نصوص عربية تعود للقرن الرابع الهجري دون اختلاق مصادر وهمية؟",
     toolsUsed: ["Claude 3.5 Sonnet", "ChatGPT-4o", "DeepSeek-R1", "المكتبة الشاملة", "Google Books"],
-    promptWorkflow: "تغذية 20 فقرة بها طمس جزئي مع توجيه صارم: 'استنتج الكلمة المفقودة مع ذكر 3 احتمالات واستشهد بمصادر من نفس العصر'. ثم فحص استجابات كل نموذج وتتبع التكرار.",
+    promptWorkflow: "تغذية 20 فقرة بها طمس جزئي مع طلب أن يذكر النموذج 3 احتمالات ويستشهد بمصادر من نفس العصر. ثم فحص استجابات كل نموذج وتتبع التكرار.",
     methodology: "مقارنة مخرجات النماذج الستة عبر جدول مقارنة شمل: الدقة اللغوية، نسبة اختلاق أسماء الكتب، ودقة الوزن العروضي في الشواهد الشعرية.",
     findings: "تفوق Claude 3.5 في السياق النحوي بنسبة 84%، بينما تميز DeepSeek-R1 في التعليل والاستدلال الداخلي. لكن جميع النماذج اختلقت مصادر وهمية بنسبة 28% عند محاصرتها بطلب شواهد إضافية.",
     humanVerification: {
       accuracyCheck: "تمت مراجعة الشواهد المكتشفة يدوياً بمطابقتها مع المخطوطات المحققة في دار الكتب والمكتبة الظاهرية.",
       hallucinationCorrected: "صحح الباحث 6 إحالات لكتب غير موجودة نسبتها النماذج لأبي علي القالي وابن جني.",
-      confidence: "مرتفعة - تم التكرار بنجاح"
+      confidence: "استكشافية / أولية"
     },
     researchTrail: [
       { step: "اليوم الأول", note: "اختيار 20 مقطعاً موثقاً وتفريغ الكلمات المطموسة عمداً لاختبار النماذج." },
       { step: "اليوم الثاني", note: "تشغيل سلاسل التوجيه المقارنة على 6 نماذج وتدوين الإجابات الصافية." },
       { step: "اليوم الثالث", note: "الفحص البشري في المراجع الأصلية وعزل الهلوسات وتوثيق النتائج في JEMO." }
     ],
-    limitations: "العينة اقتصرت على نصوص أدبية ولغوية، ولا تشمل النصوص الطبية أو الفلكية التي قد تختلف دقة النماذج فيها.",
+    limitations: "العينة اقتصرت على نصوص أدبية ولغوية. الأرقام في هذا السجل ملاحظات من جلسة واحدة، وليست معياراً منشوراً، ولا يوجد مستودع عام يعيد التجربة.",
     metrics: {
-      reproducedCount: 14,
-      evidenceBackedCount: 31,
-      disputedCount: 2,
-      insightfulCount: 48
+      reproducedCount: 0,
+      evidenceBackedCount: 0,
+      disputedCount: 0,
+      insightfulCount: 0
     },
   },
   {
     id: "ai-debug-memory-leak-investigation",
+    unverifiedSample: false,
     slug: "ai-debug-memory-leak-investigation",
     title: "حل معضلة تسريب الذاكرة في خدمات Node.js عالية الحمل عبر سلاسل التوجيه التكرارية",
     titleEn: "Resolving High-Load Node.js Memory Leak Through Iterative AI Prompt Chains",
@@ -542,8 +545,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     ],
     publishDate: "2026-07-28",
     jemoId: "jemo:2026.07.031",
-    pdfUrl: "#",
-    codeUrl: "https://github.com/jemo-labs/open-research-logs",
+    pdfUrl: "",
     field: "حلول برمجية بالذكاء الاصطناعي",
     labSlug: "os-lab",
     keywords: ["Bug Solved via AI", "Node.js", "Memory Leak", "AI Debugging", "Prompt Chains"],
@@ -558,7 +560,7 @@ export const RESEARCH_PAPERS: Paper[] = [
     },
     featured: true,
     researchType: "Quick Investigation",
-    evidenceStatus: "Evidence-backed",
+    evidenceStatus: "Under Review",
     lineage: {
       replicationsCount: 0,
       challengesCount: 0,
@@ -566,31 +568,33 @@ export const RESEARCH_PAPERS: Paper[] = [
     },
     question: "كيف يمكن لسلاسل التوجيه التكرارية عزل تسريب ذاكرة غير مرئي في مصفوفات الإغلاق داخل خدمات Node.js؟",
     toolsUsed: ["DeepSeek-R1", "Claude 3.7 Sonnet", "Chrome DevTools", "Clinic.js"],
-    findings: "عزل العلة بعد 4 جولات من تفكيك الـ Heap Snapshot وتصحيح مرجع معلق في EventEmitter.",
+    methodology: "تغذية تفريغ الذاكرة للنموذج على دفعات، ثم مراجعة الاقتراحات مقابل الكود، ثم إعادة التشغيل بعد تصحيح المرجع المعلق.",
+    findings: "عزل مرجع معلق في EventEmitter بعد جولات على تفريغ الذاكرة. لا نرفق رقم حمل أو استهلاك ذاكرة لأن طريقة القياس غير منشورة.",
     humanVerification: {
-      accuracyCheck: "تم اختبار الحل تحت ضغط 50,000 req/sec وثبات استهلاك الذاكرة عند 140MB.",
-      confidence: "مرتفعة - تم التكرار بنجاح"
+      accuracyCheck: "الفحص تم على جهاز الكاتب. لا يوجد مستودع عام يعيد التجربة.",
+      confidence: "استكشافية / أولية"
     },
+    limitations: "سجل أولي من جلسة تصحيح واحدة. أي رقم أداء سابق على هذا السجل أُزيل لأنه بلا طريقة قياس يمكن لغير الكاتب إعادتها.",
     metrics: {
-      reproducedCount: 8,
-      evidenceBackedCount: 24,
-      disputedCount: 1,
-      insightfulCount: 39
+      reproducedCount: 0,
+      evidenceBackedCount: 0,
+      disputedCount: 0,
+      insightfulCount: 0
     },
   },
   {
     id: "ziqa-kernel-paper",
+    unverifiedSample: false,
     slug: "ziqa-kernel-architecture",
-    title: "نواة Ziqa: مختبر تجريبي لنواة دقيقة آمنة الذاكرة بلغة Rust للأجهزة المدمجة",
-    titleEn: "Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures in Rust",
-    abstract: "نستعرض في هذه الورقة والمستودع المفتوح معمارية تجريبية (Experimental Sandbox) لنواة دقيقة مكتوبة بلغة Rust لاستكشاف عزل الأخطاء وإدارة الذاكرة الآمنة بدون كود غير آمن. المشروع تجربة استكشافية مفتوحة لدراسة جدوى البنى المصغرة وتطوير أنظمة تشغيل تعلمية خفيفة.",
+    title: "نواة Ziqa: مختبر تجريبي لنواة دقيقة بلغة Rust",
+    titleEn: "Ziqa Kernel: An Experimental Sandbox for a Rust Microkernel",
+    abstract: "وصف قصير لمستودع ZiqaKernel: تجربة مفتوحة لنواة دقيقة بلغة Rust، بلا رقم أداء منشور في هذا السجل.",
     authors: [
       { name: FOUNDER_NAME, slug: "ali-jemo", role: "المؤسس والباحث الرئيسي" }
     ],
     publishDate: "2026-05-14",
     jemoId: "jemo:2026.05.001",
-    pdfUrl: "#",
-    datasetUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
+    pdfUrl: "",
     codeUrl: "https://github.com/Ali-Jemo/ziqa-kernal",
     field: "تجارب الفريق الاستكشافية",
     labSlug: "os-lab",
@@ -606,25 +610,27 @@ export const RESEARCH_PAPERS: Paper[] = [
       apa: "Jemo, A. (2026). Ziqa Kernel: An Experimental Sandbox for Safe Microkernel Architectures in Rust. JEMO Technical Reports."
     },
     featured: true,
-    researchType: "Full Research",
-    evidenceStatus: "Evidence-backed",
+    researchType: "Research Note",
+    evidenceStatus: "Under Review",
     lineage: {
       replicationsCount: 0,
       challengesCount: 0,
       extensionsCount: 0
     },
-    question: "هل يمكن بناء نواة دقيقة بلغة Rust تحقق عزلاً تاماً لمساحات العناوين بزمن تبديل سياق أقل من 0.15 ميكروثانية؟",
-    toolsUsed: ["Rust Compiler (rustc)", "QEMU", "Claude 3.7", "GDB"],
-    findings: "تحقيق زمن تبديل سياق 0.12 ميكروثانية مع انعدام كامل لكتل Unsafe في طبقة إدارة الذاكرة.",
+    question: "ماذا يثبّت مستودع ZiqaKernel اليوم، وأين تتوقف التجربة؟",
+    toolsUsed: ["Rust", "Zig", "QEMU", "GitHub"],
+    methodology: "ربطنا السجل بالمستودع العام وقرأنا وصف البناء: Rust وZig، وواجهة YOU OS، وتجربة داخل QEMU. لم نُعد تشغيل قياس مستقل لزمن الإقلاع أو تبديل السياق من أجل هذا السجل.",
+    findings: "المستودع تجربة مفتوحة لاستكشاف عزل الأخطاء وإدارة الذاكرة. هذا السجل لا يعلن زمن وصول إلى الصدفة، ولا يدّعي إثباتاً رسمياً لخلو المجدول من الجمود.",
     humanVerification: {
-      accuracyCheck: "اجتياز 140 اختباراً آلياً على عتاد x86_64 وARM64 حقيقي.",
-      confidence: "مرتفعة - تم التكرار بنجاح"
+      accuracyCheck: "التحقق هنا هو مطابقة الكلام مع المستودع العام على GitHub، لا مع رقم أداء.",
+      confidence: "استكشافية / أولية"
     },
+    limitations: "مختبر تجريبي. لم تُعَد التجربة من طرف آخر عبر JEMO، ولم تُراجع أكاديمياً. أي فقرة كانت تُعاد هنا بنص الملخص نفسه حُذفت.",
     metrics: {
-      reproducedCount: 19,
-      evidenceBackedCount: 65,
-      disputedCount: 3,
-      insightfulCount: 112
+      reproducedCount: 0,
+      evidenceBackedCount: 0,
+      disputedCount: 0,
+      insightfulCount: 0
     },
   },
   {
@@ -976,7 +982,7 @@ export const RESEARCH_PROJECTS: Project[] = [
     slug: "ziqa-kernel",
     title: "ZiqaKernel / YOU OS GUI",
     titleEn: "Bare-metal Rust/Zig Kernel + Desktop Compositor",
-    description: "نواة بحثية تجريبية تجمع أمان الذاكرة في Rust مع مسارات Zig السريعة، وتصل إلى الصدفة التفاعلية داخل QEMU عادةً خلال 40–60ms مع واجهة مكتبية تفاعلية.",
+    description: "نواة تجريبية تجمع Rust و Zig مع واجهة YOU OS. المستودع عام، وهذا الوصف لا يعلن رقم زمن للوصول إلى الصدفة.",
     fullDescription: "نواة مستقلة بذاتها ومفتوحة المصدر (Freestanding Rust/Zig OS kernel) مزودة بوضع واجهة مكتبية (GUI Compositor)، مراقب نظام (System Monitor)، نموذج تطبيق مستخدم (Tetris Demo)، ونظام ملفات FAT32 وجدولة MLFQ ودعم محاكاة QEMU.",
     status: "Active",
     team: [
@@ -993,7 +999,7 @@ export const RESEARCH_PROJECTS: Project[] = [
     slug: "axiq-os",
     title: "Axiq-IQ: Three-Floor OS",
     titleEn: "Three-Floor Sovereign Operating System",
-    description: "مخطط نظام تشغيل سيادي بثلاث طبقات: عتاد النواة، خدمات النظام، وواجهات التطبيقات والمستخدم.",
+    description: "تصميم نظام تشغيل بثلاث طبقات: النواة، خدمات النظام، والتطبيقات.",
     fullDescription: "معمارية نظام تشغيل متقدمة بثلاث طبقات: طبقة العتاد (SMP، Paging، وCOW fork)، طبقة خدمات النظام (VFS، FAT32، وcapability revocation)، وطبقة التطبيقات (GUI، ABI، WebAssembly، وeBPF)، مبنية بالاعتماد على Gentoo وLinux وRust وWayland.",
     status: "Active",
     team: [
@@ -1010,7 +1016,7 @@ export const RESEARCH_PROJECTS: Project[] = [
     slug: "axiq-team",
     title: "فريق Axiq للذكاء الاصطناعي التطوعي",
     titleEn: "Axiq AI Voluntary Team",
-    description: "تأسيس وقيادة فريق تطوعي شبابي في العراق لتعلم وتطبيق ونشر تقنيات الذكاء الاصطناعي عملياً وبناء المبادرات التقنية.",
+    description: "فريق شبابي تطوعي لتعلّم الذكاء الاصطناعي وتطبيقه.",
     fullDescription: "مبادرة تطوعية رائدة يقودها المهندس علي حسين هادي لتدريب الكفاءات الشابة في العراق، نشر المعرفة العملية بأدوات الذكاء الاصطناعي ووكلاء البرمجة (Agentic Coding)، وبناء مجتمع تقني عراقي متماسك.",
     status: "Active",
     team: [
@@ -1021,40 +1027,6 @@ export const RESEARCH_PROJECTS: Project[] = [
     githubUrl: "https://github.com/Ali-Jemo",
     image: "/covenant-bg.png",
     featured: true
-  },
-  {
-    id: "iraq-plus-plus-project",
-    slug: "iraq-plus-plus",
-    title: "حركة ++IRAQ (السيادة الرقمية)",
-    titleEn: "IRAQ++ National Tech Movement",
-    description: "رؤية شبابية وطنية تعامل الدولة كنظام تقني متكامل وتدفع نحو الكفاءة والسيادة التكنولوجية الكاملة.",
-    fullDescription: "أيديولوجية وطنية ورؤية استراتيجية تؤمن بأن 'السيادة هي امتلاك صلاحيات الأدمن على مستقبلنا'، مع التركيز على بناء البنية التحتية الرقمية السيادية في العراق، ودعم الإنتاج المحلي للتقنية بدلاً من استهلاكها فقط.",
-    status: "Active",
-    team: [
-      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "مؤسس الرؤية" }
-    ],
-    techStack: ["National Sovereignty", "Systems Strategy", "Open Infrastructure"],
-    labSlug: "ai-lab",
-    githubUrl: "https://github.com/Ali-Jemo",
-    demoUrl: "https://iraqpss.lxds.org/",
-    image: "/road-bg.png",
-    featured: true
-  },
-  {
-    id: "labpoint-ashurix-project",
-    slug: "labpoint-ashurix",
-    title: "ASHURIX (ARI) — العملة الرقمية الجامعية",
-    titleEn: "ASHURIX University Digital Currency",
-    description: "نظام عملة رقمية داخلية لمنصة LabPoint الأكاديمية مبني حول اقتصاد المهارات والخدمات الجامعية.",
-    fullDescription: "مشروع متكامل لتصميم عملة رقمية داخلية مبنية على التشفير وأنظمة التبادل، تتيح للطلاب والباحثين تبادل الخدمات الأكاديمية والمهارات البرمجية بنزاهة وشفافية.",
-    status: "Active",
-    team: [
-      { name: "علي حسين هادي (Jemo)", slug: "ali-jemo", role: "المطور الرئيسي" }
-    ],
-    techStack: ["Cryptography", "System Design", "JavaScript", "Tokenomics"],
-    labSlug: "os-lab",
-    githubUrl: "https://github.com/Ali-Jemo/labpoint-ashurix",
-    image: "/diwan-bg-astrolabe.png"
   },
   {
     id: "interact-control-ai-project",
@@ -1129,28 +1101,6 @@ export const INITIATIVES: Initiative[] = [
     ],
     link: "https://github.com/Ali-Jemo",
     tags: ["Axiq", "AI", "Volunteer", "Community", "Iraq"],
-  },
-  {
-    id: "iraq-plus-plus",
-    image: "/road-bg.png",
-    slug: "iraq-plus-plus",
-    title: "حركة ++IRAQ (السيادة الرقمية)",
-    description: "رؤية شبابية وطنية تعامل الدولة كنظام تقني متكامل وتدفع نحو الكفاءة والسيادة التكنولوجية.",
-    fullDescription: "حركة وطنية تقنية تؤمن بأن 'السيادة هي امتلاك صلاحيات الأدمن على مستقبلنا'. تركز على مواءمة البنى التحتية، الأنوية، والبرمجيات لتكون مستقلة ومملوكة وطنياً بعيداً عن التبعية التقنية.",
-    vision: "سيادة تقنية وطنية كاملة عبر إنتاج النظم والبرمجيات محلياً بسواعد عراقية.",
-    progress: 70,
-    status: "Active",
-    lead: "علي حسين هادي (Jemo)",
-    leadSlug: "ali-jemo",
-    team: ["علي حسين هادي (Jemo)", "شباب حركة ++IRAQ"],
-    deliverables: ["الوثيقة الفكرية للسيادة التقنية", "منصة ++IRAQ الرقمية", "أدلة البنية التحتية المفتوحة"],
-    milestones: [
-      { title: "إطلاق الموقع الرسمي والمبادرة", date: "2026", done: true },
-      { title: "نشر الرؤية الهندسية للدولة", date: "2026", done: true },
-      { title: "ملتقيات السيادة التقنية", date: "2026", done: false },
-    ],
-    link: "https://iraqpss.lxds.org/",
-    tags: ["Sovereignty", "National", "Iraq++", "Strategy"],
   },
   {
     id: "open-iraq-ai",
@@ -1487,28 +1437,28 @@ export const EVENTS: EventItem[] = [
 export const FAQ_ITEMS: FAQItem[] = [
   {
     category: "النشر العلمي",
-    question: "كيف يتم تقييم ونشر الأبحاث في JEMO LABS؟",
-    answer: "تخضع كافة الأوراق لتدقيق داخلي محكم من لجنة الأبحاث قبل إرسالها للمؤتمرات الدولية المرموقة، وتُنشر النسخ المسبقة (Preprints) فوراً في مستودعنا المفتوح."
+    question: "كيف أنشر سجلاً؟",
+    answer: "من صفحة «انشر سجلاً». السجل ليس ورقة محكّمة: اكتب السؤال، وما اقترحه النموذج، وما فحصته أنت."
   },
   {
     category: "النشر العلمي",
-    question: "هل تتوفر البيانات والشيفرات المصدرية للأبحاث؟",
-    answer: "نعم، النشر في JEMO LABS يشترط إتاحة الكود المصدري ومجموعات البيانات تحت رخص مفتوحة مثل MIT أو Apache-2.0."
+    question: "هل يجب أن أرفق كوداً؟",
+    answer: "إن وُجد كود أو اختبار أو مصدر، ضع رابطه. نتيجة بلا شيء يمكن فحصه لا تُقبل."
   },
   {
     category: "الانضمام",
-    question: "كيف يمكنني الانضمام كباحث أو متطوع؟",
-    answer: "يمكنك التقدم عبر صفحة 'الانضمام إلينا' باختيار مسارك المناسب (باحث، مطور، مصمم، مترجم، موجه). نقيم الطلبات بناءً على الشغف والأثر والمؤهلات."
+    question: "كيف أساهم إذا لم أكن صاحب سجل؟",
+    answer: "السجل مفتوح. لا توجد طلبات انضمام ولا قائمة قبول. تستطيع نشر سجل، أو مراسلتنا إذا أردت مراجعة سجل قائم."
   },
   {
     category: "التمويل والمنح",
-    question: "من أين تأتي تمويلات JEMO LABS؟",
-    answer: "نعتمد على التمويل الذاتي، التبرعات المستقلة غير المشروطة، والمنح الأكاديمية غير الربحية التي لا تؤثر على حرية ونشر الأبحاث."
+    question: "هل تعرضون ميزانية أو شركاء؟",
+    answer: "لا. للتعاون مع جامعة أو مركز بحثي راسل contact@jemo.dev، ويُذكر أي اتفاق فقط بعد توقيعه."
   },
   {
     category: "الملكية الفكرية",
-    question: "ما هي سياسة الملكية الفكرية في المختبرات؟",
-    answer: "كافة الابتكارات والشيفرات والأوراق المنتجة هي ملكية عامة للمجتمع العلمي، مرخصة برخص مفتوحة تضمن حق الجميع في الاستخدام والتطوير."
+    question: "لمن السجل بعد نشره؟",
+    answer: "يبقى باسمك. إن أضفت كوداً في مستودع، الرخصة هي التي تختارها أنت في ذلك المستودع."
   }
 ];
 export interface Benchmark {
