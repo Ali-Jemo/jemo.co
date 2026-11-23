@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, Plus, HelpCircle, Search, ArrowUp } from "lucide-react";
+import { Home, Compass, Plus, BookOpen, Search } from "lucide-react";
 
 const TAB_COUNT = 5;
 
@@ -28,12 +28,8 @@ export default function MobileBottomNav() {
   }, []);
 
   const scrollToTop = () => {
-    const main = document.querySelector("main");
-    if (main && typeof main.scrollIntoView === "function") {
-      main.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
   };
 
   const triggerSearch = () => {
@@ -48,7 +44,6 @@ export default function MobileBottomNav() {
   const onTabKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     const current = itemRefs.current.findIndex((el) => el === document.activeElement);
     if (current < 0) return;
-    // DOM order is the RTL reading order: ArrowLeft moves forward.
     if (event.key === "ArrowLeft") {
       event.preventDefault();
       focusTab(current + 1);
@@ -64,10 +59,9 @@ export default function MobileBottomNav() {
     }
   };
 
-  const isPublishActive = pathname === "/publish";
-  const tabClass = (active: boolean) =>
-    `flex flex-col items-center justify-center h-full rounded-lg transition-all active:scale-90 focus-visible:outline-none ${
-      active ? "text-[#bef264]" : "text-white/85 hover:text-white"
+  const itemClass = (active: boolean) =>
+    `flex min-h-11 flex-col items-center justify-center rounded-lg focus-visible:outline-none ${
+      active ? "text-[#d6f5a2]" : "text-white/85"
     }`;
 
   return (
@@ -75,90 +69,80 @@ export default function MobileBottomNav() {
       <button
         type="button"
         onClick={scrollToTop}
-        aria-label="العودة إلى القسم الرئيسي في الأعلى"
+        aria-label="العودة إلى أعلى الصفحة"
         aria-hidden={!showScrollTop}
         tabIndex={showScrollTop ? 0 : -1}
         inert={!showScrollTop}
-        className={`j-on-dark md:hidden fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px)+12px)] left-4 z-40 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0c1415]/95 border border-[#bef264]/30 hover:border-[#bef264] text-[#bef264] shadow-xl shadow-black/50 backdrop-blur-xl active:scale-90 transition-all duration-300 cursor-pointer ${
-          showScrollTop
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 translate-y-4 pointer-events-none"
+        className={`fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px)+12px)] left-4 z-40 min-h-11 rounded-full bg-[#0c1415] px-3 text-xs font-bold text-[#d6f5a2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#bef264] md:hidden ${
+          showScrollTop ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       >
-        <ArrowUp aria-hidden className="w-4 h-4 stroke-[2.5]" />
-        <span className="text-[11px] font-mono font-bold tracking-tight">القسم الرئيسي</span>
+        أعلى
       </button>
-
       <nav
         aria-label="التنقل السريع على الهاتف"
-        className="j-tabbar md:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0c1415]/95 backdrop-blur-md border-t border-white/10 text-white shadow-2xl pb-[env(safe-area-inset-bottom,0px)]"
+        className="j-tabbar fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-[#0c1415] pb-[env(safe-area-inset-bottom,0px)] text-white md:hidden"
         dir="rtl"
       >
-        <div className="grid grid-cols-5 h-14 items-center px-1" onKeyDown={onTabKeyDown}>
+        <div className="grid h-14 grid-cols-5 items-center px-1" onKeyDown={onTabKeyDown}>
           <Link
-            ref={(node) => { itemRefs.current[0] = node; }}
-            href="/"
-            onClick={(e) => {
-              if (pathname === "/") {
-                e.preventDefault();
-                scrollToTop();
-              }
+            ref={(node) => {
+              itemRefs.current[0] = node;
             }}
+            href="/"
             aria-current={pathname === "/" ? "page" : undefined}
-            className={tabClass(pathname === "/")}
+            className={itemClass(pathname === "/")}
           >
-            <Home aria-hidden className="w-5 h-5 mb-0.5" />
-            <span className="text-[9px] font-mono tracking-tight font-medium">الرئيسية</span>
+            <Home aria-hidden className="mb-0.5 h-5 w-5" />
+            <span className="text-[10px] font-bold">الرئيسية</span>
           </Link>
-
           <Link
-            ref={(node) => { itemRefs.current[1] = node; }}
+            ref={(node) => {
+              itemRefs.current[1] = node;
+            }}
             href="/research"
             aria-current={pathname.startsWith("/research") ? "page" : undefined}
-            className={tabClass(pathname.startsWith("/research"))}
+            className={itemClass(pathname.startsWith("/research"))}
           >
-            <Compass aria-hidden className="w-5 h-5 mb-0.5" />
-            <span className="text-[9px] font-mono tracking-tight font-medium">السجلات</span>
+            <Compass aria-hidden className="mb-0.5 h-5 w-5" />
+            <span className="text-[10px] font-bold">السجلات</span>
           </Link>
-
           <Link
-            ref={(node) => { itemRefs.current[2] = node; }}
+            ref={(node) => {
+              itemRefs.current[2] = node;
+            }}
             href="/publish"
-            className="flex flex-col items-center justify-center -mt-4 rounded-full active:scale-90 transition-transform focus-visible:outline-none"
-            aria-label="انشر بحثك"
-            aria-current={isPublishActive ? "page" : undefined}
+            aria-current={pathname === "/publish" ? "page" : undefined}
+            aria-label="انشر سجلاً"
+            className="flex flex-col items-center justify-center rounded-full focus-visible:outline-none"
           >
-            <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg border-2 border-[#0c1415] ${
-                isPublishActive
-                  ? "bg-[#bef264] text-[#162224] shadow-[#bef264]/40"
-                  : "bg-gradient-to-tr from-[#bef264] to-[#a3e635] text-[#162224] shadow-black/40"
-              }`}
-            >
-              <Plus aria-hidden className="w-5 h-5 stroke-[2.5]" />
-            </div>
-            <span className="text-[8px] font-mono font-bold text-[#bef264] mt-0.5">انشر</span>
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#d6f5a2] text-[#162224]">
+              <Plus aria-hidden className="h-5 w-5" />
+            </span>
+            <span className="text-[10px] font-bold text-[#d6f5a2]">انشر</span>
           </Link>
-
           <Link
-            ref={(node) => { itemRefs.current[3] = node; }}
-            href="/questions"
-            aria-current={pathname.startsWith("/questions") ? "page" : undefined}
-            className={tabClass(pathname.startsWith("/questions"))}
+            ref={(node) => {
+              itemRefs.current[3] = node;
+            }}
+            href="/explain"
+            aria-current={pathname.startsWith("/explain") ? "page" : undefined}
+            className={itemClass(pathname.startsWith("/explain"))}
           >
-            <HelpCircle aria-hidden className="w-5 h-5 mb-0.5" />
-            <span className="text-[9px] font-mono tracking-tight font-medium">المعضلات</span>
+            <BookOpen aria-hidden className="mb-0.5 h-5 w-5" />
+            <span className="text-[10px] font-bold">كيف يعمل</span>
           </Link>
-
           <button
-            ref={(node) => { itemRefs.current[4] = node; }}
+            ref={(node) => {
+              itemRefs.current[4] = node;
+            }}
             type="button"
             onClick={triggerSearch}
-            className={`${tabClass(false)} cursor-pointer`}
-            aria-label="البحث"
+            className={`${itemClass(false)} cursor-pointer`}
+            aria-label="بحث"
           >
-            <Search aria-hidden className="w-5 h-5 mb-0.5" />
-            <span className="text-[9px] font-mono tracking-tight font-medium">بحث</span>
+            <Search aria-hidden className="mb-0.5 h-5 w-5" />
+            <span className="text-[10px] font-bold">بحث</span>
           </button>
         </div>
       </nav>

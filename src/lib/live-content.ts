@@ -1,5 +1,6 @@
 import { liveDocument, liveItems } from "@/lib/content/server";
 import { filterNews, filterPapers } from "@/lib/samples";
+import { RETIRED_PROJECT_SLUGS, RETIRED_RECORD_SLUGS } from "@/lib/record-status";
 import { cache } from "react";
 import type {
   ABOUT_INFO,
@@ -68,11 +69,12 @@ export function normalizePaper(paper: Paper): Paper {
 
 export const getLiveResearchPapers = cache(async (): Promise<Paper[]> => {
   const papers = await liveItems<Paper>("published_papers");
-  return filterPapers(papers.map(normalizePaper));
+  return filterPapers(papers.map(normalizePaper)).filter((paper) => !RETIRED_RECORD_SLUGS.has(paper.slug));
 });
 
-export function getLiveProjects(): Promise<Project[]> {
-  return liveItems<Project>("research_projects");
+export async function getLiveProjects(): Promise<Project[]> {
+  const projects = await liveItems<Project>("research_projects");
+  return projects.filter((project) => !RETIRED_PROJECT_SLUGS.has(project.slug) && !RETIRED_PROJECT_SLUGS.has(project.id));
 }
 
 export async function getLiveNews(): Promise<NewsItem[]> {

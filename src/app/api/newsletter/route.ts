@@ -22,7 +22,7 @@ async function sendWelcomeEmail(to: string, topics: string[], format: "html" | "
     .send({
       from: process.env.EMAIL_FROM || "JEMO LABS <newsletter@jemo-labs.com>",
       to,
-      subject: "✨ مرحباً بك في نشرة JEMO DISPATCH العلمية",
+      subject: "اشتراكك في سجلات JEMO",
       html: `<!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head><meta charset="utf-8"></head>
@@ -35,8 +35,7 @@ async function sendWelcomeEmail(to: string, topics: string[], format: "html" | "
     <div style="padding: 32px 28px; font-size: 14px; line-height: 1.8; color: #d0d7d8;">
       <p style="margin-top: 0;">أهلاً بك،</p>
       <p>
-        تم تأكيد اشتراك بريدك الإلكتروني (<strong style="color: #ffffff;">${safeEmail}</strong>) في نشرة 
-        <strong style="color: #a7e26e;">JEMO DISPATCH</strong> الدورية.
+        تم تسجيل بريدك (<strong style="color: #ffffff;">${safeEmail}</strong>) لتصلك السجلات الجديدة. بلا إعلانات.
       </p>
       <div style="background: #0c1213; border: 1px solid #222f30; border-radius: 12px; padding: 16px 20px; margin: 20px 0;">
         <p style="margin: 0 0 8px; font-size: 12px; color: #8fa6a7; font-weight: bold;">تفضيلات المحتوى المسجلة:</p>
@@ -48,11 +47,11 @@ async function sendWelcomeEmail(to: string, topics: string[], format: "html" | "
         </p>
       </div>
       <p>
-        تصدر نشرتنا نصف شهرياً متضمنة إيداعات الأبحاث مسبقة النشر، أكواد النوى والنظم السيادية، وتحليلات معماريات الذكاء الاصطناعي، بدون أي إعلانات أو تتبع.
+        تصلك السجلات الجديدة عند صدورها.
       </p>
       <div style="text-align: center; margin: 28px 0 12px;">
-        <a href="${SITE_URL}/newsletter" style="display: inline-block; background: #a7e26e; color: #08090d; font-weight: bold; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-size: 13px;">
-          تصفح أرشيف الأعداد والأكواد
+        <a href="${SITE_URL}/research" style="display: inline-block; background: #a7e26e; color: #08090d; font-weight: bold; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-size: 13px;">
+          تصفح السجلات
         </a>
       </div>
     </div>

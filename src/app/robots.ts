@@ -27,7 +27,7 @@ export default function robots(): MetadataRoute.Robots {
           "Amazonbot",
           "Applebot-Extended",
         ],
-        allow: ["/research/", "/labs/", "/news/", "/projects/"],
+        allow: ["/research/", "/projects/", "/explain", "/about"],
         disallow: ["/"],
       },
       {
