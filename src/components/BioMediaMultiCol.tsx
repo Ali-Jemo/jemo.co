@@ -32,7 +32,7 @@ export default function BioMediaMultiCol() {
             className="lg:col-span-7 relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#e4e3e3] shadow-md min-h-[320px] sm:min-h-[400px] lg:min-h-[440px] bg-[#0c1415] group"
           >
             <Image
-              src="/departments-bg.png"
+              src="/departments-bg.webp"
               alt="JEMO LABS — منصة توثيق وتدقيق أبحاث النظم والذكاء الاصطناعي"
               fill
               sizes="(max-width: 1024px) 100vw, 58vw"

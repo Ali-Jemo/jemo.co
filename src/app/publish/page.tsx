@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/lib/auth-context";
+import { demoLoginEnabled } from "@/lib/site";
 import type { Paper } from "@/lib/data/research-data";
 import {
   Sparkles,
@@ -357,6 +358,7 @@ export default function PublishResearchPage() {
                   <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                   <span>أنت تنشر حالياً كضيف (Guest) — لربط هذا البحث بملفك وسجلك البحثي:</span>
                 </span>
+                {demoLoginEnabled() ? (
                 <button
                   type="button"
                   onClick={() => loginAsDemo("karkhi")}
@@ -365,6 +367,7 @@ export default function PublishResearchPage() {
                   <Zap className="w-3.5 h-3.5 text-emerald-700" />
                   <span>دخول تجريبي فوري (علي حسين هادي)</span>
                 </button>
+                ) : null}
               </div>
               <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-200/60 text-[11px]">
                 <Link

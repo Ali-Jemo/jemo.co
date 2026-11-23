@@ -5,8 +5,11 @@ import LenisProvider from "@/lib/lenis-provider";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ScrollProgress from "@/components/ScrollProgress";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import CanonicalLink from "@/components/CanonicalLink";
 import { AuthProvider } from "@/lib/auth-context";
 import { clerkGlobalAppearance } from "@/lib/clerk-appearance";
+import { clerkPublishableKey, isClerkConfigured } from "@/lib/clerk-config";
+import { SITE_URL, absoluteUrl } from "@/lib/site";
 
 import { Noto_Kufi_Arabic, IBM_Plex_Mono } from "next/font/google";
 
@@ -33,34 +36,36 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://jemo.co"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
     template: "%s | JEMO",
   },
   description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات التي يجريها الناس بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه معرفتك بعد انتهاء المحادثة.",
   keywords: ["JEMO", "سجل الاكتشافات", "أبحاث الذكاء الاصطناعي", "بحث المواطن", "Citizen Research", "توثيق الأبحاث", "المعرفة المفتوحة", "العراق", "بغداد"],
-  authors: [{ name: "JEMO LABS Research Team", url: "https://jemo.co" }],
+  authors: [{ name: "JEMO LABS Research Team", url: SITE_URL }],
   publisher: "JEMO LABS",
   icons: {
-    icon: "/jemo-logo.svg",
-    shortcut: "/jemo-logo.svg",
-    apple: "/jemo-logo.svg",
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
     description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه المعرفة.",
-    url: "https://jemo.co",
     siteName: "JEMO LABS",
     locale: "ar_IQ",
     type: "website",
-    images: [{ url: "/jemo-logo.svg", width: 800, height: 600, alt: "JEMO LABS" }],
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "JEMO Labs" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
     description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه المعرفة.",
-    images: ["/jemo-logo.svg"],
+    images: ["/twitter-image.png"],
   },
 };
 
@@ -69,20 +74,20 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "ResearchOrganization",
-      "@id": "https://jemo.co/#organization",
+      "@id": absoluteUrl("/#organization"),
       "name": "JEMO LABS",
       "alternateName": ["بيت الحكمة الرقمي", "جيمو لابس"],
-      "url": "https://jemo.co",
-      "logo": "https://jemo.co/jemo-logo.svg",
+      "url": SITE_URL,
+      "logo": absoluteUrl("/jemo-logo.svg"),
       "description": "مؤسسة بحثية مستقلة غير ربحية لجميع العلوم: العلوم الشرعية والإسلامية، الذكاء الاصطناعي، العلوم الطبيعية والطبية والهندسية والإنسانية — معرفة مفتوحة من العراق إلى العالم."
     },
     {
       "@type": "WebSite",
-      "@id": "https://jemo.co/#website",
-      "url": "https://jemo.co",
+      "@id": absoluteUrl("/#website"),
+      "url": SITE_URL,
       "name": "jemo labs",
       "inLanguage": "ar",
-      "publisher": { "@id": "https://jemo.co/#organization" }
+      "publisher": { "@id": absoluteUrl("/#organization") }
     }
   ]
 };
@@ -95,40 +100,55 @@ export default function RootLayout({
   // overflow-x clamped by globals `html, body { overflow-x: clip }` — the old
   // `overflow-x-hidden` utility made <body> a scroll container and killed every
   // position:sticky (filter toolbar, research sidebar) site-wide.
+  const clerkKey = clerkPublishableKey();
+  const clerkOn = isClerkConfigured();
+  const tree = (
+    <>
+      <CanonicalLink />
+      <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden" style={{ contain: "strict", transform: "translateZ(0)" }}>
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
+      </div>
+      <ScrollProgress />
+      <AnalyticsTracker />
+      <LenisProvider>
+        <AuthProvider>
+          <div className="flex-1 flex flex-col pb-16 md:pb-0">
+            {children}
+          </div>
+        </AuthProvider>
+      </LenisProvider>
+      <MobileBottomNav />
+    </>
+  );
+
   return (
     <html lang="ar" dir="rtl" className={`${noto.variable} ${mono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://img.clerk.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://img.clerk.com" />
-        <link rel="preconnect" href="https://clerk.com" />
+        {clerkOn ? (
+          <>
+            <link rel="preconnect" href="https://img.clerk.com" crossOrigin="anonymous" />
+            <link rel="dns-prefetch" href="https://img.clerk.com" />
+          </>
+        ) : null}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)] max-w-full" suppressHydrationWarning>
-        <ClerkProvider
-          publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-          appearance={clerkGlobalAppearance}
-          afterSignOutUrl="/"
-          signInUrl="/sign-in"
-          signUpUrl="/sign-up"
-        >
-          {/* Background Assets */}
-          <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden" style={{ contain: 'strict', transform: 'translateZ(0)' }}>
-          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(var(--ink) 1px, transparent 1px), linear-gradient(90deg, var(--ink) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-          </div>
-          <ScrollProgress />
-          <AnalyticsTracker />
-          <LenisProvider>
-          <AuthProvider>
-          <div className="flex-1 flex flex-col pb-16 md:pb-0">
-          {children}
-          </div>
-          </AuthProvider>
-          </LenisProvider>
-          <MobileBottomNav />
-        </ClerkProvider>
+        {clerkOn ? (
+          <ClerkProvider
+            publishableKey={clerkKey}
+            appearance={clerkGlobalAppearance}
+            afterSignOutUrl="/"
+            signInUrl="/sign-in"
+            signUpUrl="/sign-up"
+          >
+            {tree}
+          </ClerkProvider>
+        ) : (
+          tree
+        )}
       </body>
     </html>
   );

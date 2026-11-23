@@ -20,7 +20,11 @@
 	"vars": {
 		"NEXT_PUBLIC_SUPABASE_URL": "https://okekfsfyydajyfarnzra.supabase.co",
 		"SUPABASE_URL": "https://okekfsfyydajyfarnzra.supabase.co",
-		// Set Clerk keys securely via: wrangler secret put NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+		// NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is inlined at build time. Put it in
+		// these vars (or CI env) before `opennextjs-cloudflare build`. A Worker
+		// secret alone leaves the client bundle with an empty key.
+		// CLERK_SECRET_KEY is a runtime secret: wrangler secret put CLERK_SECRET_KEY
+		// CLERK_FRONTEND_API (https host) lets CSP allow the production Clerk domain.
 		"NEXT_PUBLIC_CLERK_SIGN_IN_URL": "/sign-in",
 		"NEXT_PUBLIC_CLERK_SIGN_UP_URL": "/sign-up",
 		"NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL": "/",

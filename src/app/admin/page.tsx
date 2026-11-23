@@ -22,12 +22,27 @@ import {
 import { RESEARCH_PROJECTS, RESEARCH_PAPERS, OPEN_QUESTIONS } from "@/lib/data/research-data";
 import { isAdminUser } from "@/lib/security";
 import { supabaseAdmin } from "@/lib/supabase";
+import { isClerkServerConfigured } from "@/lib/clerk-config";
+import AuthUnavailable from "@/components/AuthUnavailable";
 export const metadata: Metadata = {
   title: "لوحة الإدارة السيادية | JEMO LABS",
   description: "بوابة إدارة المنظومة وأبحاث الذكاء الاصطناعي السيادية.",
 };
 
 export default async function AdminPage() {
+  if (!isClerkServerConfigured()) {
+    return (
+      <>
+        <Header />
+        <AuthUnavailable
+          title="الإدارة غير مفعّلة"
+          body="مصادقة Clerk غير مضبوطة على هذا النشر، لذلك لا يمكن فتح لوحة الإدارة. اضبط المفتاح العام أثناء البناء والمفتاح السري كسر Worker، ثم أعد النشر."
+        />
+        <Footer />
+      </>
+    );
+  }
+
   const user = await currentUser();
 
   if (!user) {
@@ -208,7 +223,7 @@ export default async function AdminPage() {
                 </div>
 
                 <p className="text-xs text-[#55696a] leading-relaxed">
-                  لوحة التحكم المركزية الرئيسية: إدارة طلبات مهرجان التخرج، تسجيل الحضور بالباركود، إدارة وتعديل محتوى موقع jemo.co، تحرير مستودع الأبحاث والمشاريع، والمزامنة السحابية الفورية.
+                  لوحة التحكم المركزية: طلبات مهرجان التخرج، الحضور بالباركود، محتوى lab.jemo.dev، ومستودع الأبحاث.
                 </p>
 
                 <div className="pt-2 flex items-center justify-between">

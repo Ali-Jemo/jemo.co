@@ -229,7 +229,7 @@ const PROJECT_FIELDS: readonly FieldSpec[] = [
   { key: "githubUrl", label: "GitHub", type: "url" },
   { key: "demoUrl", label: "العرض الحي", type: "url" },
   { key: "videoUrl", label: "الفيديو", type: "url" },
-  { key: "image", label: "الصورة", type: "text", hint: "/departments-bg.png" },
+  { key: "image", label: "الصورة", type: "text", hint: "/departments-bg.webp" },
   { key: "featured", label: "مميّز", type: "boolean" },
 ];
 
@@ -272,7 +272,7 @@ const RESEARCHER_FIELDS: readonly FieldSpec[] = [
   { key: "name", label: "الاسم", type: "text", required: true },
   { key: "role", label: "المسمى الوظيفي", type: "text", required: true },
   { key: "bio", label: "السيرة", type: "textarea" },
-  { key: "avatar", label: "الصورة", type: "text", hint: "/team/ali.jpg" },
+  { key: "avatar", label: "الصورة", type: "text", hint: "/team/ali.webp" },
   { key: "labSlug", label: "المختبر", type: "ref", ref: "research_labs", refValue: "slug", refLabel: "name" },
   { key: "orcid", label: "ORCID", type: "text" },
   { key: "github", label: "GitHub", type: "url" },

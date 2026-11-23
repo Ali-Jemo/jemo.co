@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterClient from "./NewsletterClient";
+import { SITE_URL } from "@/lib/site";
 // ponytail: DEV.to-styled newsletter page shell
 
 // ponytail: Server Component shell + rich NewsletterClient with live topic filtering & dispatch archive
@@ -26,22 +27,20 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-dynamic";
-
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Periodical",
-      "@id": "https://jemo.co/newsletter",
-      "url": "https://jemo.co/newsletter",
+      "@id": `${SITE_URL}/newsletter`,
+      "url": `${SITE_URL}/newsletter`,
       "name": "JEMO LABS Newsletter & Research Dispatch • نشرة الشركة",
       "description": DESCRIPTION,
       "inLanguage": "ar",
       "publisher": {
         "@type": "Organization",
         "name": "JEMO LABS",
-        "url": "https://jemo.co",
+        "url": SITE_URL,
       },
     },
   ],

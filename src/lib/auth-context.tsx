@@ -5,6 +5,8 @@ import { getSupabaseBrowserClient } from "@/lib/supabase-client";
 import type { User } from "@supabase/supabase-js";
 import type { Paper } from "@/lib/data/research-data";
 import { useUser, useClerk } from "@clerk/nextjs";
+import { isClerkConfigured } from "@/lib/clerk-config";
+import { demoLoginEnabled } from "@/lib/site";
 
 export interface ResearcherProfile {
   id: string;
@@ -144,13 +146,22 @@ function getPapersSnapshot(): Paper[] {
   return cachedParsedPapers;
 }
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const clerk = useUser();
-  const { signOut: clerkSignOut } = useClerk();
+type ClerkSnapshot = ReturnType<typeof useUser> | null;
+
+function AuthProviderInner({
+  children,
+  clerk,
+  clerkSignOut,
+}: {
+  children: ReactNode;
+  clerk: ClerkSnapshot;
+  clerkSignOut: () => Promise<void>;
+}) {
 
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<ResearcherProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [clerkTimedOut, setClerkTimedOut] = useState(false);
   const publishedPapers = useSyncExternalStore(
     subscribeToPapers,
     getPapersSnapshot,
@@ -158,15 +169,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
   // Sync session state from Clerk, demo session, or Supabase
   useEffect(() => {
+    if (!clerk || clerk.isLoaded) return;
+    const timer = window.setTimeout(() => setClerkTimedOut(true), 4000);
+    return () => window.clearTimeout(timer);
+  }, [clerk, clerk?.isLoaded]);
+
+  useEffect(() => {
     let active = true;
 
     const syncSession = async () => {
-      if (!clerk.isLoaded) {
+      if (clerk && !clerk.isLoaded && !clerkTimedOut) {
         return;
       }
 
       // 1. Clerk Authenticated User (Highest Priority)
-      if (clerk.isSignedIn && clerk.user) {
+      if (clerk?.isSignedIn && clerk.user) {
         const u = clerk.user;
         // A real Clerk session supersedes any stale demo session: drop it so
         // a later Clerk sign-out (via <UserButton/>, which bypasses logout())
@@ -262,10 +279,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // ignore
       }
 
-      // 3. Fallback: Supabase Session
+      // 3. Fallback: Supabase Session. Skip the network when the public anon
+      // key was never set, and never leave the dashboard on "loading".
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+      if (!anonKey || anonKey === "public-anon-key-placeholder") {
+        if (active) {
+          setProfile(null);
+          setUser(null);
+          setLoading(false);
+        }
+        return;
+      }
       try {
         const supabase = getSupabaseBrowserClient();
-        const { data: { session } } = await supabase.auth.getSession();
+        const sessionResult = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise<null>((resolve) => window.setTimeout(() => resolve(null), 2500)),
+        ]);
+        if (!sessionResult) {
+          if (active) setLoading(false);
+          return;
+        }
+        const { data: { session } } = sessionResult;
         if (!active) return;
         if (session?.user) {
           const meta = session.user.user_metadata || {};
@@ -302,10 +337,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     void syncSession();
 
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+    if (!anonKey || anonKey === "public-anon-key-placeholder") {
+      return () => {
+        active = false;
+      };
+    }
+
     const supabase = getSupabaseBrowserClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       try {
-        if (clerk.isSignedIn) return;
+        if (clerk?.isSignedIn) return;
         if (session?.user) {
           const meta = session.user.user_metadata || {};
           setUser(session.user);
@@ -328,7 +370,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }));
         } else {
           const storedDemo = localStorage.getItem(DEMO_STORAGE_KEY);
-          if (!storedDemo && !clerk.isSignedIn) {
+          if (!storedDemo && !clerk?.isSignedIn) {
             setUser(null);
             setProfile(null);
           }
@@ -346,7 +388,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // ignore
       }
     };
-  }, [clerk.isLoaded, clerk.isSignedIn, clerk.user]);
+  }, [clerk, clerk?.isLoaded, clerk?.isSignedIn, clerk?.user, clerkTimedOut]);
 
   const loginWithEmail = async (email: string, pass: string): Promise<AuthResult> => {
     try {
@@ -439,6 +481,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const loginAsDemo = (type: "karkhi" | "tamimi" = "karkhi") => {
+    if (!demoLoginEnabled()) return;
     const demoProf = DEMO_PROFILES[type] || DEMO_PROFILES.karkhi;
     setProfile(demoProf);
     try {
@@ -451,7 +494,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       localStorage.removeItem(DEMO_STORAGE_KEY);
-      if (clerk.isSignedIn) {
+      if (clerk?.isSignedIn) {
         await clerkSignOut();
       }
       const supabase = getSupabaseBrowserClient();
@@ -562,6 +605,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </AuthContext.Provider>
+  );
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  if (!isClerkConfigured()) {
+    return (
+      <AuthProviderInner clerk={null} clerkSignOut={async () => {}}>
+        {children}
+      </AuthProviderInner>
+    );
+  }
+  return <ClerkAuthProvider>{children}</ClerkAuthProvider>;
+}
+
+function ClerkAuthProvider({ children }: { children: ReactNode }) {
+  const clerk = useUser();
+  const { signOut } = useClerk();
+  return (
+    <AuthProviderInner clerk={clerk} clerkSignOut={() => signOut()}>
+      {children}
+    </AuthProviderInner>
   );
 }
 

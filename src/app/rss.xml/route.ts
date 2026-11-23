@@ -1,6 +1,8 @@
 import { ISSUES, escapeXml } from "@/lib/dispatch-data";
 
-const SITE = "https://jemo.co";
+import { SITE_URL } from "@/lib/site";
+
+const SITE = SITE_URL;
 const FEED_TITLE = "JEMO LABS Research Dispatch • نشرة الشركة";
 const FEED_DESC =
   "النشرة الإخبارية والعلمية لمؤسسة ومختبرات JEMO: إيداعات الأوراق المسبقة، الشفرات المصدرية، تحليلات النظم ونوى الذكاء الاصطناعي.";

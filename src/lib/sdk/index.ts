@@ -77,7 +77,7 @@ export class ResearchRegistry {
       throw new Error("ResearchRegistry requires a valid 'apiKey' (e.g. 'jemo_live_res_...').");
     }
     this.apiKey = config.apiKey.trim();
-    this.endpoint = (config.endpoint || "https://jemo.co/api").replace(/\/$/, "");
+    this.endpoint = (config.endpoint || "https://lab.jemo.dev/api").replace(/\/$/, "");
     this.timeout = config.timeout || 30_000;
   }
 

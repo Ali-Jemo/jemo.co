@@ -4,6 +4,7 @@ import { listRegistryStatus } from "@/lib/content/server";
 import { checkRateLimit, getClientIp } from "@/lib/security";
 import { authenticateAdmin, requireAdmin } from "@/lib/admin-guard";
 import { validateApiKey, publishResearchObject } from "@/lib/research/store";
+import { SITE_URL } from "@/lib/site";
 /**
  * The dashboard's bootstrap call: every editable collection with its field
  * schema, wiring state, and how many live overrides it currently has.
@@ -106,7 +107,7 @@ export async function POST(req: Request) {
           message: "Research object registered successfully",
           id: paper.id,
           slug: paper.slug,
-          url: `https://jemo.co/research/${paper.slug}`,
+          url: `${SITE_URL}/research/${paper.slug}`,
           data: paper,
         },
         { status: 201 }

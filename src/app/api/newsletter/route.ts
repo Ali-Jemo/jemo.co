@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { checkRateLimit, escapeHtml, getClientIp, sanitizeInput } from "@/lib/security";
 import { supabaseAdmin } from "@/lib/supabase";
+import { SITE_URL } from "@/lib/site";
 
 // ponytail: newsletter subscription endpoint with rate limiting, Supabase persistence, & Resend confirmation
 const resendKey = process.env.RESEND_API_KEY;
@@ -50,7 +51,7 @@ async function sendWelcomeEmail(to: string, topics: string[], format: "html" | "
         تصدر نشرتنا نصف شهرياً متضمنة إيداعات الأبحاث مسبقة النشر، أكواد النوى والنظم السيادية، وتحليلات معماريات الذكاء الاصطناعي، بدون أي إعلانات أو تتبع.
       </p>
       <div style="text-align: center; margin: 28px 0 12px;">
-        <a href="https://jemo.co/newsletter" style="display: inline-block; background: #a7e26e; color: #08090d; font-weight: bold; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-size: 13px;">
+        <a href="${SITE_URL}/newsletter" style="display: inline-block; background: #a7e26e; color: #08090d; font-weight: bold; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-size: 13px;">
           تصفح أرشيف الأعداد والأكواد
         </a>
       </div>

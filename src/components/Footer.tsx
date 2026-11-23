@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { GithubIcon, TelegramIcon, XIcon } from "@/components/Icons";
+import { SITE_URL, socialLinks, type SocialLink } from "@/lib/site";
 
 const FOOTER_COLUMNS = [
   {
@@ -36,14 +37,17 @@ const FOOTER_COLUMNS = [
   },
 ];
 
-const SOCIAL_LINKS = [
-  { href: "https://t.me/jemo_channel", label: "Telegram", Icon: TelegramIcon },
-  { href: "https://x.com/jemolabs", label: "X", Icon: XIcon },
-  { href: "https://github.com/Ali-Jemo", label: "GitHub", Icon: GithubIcon },
-];
+const ICONS: Record<string, typeof GithubIcon> = {
+  telegram: TelegramIcon,
+  github: GithubIcon,
+  x: XIcon,
+};
 
-// ponytail: staggered per-letter slide-up reveal with snappy bezier; no heavy animation library needed
-const WORDMARK_LETTERS = "jemo.co".split("");
+function iconFor(link: SocialLink) {
+  return ICONS[link.id] ?? GithubIcon;
+}
+
+const WORDMARK_LETTERS = new URL(SITE_URL).host.split("");
 
 const wordmarkContainerVariants = {
   hidden: {},
@@ -107,18 +111,21 @@ export default function Footer() {
             </p>
 
             <div className="flex items-center gap-2 pt-1">
-              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+              {socialLinks().map((link) => {
+                const Icon = iconFor(link);
+                return (
                 <a
-                  key={label}
-                  href={href}
+                  key={link.href}
+                  href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={label}
+                  aria-label={link.label}
                   className="p-2 rounded-lg text-[var(--ink-2)]/70 hover:text-[var(--ink)] hover:bg-black/[0.04] transition-colors"
                 >
                   <Icon className="w-4 h-4" />
                 </a>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -194,16 +201,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Invisible Decoy Trap: Automated scraper & malicious crawler honeypot */}
-        <a
-          href="/api/security/honeypot-trap"
-          aria-hidden="true"
-          tabIndex={-1}
-          rel="nofollow noindex"
-          className="sr-only select-none pointer-events-none opacity-0 h-0 w-0 overflow-hidden inline-block"
-        >
-          Security Telemetry Beacon
-        </a>
       </div>
     </footer>
   );

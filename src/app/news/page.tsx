@@ -3,7 +3,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Card from "@/components/ui/Card";
 import Link from "next/link";
-import { NEWS_ITEMS } from "@/lib/data/research-data";
+import { visibleNews } from "@/lib/samples";
+import { showUnverifiedSamples } from "@/lib/site";
 import { Newspaper, ArrowUpLeft, Calendar } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function NewsIndexPage() {
+  const items = visibleNews();
   return (
     <>
       <Header />
@@ -24,12 +26,21 @@ export default function NewsIndexPage() {
             </div>
             <h1 className="text-4xl font-extrabold text-[var(--ink-1)] mb-4">أخبار JEMO LABS</h1>
             <p className="text-[var(--ink-2)] leading-relaxed">
-              متابعة آخر مستجدات أبحاث المؤسسة، المؤتمرات، التعاونات، والجوائز العلمية.
+              متابعة آخر مستجدات أبحاث المؤسسة. لا توجد شراكات جامعية موقعة.
             </p>
+            {showUnverifiedSamples() ? (
+              <p className="mt-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+                هذه الأخبار عينات غير مُحققة، ومنها ما كان يصف تعاوناً لم يُوقَّع. ليست إعلانات رسمية.
+              </p>
+            ) : null}
           </div>
 
+          {items.length === 0 ? (
+            <p className="text-[var(--ink-2)]">لا أخبار محققة بعد. العينات التوضيحية مخفية في هذا النشر.</p>
+          ) : null}
+
           <div className="space-y-6">
-            {NEWS_ITEMS.map((item) => (
+            {items.map((item) => (
               <Card key={item.id} hover className="p-8">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-3 text-xs font-mono">
                   <span className="px-2.5 py-0.5 rounded bg-[var(--brand)]/10 text-[var(--brand)] font-bold">

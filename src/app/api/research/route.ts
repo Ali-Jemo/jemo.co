@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { SITE_URL } from "@/lib/site";
 import { checkRateLimit, getClientIp } from "@/lib/security";
 import { isSafeHttpUrl } from "@/lib/security-client";
 import {
@@ -115,7 +116,7 @@ export async function POST(req: Request) {
         message: "Research object successfully registered in JEMO Discovery Registry.",
         id: paper.id,
         slug: paper.slug,
-        url: `https://jemo.co/research/${paper.slug}`,
+        url: `${SITE_URL}/research/${paper.slug}`,
         data: paper,
       },
       { status: 201 }

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { RESEARCH_PAPERS } from "@/lib/data/research-data";
+import { visiblePapers } from "@/lib/samples";
+import { SITE_URL } from "@/lib/site";
 
 const STATIC_ROUTES: Array<{
   path: string;
@@ -33,7 +34,7 @@ const STATIC_ROUTES: Array<{
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://jemo.co";
+  const baseUrl = SITE_URL;
 
   const staticUrls: MetadataRoute.Sitemap = STATIC_ROUTES.map((r) => ({
     url: `${baseUrl}${r.path}`,
@@ -42,7 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: r.priority,
   }));
 
-  const paperUrls: MetadataRoute.Sitemap = RESEARCH_PAPERS.map((p) => ({
+  const paperUrls: MetadataRoute.Sitemap = visiblePapers().map((p) => ({
     url: `${baseUrl}/research/${p.slug}`,
     lastModified: new Date(p.publishDate),
     changeFrequency: "monthly",

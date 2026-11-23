@@ -220,7 +220,7 @@ function MagneticAvatar({ active = true }: { active?: boolean }) {
       />
       {/* Avatar circle */}
       <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-br from-[#131316] to-[#1e1e24] border border-[#2a2a30] flex items-center justify-center text-4xl sm:text-5xl font-bold text-white/90 font-mono shadow-2xl shadow-black/50 overflow-hidden">
-        <Image src="/team/ali.jpg" alt="علي حسين هادي (Jemo)" fill sizes="160px" className="object-cover" />
+        <Image src="/team/ali.webp" alt="علي حسين هادي (Jemo)" fill sizes="160px" className="object-cover" />
         {/* Inner shimmer on hover */}
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.03] to-transparent opacity-0 hover:opacity-100 transition-opacity duration-700" />
       </div>

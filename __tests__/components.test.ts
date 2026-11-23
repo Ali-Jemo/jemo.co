@@ -81,7 +81,7 @@ describe("Institutional UI Components", () => {
     expect(html).toContain("الشروط والأحكام والسياسات العامة");
     expect(html).toContain("الخصوصية وحماية البيانات الشخصية");
     expect(html).toContain("الملكية الفكرية والحقوق الرقمية");
-    expect(html).toContain("legal@jemo.co");
+    expect(html).toContain("contact@jemo.dev");
   });
 
   it("renders PrivacyPage with pillars and sections", () => {
@@ -89,7 +89,7 @@ describe("Institutional UI Components", () => {
     expect(html).toContain("سياسة الخصوصية وحماية البيانات");
     expect(html).toContain("المبادئ الأساسية لحوكمة الخصوصية");
     expect(html).toContain("البيانات التي نجمعها وكيفية جمعها");
-    expect(html).toContain("privacy@jemo.co");
+    expect(html).toContain("contact@jemo.dev");
   });
 
   it("renders NewsletterPage with dispatch archive", () => {
@@ -99,14 +99,14 @@ describe("Institutional UI Components", () => {
     expect(html).toContain("اشترك");
   });
 
-  it("renders SignInPage with Clerk sign in component", () => {
+  it("renders SignInPage with a clear message when Clerk is not configured", () => {
     const html = renderToStaticMarkup(React.createElement(SignInPage));
-    expect(html).toContain("تسجيل الدخول عبر Clerk");
+    expect(html).toContain("تسجيل الدخول غير مفعّل");
   });
 
-  it("renders SignUpPage with Clerk sign up component", () => {
+  it("renders SignUpPage with a clear message when Clerk is not configured", () => {
     const html = renderToStaticMarkup(React.createElement(SignUpPage));
-    expect(html).toContain("إنشاء حساب عبر Clerk");
+    expect(html).toContain("إنشاء الحساب غير مفعّل");
   });
 
   it("renders DashboardPage with researcher portal", () => {
@@ -196,7 +196,7 @@ describe("Institutional UI Components", () => {
     expect(apiHtml).toContain("jemo_live_res_xxxxxxxxxxxxxxxx");
     expect(apiHtml).toContain("المفاتيح النشطة");
     expect(apiHtml).toContain("حزمة بايثون (JEMO Python SDK)");
-    expect(apiHtml).toContain("curl -X POST https://jemo.co/api/content/schema");
+    expect(apiHtml).toContain("curl -X POST https://lab.jemo.dev/api/content/schema");
 
     console.log("Rendering ProfileSettingsTab...");
     const settingsHtml = renderToStaticMarkup(

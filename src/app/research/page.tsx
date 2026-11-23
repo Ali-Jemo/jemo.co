@@ -9,9 +9,6 @@ export const metadata: Metadata = {
   description: "المستودع التراكمي لكائنات البحث (Research Objects) المحمية بمعيار التحقق البشري وإعادة التجارب في النظم والذكاء الاصطناعي.",
 };
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 export default async function ResearchIndexPage() {
   const [papers, questions] = await Promise.all([getLiveResearchPapers(), getLiveOpenQuestions()]);
   return (

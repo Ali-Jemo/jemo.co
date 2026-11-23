@@ -1,27 +1,19 @@
 import type { NextConfig } from "next";
-import { cspHeader, securityHeaders } from "./src/lib/security-headers";
 
-// CSP and all other security headers live in src/lib/security-headers.ts —
-// the single copy shared with src/proxy.ts so the two can never drift.
+// Security headers are applied once, in src/proxy.ts. Setting them here as
+// well duplicated every header on the response (and again if Cloudflare's
+// dashboard adds the same names).
 
 const nextConfig: NextConfig = {
   images: {
+    // The Cloudflare Worker does not run Next's image optimizer: /_next/image
+    // returned the original bytes. Serve pre-compressed files directly.
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
   },
   reactStrictMode: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
-  async headers() {
-    return [
-      {
-        source: "/((?!_next/static|_next/image).*)",
-        headers: [
-          { key: "Content-Security-Policy", value: cspHeader },
-          ...Object.entries(securityHeaders).map(([key, value]) => ({ key, value })),
-        ],
-      },
-    ];
-  },
   async redirects() {
     return [
       {
@@ -38,6 +30,16 @@ const nextConfig: NextConfig = {
         source: "/signup",
         destination: "/sign-up",
         permanent: true,
+      },
+      {
+        source: "/opengraph-image",
+        destination: "/opengraph-image.png",
+        permanent: false,
+      },
+      {
+        source: "/twitter-image",
+        destination: "/twitter-image.png",
+        permanent: false,
       },
     ];
   },

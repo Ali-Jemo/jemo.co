@@ -1,3 +1,13 @@
+@keyframes hero-rise {
+  from { transform: translateY(12%); }
+  to { transform: none; }
+}
+.hero-rise { animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hero-rise-delay { animation-delay: 0.12s; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise { animation: none; }
+}
+
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }

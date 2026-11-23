@@ -1,0 +1,130 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Rich Metallic Olive-Emerald Body -->
+    <linearGradient id="j-metallic" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#EEFA9E" />
+      <stop offset="18%" stop-color="#D4EA5E" />
+      <stop offset="48%" stop-color="#9FB92A" />
+      <stop offset="78%" stop-color="#647E16" />
+      <stop offset="100%" stop-color="#3A4B0C" />
+    </linearGradient>
+
+    <!-- Diamond Core: Brilliant Sovereign Gold -->
+    <linearGradient id="diamond-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#F2FDB5" />
+      <stop offset="70%" stop-color="#C0D64E" />
+      <stop offset="100%" stop-color="#738F1C" />
+    </linearGradient>
+
+    <!-- Top Chamfer Mirror Shine -->
+    <linearGradient id="chamfer-shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95" />
+      <stop offset="45%" stop-color="#EEFA9E" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#9FB92A" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Precision Spine Reflection -->
+    <linearGradient id="spine-shine" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.85" />
+      <stop offset="40%" stop-color="#D4EA5E" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#647E16" stop-opacity="0.0" />
+    </linearGradient>
+
+    <!-- Deep Ambient Elevation Shadow -->
+    <filter id="j-depth" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#141C04" flood-opacity="0.25" />
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#141C04" flood-opacity="0.18" />
+    </filter>
+
+    <!-- Diamond Core Pulse Glow -->
+    <filter id="diamond-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#D4EA5E" flood-opacity="0.6" />
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#3A4B0C" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <g transform="translate(16, 12)" filter="url(#j-depth)">
+    <!-- 1. The Main Architectural J Glyph -->
+    <path
+      d="
+        M 176 80
+        L 340 80
+        L 384 124
+        L 384 320
+        C 384 400 328 448 240 448
+        C 152 448 104 396 104 320
+        L 104 256
+        L 192 256
+        L 192 316
+        C 192 344 212 364 240 364
+        C 268 364 288 344 288 316
+        L 288 168
+        L 176 168
+        Z
+      "
+      fill="url(#j-metallic)"
+    />
+
+    <!-- 2. Chamfer 45-Degree Facet -->
+    <path
+      d="
+        M 288 80
+        L 340 80
+        L 384 124
+        L 384 188
+        L 288 188
+        Z
+      "
+      fill="url(#chamfer-shine)"
+    />
+
+    <!-- 3. Diagonal Light Slice across the Stem -->
+    <path
+      d="
+        M 384 188
+        L 288 284
+        L 288 188
+        Z
+      "
+      fill="url(#spine-shine)"
+    />
+
+    <!-- 4. Razor-Thin Top Highlight Line -->
+    <path
+      d="M 176 80 L 340 80 L 384 124"
+      stroke="#FFFFFF"
+      stroke-width="3"
+      stroke-linecap="round"
+      opacity="0.9"
+    />
+
+    <!-- 5. Embossed Inner Rim Bevel -->
+    <path
+      d="M 192 256 L 192 316 C 192 344 212 364 240 364 C 268 364 288 344 288 316 L 288 168"
+      stroke="#3A4B0C"
+      stroke-width="2"
+      opacity="0.35"
+    />
+
+    <!-- 6. Bottom Sweeping Rim Light Curve -->
+    <path
+      d="M 110 324 C 114 392 162 442 240 442 C 318 442 378 392 382 324"
+      stroke="#EEFA9E"
+      stroke-width="3"
+      stroke-linecap="round"
+      opacity="0.65"
+    />
+
+    <!-- 7. THE SOVEREIGN CORE (Floating 45-degree Precision Diamond above the Chamfer) -->
+    <g transform="translate(384, 52) rotate(45)" filter="url(#diamond-glow)">
+      <!-- Diamond Outer Facet -->
+      <rect x="-18" y="-18" width="36" height="36" rx="4" fill="url(#diamond-gold)" />
+      <!-- Diamond Inner Facet Plane -->
+      <polygon points="-18,-18 18,-18 0,0" fill="#FFFFFF" opacity="0.6" />
+      <polygon points="18,-18 18,18 0,0" fill="#D4EA5E" opacity="0.4" />
+      <polygon points="18,18 -18,18 0,0" fill="#738F1C" opacity="0.4" />
+      <polygon points="-18,18 -18,-18 0,0" fill="#9FB92A" opacity="0.3" />
+    </g>
+  </g>
+</svg>
