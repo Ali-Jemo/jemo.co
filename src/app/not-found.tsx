@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BioButton from "@/components/BioButton";
 import { Compass, Search, Home } from "lucide-react";
 import Link from "next/link";
 
@@ -10,10 +11,10 @@ export const metadata: Metadata = {
 };
 
 const SUGGESTED_LINKS = [
-  { label: "السجلات", href: "/research" },
-  { label: "المشاريع", href: "/projects" },
-  { label: "عن JEMO", href: "/about" },
-  { label: "تواصل", href: "/contact" },
+  { label: "الأبحاث", href: "/research" },
+  { label: "المختبرات", href: "/labs" },
+  { label: "من نحن", href: "/about" },
+  { label: "تواصل معنا", href: "/contact" },
 ];
 
 export default function NotFound() {
@@ -28,7 +29,7 @@ export default function NotFound() {
           {/* Error code badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#e4e3e3] text-[#445e5f] font-mono text-xs font-semibold">
             <Compass className="w-3.5 h-3.5" />
-            <span>الصفحة غير موجودة</span>
+            <span dir="ltr">ERROR 404 — PAGE NOT FOUND</span>
           </div>
 
           {/* Giant glitchy 404 */}
@@ -55,12 +56,13 @@ export default function NotFound() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
+            <BioButton
               href="/"
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#1c2829] px-5 text-sm font-bold text-white"
-            >
-              العودة للرئيسية
-            </Link>
+              label="BACK HOME"
+              secondaryLabel="العودة للرئيسية"
+              variant="primary"
+              dir="rtl"
+            />
             <Link
               href="/research"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-[#e4e3e3] bg-white text-xs sm:text-sm font-semibold text-[#222f30] hover:bg-[#e4e3e3] transition-colors"

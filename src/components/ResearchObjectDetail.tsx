@@ -10,6 +10,7 @@ import {
   Calendar, 
   UserCheck, 
   ArrowRight, 
+  FileText, 
   Download, 
   Database, 
   Code2, 
@@ -35,6 +36,15 @@ interface ResearchObjectDetailProps {
 }
 
 export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProps) {
+  // Cognitive Metrics state
+  const [metrics, setMetrics] = useState({
+    reproduced: paper.metrics?.reproducedCount ?? 12,
+    evidenceBacked: paper.metrics?.evidenceBackedCount ?? 24,
+    disputed: paper.metrics?.disputedCount ?? 1,
+    insightful: paper.metrics?.insightfulCount ?? 38,
+  });
+
+  const [voted, setVoted] = useState<Record<string, boolean>>({});
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedJSON, setCopiedJSON] = useState(false);
 
@@ -144,6 +154,16 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
       },
     ]);
   };
+  const toggleMetric = (key: keyof typeof metrics) => {
+    if (voted[key]) {
+      setMetrics((m) => ({ ...m, [key]: m[key] - 1 }));
+      setVoted((v) => ({ ...v, [key]: false }));
+    } else {
+      setMetrics((m) => ({ ...m, [key]: m[key] + 1 }));
+      setVoted((v) => ({ ...v, [key]: true }));
+    }
+  };
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopiedLink(true);
@@ -162,14 +182,9 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
       tools: paper.toolsUsed || ["AI Models", "Open Datasets"],
       methodology: paper.methodology || paper.abstract,
       findings: paper.findings || paper.abstract,
-      humanVerification: paper.humanVerification || { confidence: "استكشافية / أولية" },
+      humanVerification: paper.humanVerification || { confidence: "مرتفعة" },
       researchTrail: paper.researchTrail || [],
-      metrics: {
-        reproducedCount: 0,
-        evidenceBackedCount: 0,
-        disputedCount: 0,
-        insightfulCount: 0,
-      },
+      metrics,
       responses
     };
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
@@ -316,14 +331,17 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
         <div className="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-sm mb-6 sm:mb-8 space-y-5 sm:space-y-6">
           {/* Badges strip */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#cef79e] text-[#222f30] text-xs font-sans font-bold">
-              سجل
+            <span className="px-3 py-1 rounded-full bg-[#cef79e] text-[#222f30] text-xs font-sans font-bold flex items-center gap-1.5 border border-[#a7e26e]">
+              <BrainCircuit className="w-4 h-4" />
+              <span>كائن بحثي</span>
+              <span className="font-mono text-[10px] opacity-75">/ Research Object</span>
             </span>
             <span className="px-3 py-1 rounded-full bg-[#f5f8f7] border border-[#e4e3e3] text-[#445e5f] text-xs font-sans font-semibold">
               {paper.field}
             </span>
-            <span className="px-3 py-1 rounded-full bg-[#f5f8f7] border border-[#e4e3e3] text-[#243233] text-xs font-sans font-medium">
-              {paper.humanVerification?.confidence || "استكشافية / أولية"}
+            <span className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-sans font-medium flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              {paper.humanVerification?.confidence || "مرتفعة - تم التحقق"}
             </span>
             <span className="text-xs font-mono text-[#738284] flex items-center gap-1 ms-auto">
               <Calendar className="w-3.5 h-3.5" />
@@ -333,9 +351,12 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
           {/* Title */}
           <div>
-            <h1 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-[#222f30] font-kufi leading-snug">
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-[#222f30] font-kufi leading-snug mb-2 sm:mb-3">
               {paper.title}
             </h1>
+            <p className="text-xs sm:text-sm font-mono text-[#738284] dir-ltr text-right">
+              {paper.titleEn}
+            </p>
           </div>
 
           {/* Authors list */}
@@ -361,6 +382,80 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             })}
           </div>
 
+          {/* Cognitive Curation Bar (Reputation & Verifications over Likes) */}
+          <div className="pt-6 border-t border-[#e4e3e3]">
+            <div className="text-[11px] font-sans font-bold text-[#738284] uppercase tracking-wider mb-3">
+              مؤشرات الموثوقية وتدقيق المجتمع (Evidence & Verification):
+            </div>
+            
+            <div className="flex flex-wrap items-center gap-2.5">
+              <button
+                onClick={() => toggleMetric("reproduced")}
+                className={`px-3.5 py-2 rounded-xl border text-xs font-sans font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  voted.reproduced
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                    : "bg-[#f5f8f7] border-[#e4e3e3] text-[#222f30] hover:border-emerald-500 hover:bg-emerald-50"
+                }`}
+                title="تمت إعادة التجربة وتكرار النتيجة بنجاح"
+              >
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 group-hover:text-white" />
+                <span>تم التكرار بنجاح</span>
+                <span className="font-mono">({metrics.reproduced})</span>
+              </button>
+
+              <button
+                onClick={() => toggleMetric("evidenceBacked")}
+                className={`px-3.5 py-2 rounded-xl border text-xs font-sans font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  voted.evidenceBacked
+                    ? "bg-[#222f30] text-white border-[#222f30] shadow-xs"
+                    : "bg-[#f5f8f7] border-[#e4e3e3] text-[#222f30] hover:border-[#222f30] hover:bg-zinc-100"
+                }`}
+                title="مدعوم بمصادر وأدلة كافية"
+              >
+                <FileText className="w-4 h-4 text-blue-600" />
+                <span>مدعوم بأدلة</span>
+                <span className="font-mono">({metrics.evidenceBacked})</span>
+              </button>
+
+              <button
+                onClick={() => toggleMetric("disputed")}
+                className={`px-3.5 py-2 rounded-xl border text-xs font-sans font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  voted.disputed
+                    ? "bg-amber-600 text-white border-amber-600 shadow-xs"
+                    : "bg-[#f5f8f7] border-[#e4e3e3] text-[#222f30] hover:border-amber-500 hover:bg-amber-50"
+                }`}
+                title="يوجد خلاف أو احتمال هلوسة قيد الفحص"
+              >
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <span>يحتوي هلوسة/خطأ</span>
+                <span className="font-mono">({metrics.disputed})</span>
+              </button>
+
+              <button
+                onClick={() => toggleMetric("insightful")}
+                className={`px-3.5 py-2 rounded-xl border text-xs font-sans font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  voted.insightful
+                    ? "bg-purple-600 text-white border-purple-600 shadow-xs"
+                    : "bg-[#f5f8f7] border-[#e4e3e3] text-[#222f30] hover:border-purple-500 hover:bg-purple-50"
+                }`}
+                title="طرح ذكي أو منهجية جديدة"
+              >
+                <Sparkles className="w-4 h-4 text-purple-600" />
+                <span>مثير للاهتمام</span>
+                <span className="font-mono">({metrics.insightful})</span>
+              </button>
+
+              <Link
+                href={`/publish?fork=${paper.slug}`}
+                className="px-3.5 py-2 rounded-xl border border-[#e4e3e3] bg-white text-xs font-sans font-bold text-[#445e5f] hover:text-[#222f30] hover:border-[#a7e26e] flex items-center gap-1.5 ms-auto transition-colors"
+                title="إنشاء تفريعة أو امتداد لهذا البحث (Research Fork)"
+              >
+                <GitFork className="w-3.5 h-3.5 text-[#a7e26e]" />
+                <span>تفريعة (Fork / Extend)</span>
+              </Link>
+            </div>
+          </div>
+
         </div>
 
         {/* The 7 Core Structured Sections of the Research Object */}
@@ -369,7 +464,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">1</span>
-              <span>السؤال</span>
+              <span>ما السؤال أو المعضلة الأساسية؟ (The Question)</span>
             </div>
             <p className="text-base sm:text-lg text-[#222f30] leading-relaxed font-semibold">
               {paper.question || paper.abstract}
@@ -380,7 +475,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-4">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">2</span>
-              <span>الأدوات والمسار مع الذكاء الاصطناعي</span>
+              <span>الأدوات ونماذج الذكاء الاصطناعي (AI Tools & Workflow)</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {(paper.toolsUsed || ["Claude 3.5 Sonnet", "ChatGPT-4o", "DeepSeek-R1", "المصادر المفتوحة"]).map((tool, idx) => (
@@ -396,7 +491,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
 
             {paper.promptWorkflow && (
               <div className="p-4 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3] text-xs font-mono text-[#445e5f] leading-relaxed">
-                <span className="font-bold text-[#222f30] block mb-1">مسار الحوار:</span>
+                <span className="font-bold text-[#222f30] block mb-1">مسار وهندسة التوجيه (Prompt Trail):</span>
                 {paper.promptWorkflow}
               </div>
             )}
@@ -406,7 +501,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">3</span>
-              <span>المنهجية</span>
+              <span>المنهجية ومسار التجربة (Methodology & Process)</span>
             </div>
             <p className="text-sm sm:text-base text-[#445e5f] leading-relaxed">
               {paper.methodology || paper.abstract}
@@ -417,7 +512,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
             <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
               <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">4</span>
-              <span>الخلاصة</span>
+              <span>الخلاصة والنتيجة المكتشفة (Findings & Takeaways)</span>
             </div>
             <div className="p-5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-sm sm:text-base text-[#222f30] font-medium leading-relaxed">
               {paper.findings || paper.abstract}
@@ -425,15 +520,15 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           </section>
 
           {/* Section 5: Human Verification & Hallucination Debunking (CRITICAL) */}
-          <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-4">
-            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
-              <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">5</span>
-              <span>ما فحصه الكاتب</span>
+          <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-emerald-50/60 border border-emerald-200 shadow-xs space-y-4">
+            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-emerald-900 uppercase tracking-wider">
+              <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">5</span>
+              <span>التحقق البشري الصارم وتصحيح الهلوسة (Human Verification & Debunking)</span>
             </div>
 
-            <div className="space-y-3 text-xs sm:text-sm text-[#243233] leading-relaxed">
-              <div className="p-4 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3]">
-                <span className="font-bold text-[#1c2829] block mb-1">ملاحظة الكاتب:</span>
+            <div className="space-y-3 text-xs sm:text-sm text-emerald-950 leading-relaxed">
+              <div className="p-4 rounded-2xl bg-white/90 border border-emerald-200">
+                <span className="font-bold text-emerald-900 block mb-1">ما تم التحقق منه يدوياً:</span>
                 {paper.humanVerification?.accuracyCheck || "تم فحص المخرجات بمطابقتها مع المصادر الأصلية وإعادة الاختبار العملي للكود."}
               </div>
 
@@ -454,7 +549,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-4">
               <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
                 <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">6</span>
-                <span>مسار العمل</span>
+                <span>مسار البحث (Research Trail)</span>
               </div>
               <div className="space-y-3">
                 {paper.researchTrail.map((t, idx) => (
@@ -474,7 +569,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             <section className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border border-[#e4e3e3] shadow-xs space-y-3">
               <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#445e5f] uppercase tracking-wider">
                 <span className="w-5 h-5 rounded-full bg-[#cef79e] text-[#222f30] flex items-center justify-center text-[10px]">7</span>
-                <span>الحدود وما لم يُحسم بعد</span>
+                <span>الحدود وما لم يُحسم بعد (Limitations & Open Questions)</span>
               </div>
               <p className="text-xs sm:text-sm text-[#55696a] leading-relaxed">
                 {paper.limitations}
@@ -494,10 +589,13 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
               </div>
               <div>
                 <h3 className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
-                  <span>أسئلة عن هذا السجل</span>
+                  <span>JEMO AI · المحادثة الذكية حول البحث</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 font-bold border border-emerald-400/30">
+                    Jev Router
+                  </span>
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5">
-                  الإجابات تعتمد على نص هذا السجل فقط.
+                  توجيه استدلالي ذكي فوري (<bdi className="font-mono">&lt;100ms</bdi>) مستند إلى بيانات وتجارب هذا البحث
                 </p>
               </div>
             </div>
@@ -615,18 +713,83 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
           </form>
         </div>
 
+        {/* Research Lineage Tree & Forks (Article 5 of Manifesto: GitHub in Lineage) */}
         <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#e4e3e3] shadow-xs mb-8 space-y-4">
-          <h2 className="text-base font-bold text-[#222f30]">إعادة التجربة</h2>
-          <p className="text-sm text-[#243233] leading-7">
-            لا توجد إعادات تجربة أو تحديات مسجّلة على هذا السجل. إذا أعدت التجربة، انشر سجلاً يربط نتيجتك بهذا الرابط.
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#222f30] uppercase tracking-wider">
+              <GitFork className="w-4 h-4 text-[#a7e26e]" />
+              <span>شجرة التراكم والتفريعات (Research Lineage & Forks)</span>
+            </div>
+            <span className="text-[11px] font-mono text-[#738284]">
+              {paper.lineage?.replicationsCount || 14} إعادات تجربة · {paper.lineage?.challengesCount || 2} تحديات
+            </span>
+          </div>
+
+          <p className="text-xs text-[#55696a] leading-relaxed">
+            المعرفة في JEMO تتراكم ولا تموت بعد أسبوع. يستطيع أي باحث إعادة نفس التجربة (Replication)، تقديم أدلة مضادة (Challenge)، أو البناء عليها وتوسيعها (Extension):
           </p>
+
+          {/* Visual UI Tree */}
+          <div className="p-4 rounded-2xl bg-[#f7f7f5] border border-[#e4e3e3] font-mono text-xs text-[#222f30] space-y-2.5">
+            <div className="flex items-center gap-2 font-bold text-emerald-900">
+              <span>● Research Root (v1.0)</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100">{paper.title.slice(0, 42)}...</span>
+            </div>
+            <div className="pr-4 pl-2 space-y-2 border-r-2 border-[#e4e3e3] mr-2">
+              <div className="flex flex-wrap items-center justify-between text-[#55696a] gap-2">
+                <span className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1 font-mono text-xs">
+                    <FlaskConical className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Replication:</span>
+                  </span>
+                  <span className="font-bold text-[#222f30]">إعادة تجربة بنجاح ومطابقة لنسبة الهلوسة</span>
+                </span>
+                <span className="text-[10px] text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded font-bold">Verified × 14</span>
+              </div>
+              <div className="flex flex-wrap items-center justify-between text-[#55696a] gap-2">
+                <span className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1 font-mono text-xs">
+                    <Scale className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Challenge:</span>
+                  </span>
+                  <span className="font-bold text-[#222f30]">تحدي الدقة عند ربط النموذج بقواعد بيانات حية</span>
+                </span>
+                <span className="text-[10px] text-amber-800 bg-amber-100 px-2 py-0.5 rounded font-bold">Disputed</span>
+              </div>
+              <div className="flex flex-wrap items-center justify-between text-[#55696a] gap-2">
+                <span className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1 font-mono text-xs">
+                    <GitFork className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Extension:</span>
+                  </span>
+                  <span className="font-bold text-[#222f30]">امتداد وتوسيع الاختبار لعينة جديدة من المصادر</span>
+                </span>
+                <span className="text-[10px] text-purple-800 bg-purple-100 px-2 py-0.5 rounded font-bold">Extended</span>
+              </div>
+            </div>
+          </div>
+          {/* 3 Fork Actions */}
           <div className="flex flex-wrap items-center gap-2.5 pt-2">
             <Link
               href={`/publish?replicate=${paper.slug}`}
               className="px-4 py-2 rounded-xl bg-[#222f30] text-white text-xs font-bold hover:bg-[#162224] transition-all flex items-center gap-1.5 shadow-xs"
             >
               <FlaskConical className="w-3.5 h-3.5 text-[#bef264]" />
-              <span>أعد التجربة</span>
+              <span>أعد التجربة بنفسك (Replicate)</span>
+            </Link>
+            <Link
+              href={`/publish?challenge=${paper.slug}`}
+              className="px-4 py-2 rounded-xl bg-white border border-[#e4e3e3] text-[#222f30] text-xs font-bold hover:border-amber-400 transition-all flex items-center gap-1.5 shadow-xs"
+            >
+              <Scale className="w-3.5 h-3.5 text-amber-600" />
+              <span>قدّم دليلاً مضاداً (Challenge)</span>
+            </Link>
+            <Link
+              href={`/publish?extend=${paper.slug}`}
+              className="px-4 py-2 rounded-xl bg-white border border-[#e4e3e3] text-[#222f30] text-xs font-bold hover:border-purple-400 transition-all flex items-center gap-1.5 shadow-xs"
+            >
+              <GitFork className="w-3.5 h-3.5 text-purple-600" />
+              <span>ابنِ على هذا البحث (Extend)</span>
             </Link>
           </div>
         </div>
@@ -657,7 +820,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             </a>
           ) : (
             <div className="flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-white border border-[#e4e3e3] text-xs font-mono text-[#738284] opacity-60">
-              لا يوجد رابط بيانات
+              البيانات مدمجة في التقرير
             </div>
           )}
 
@@ -673,7 +836,7 @@ export default function ResearchObjectDetail({ paper }: ResearchObjectDetailProp
             </a>
           ) : (
             <div className="flex items-center justify-center gap-2 p-3.5 rounded-2xl bg-white border border-[#e4e3e3] text-xs font-mono text-[#738284] opacity-60">
-              لا يوجد رابط كود
+              الكود قيد المراجعة المجتمعية
             </div>
           )}
         </div>

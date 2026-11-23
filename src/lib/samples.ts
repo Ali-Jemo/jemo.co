@@ -1,6 +1,5 @@
 import { NEWS_ITEMS, RESEARCH_PAPERS, type NewsItem, type Paper } from "@/lib/data/research-data";
 import { showUnverifiedSamples } from "@/lib/site";
-import { RETIRED_RECORD_SLUGS } from "@/lib/record-status";
 
 const SAMPLE_PAPER_IDS = new Set(RESEARCH_PAPERS.map((paper) => paper.id));
 const SAMPLE_NEWS_IDS = new Set(NEWS_ITEMS.map((item) => item.id));
@@ -28,7 +27,7 @@ export function filterNews<T extends { id?: string; unverifiedSample?: boolean }
 }
 
 export function visiblePapers(): Paper[] {
-  return filterPapers(RESEARCH_PAPERS).filter((paper) => !RETIRED_RECORD_SLUGS.has(paper.slug));
+  return filterPapers(RESEARCH_PAPERS);
 }
 
 export function visiblePaperCountFor(slug: string, name: string): number {

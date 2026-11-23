@@ -1,167 +1,92 @@
 "use client";
 
-import { FormEvent, useId, useState } from "react";
-
-const ADDRESS = "contact@jemo.dev";
-
-interface Fields {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
-
-const EMPTY: Fields = { name: "", email: "", subject: "", message: "" };
-
-function mailtoHref(fields: Fields) {
-  const subject = `[JEMO Labs] ${fields.subject.trim()} — ${fields.name.trim()}`;
-  const body = [
-    `الاسم: ${fields.name.trim()}`,
-    `البريد: ${fields.email.trim()}`,
-    "",
-    fields.message.trim(),
-  ].join("\n");
-  return `mailto:${ADDRESS}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-}
+import { useState } from "react";
+import { contactEmail } from "@/lib/site";
 
 export default function ContactForm() {
-  const baseId = useId();
-  const [fields, setFields] = useState<Fields>(EMPTY);
-  const [errors, setErrors] = useState<Partial<Record<keyof Fields, string>>>({});
-  const [opened, setOpened] = useState(false);
+  const inbox = contactEmail();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState("");
 
-  const set = (key: keyof Fields, value: string) => {
-    setFields((current) => ({ ...current, [key]: value }));
-    setErrors((current) => ({ ...current, [key]: undefined }));
-    setOpened(false);
-  };
-
-  const validate = (next: Fields) => {
-    const found: Partial<Record<keyof Fields, string>> = {};
-    if (next.name.trim().length < 2) found.name = "اكتب اسمك.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next.email.trim())) found.email = "اكتب بريداً صالحاً.";
-    if (next.subject.trim().length < 3) found.subject = "اكتب موضوع الرسالة.";
-    if (next.message.trim().length < 10) found.message = "اكتب رسالة أوضح (عشر خانات على الأقل).";
-    return found;
-  };
-
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    const found = validate(fields);
-    setErrors(found);
-    const first = (Object.keys(found) as Array<keyof Fields>)[0];
-    if (first) {
-      document.getElementById(`${baseId}-${first}`)?.focus();
-      return;
+    setStatus("sending");
+    setError("");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) {
+        setStatus("error");
+        setError(data.error || "تعذر إرسال الرسالة");
+        return;
+      }
+      setStatus("sent");
+      setName("");
+      setEmail("");
+      setMessage("");
+    } catch {
+      setStatus("error");
+      setError("تعذر الاتصال بالخادم");
     }
-    window.location.href = mailtoHref(fields);
-    setOpened(true);
-  };
-
-  const fieldClass = (invalid: boolean) =>
-    `w-full rounded-xl border bg-white px-4 py-3 text-base text-[#222f30] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#222f30] ${
-      invalid ? "border-red-700" : "border-[#d5d8d4]"
-    }`;
+  }
 
   return (
-    <form onSubmit={onSubmit} className="rounded-3xl border border-[var(--line)] bg-white p-6 sm:p-8 shadow-xs space-y-5" noValidate>
-      <div>
-        <h2 className="text-2xl font-bold text-[#222f30]">راسلنا</h2>
-        <p className="mt-2 text-sm text-[#3f5456] leading-relaxed">
-          النموذج يفتح بريدك برسالة جاهزة إلى{" "}
-          <a href={`mailto:${ADDRESS}`} className="font-mono font-bold text-[#222f30] underline underline-offset-4" dir="ltr">
-            {ADDRESS}
-          </a>
-          . لا يُحفظ شيء على الخادم.
-        </p>
-      </div>
-
-      {Object.keys(errors).length > 0 && (
-        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
-          راجع الحقول المظللة قبل الإرسال.
-        </p>
-      )}
-
-      <div className="space-y-1.5">
-        <label htmlFor={`${baseId}-name`} className="text-sm font-bold text-[#222f30]">الاسم</label>
+    <form onSubmit={onSubmit} className="space-y-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-6">
+      <h2 className="text-xl font-bold text-[var(--ink-1)]">أرسل رسالة</h2>
+      <p className="text-sm text-[var(--ink-2)] leading-relaxed">
+        تصل الرسالة إلى {inbox}. إن تعذر الإرسال الآلي، راسل هذا العنوان مباشرة.
+      </p>
+      <label className="block space-y-1 text-sm">
+        <span className="text-[var(--ink-2)]">الاسم</span>
         <input
-          id={`${baseId}-name`}
-          name="name"
-          type="text"
-          autoComplete="name"
           required
-          value={fields.name}
-          aria-invalid={Boolean(errors.name)}
-          aria-describedby={errors.name ? `${baseId}-name-error` : undefined}
-          onChange={(event) => set("name", event.target.value)}
-          className={fieldClass(Boolean(errors.name))}
+          minLength={2}
+          maxLength={80}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          className="w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm"
         />
-        {errors.name && <p id={`${baseId}-name-error`} className="text-sm text-red-800">{errors.name}</p>}
-      </div>
-
-      <div className="space-y-1.5">
-        <label htmlFor={`${baseId}-email`} className="text-sm font-bold text-[#222f30]">بريدك</label>
+      </label>
+      <label className="block space-y-1 text-sm">
+        <span className="text-[var(--ink-2)]">بريدك</span>
         <input
-          id={`${baseId}-email`}
-          name="email"
+          required
           type="email"
-          autoComplete="email"
-          inputMode="email"
-          required
+          maxLength={254}
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          className="w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm"
           dir="ltr"
-          value={fields.email}
-          aria-invalid={Boolean(errors.email)}
-          aria-describedby={errors.email ? `${baseId}-email-error` : undefined}
-          onChange={(event) => set("email", event.target.value)}
-          className={`${fieldClass(Boolean(errors.email))} text-left`}
         />
-        {errors.email && <p id={`${baseId}-email-error`} className="text-sm text-red-800">{errors.email}</p>}
-      </div>
-
-      <div className="space-y-1.5">
-        <label htmlFor={`${baseId}-subject`} className="text-sm font-bold text-[#222f30]">الموضوع</label>
-        <input
-          id={`${baseId}-subject`}
-          name="subject"
-          type="text"
-          required
-          value={fields.subject}
-          aria-invalid={Boolean(errors.subject)}
-          aria-describedby={errors.subject ? `${baseId}-subject-error` : undefined}
-          onChange={(event) => set("subject", event.target.value)}
-          className={fieldClass(Boolean(errors.subject))}
-        />
-        {errors.subject && <p id={`${baseId}-subject-error`} className="text-sm text-red-800">{errors.subject}</p>}
-      </div>
-
-      <div className="space-y-1.5">
-        <label htmlFor={`${baseId}-message`} className="text-sm font-bold text-[#222f30]">الرسالة</label>
+      </label>
+      <label className="block space-y-1 text-sm">
+        <span className="text-[var(--ink-2)]">الرسالة</span>
         <textarea
-          id={`${baseId}-message`}
-          name="message"
           required
-          rows={6}
-          value={fields.message}
-          aria-invalid={Boolean(errors.message)}
-          aria-describedby={errors.message ? `${baseId}-message-error` : undefined}
-          onChange={(event) => set("message", event.target.value)}
-          className={fieldClass(Boolean(errors.message))}
+          minLength={5}
+          maxLength={2000}
+          rows={5}
+          value={message}
+          onChange={(event) => setMessage(event.target.value)}
+          className="w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm"
         />
-        {errors.message && <p id={`${baseId}-message-error`} className="text-sm text-red-800">{errors.message}</p>}
-      </div>
-
+      </label>
       <button
         type="submit"
-        className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#222f30] px-6 py-3 text-sm font-bold text-white hover:bg-[#162021]"
+        disabled={status === "sending"}
+        className="rounded-full bg-[#222f30] px-5 py-2.5 text-xs font-bold text-white disabled:opacity-60"
       >
-        فتح الرسالة في البريد
+        {status === "sending" ? "جارٍ الإرسال..." : "إرسال"}
       </button>
-
-      {opened && (
-        <p role="status" className="text-sm text-[#3f5456] leading-relaxed">
-          إن لم يفتح تطبيق البريد، أرسل رسالتك يدوياً إلى {ADDRESS}.
-        </p>
-      )}
+      {status === "sent" ? <p className="text-sm text-[#728825]">وصلت الرسالة.</p> : null}
+      {status === "error" ? <p className="text-sm text-red-700">{error}</p> : null}
     </form>
   );
 }

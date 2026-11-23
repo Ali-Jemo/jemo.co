@@ -1,18 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { contactEmail, socialLinks, type SocialLink } from "@/lib/site";
+import { motion } from "framer-motion";
 import { GithubIcon, TelegramIcon, XIcon } from "@/components/Icons";
+import { SITE_URL, socialLinks, type SocialLink } from "@/lib/site";
 
-const LINKS = [
-  { label: "السجلات", href: "/research" },
-  { label: "انشر", href: "/publish" },
-  { label: "المشاريع", href: "/projects" },
-  { label: "عن JEMO", href: "/about" },
-  { label: "تواصل", href: "/contact" },
-  { label: "الشروط", href: "/terms" },
-  { label: "الخصوصية", href: "/privacy" },
+const FOOTER_COLUMNS = [
+  {
+    title: "الأبحاث",
+    links: [
+      { label: "السجلات", href: "/research" },
+      { label: "التسلسل", href: "/timeline" },
+      { label: "المختبرات", href: "/labs" },
+      { label: "انشر بحثك", href: "/publish" },
+    ],
+  },
+  {
+    title: "المؤسسة",
+    links: [
+      { label: "من نحن", href: "/about" },
+      { label: "المبادرات", href: "/initiatives" },
+      { label: "تواصل معنا", href: "/contact" },
+      { label: "الأسئلة الشائعة", href: "/faq" },
+    ],
+  },
+  {
+    title: "التوثيق",
+    links: [
+      { label: "المعايير", href: "/benchmarks" },
+      { label: "نشرة الشركة", href: "/newsletter" },
+      { label: "الشروط", href: "/terms" },
+      { label: "الخصوصية", href: "/privacy" },
+    ],
+  },
 ];
 
 const ICONS: Record<string, typeof GithubIcon> = {
@@ -25,89 +47,160 @@ function iconFor(link: SocialLink) {
   return ICONS[link.id] ?? GithubIcon;
 }
 
-export default function Footer() {
-  const inbox = contactEmail();
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
-  const [message, setMessage] = useState("");
+const WORDMARK_LETTERS = new URL(SITE_URL).host.split("");
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const clean = email.trim();
-    if (!clean) return;
-    setStatus("loading");
-    setMessage("");
-    try {
-      const res = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: clean, topics: ["سجلات جديدة"] }),
-      });
-      const data = (await res.json().catch(() => ({}))) as { error?: string };
-      if (!res.ok) throw new Error(data.error || "تعذر الحفظ الآن");
-      setStatus("done");
-      setMessage("تم تسجيل بريدك. تصلك السجلات الجديدة بلا إعلانات.");
-    } catch (err: unknown) {
-      setStatus("error");
-      const reason = err instanceof Error ? err.message : "تعذر الحفظ الآن";
-      setMessage(`${reason}. راسلنا على ${inbox}`);
-    }
-  }
+const wordmarkContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.04,
+    },
+  },
+};
+
+const wordmarkLetterVariants = {
+  hidden: {
+    y: "110%",
+    opacity: 0,
+    transition: { duration: 0.15 },
+  },
+  visible: {
+    y: "0%",
+    opacity: 1,
+    transition: {
+      duration: 0.38,
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+    },
+  },
+};
+
+export default function Footer() {
+  const wordmarkRef = useRef<HTMLDivElement>(null);
+
+  // ponytail: lightweight mouse spotlight without canvas/rAF loop; add rAF when high-framerate pointer lag occurs
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!wordmarkRef.current) return;
+    const rect = wordmarkRef.current.getBoundingClientRect();
+    wordmarkRef.current.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+    wordmarkRef.current.style.setProperty("--my", `${e.clientY - rect.top}px`);
+  };
 
   return (
-    <footer id="newsletter" dir="rtl" className="mt-auto border-t border-[#e4e3e3] bg-[#f7f7f5] px-4 py-10 pb-24 text-[#1c2829] sm:px-8 md:pb-10">
-      <div className="mx-auto max-w-3xl space-y-6">
-        <p className="text-sm leading-7">JEMO — سجلّ عربي لتوثيق الأبحاث المنجزة بمساعدة الذكاء الاصطناعي.</p>
-        <nav aria-label="روابط التذييل" className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-bold">
-          {LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="underline decoration-[#1c2829]/25 underline-offset-4 hover:decoration-[#1c2829]">
-              {link.label}
+    <footer dir="rtl" className="relative w-full border-t border-[var(--line)] bg-[var(--bg)] pt-12 sm:pt-16 pb-20 md:pb-8 mt-auto overflow-hidden text-right">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Top Section: Brand Statement & Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 pb-12 sm:pb-16">
+          <div className="md:col-span-6 space-y-4">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <Image
+                src="/jemo-logo.svg"
+                alt="JEMO LABS"
+                className="h-8 w-auto transition-transform duration-300 group-hover:scale-105"
+                width={36}
+                height={36}
+              />
+              <div className="flex items-baseline gap-1 font-mono">
+                <span className="font-black text-xl tracking-tight text-[var(--ink)]">jemo</span>
+                <span className="font-bold text-xl tracking-tight text-[var(--ink-2)]">labs</span>
+                <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse ms-1" />
+              </div>
             </Link>
-          ))}
-        </nav>
 
-        <form onSubmit={onSubmit} className="space-y-2">
-          <label htmlFor="footer-email" className="block text-sm leading-7">
-            تصلك السجلات الجديدة بالبريد — بلا إعلانات.
-          </label>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <input
-              id="footer-email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@example.com"
-              dir="ltr"
-              className="min-h-11 w-full rounded-xl border border-[#c9cdc6] bg-white px-3 text-sm text-[#1c2829] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1c2829]"
-            />
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              className="min-h-11 rounded-xl bg-[#1c2829] px-4 text-sm font-bold text-white disabled:opacity-60"
-            >
-              {status === "loading" ? "جارٍ الإرسال" : "اشترك"}
-            </button>
+            <p className="text-xs sm:text-sm text-[var(--ink-2)] max-w-md leading-relaxed">
+              سجل مفتوح لتوثيق وتدقيق أبحاث واكتشافات الذكاء الاصطناعي — نحو بنية معرفية سيادية قابلة للتكرار والتحقق.
+            </p>
+
+            <div className="flex items-center gap-2 pt-1">
+              {socialLinks().map((link) => {
+                const Icon = iconFor(link);
+                return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.label}
+                  className="p-2 rounded-lg text-[var(--ink-2)]/70 hover:text-[var(--ink)] hover:bg-black/[0.04] transition-colors"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+                );
+              })}
+            </div>
           </div>
-          {message ? <p className="text-sm leading-7">{message}</p> : null}
-        </form>
 
-        <div className="flex flex-wrap items-center gap-4 text-sm">
-          <a href={`mailto:${inbox}`} className="font-bold underline underline-offset-4">
-            {inbox}
-          </a>
-          {socialLinks().map((link) => {
-            const Icon = iconFor(link);
-            return (
-              <a key={link.href} href={link.href} target="_blank" rel="noreferrer" aria-label={link.label} className="inline-flex min-h-11 min-w-11 items-center justify-center">
-                <Icon className="h-4 w-4" />
-              </a>
-            );
-          })}
+          <div className="md:col-span-6 grid grid-cols-3 gap-4 sm:gap-6 text-sm text-right">
+            {FOOTER_COLUMNS.map((col) => (
+              <div key={col.title} className="flex flex-col gap-3 text-right">
+                <span className="font-bold text-xs sm:text-sm text-[var(--ink)] font-kufi text-right">
+                  {col.title}
+                </span>
+                <ul className="flex flex-col gap-2.5 text-xs text-right">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors inline-block"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
-        <p className="text-sm text-[#334244]">© 2026 JEMO</p>
+
+        {/* Monumental Wordmark with Curtain Reveal & Interactive Neon Spotlight */}
+        <div className="@container relative border-t border-[var(--line)]/70 pt-6 sm:pt-8 overflow-hidden select-none">
+          <motion.div
+            ref={wordmarkRef}
+            onMouseMove={handleMouseMove}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            title="اضغط للعودة إلى أعلى الصفحة ↑"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={wordmarkContainerVariants}
+            className="relative w-full text-center overflow-hidden cursor-pointer group py-2"
+          >
+            {/* Subtle glow backdrop tracking cursor on hover */}
+            <div
+              className="pointer-events-none absolute -inset-px transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+              style={{
+                background: `radial-gradient(circle 380px at var(--mx, -999px) var(--my, -999px), rgba(167, 226, 110, 0.18), transparent 70%)`,
+              }}
+            />
+
+            <h2 className="text-[clamp(2.5rem,14.5vw,14rem)] @[640px]:text-[clamp(3.5rem,21.5cqw,16.5rem)] leading-[0.85] font-black font-mono tracking-[-0.04em] transition-colors duration-300 select-none text-[var(--ink)]/25 group-hover:text-[var(--ink)]/45 py-2 inline-flex justify-center max-w-full mix-blend-multiply">
+              {WORDMARK_LETTERS.map((char, idx) => (
+                <motion.span
+                  key={idx}
+                  variants={wordmarkLetterVariants}
+                  className="inline-block"
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </h2>
+          </motion.div>
+        </div>
+
+        {/* Bottom Bar: Monospace Status, Copyright & Legal Links */}
+        <div className="flex flex-col md:flex-row justify-between items-center pt-6 text-[11px] sm:text-xs text-[var(--ink-2)]/80 font-mono border-t border-[var(--line)]/50 gap-4">
+          <p>© 2026 علي حسين هادي (Jemo) — JEMO LABS</p>
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap justify-center">
+            <Link href="/privacy" className="hover:text-[var(--ink)] transition-colors">
+              سياسة الخصوصية
+            </Link>
+            <span className="opacity-30">·</span>
+            <Link href="/terms" className="hover:text-[var(--ink)] transition-colors">
+              الشروط والأحكام
+            </Link>
+          </div>
+        </div>
+
       </div>
     </footer>
   );

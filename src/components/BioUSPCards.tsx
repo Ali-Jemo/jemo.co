@@ -8,6 +8,7 @@ import RevealGroup, { cohereDelay } from "@/components/RevealGroup";
 
 const CARDS = [
   {
+    num: "01.",
     icon: "/bio-icon-1.svg",
     bg: "bg-[#cef79e]",
     textColor: "text-[#222f30]",
@@ -19,6 +20,7 @@ const CARDS = [
     actionText: "استكشف أبحاث النظم",
   },
   {
+    num: "02.",
     icon: "/bio-icon-2.svg",
     bg: "bg-[#222f30]",
     textColor: "text-white",
@@ -30,6 +32,7 @@ const CARDS = [
     actionText: "استكشف سجلات النماذج",
   },
   {
+    num: "03.",
     icon: "/bio-icon-3.svg",
     bg: "bg-[#e7e8e1]",
     textColor: "text-[#222f30]",
@@ -52,6 +55,7 @@ export default function BioUSPCards() {
         <EditorialSectionHeader
           num="02"
           kickerAr="الركائز الهندسية"
+          kickerEn="CORE PILLARS"
           title="بنية تحتية ثلاثية"
           titleAccent="لنقل البحث من المحادثة إلى البرهنة الهندسية."
           lede="ثلاثة مسارات متكاملة: هندسة أنوية التشغيل والعتاد، تفكيك واختبار نماذج الذكاء، وبروتوكول التحقق البشري الصارم."
@@ -61,17 +65,20 @@ export default function BioUSPCards() {
         <RevealGroup className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
           {CARDS.map((card, i) => (
             <Link
-              key={card.title}
+              key={card.num}
               href={card.href}
               data-cohere-card=""
               className={`group ${card.bg} ${card.textColor} border ${card.borderColor} rounded-2xl sm:rounded-[2rem] p-5 sm:p-10 flex flex-col justify-between min-h-0 sm:min-h-[440px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
             >
               {/* Top Row: Index & Icon — animates with its card */}
               <div
-                className="flex items-start justify-end"
+                className="flex items-start justify-between"
                 data-cohere-item=""
                 style={cohereDelay(i * 100 + 50)}
               >
+                <span className="text-sm sm:text-base font-mono font-bold opacity-75">
+                  {card.num}
+                </span>
                 <div className="w-12 h-12 relative flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                   <Image
                     src={card.icon}
@@ -107,7 +114,7 @@ export default function BioUSPCards() {
                 >
                   <span>{card.actionText}</span>
                   <span className="cohere-arrow w-8 h-8 rounded-full bg-black/10 flex items-center justify-center transition-transform duration-300 group-hover:-translate-x-1">
-                    <ArrowLeft aria-hidden className="w-4 h-4" />
+                    <ArrowLeft className="w-4 h-4" />
                   </span>
                 </div>
               </div>

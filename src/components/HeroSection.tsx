@@ -2,14 +2,15 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
-import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, useReducedMotion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import BioButton from "@/components/BioButton";
 import { useAuth } from "@/lib/auth-context";
 
 const PILLARS_PREVIEW = [
   { 
-    id: "systems",
+    id: "systems", 
+    num: "01", 
     name: "أبحاث النظم والأنوية", 
     spec: "Kernels • OS • Low-Level", 
     field: "نواة Ziqa ومترجمات النظم", 
@@ -17,7 +18,8 @@ const PILLARS_PREVIEW = [
     href: "/projects" 
   },
   { 
-    id: "ai-eval",
+    id: "ai-eval", 
+    num: "02", 
     name: "نماذج الذكاء والاستدلال", 
     spec: "Reasoning • Benchmarks • Debunking", 
     field: "تقييم النماذج وفحص الهلوسة", 
@@ -25,7 +27,8 @@ const PILLARS_PREVIEW = [
     href: "/research" 
   },
   { 
-    id: "proof-of-work",
+    id: "proof-of-work", 
+    num: "03", 
     name: "بروتوكول التحقق الفردي", 
     spec: "Proof of Work • Registry", 
     field: "توثيق الاكتشافات الفردية الفائقة", 
@@ -34,10 +37,14 @@ const PILLARS_PREVIEW = [
   },
 ];
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 export default function HeroSection() {
   const { profile } = useAuth();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activePillar, setActivePillar] = useState<number | null>(null);
+  const reduceMotion = useReducedMotion();
+
   // Mouse Parallax for subtle 3D cinematic depth
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -111,7 +118,7 @@ export default function HeroSection() {
       dir="rtl"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="j-on-dark relative w-full min-h-[100svh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-x-hidden flex flex-col justify-between py-4 lg:py-0 lg:-mt-16 lg:pt-20 lg:pb-4"
+      className="relative w-full min-h-[100svh] lg:h-[100dvh] bg-[#0c1415] text-white overflow-hidden flex flex-col justify-between py-4 lg:py-0 lg:-mt-16 lg:pt-20 lg:pb-4"
     >
       {/* 1. Looping 3D Sculptural Ribbon Video Background directly from IntegratedBio */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden" style={{ contain: "strict" }}>
@@ -148,13 +155,15 @@ export default function HeroSection() {
 
       <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 pt-3 sm:pt-5 flex items-center justify-between flex-wrap gap-3">
         <motion.div
-          initial={false}
-          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/15 bg-[#0c1415]/65 backdrop-blur-md text-xs shadow-lg max-w-full min-w-0 overflow-hidden"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-white/15 bg-[#0c1415]/65 backdrop-blur-md text-xs shadow-lg max-w-[calc(100vw-2rem)] overflow-hidden"
         >
           <span className="w-2 h-2 rounded-full bg-[#bef264] animate-pulse shrink-0" aria-hidden />
-          <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-wider text-white/95 truncate">أرشيف الاكتشاف المفتوح</span>
+          <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-wider text-white/95 uppercase truncate">OPEN DISCOVERY ARCHIVE</span>
           <span className="h-3 w-px bg-white/20 shrink-0" aria-hidden />
-          <span className="text-[10px] sm:text-[11px] text-white/80 font-medium truncate">نظم، برمجة، وذكاء اصطناعي</span>
+          <span className="text-[10px] sm:text-[11px] text-white/80 font-medium truncate">سجل أبحاث النظم والبرمجة والـ AI</span>
         </motion.div>
         <div className="hidden sm:flex items-center gap-2 text-[10px] font-mono text-white/55 uppercase tracking-widest">
           <span className="w-1.5 h-1.5 rounded-full bg-[#bef264]" aria-hidden />
@@ -164,27 +173,45 @@ export default function HeroSection() {
 
       <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 my-auto py-2 sm:py-4 lg:py-5">
         <div className="max-w-5xl">
-          <div className="mb-3 flex items-center gap-3 text-[10px] sm:text-xs font-mono tracking-[0.18em] text-[#bef264]">
-            <span aria-hidden className="h-px w-10 bg-[#bef264]/70" />
-            <span>بحثٌ مُحقَّق</span>
-          </div>
+          <motion.div
+            className="mb-3 flex items-center gap-3 text-[10px] sm:text-xs font-mono uppercase tracking-[0.24em] text-[#bef264]"
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.05, ease: EASE }}
+          >
+            <motion.span
+              aria-hidden
+              className="h-px w-10 origin-right bg-[#bef264]/70"
+              initial={reduceMotion ? false : { scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.7, delay: 0.18, ease: EASE }}
+            />
+            <span>RESEARCH, VERIFIED</span>
+          </motion.div>
           <h1
             style={{ color: "#ffffff" }}
-            className="text-[clamp(1.65rem,7.4vw,4.25rem)] sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.25] sm:leading-[1.12] tracking-tight font-kufi text-white text-balance [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
+            className="text-[1.85rem] xs:text-[2.15rem] sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-[4.25rem] font-medium leading-[1.18] sm:leading-[1.12] tracking-tight font-kufi text-white select-none [text-shadow:0_2px_8px_rgba(0,0,0,0.8)] sm:[text-shadow:0_4px_35px_rgba(0,0,0,0.7)]"
           >
-            <span className="hero-line block pb-1">معرفتك المتناثرة،</span>
-            <span className="hero-line hero-line-2 block whitespace-nowrap pb-1">خليها يمنا</span>
-            <span className="hero-line hero-line-3 block pb-1">
-              وتُحفظ كمعرفة دائمة<span className="text-[#bef264]">.</span>
+            <span className="block overflow-hidden pb-1 -mb-1">
+              <span className="block hero-rise">
+               معرفتك المتناثرة، خليها يمنا
+              </span>
+            </span>
+            <span className="block overflow-hidden pb-1 -mb-1">
+              <span className="block hero-rise hero-rise-delay text-white">
+                وتُحفظ كمعرفة دائمة<span className="text-[#bef264]">.</span>
+              </span>
             </span>
           </h1>
         </div>
       </div>
-      <div className="relative z-10 w-full min-w-0 px-4 sm:px-10 lg:px-16 pb-28 sm:pb-16 lg:pb-14 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
+      <div className="relative z-10 w-full px-4 sm:px-10 lg:px-16 pb-12 sm:pb-14 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-6">
         {/* Right side (start in RTL): Subtitle + 3 Research Pillars Navigation Pills */}
         <motion.div
-          className="flex flex-col gap-3 max-w-xl relative w-full min-w-0 lg:w-auto"
-          initial={false}
+          className="flex flex-col gap-3 max-w-xl relative w-full lg:w-auto"
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.42, ease: EASE }}
         >
           <div className="hidden lg:block w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
           <AnimatePresence>
@@ -198,7 +225,7 @@ export default function HeroSection() {
               >
                 <div className="flex items-center justify-between text-xs font-mono">
                   <span className="text-[#bef264] font-bold">
-                    {PILLARS_PREVIEW[activePillar].name}
+                    {PILLARS_PREVIEW[activePillar].num}. {PILLARS_PREVIEW[activePillar].name}
                   </span>
                   <span className="text-zinc-400 font-mono">{PILLARS_PREVIEW[activePillar].spec}</span>
                 </div>
@@ -234,7 +261,9 @@ export default function HeroSection() {
                     : "bg-[#0c1415]/60 border-white/10 text-white/90 hover:bg-black/80 hover:border-white/25 hover:text-white hover:-translate-y-0.5"
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#bef264] shrink-0" aria-hidden />
+                <span className="w-6 h-6 rounded-full bg-[#bef264]/15 border border-[#bef264]/30 text-[#bef264] flex items-center justify-center font-bold text-[11px] shrink-0">
+                  {p.num}
+                </span>
                 <span className="font-semibold text-white/95">{p.name}</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-zinc-400 font-mono hidden sm:inline">
                   {p.spec}
@@ -245,23 +274,25 @@ export default function HeroSection() {
         </motion.div>
         <motion.div
           dir="ltr"
-          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full sm:w-auto min-w-0"
-          initial={false}
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full sm:w-auto"
+          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.58, ease: EASE }}
         >
           <BioButton
             href="/explain"
             label="لخصلي الموقع"
             secondaryLabel="شني السالفة؟"
             variant="dark-glass"
-            dir="rtl"
+            dir="ltr"
             className="w-full sm:w-auto"
           />
           <BioButton
             href={profile ? "/publish" : "/sign-in?redirect_url=/publish"}
-            label={profile ? "وثّق اكتشافك" : "ادخل وانشر"}
-            secondaryLabel="Proof of Work"
+            label={profile ? "SHARE DISCOVERY" : "SIGN IN & PUBLISH"}
+            secondaryLabel={profile ? "وثّق اكتشافك الآن" : "تسجيل الدخول والنشر"}
             variant="primary"
-            dir="rtl"
+            dir="ltr"
             className="w-full sm:w-auto"
           />
         </motion.div>
@@ -273,11 +304,11 @@ export default function HeroSection() {
       <button
         type="button"
         onClick={scrollToContent}
-        className="hero-cue absolute bottom-20 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-2.5 sm:py-1.5 min-h-[42px] sm:min-h-[32px] rounded-full bg-[#0c1415]/85 border border-white/15 hover:border-[#bef264]/60 hover:bg-black/90 text-xs sm:text-[10px] font-mono tracking-wider text-white/90 hover:text-white transition-all shadow-md hover:-translate-y-0.5 cursor-pointer group"
+        className="hero-cue absolute bottom-4 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 inline-flex items-center gap-2 px-4 py-2.5 sm:py-1.5 min-h-[42px] sm:min-h-[32px] rounded-full bg-[#0c1415]/85 border border-white/15 hover:border-[#bef264]/60 hover:bg-black/90 text-xs sm:text-[10px] font-mono tracking-wider text-white/90 hover:text-white transition-all shadow-md hover:-translate-y-0.5 cursor-pointer group"
         aria-label="الانتقال للمنظومة المتكاملة"
       >
         <span>اكتشف المنظومة</span>
-        <ChevronDown aria-hidden className="w-3.5 h-3.5 text-[#bef264] transition-transform group-hover:translate-y-0.5 motion-safe:animate-[bounce_2s_infinite]" />
+        <ChevronDown className="w-3.5 h-3.5 text-[#bef264] transition-transform group-hover:translate-y-0.5 motion-safe:animate-[bounce_2s_infinite]" />
       </button>
     </section>
   );
