@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Users, Building2, Layers, ShieldCheck } from "lucide-react";
 import EditorialSectionHeader from "@/components/EditorialSectionHeader";
 
@@ -8,6 +9,7 @@ const STATS = [
   {
     num: "2026",
     label: "عصر بحث المواطن الرقمي",
+    labelEn: "CITIZEN RESEARCH",
     desc: "أدوات البحث والذكاء الاصطناعي أصبحت تمكّن أي شخص من إنتاج بحث واستقصاء رصين وتوثيق نتائجه.",
     icon: Users,
     highlight: false,
@@ -15,6 +17,7 @@ const STATS = [
   {
     num: "مفتوح",
     label: "سجل مفتوح للجميع",
+    labelEn: "OPEN DISCOVERY LOGS",
     desc: "لا رسوم على النشر ولا قيود تجارية، وتوثيق شفاف للأدوات والتحقق البشري من الهلوسة.",
     icon: ShieldCheck,
     highlight: true,
@@ -22,6 +25,7 @@ const STATS = [
   {
     num: "0 دقيقة",
     label: "ضياع للمعارف بعد اليوم",
+    labelEn: "PRESERVED KNOWLEDGE",
     desc: "حفظ جلسات المحادثة العميقة وتحويلها إلى سجلات دائمة قابلة للمشاركة والاستشهاد والتحدي.",
     icon: Layers,
     highlight: false,
@@ -29,6 +33,7 @@ const STATS = [
   {
     num: "كل العلوم",
     label: "مجالات معرفية غير محدودة",
+    labelEn: "ALL KNOWLEDGE DOMAINS",
     desc: "من البرمجة والذكاء الاصطناعي، إلى اللغة والتراث، إلى العلوم الطبيعية والإنسانية — مساحة للجميع.",
     icon: Building2,
     highlight: false,
@@ -45,6 +50,7 @@ export default function BioMetricsBand() {
         <EditorialSectionHeader
           num="04"
           kickerAr="هوية المؤسسة"
+          kickerEn="INSTITUTIONAL BENCHMARKS"
           title="بيت حكمةٍ لجميع العلوم،"
           titleAccent="يُبنى بسواعد باحثيه ومساهميه."
           lede="من العلوم الشرعية إلى الذكاء الاصطناعي إلى الطب والفلك — منظومة معرفية موحدة ومفتوحة للجميع دون احتكار."
@@ -52,11 +58,15 @@ export default function BioMetricsBand() {
 
         {/* 4-Column Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {STATS.map((s) => {
+          {STATS.map((s, idx) => {
             const Icon = s.icon;
             return (
-              <div
+              <motion.div
                 key={s.label}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 className={`p-5 sm:p-8 rounded-2xl sm:rounded-3xl bg-white border ${
                   s.highlight
                     ? "border-[#a7e26e] shadow-md ring-1 ring-[#a7e26e]/30"
@@ -65,8 +75,11 @@ export default function BioMetricsBand() {
               >
                 <div className="flex items-center justify-between mb-6">
                   <div className="w-10 h-10 rounded-xl bg-[#f5f8f7] border border-[#e4e3e3] flex items-center justify-center text-[#222f30]">
-                    <Icon aria-hidden className="w-5 h-5 stroke-[1.8]" />
+                    <Icon className="w-5 h-5 stroke-[1.8]" />
                   </div>
+                  <span className="text-[10px] font-mono tracking-wider uppercase text-[#738284]">
+                    {s.labelEn}
+                  </span>
                 </div>
 
                 <div>
@@ -80,7 +93,7 @@ export default function BioMetricsBand() {
                     {s.desc}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -89,7 +102,7 @@ export default function BioMetricsBand() {
         <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-[#e4e3e3] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-[#55696a]">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="w-2 h-2 rounded-full bg-[#a7e26e]" />
-            <span className="font-bold text-[#222f30]">سجل الاكتشاف المفتوح</span>
+            <span className="font-bold text-[#222f30]">سجل الاكتشاف المفتوح (OPEN DISCOVERY ARCHIVE)</span>
             <span className="text-[#848c8e]">·</span>
             <span>توثيق فوري ومحمي بالتحقق البشري الصارم</span>
           </div>

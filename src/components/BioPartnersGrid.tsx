@@ -154,6 +154,7 @@ export default function BioPartnersGrid() {
         <EditorialSectionHeader
           num="08"
           kickerAr="جهات نستهدف التعاون معها"
+          kickerEn="OUTREACH TARGETS — NO SIGNED MOU YET"
           title="نبحث عن شركاء،"
           titleAccent="لا توجد شراكات موقعة بعد."
           lede="قائمة استهداف مفتوحة للجامعات والمراكز البحثية. تواصل معنا لبدء حوار تعاون — لا توجد مذكرات تفاهم موقعة حتى الآن."

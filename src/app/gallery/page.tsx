@@ -8,25 +8,12 @@ export const metadata: Metadata = {
   description: "مستودع الإنجازات والأبحاث لجهاز jemo البحثي.",
 };
 
-function first(value: string | string[] | undefined) {
-  return (Array.isArray(value) ? value[0] : value) ?? "";
-}
-
-export default async function GalleryPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ cat?: string | string[]; q?: string | string[]; item?: string | string[] }>;
-}) {
-  const params = await searchParams;
+export default function GalleryPage() {
   return (
     <>
       <Header />
       <main>
-        <GalleryClient
-          initialCat={first(params.cat)}
-          initialQuery={first(params.q)}
-          initialItem={first(params.item)}
-        />
+        <GalleryClient />
       </main>
       <Footer />
     </>

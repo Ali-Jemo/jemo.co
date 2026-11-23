@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { publicRedirects } from "./src/lib/public-redirects";
 
 // Security headers are applied once, in src/proxy.ts. Setting them here as
 // well duplicated every header on the response (and again if Cloudflare's
@@ -17,7 +16,21 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   async redirects() {
     return [
-      ...publicRedirects,
+      {
+        source: "/transparency",
+        destination: "/newsletter",
+        permanent: true,
+      },
+      {
+        source: "/login",
+        destination: "/sign-in",
+        permanent: true,
+      },
+      {
+        source: "/signup",
+        destination: "/sign-up",
+        permanent: true,
+      },
       {
         source: "/opengraph-image",
         destination: "/opengraph-image.png",

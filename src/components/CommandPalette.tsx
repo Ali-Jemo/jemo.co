@@ -6,7 +6,10 @@ import {
   Search,
   BookOpen,
   FolderGit2,
+  Cpu,
   Users,
+  Trophy,
+  Sparkles,
   X,
   ArrowLeft,
   Command,
@@ -15,11 +18,12 @@ import {
 import {
   RESEARCH_PAPERS,
   RESEARCH_PROJECTS,
+  RESEARCH_LABS,
   RESEARCHERS,
+  BENCHMARKS,
+  INITIATIVES,
   OPEN_QUESTIONS,
 } from "@/lib/data/research-data";
-import { filterPapers } from "@/lib/samples";
-import { RETIRED_PROJECT_SLUGS, RETIRED_RECORD_SLUGS } from "@/lib/record-status";
 
 interface SearchResult {
   id: string;
@@ -47,18 +51,16 @@ export default function CommandPalette() {
         typeLabel: "مسألة مفتوحة",
         title: q.title,
         subtitle: q.description,
-        url: "/research?tab=questions",
+        url: `/questions`,
         icon: HelpCircle,
       });
     });
 
-    filterPapers(RESEARCH_PAPERS)
-      .filter((paper) => !RETIRED_RECORD_SLUGS.has(paper.slug))
-      .forEach((p) => {
+    RESEARCH_PAPERS.forEach((p) => {
       items.push({
         id: `paper-${p.id}`,
         type: "paper",
-        typeLabel: "سجل",
+        typeLabel: "ورقة بحثية",
         title: p.title,
         subtitle: p.titleEn || p.field,
         url: `/research/${p.slug}`,
@@ -66,7 +68,7 @@ export default function CommandPalette() {
       });
     });
 
-    RESEARCH_PROJECTS.filter((project) => !RETIRED_PROJECT_SLUGS.has(project.slug)).forEach((p) => {
+    RESEARCH_PROJECTS.forEach((p) => {
       items.push({
         id: `project-${p.id}`,
         type: "project",
@@ -75,6 +77,18 @@ export default function CommandPalette() {
         subtitle: p.description,
         url: `/projects/${p.slug}`,
         icon: FolderGit2,
+      });
+    });
+
+    RESEARCH_LABS.forEach((l) => {
+      items.push({
+        id: `lab-${l.id}`,
+        type: "lab",
+        typeLabel: "مختبر بحثي",
+        title: l.name,
+        subtitle: l.nameEn || l.description,
+        url: `/labs/${l.slug}`,
+        icon: Cpu,
       });
     });
 
@@ -87,6 +101,30 @@ export default function CommandPalette() {
         subtitle: r.role,
         url: `/researchers/${r.slug}`,
         icon: Users,
+      });
+    });
+
+    BENCHMARKS.forEach((b) => {
+      items.push({
+        id: `benchmark-${b.id}`,
+        type: "benchmark",
+        typeLabel: "معيار قياس",
+        title: b.name,
+        subtitle: `${b.metricName}: JEMO (${b.jemoScore}) vs SOTA (${b.sotaScore})`,
+        url: "/benchmarks",
+        icon: Trophy,
+      });
+    });
+
+    INITIATIVES.forEach((i) => {
+      items.push({
+        id: `initiative-${i.id}`,
+        type: "initiative",
+        typeLabel: "مبادرة وطنية",
+        title: i.title,
+        subtitle: i.description,
+        url: `/initiatives/${i.slug}`,
+        icon: Sparkles,
       });
     });
 

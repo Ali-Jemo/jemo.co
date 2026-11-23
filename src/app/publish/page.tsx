@@ -35,6 +35,7 @@ const STEPS = [
 const PUBLICATION_TYPES = [
   { id: "research", label: "بحث / اكتشاف", desc: "نتيجة أو استقصاء موثّق", icon: Sparkles },
   { id: "book", label: "كتاب علمي", desc: "كتاب أو مخطوط بحثي كامل", icon: BookOpen },
+  { id: "novel", label: "رواية", desc: "عمل أدبي تريد حفظه ونشره", icon: BookOpen },
 ] as const;
 
 
@@ -288,14 +289,19 @@ export default function PublishResearchPage() {
           <header className="max-w-5xl mx-auto text-center mb-10 sm:mb-14">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#cfd8ce] bg-white/80 backdrop-blur text-[10px] sm:text-xs font-mono tracking-wide text-[#48605d] shadow-[0_8px_24px_rgba(24,37,38,0.05)] mb-5">
               <span className="w-2 h-2 rounded-full bg-[#a7e26e] shadow-[0_0_0_4px_rgba(167,226,110,0.18)]" />
-              سجل مفتوح
+              سجل الاكتشافات المفتوح · PROOF OF WORK REGISTRY
             </div>
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-[#182526] mb-5 tracking-[-0.04em] leading-[1.05] font-kufi">
-              انشر سجلاً
+              وثّق بحثك. <span className="text-[#657775]">احفظ سبقك الفكري.</span>
             </h1>
             <p className="text-sm sm:text-lg text-[#526663] leading-8 max-w-3xl mx-auto">
-              اكتب السؤال، وما فعله الذكاء الاصطناعي، وما تحققت منه بنفسك. السجل يبقى باسمك، مع حدوده مكتوبة بصراحة.
+              <strong className="text-[#182526]">JEMO ليست مدونة مفتوحة لغثاء الـ AI؛ بل منصة توثيق وتدقيق للاكتشافات المتقدمة.</strong>{" "}
+              وثّق مسارك عبر قالب التحقق البشري الصارم (Proof of Work) ليتحول اكتشافك إلى مرجع تقني نخبوي باسمك.
             </p>
+            <div className="mt-6 mx-auto max-w-2xl inline-flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/75 border border-[#dce3dc] text-xs sm:text-sm font-bold text-[#263635] shadow-[0_10px_30px_rgba(24,37,38,0.06)]">
+              <Sparkles className="w-4 h-4 text-[#83b83b] shrink-0" />
+              <span>&quot;حاسوبك مع واجهة AI يصنع مختبراً لشخص واحد — شرط التحقق البشري الصارم.&quot;</span>
+            </div>
           </header>
           {/* ===== Publishing Path ===== */}
           <nav className="max-w-5xl mx-auto mb-6 p-2 rounded-2xl bg-white/80 border border-[#dce3dc] shadow-[0_8px_24px_rgba(24,37,38,0.05)]" aria-label="مسار النشر">

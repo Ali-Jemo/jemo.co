@@ -1,15 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   BookOpen, BarChart2, FlaskConical, Video, Tv,
   Palette, Terminal, Smartphone, FolderOpen,
   Search, X, ArrowUpRight, ChevronRight, Sparkles, Filter,
   LayoutGrid, List, Share2, Check, Star, SlidersHorizontal
 } from "lucide-react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
 import GlowingBorder from "@/components/GlowingBorder";
 import MagneticCard from "@/components/MagneticCard";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface GalleryItem {
   id: string;
@@ -150,25 +156,20 @@ const getStatusBadge = (status?: string) => {
   }
 };
 
-function GalleryContent({
-  initialCat,
-  initialQuery,
-  initialItem,
-}: {
-  initialCat: string;
-  initialQuery: string;
-  initialItem: string;
-}) {
+function GalleryContent() {
+  const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const closeDialogRef = useRef<HTMLButtonElement>(null);
+  const itemParam = searchParams.get("item");
+  const catParam = searchParams.get("cat");
+  const qParam = searchParams.get("q");
 
-  const [selectedCat, setSelectedCat] = useState(
-    CATEGORIES.some((entry) => entry.id === initialCat) ? initialCat : "all"
+  const [selectedCat, setSelectedCat] = useState(() =>
+    catParam && CATEGORIES.some((c) => c.id === catParam) ? catParam : "all"
   );
-  const [search, setSearch] = useState(initialQuery);
-  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(
-    ITEMS.find((entry) => entry.id === initialItem) ?? null
+  const [search, setSearch] = useState(() => qParam || "");
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(() =>
+    itemParam ? ITEMS.find((it) => it.id === itemParam) || null : null
   );
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<"newest" | "title">("newest");
@@ -186,19 +187,18 @@ function GalleryContent({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  useEffect(() => {
-    if (!selectedItem) return;
-    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    closeDialogRef.current?.focus();
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedItem(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      previouslyFocused?.focus();
-    };
-  }, [selectedItem]);
+  useGSAP(() => {
+    if (!containerRef.current) return;
+
+    gsap.from(".gallery-header", {
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: "power3.out",
+      delay: 0.1,
+    });
+  }, { scope: containerRef });
 
   const getItemCount = useCallback((catId: string) => {
     if (catId === "all") return ITEMS.length;
@@ -251,7 +251,7 @@ function GalleryContent({
         <div className="max-w-3xl">
           <div className="gallery-header inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--brand)]/20 bg-[var(--brand)]/5 text-[var(--brand-700)] text-xs font-mono mb-6 shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse" />
-            <span className="font-semibold">الأرشيف التفاعلي</span>
+            <span className="font-semibold tracking-wider">THE ARSENAL • الأرشيف التفاعلي</span>
           </div>
           <h1 className="gallery-header text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[var(--ink)] mb-6 leading-[1.15]">
             الأعمال <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand)] via-sky-500 to-[var(--brand-700)] italic">والمنشورات</span>
@@ -285,8 +285,7 @@ function GalleryContent({
             </div>
             <input
               ref={searchInputRef}
-              type="search"
-              aria-label="ابحث في الأرشيف"
+              type="text"
               placeholder="ابحث في الأرشيف... (/)"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -299,10 +298,10 @@ function GalleryContent({
               </kbd>
             )}
             {search && (
-              <button type="button"
+              <button
                 onClick={() => setSearch("")}
                 className="p-1.5 text-[var(--ink-2)] hover:text-[var(--ink)] me-2 rounded-full hover:bg-[var(--surface-2)] transition-colors cursor-pointer"
-                aria-label="مسح البحث"
+                aria-label="Clear search"
               >
                 <X size={16} />
               </button>
@@ -320,7 +319,7 @@ function GalleryContent({
               const count = getItemCount(cat.id);
               const isSelected = selectedCat === cat.id;
               return (
-                <button type="button"
+                <button
                   key={cat.id}
                   onClick={() => setSelectedCat(cat.id)}
                   className={`relative px-4 py-2.5 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors duration-200 cursor-pointer overflow-hidden border ${
@@ -371,10 +370,9 @@ function GalleryContent({
 
             {/* View Mode Toggle */}
             <div className="flex items-center p-1 rounded-xl bg-[var(--surface)] border border-[var(--line)] shadow-xs">
-              <button type="button"
+              <button
                 onClick={() => setViewMode("grid")}
-                aria-label="عرض شبكي"
-                aria-pressed={viewMode === "grid"}
+                aria-label="Grid view"
                 className={`p-2 rounded-lg transition-all cursor-pointer ${
                   viewMode === "grid"
                     ? "bg-[var(--bg)] text-[var(--brand)] shadow-xs font-bold"
@@ -383,10 +381,9 @@ function GalleryContent({
               >
                 <LayoutGrid size={16} />
               </button>
-              <button type="button"
+              <button
                 onClick={() => setViewMode("list")}
-                aria-label="عرض قائمة"
-                aria-pressed={viewMode === "list"}
+                aria-label="List view"
                 className={`p-2 rounded-lg transition-all cursor-pointer ${
                   viewMode === "list"
                     ? "bg-[var(--bg)] text-[var(--brand)] shadow-xs font-bold"
@@ -410,7 +407,7 @@ function GalleryContent({
             {selectedCat !== "all" && (
               <span className="px-2.5 py-1 rounded-md bg-[var(--brand)]/10 text-[var(--brand-700)] border border-[var(--brand)]/20 font-sans font-semibold text-[11px] flex items-center gap-1">
                 القسم: {CATEGORIES.find((c) => c.id === selectedCat)?.label}
-                <button type="button" onClick={() => setSelectedCat("all")} aria-label="إزالة تصفية القسم" className="hover:text-[var(--ink)] ms-1 cursor-pointer">
+                <button onClick={() => setSelectedCat("all")} className="hover:text-[var(--ink)] ms-1 cursor-pointer">
                   <X size={12} />
                 </button>
               </span>
@@ -419,7 +416,7 @@ function GalleryContent({
             {search && (
               <span className="px-2.5 py-1 rounded-md bg-[var(--brand)]/10 text-[var(--brand-700)] border border-[var(--brand)]/20 font-sans font-semibold text-[11px] flex items-center gap-1">
                 البحث: &quot;{search}&quot;
-                <button type="button" onClick={() => setSearch("")} aria-label="مسح عبارة البحث" className="hover:text-[var(--ink)] ms-1 cursor-pointer">
+                <button onClick={() => setSearch("")} className="hover:text-[var(--ink)] ms-1 cursor-pointer">
                   <X size={12} />
                 </button>
               </span>
@@ -427,7 +424,7 @@ function GalleryContent({
           </div>
 
           {(selectedCat !== "all" || search !== "") && (
-            <button type="button"
+            <button
               onClick={() => {
                 setSelectedCat("all");
                 setSearch("");
@@ -442,17 +439,12 @@ function GalleryContent({
 
       {/* 3. GRID / LIST DISPLAY */}
       <section className="relative px-6 z-10 max-w-6xl mx-auto min-h-[40vh]">
-        {ITEMS.length === 0 ? (
-          <div className="w-full py-20 px-6 text-center border border-[var(--line)] rounded-3xl bg-[var(--surface)]" role="status">
-            <h2 className="text-xl font-bold text-[var(--ink)] mb-2">الأرشيف فارغ</h2>
-            <p className="text-sm text-[var(--ink-2)]">لا توجد أعمال منشورة في المعرض بعد.</p>
-          </div>
-        ) : filteredItems.length === 0 ? (
+        {filteredItems.length === 0 ? (
           <div className="w-full py-20 px-6 flex flex-col items-center justify-center text-center border border-[var(--line)] rounded-3xl bg-[var(--surface)] shadow-xs">
             <div className="w-16 h-16 rounded-2xl bg-[var(--brand)]/10 border border-[var(--brand)]/20 flex items-center justify-center text-[var(--brand)] mb-4">
               <Search size={32} />
             </div>
-            <h2 className="text-xl font-bold text-[var(--ink)] mb-2">لا توجد نتائج تطابق بحثك</h2>
+            <h3 className="text-xl font-bold text-[var(--ink)] mb-2">لا توجد نتائج تطابق بحثك</h3>
             <p className="text-sm text-[var(--ink-2)] max-w-md mb-6 leading-relaxed">
               لم نعثر على أي عنصر يطابق &quot;{search}&quot;. جرب استخدام كلمات مفتاحية أخرى أو تصفح التوصيات أدناه.
             </p>
@@ -460,7 +452,7 @@ function GalleryContent({
             {/* Quick Suggestions */}
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               {["Next.js", "تحليل بيانات", "هوية بصرية", "إدارة الفرق", "وثائقي"].map((suggested, idx) => (
-                <button type="button"
+                <button
                   key={idx}
                   onClick={() => setSearch(suggested)}
                   className="px-3 py-1.5 text-xs rounded-xl bg-[var(--surface-2)] text-[var(--ink)] border border-[var(--line)] hover:border-[var(--brand)] hover:text-[var(--brand)] transition-all font-mono cursor-pointer"
@@ -470,7 +462,7 @@ function GalleryContent({
               ))}
             </div>
 
-            <button type="button"
+            <button
               onClick={() => {
                 setSelectedCat("all");
                 setSearch("");
@@ -493,7 +485,7 @@ function GalleryContent({
               {filteredItems.map((item) => (
                 <motion.div
                   layout="position"
-                  initial={false}
+                  initial={{ opacity: 0, scale: 0.93, y: 15 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.93, y: -15 }}
                   transition={{ type: "spring", stiffness: 350, damping: 26 }}
@@ -530,9 +522,9 @@ function GalleryContent({
                                   </span>
                                 )}
                               </div>
-                              <h2 className="text-lg font-bold text-[var(--ink)] group-hover:text-[var(--brand)] transition-colors truncate">
+                              <h3 className="text-lg font-bold text-[var(--ink)] group-hover:text-[var(--brand)] transition-colors truncate">
                                 {item.title}
-                              </h2>
+                              </h3>
                             </div>
                           )}
 
@@ -557,24 +549,17 @@ function GalleryContent({
                             <div className="text-xs font-mono text-[var(--brand-700)] tracking-wider uppercase font-semibold">
                               {item.meta}
                             </div>
-                            <h2 className="text-xl font-bold text-[var(--ink)] leading-snug group-hover:text-[var(--brand)] transition-colors">
+                            <h3 className="text-xl font-bold text-[var(--ink)] leading-snug group-hover:text-[var(--brand)] transition-colors">
                               {item.title}
-                            </h2>
+                            </h3>
                             <p className="text-[var(--ink-2)] text-sm leading-relaxed line-clamp-2 mt-1 font-normal">
                               {item.description}
                             </p>
-                            <button
-                              type="button"
-                              onClick={() => setSelectedItem(item)}
-                              className="mt-3 self-start text-sm font-bold text-[#222f30] underline underline-offset-4"
-                            >
-                              عرض التفاصيل
-                            </button>
 
                             {item.tags && (
                               <div className="flex flex-wrap gap-1.5 pt-3">
                                 {item.tags.map((tag, i) => (
-                                  <button type="button"
+                                  <button
                                     key={i}
                                     onClick={(e) => handleTagClick(e, tag)}
                                     className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--surface-2)] text-[var(--ink-2)] border border-[var(--line)] font-mono font-medium hover:border-[var(--brand)] hover:text-[var(--brand)] hover:bg-[var(--brand)]/5 transition-all cursor-pointer"
@@ -609,12 +594,7 @@ function GalleryContent({
       {/* 4. MODAL DETAIL */}
       <AnimatePresence>
         {selectedItem && (
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="gallery-dialog-title"
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
-          >
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -631,10 +611,7 @@ function GalleryContent({
               className="relative w-full max-w-2xl bg-[var(--surface)] border border-[var(--line)] rounded-3xl p-6 sm:p-10 shadow-2xl overflow-hidden text-[var(--ink)] z-10"
             >
               <button
-                ref={closeDialogRef}
-                type="button"
                 onClick={() => setSelectedItem(null)}
-                aria-label="إغلاق"
                 className="absolute top-5 left-5 w-10 h-10 rounded-full bg-[var(--bg)] border border-[var(--line)] flex items-center justify-center text-[var(--ink-2)] hover:text-[var(--ink)] transition-colors z-20 cursor-pointer"
               >
                 <X size={20} />
@@ -649,7 +626,7 @@ function GalleryContent({
                     <span className="inline-block px-3 py-1 rounded-full border border-[var(--brand)]/20 bg-[var(--brand)]/10 text-[var(--brand-700)] text-xs font-mono mb-1 font-semibold">
                       {selectedItem.meta}
                     </span>
-                    <h2 id="gallery-dialog-title" className="text-2xl sm:text-3xl font-bold text-[var(--ink)] leading-tight">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-[var(--ink)] leading-tight">
                       {selectedItem.title}
                     </h2>
                   </div>
@@ -663,7 +640,7 @@ function GalleryContent({
                 {selectedItem.tags && (
                   <div className="flex flex-wrap gap-2 pt-2 border-t border-[var(--line)]">
                     {selectedItem.tags.map((tag, i) => (
-                      <button type="button"
+                      <button
                         key={i}
                         onClick={(e) => {
                           handleTagClick(e, tag);
@@ -680,7 +657,7 @@ function GalleryContent({
 
                 {/* Actions Row */}
                 <div className="pt-4 flex flex-col sm:flex-row items-center gap-3">
-                  <button type="button"
+                  <button
                     onClick={() => setSelectedItem(null)}
                     className="w-full sm:flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 font-bold text-white bg-[var(--brand)] hover:bg-[var(--brand-700)] rounded-xl transition-all shadow-md text-sm cursor-pointer"
                   >
@@ -688,7 +665,7 @@ function GalleryContent({
                     <ChevronRight size={18} />
                   </button>
 
-                  <button type="button"
+                  <button
                     onClick={() => handleShare(selectedItem)}
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 font-semibold text-[var(--ink-2)] hover:text-[var(--ink)] bg-[var(--bg)] border border-[var(--line)] hover:border-[var(--brand)]/40 rounded-xl transition-all text-sm cursor-pointer"
                   >
@@ -765,20 +742,10 @@ function GalleryContent({
   );
 }
 
-export default function GalleryClient({
-  initialCat = "",
-  initialQuery = "",
-  initialItem = "",
-}: {
-  initialCat?: string;
-  initialQuery?: string;
-  initialItem?: string;
-}) {
+export default function GalleryClient() {
   return (
-    <GalleryContent
-      initialCat={initialCat}
-      initialQuery={initialQuery}
-      initialItem={initialItem}
-    />
+    <Suspense fallback={null}>
+      <GalleryContent />
+    </Suspense>
   );
 }

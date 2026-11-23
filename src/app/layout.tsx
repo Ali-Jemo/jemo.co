@@ -41,9 +41,9 @@ export const metadata: Metadata = {
     default: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
     template: "%s | JEMO",
   },
-  description: "سجلّ عربي مفتوح لأبحاث النظم والبرمجة وتقييم النماذج. وثّق ما اكتشفته مع الذكاء الاصطناعي، مع ما تحققت منه بنفسك.",
+  description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات التي يجريها الناس بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه معرفتك بعد انتهاء المحادثة.",
   keywords: ["JEMO", "سجل الاكتشافات", "أبحاث الذكاء الاصطناعي", "بحث المواطن", "Citizen Research", "توثيق الأبحاث", "المعرفة المفتوحة", "العراق", "بغداد"],
-  authors: [{ name: "علي حسين هادي (Jemo)", url: SITE_URL }],
+  authors: [{ name: "JEMO LABS Research Team", url: SITE_URL }],
   publisher: "JEMO LABS",
   icons: {
     icon: [
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
-    description: "سجلّ عربي مفتوح لأبحاث النظم والبرمجة وتقييم النماذج.",
+    description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه المعرفة.",
     siteName: "JEMO LABS",
     locale: "ar_IQ",
     type: "website",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "JEMO — سجل الاكتشافات بالذكاء الاصطناعي",
-    description: "سجلّ عربي مفتوح لأبحاث النظم والبرمجة وتقييم النماذج.",
+    description: "بوابة مفتوحة لتوثيق ومشاركة الأبحاث والاستقصاءات بمساعدة الذكاء الاصطناعي — المكان الذي لا تضيع فيه المعرفة.",
     images: ["/twitter-image.png"],
   },
 };
@@ -75,11 +75,11 @@ const jsonLd = {
     {
       "@type": "ResearchOrganization",
       "@id": absoluteUrl("/#organization"),
-      "name": "JEMO",
-      "alternateName": ["JEMO Labs", "جيمو"],
+      "name": "JEMO LABS",
+      "alternateName": ["بيت الحكمة الرقمي", "جيمو لابس"],
       "url": SITE_URL,
       "logo": absoluteUrl("/jemo-logo.svg"),
-      "description": "سجل عربي مفتوح لتوثيق أبحاث النظم والبرمجة وتقييم نماذج الذكاء الاصطناعي."
+      "description": "مؤسسة بحثية مستقلة غير ربحية لجميع العلوم: العلوم الشرعية والإسلامية، الذكاء الاصطناعي، العلوم الطبيعية والطبية والهندسية والإنسانية — معرفة مفتوحة من العراق إلى العالم."
     },
     {
       "@type": "WebSite",
@@ -136,9 +136,6 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased min-h-screen flex flex-col relative bg-[var(--bg)] text-[var(--ink)] max-w-full" suppressHydrationWarning>
-        <noscript>
-          <style>{`[data-cohere-item]{opacity:1!important;transform:none!important;animation:none!important}.hero-line{opacity:1!important;transform:none!important;animation:none!important}`}</style>
-        </noscript>
         {clerkOn ? (
           <ClerkProvider
             publishableKey={clerkKey}
