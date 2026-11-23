@@ -23,12 +23,17 @@ const STATUS_AR: Record<string, string> = {
 
 // Sovereign layer labels — editorial numbering, not data-driven.
 const LAYER_AR = ["طبقة النواة", "طبقة الذكاء", "طبقة الأدوات والتحقق"];
-const LAYER_EN = ["KERNEL LAYER", "INTELLIGENCE LAYER", "VERIFICATION LAYER"];
 
 const SIDE_ICONS = [Cpu, FlaskConical, Layers];
 
 function labName(slug: string) {
   return RESEARCH_LABS.find((l) => l.slug === slug)?.name ?? slug;
+}
+
+const AR_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+
+function arCount(value: number) {
+  return String(value).replace(/\d/g, (digit) => AR_DIGITS[Number(digit)] ?? digit);
 }
 
 const AUTOPLAY_MS = 7000;
@@ -95,8 +100,8 @@ export default function FeaturedScenes() {
       {/* control strip */}
       <div className="flex items-center justify-between gap-2 mb-3 sm:mb-4 flex-wrap sm:flex-nowrap">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs text-[var(--ink-2)] dir-ltr shrink-0">
-            {String(active + 1).padStart(2, "0")} <span className="text-[var(--j-line-2)]">/</span> {String(scenes.length).padStart(2, "0")}
+          <span className="font-mono text-xs text-[#3f5456] shrink-0" aria-live="polite">
+            المشروع {arCount(active + 1)} من {arCount(scenes.length)}
           </span>
           <div className="hidden sm:flex items-center gap-1" aria-hidden>
             {scenes.map((s, i) => (
@@ -127,6 +132,7 @@ export default function FeaturedScenes() {
             الباحثون <ArrowUpLeft className="w-3.5 h-3.5" />
           </Link>
           <button
+            type="button"
             onClick={() => go(-1)}
             aria-label="المشروع السابق"
             className="w-8 h-8 sm:w-9 sm:h-9 grid place-items-center border border-[var(--j-line)] bg-[var(--j-cream)] text-[var(--ink-2)] hover:text-[var(--ink)] hover:border-[var(--ink)] transition-colors cursor-pointer"
@@ -134,6 +140,7 @@ export default function FeaturedScenes() {
             <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <button
+            type="button"
             onClick={() => go(1)}
             aria-label="المشروع التالي"
             className="w-8 h-8 sm:w-9 sm:h-9 grid place-items-center border border-[var(--j-line)] bg-[var(--j-cream)] text-[var(--ink-2)] hover:text-[var(--ink)] hover:border-[var(--ink)] transition-colors cursor-pointer"
@@ -146,7 +153,7 @@ export default function FeaturedScenes() {
       <div className="grid lg:grid-cols-5 gap-px bg-[var(--j-line)] border border-[var(--j-line)] max-w-full overflow-hidden rounded-xl sm:rounded-none">
         {/* Hero — visual first, crossfades on switch */}
         <article className="lg:col-span-3 relative overflow-hidden bg-[#0c0c0f] group min-h-[300px] sm:min-h-[460px] lg:min-h-[560px]">
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
               key={hero.id}
               className="absolute inset-0"
@@ -173,17 +180,14 @@ export default function FeaturedScenes() {
               <span className={`text-[11px] font-mono px-2.5 py-1 border backdrop-blur-sm ${STATUS_STYLE[hero.status] ?? STATUS_STYLE.Research}`}>
                 {STATUS_AR[hero.status] ?? hero.status}
               </span>
-              <span className="hidden sm:inline text-[10px] font-mono tracking-[0.14em] px-2.5 py-1 border border-white/20 bg-white/5 text-white/70 backdrop-blur-sm dir-ltr">
-                {LAYER_EN[active] ?? ""}
-              </span>
             </div>
-            <span className="font-mono text-[26px] md:text-[32px] font-bold text-white/15 leading-none select-none dir-ltr">
-              {String(active + 1).padStart(2, "0")}
+            <span className="font-mono text-[26px] md:text-[32px] font-bold text-white/40 leading-none select-none">
+              {arCount(active + 1)}
             </span>
           </div>
 
           {/* bottom content */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={hero.id + "-cap"}
               className="absolute bottom-0 inset-x-0 p-4 sm:p-5 md:p-8"
@@ -240,6 +244,7 @@ export default function FeaturedScenes() {
             return (
               <button
                 key={p.id}
+                type="button"
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => select(i)}
@@ -260,8 +265,8 @@ export default function FeaturedScenes() {
                 />
                 <span className="relative p-5 flex flex-col h-full min-h-[190px]">
                   <span className="flex items-center justify-between mb-3">
-                    <span className={`font-mono text-xs font-bold dir-ltr ${isActive ? "text-white/50" : "text-[var(--ink-2)]"}`}>
-                      {String(i + 1).padStart(2, "0")}
+                    <span className={`font-mono text-xs font-bold ${isActive ? "text-white/80" : "text-[#3f5456]"}`}>
+                      {arCount(i + 1)}
                     </span>
                     <span className={`j-tag !text-[10px] ${isActive ? "!bg-white/10 !border-white/25 !text-white/90" : ""}`}>
                       {STATUS_AR[p.status] ?? p.status}
@@ -291,7 +296,7 @@ export default function FeaturedScenes() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4 p-3.5 rounded-2xl bg-[#f5f8f7] border border-[#e4e3e3] text-xs font-mono text-[#445e5f]">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#a7e26e] animate-pulse shrink-0" />
-          <span className="font-bold text-[#222f30] text-[11px] sm:text-xs">مشاريع وتجارب مفتوحة المصدر · OPEN SOURCE EXPERIMENTS</span>
+          <span className="font-bold text-[#222f30] text-[11px] sm:text-xs">مشاريع وتجارب مفتوحة المصدر</span>
         </div>
         <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px]">
           <span>فريق: {hero.team.map((m) => m.name).join(" ، ")}</span>

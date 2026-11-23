@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Activity,
   ArrowUpRight,
@@ -20,7 +20,7 @@ import Link from "next/link";
  * here — `/api/public/applications/feed` returns counts and a timestamp, and
  * the per-applicant endpoint requires an admin session.
  */
-interface ApplicationStats {
+export interface ApplicationStats {
   total: number;
   pending: number;
   accepted: number;
@@ -38,21 +38,27 @@ const EMPTY_STATS: ApplicationStats = {
 
 const POLL_INTERVAL_MS = 30_000;
 
+export type ApplicationsInitial =
+  | { status: "ready"; stats: ApplicationStats }
+  | { status: "unavailable" };
+
 function toCount(value: unknown): number {
   const n = Number(value);
   return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
 }
 
-export default function ApplicationsClient() {
-  const [stats, setStats] = useState<ApplicationStats>(EMPTY_STATS);
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
+export default function ApplicationsClient({ initial }: { initial: ApplicationsInitial }) {
+  const [stats, setStats] = useState<ApplicationStats>(
+    initial.status === "ready" ? initial.stats : EMPTY_STATS
+  );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(initial.status === "unavailable");
+  const hasSnapshot = useRef(initial.status === "ready");
 
   const fetchStats = useCallback(async (): Promise<ApplicationStats> => {
     const res = await fetch("/api/public/applications/feed", {
       headers: { accept: "application/json" },
-      signal: AbortSignal.timeout(4000),
+      signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -66,11 +72,9 @@ export default function ApplicationsClient() {
   }, []);
 
   const commit = useCallback((next: ApplicationStats) => {
+    hasSnapshot.current = true;
     setStats(next);
     setError(false);
-    setLastUpdate(
-      new Date().toLocaleTimeString("ar-IQ", { hour: "2-digit", minute: "2-digit" })
-    );
   }, []);
 
   useEffect(() => {
@@ -82,9 +86,7 @@ export default function ApplicationsClient() {
         const next = await fetchStats();
         if (active) commit(next);
       } catch {
-        if (active) setError(true);
-      } finally {
-        if (active) setInitialLoading(false);
+        if (active && !hasSnapshot.current) setError(true);
       }
     })();
 
@@ -94,7 +96,7 @@ export default function ApplicationsClient() {
           const next = await fetchStats();
           if (active) commit(next);
         } catch {
-          if (active) setError(true);
+          if (active && !hasSnapshot.current) setError(true);
         }
       })();
     }, POLL_INTERVAL_MS);
@@ -106,21 +108,29 @@ export default function ApplicationsClient() {
   }, [fetchStats, commit]);
 
   const handleRetry = async () => {
-    setInitialLoading(true);
-    setError(false);
+    setLoading(true);
     try {
       commit(await fetchStats());
     } catch {
-      setError(true);
+      if (!hasSnapshot.current) setError(true);
     } finally {
-      setInitialLoading(false);
+      setLoading(false);
     }
   };
 
+  const isEmpty = !error && stats.total === 0;
+  const statusLabel = error
+    ? "تعذّر تحميل المؤشرات"
+    : loading
+      ? "جارٍ تحميل المؤشرات"
+      : isEmpty
+        ? "لا طلبات مسجّلة بعد"
+        : "المؤشرات محدّثة";
+
   const distribution = [
     { key: "accepted", label: "مقبول", value: stats.accepted, bar: "bg-[var(--brand)]", text: "text-[var(--brand)]" },
-    { key: "pending", label: "قيد المراجعة", value: stats.pending, bar: "bg-amber-500", text: "text-amber-500" },
-    { key: "rejected", label: "مرفوض", value: stats.rejected, bar: "bg-red-500/70", text: "text-red-500/70" },
+    { key: "pending", label: "قيد المراجعة", value: stats.pending, bar: "bg-amber-700", text: "text-amber-800" },
+    { key: "rejected", label: "مرفوض", value: stats.rejected, bar: "bg-red-700", text: "text-red-800" },
   ] as const;
 
   const denominator = Math.max(stats.total, 1);
@@ -137,7 +147,7 @@ export default function ApplicationsClient() {
       label: "قيد المراجعة",
       value: stats.pending,
       icon: <Hourglass size={24} />,
-      color: "text-amber-500",
+      color: "text-amber-800",
       hover: "group-hover:border-amber-500/30",
     },
     {
@@ -151,7 +161,7 @@ export default function ApplicationsClient() {
       label: "طلبات مرفوضة",
       value: stats.rejected,
       icon: <XCircle size={24} />,
-      color: "text-red-500/70",
+      color: "text-red-800",
       hover: "group-hover:border-red-500/20",
     },
   ];
@@ -170,22 +180,21 @@ export default function ApplicationsClient() {
         {/* HEADER & LIVE INDICATOR */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--brand)]/20 bg-[var(--brand)]/5 text-[var(--brand)] text-xs font-mono mb-6 shadow-xs">
-              <Activity size={14} className={initialLoading ? "animate-pulse" : ""} />
-              {lastUpdate ? (
-                <span>آخر تحديث {lastUpdate}</span>
-              ) : error ? (
-                <span>الأرقام غير متاحة حالياً</span>
-              ) : (
-                <span>جارٍ جلب الأرقام...</span>
-              )}
+            <div
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--brand)]/20 bg-[var(--brand)]/5 text-[var(--ink)] text-xs font-mono mb-6 shadow-xs"
+              role="status"
+              aria-live="polite"
+            >
+              <Activity size={14} className={loading ? "animate-pulse" : ""} aria-hidden />
+              <span>{statusLabel}</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-[var(--ink)] leading-tight">
-              سجل <span className="text-[var(--ink)]/70">القبولات الشفاف</span>
+              سجل <span className="text-[#3f5456]">القبولات الشفاف</span>
             </h1>
-            <p className="mt-4 text-lg text-[var(--ink)]/50 max-w-2xl">
-              مؤشرات مباشرة عن طلبات الانضمام إلى jemo labs. ننشر الأرقام لا الهويات —
-              حمايةً لخصوصية المتقدمين.
+            <p className="mt-4 text-lg text-[#3f5456] max-w-2xl">
+              مؤشرات عن طلبات الانضمام إلى{" "}
+              <bdi dir="ltr" className="whitespace-nowrap">JEMO Labs</bdi>
+              . ننشر الأرقام لا الهويات — حمايةً لخصوصية المتقدمين.
             </p>
           </div>
           <div className="flex-shrink-0">
@@ -193,21 +202,27 @@ export default function ApplicationsClient() {
               <span className="absolute inset-0 translate-x-full group-hover:-translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent pointer-events-none" />
               <span className="relative z-10 flex items-center gap-2 font-kufi">
                 تقديم طلب انضمام
-                <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                <ArrowUpRight aria-hidden size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </span>
             </Link>
           </div>
         </div>
 
         {error ? (
-          <div className="w-full py-32 flex flex-col items-center justify-center border border-red-500/20 rounded-3xl bg-red-500/5 text-center px-6">
-            <XCircle size={48} className="text-red-500 mb-6" />
-            <p className="text-xl text-red-200">فشل في الاتصال بقاعدة البيانات.</p>
+          <div className="w-full py-16 flex flex-col items-center justify-center border border-red-200 rounded-3xl bg-red-50 text-center px-6" role="alert">
+            <XCircle size={48} className="text-red-700 mb-6" aria-hidden />
+            <p className="text-xl text-red-900 font-bold">تعذّر قراءة مؤشرات الطلبات.</p>
+            <p className="mt-2 text-sm text-red-900/90 max-w-md leading-relaxed">
+              الأرقام غير متاحة الآن. يمكنك إعادة المحاولة، أو تقديم طلب انضمام مباشرة.
+            </p>
             <button
+              type="button"
               onClick={() => void handleRetry()}
-              className="mt-6 px-6 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors"
+              disabled={loading}
+              aria-busy={loading}
+              className="mt-6 px-6 py-2 bg-red-800 text-white rounded-lg hover:bg-red-900 transition-colors disabled:opacity-60"
             >
-              إعادة المحاولة
+              {loading ? "جارٍ إعادة المحاولة…" : "إعادة المحاولة"}
             </button>
           </div>
         ) : (
@@ -222,11 +237,11 @@ export default function ApplicationsClient() {
                   <div className={`absolute top-0 right-0 p-5 sm:p-6 opacity-20 group-hover:opacity-40 transition-all group-hover:scale-110 group-hover:-rotate-6 duration-500 ${stat.color}`}>
                     {stat.icon}
                   </div>
-                  <div className="text-xs sm:text-sm font-mono opacity-60 mb-3 whitespace-nowrap overflow-hidden text-ellipsis">
+                  <div className="text-xs sm:text-sm font-mono text-[#3f5456] mb-3 whitespace-nowrap overflow-hidden text-ellipsis">
                     {stat.label}
                   </div>
-                  <div className={`text-4xl md:text-5xl font-bold font-mono mt-auto ${stat.color}`}>
-                    {initialLoading ? "—" : stat.value}
+                  <div className={`text-4xl md:text-5xl font-bold font-mono mt-auto ${stat.color}`} aria-busy={loading}>
+                    {loading ? "…" : stat.value}
                   </div>
                 </div>
               ))}
@@ -236,9 +251,9 @@ export default function ApplicationsClient() {
             <div className="p-6 sm:p-8 rounded-3xl bg-[var(--surface)] border border-[var(--line)] shadow-sm space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-xl font-bold text-[var(--ink)]">توزيع حالات الطلبات</h2>
-                {!initialLoading && (
-                  <span className="text-xs font-mono text-[var(--ink)]/40">
-                    {stats.total} طلب إجمالاً
+                {!loading && (
+                  <span className="text-xs font-mono text-[#3f5456]">
+                    {stats.total === 0 ? "السجل فارغ" : `${stats.total} طلب إجمالاً`}
                   </span>
                 )}
               </div>
@@ -248,8 +263,8 @@ export default function ApplicationsClient() {
                 role="img"
                 aria-label={`توزيع الطلبات: ${stats.accepted} مقبول، ${stats.pending} قيد المراجعة، ${stats.rejected} مرفوض`}
               >
-                {initialLoading
-                  ? null
+                {loading
+                  ? <div className="h-full w-1/3 animate-pulse bg-[var(--line)]" />
                   : distribution.map((segment) => (
                       <div
                         key={segment.key}
@@ -264,23 +279,27 @@ export default function ApplicationsClient() {
                 {distribution.map((segment) => (
                   <div key={segment.key} className="flex items-center gap-2 text-sm">
                     <span className={`w-2.5 h-2.5 rounded-full ${segment.bar}`} />
-                    <span className="text-[var(--ink)]/60">{segment.label}</span>
+                    <span className="text-[#3f5456]">{segment.label}</span>
                     <span className={`font-mono font-bold ${segment.text}`}>
-                      {initialLoading ? "—" : segment.value}
+                      {loading ? "…" : segment.value}
                     </span>
                   </div>
                 ))}
               </div>
+              {isEmpty && (
+                <p className="text-sm text-[#3f5456] leading-relaxed" role="status">
+                  لا توجد طلبات انضمام مسجّلة حتى الآن. الأصفار أعلاه تعني أن السجل فارغ.
+                </p>
+              )}
             </div>
 
-            {/* PRIVACY NOTE */}
             <div className="mt-8 p-5 sm:p-6 rounded-2xl bg-[var(--surface-2)] border border-[var(--line)] flex items-start gap-4">
               <div className="w-10 h-10 rounded-xl bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center text-[var(--ink)]/60 shrink-0">
-                <Lock size={18} />
+                <Lock aria-hidden size={18} />
               </div>
               <div>
                 <h3 className="font-bold text-[var(--ink)] mb-1">خصوصية المتقدمين</h3>
-                <p className="text-sm text-[var(--ink)]/50 leading-relaxed">
+                <p className="text-sm text-[#3f5456] leading-relaxed">
                   تفاصيل الطلبات الفردية — الأسماء، بيانات التواصل، الخبرة، وروابط الأعمال — لا
                   تُنشر علناً. تظهر هذه المؤشرات فقط، بينما تُراجع التفاصيل داخل لوحة الإدارة المصرّح بها.
                 </p>

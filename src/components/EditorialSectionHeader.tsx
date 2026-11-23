@@ -16,7 +16,7 @@ const TONES = {
     num: "text-[#222f30]",
     rule: "bg-[#c9cbbe]",
     dot: "bg-[#a7e26e]",
-    kicker: "text-[#738284]",
+    kicker: "text-[#3f5456]",
   },
   dark: {
     wrap: "text-white/70",

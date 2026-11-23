@@ -29,6 +29,12 @@ export default function Home() {
         {/* 1. HERO — IntegratedBio Monumental Hero with BioButton */}
         <HeroSection />
 
+        {/* Sections share one 01–10 spine. Nested lists use Arabic letters
+            or «خطوة ن»، not a second 01 counter. */}
+        <noscript>
+          <style>{`[data-cohere-item]{opacity:1!important;transform:none!important;animation:none!important}.hero-line{opacity:1!important;transform:none!important;animation:none!important}`}</style>
+        </noscript>
+
         {/* 2. MANIFESTO — Split section on the Discovery Engine .......... 01 */}
         <BioManifesto />
 
@@ -47,7 +53,6 @@ export default function Home() {
             <EditorialSectionHeader
               num="05"
               kickerAr="أرشيف الاكتشافات المحققة"
-              kickerEn="VERIFIED DISCOVERY LOGS"
               title="سجلات الاكتشافات والتحقيقات التقنية"
               titleAccent="المحققة بشرياً ببرهان العمل."
               animate
@@ -63,10 +68,10 @@ export default function Home() {
               cta={
                 <BioButton
                   href="/publish"
-                  label="SUBMIT DISCOVERY"
-                  secondaryLabel="وثّق اكتشافك الآن"
+                  label="وثّق اكتشافك"
+                  secondaryLabel="Proof of Work"
                   variant="primary"
-                  dir="ltr"
+                  dir="rtl"
                 />
               }
             />
@@ -80,7 +85,6 @@ export default function Home() {
             <EditorialSectionHeader
               num="06"
               kickerAr="ركائز التركيز الهندسي"
-              kickerEn="CORE LAB SANDBOXES"
               title="تركيز نخبوي: النظم، والبرمجيات،"
               titleAccent="وهندسة نماذج الذكاء الاصطناعي."
               lede="بداية مركزة في القطاع الأعلى قيمة: أنوية التشغيل المدمجة (نواة Ziqa)، تقييم النماذج الاستدلالية، وهندسة البرمجيات المتقدمة."
